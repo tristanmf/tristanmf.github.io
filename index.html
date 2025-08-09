@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio — Votre Nom</title>
+  <meta name="description" content="Portfolio — projets, bio et contacts." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="#top">VN</a>
+      <nav class="nav">
+        <a href="#projets">Projets</a>
+        <a href="#apropos">À propos</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button id="themeToggle" aria-label="Basculer le thème">☼</button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero container">
+      <h1>Bonjour, je suis <span class="accent">Votre Nom</span>.</h1>
+      <p class="lead">Journaliste & enseignant — cultures numériques. J'analyse les usages, les médias et l'IA.</p>
+      <div class="cta">
+        <a class="btn" href="#projets">Voir mes projets</a>
+        <a class="btn btn-ghost" href="#contact">Me contacter</a>
+      </div>
+    </section>
+
+    <section id="projets" class="container section">
+      <h2>Projets récents</h2>
+      <div class="grid cards">
+        <article class="card">
+          <h3>Complorama</h3>
+          <p>Podcast qui explore le complotisme et la désinformation.</p>
+          <a class="link" href="#" target="_blank" rel="noopener">Écouter →</a>
+        </article>
+        <article class="card">
+          <h3>Cours — Cultures numériques</h3>
+          <p>Programme universitaire mêlant théorie, ateliers et projets.</p>
+          <a class="link" href="#" target="_blank" rel="noopener">Syllabus →</a>
+        </article>
+        <article class="card">
+          <h3>Visualisations & data</h3>
+          <p>Sélection de graphiques et visualisations créés pour des analyses.</p>
+          <a class="link" href="#" target="_blank" rel="noopener">Voir →</a>
+        </article>
+      </div>
+    </section>
+
+    <section id="apropos" class="container section">
+      <h2>À propos</h2>
+      <p>
+        Je travaille sur l'impact des technologies, l'IA générative et la culture en ligne.
+        Ici, je rassemble une sélection de projets, publications et interventions.
+      </p>
+    </section>
+
+    <section id="contact" class="container section">
+      <h2>Contact</h2>
+      <ul class="contact-list">
+        <li><strong>Email</strong> : <a href="mailto:votre.email@example.com">votre.email@example.com</a></li>
+        <li><strong>GitHub</strong> : <a href="https://github.com/" target="_blank" rel="noopener">github.com/tonpseudo</a></li>
+        <li><strong>Réseaux</strong> : <a href="#" target="_blank" rel="noopener">Twitter</a> · <a href="#" target="_blank" rel="noopener">Mastodon</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Votre Nom — Portfolio.</p>
+    </div>
+  </footer>
+</body>
+</html>
