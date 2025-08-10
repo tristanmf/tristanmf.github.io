@@ -34,6 +34,21 @@
       max-width: 150px;
       margin-left: 1rem;
     }
+
+    /* Styles for embedded Google Form contact section */
+    .iframe-box {
+      position: relative;
+      width: 100%;
+      /* Use a proportional padding to control height; adjust as needed */
+      padding-top: 120%;
+    }
+    .iframe-box iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
   </style>
   <script defer src="script.js"></script>
 </head>
@@ -96,24 +111,11 @@
 
     <section id="contact" class="container section">
       <h2>Contact</h2>
-      <form id="contactForm" action="https://formsubmit.co/betatristan@gmail.com" method="POST">
-        <!-- Hidden fields to set subject and disable captcha for FormSubmit -->
-        <input type="hidden" name="_subject" value="Contact via portfolio" />
-        <input type="hidden" name="_captcha" value="false" />
-        <div class="form-group">
-          <label for="name">Nom</label>
-          <input type="text" id="name" name="name" required>
-        </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-          <label for="message">Message</label>
-          <textarea id="message" name="message" rows="4" required></textarea>
-        </div>
-        <button type="submit" class="btn">Envoyer</button>
-      </form>
+      <!-- Embedded Google Form for contact (uses an iframe) -->
+      <p>Envoyez‑moi un message grâce à ce formulaire&nbsp;:</p>
+      <div class="iframe-box">
+        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSezLWfH7lfvSX9-I5O6zHR94e3JPL9i4CnDd1f9mb1B_2kClQ/viewform?embedded=true">Chargement…</iframe>
+      </div>
       <div class="social">
         <p>Réseaux sociaux : <a href="https://x.com/tristanmf" target="_blank" rel="noopener">Twitter</a></p>
       </div>
