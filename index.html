@@ -42,7 +42,7 @@
         <article class="card">
           <h3>Complorama</h3>
           <p>Podcast qui explore le complotisme et la désinformation.</p>
-          <a class="link" href="#" target="_blank" rel="noopener">Écouter →</a>
+          <a class="link" href="https://www.radiofrance.fr/franceinfo/podcasts/complorama" target="_blank" rel="noopener">Écouter →</a>
         </article>
         <article class="card">
           <h3>Cours — Cultures numériques</h3>
@@ -50,9 +50,9 @@
           <a class="link" href="#" target="_blank" rel="noopener">Syllabus →</a>
         </article>
         <article class="card">
-          <h3>Visualisations &amp; data</h3>
-          <p>Sélection de graphiques et visualisations créés pour des analyses.</p>
-          <a class="link" href="#" target="_blank" rel="noopener">Voir →</a>
+          <h3>Internet — Une infographie</h3>
+          <p>Mon livre publié chez CNRS Éditions.</p>
+          <a class="link" href="https://www.cnrseditions.fr/catalogue/societe/internet/" target="_blank" rel="noopener">Découvrir →</a>
         </article>
       </div>
     </section>
@@ -67,11 +67,21 @@
 
     <section id="contact" class="container section">
       <h2>Contact</h2>
-      <ul class="contact-list">
-        <li><strong>Email</strong> : <a href="mailto:votre.email@example.com">votre.email@example.com</a></li>
-        <li><strong>GitHub</strong> : <a href="https://github.com/" target="_blank" rel="noopener">github.com/tonpseudo</a></li>
-        <li><strong>Réseaux</strong> : <a href="https://x.com/tristanmf" target="_blank" rel="noopener">Twitter</a></li>
-      </ul>
+      <form id="contactForm">
+        <div class="form-group">
+          <label for="name">Nom</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn">Envoyer</button>
+      </form>
     </section>
   </main>
 
@@ -81,5 +91,26 @@
       <p>© <span id="year"></span> Tristan — Portfolio.</p>
     </div>
   </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var form = document.getElementById('contactForm');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var name = form.name.value;
+          var email = form.email.value;
+          var message = form.message.value;
+          var to = 'betatristan@gmail.com';
+          var subject = encodeURIComponent('Contact via portfolio from ' + name);
+          var body = encodeURIComponent(message + '
+
+From: ' + name + ' <' + email + '>');
+          window.location.href = 'mailto:' + to + '?subject=' + subject + '&body=' + body;
+        });
+      }
+    });
+    </script>
+
 </body>
 </html>
