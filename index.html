@@ -17,7 +17,22 @@
       max-width: 150px;
       height: auto;
       display: block;
-      margin: 1rem auto;
+    }
+
+    /* Layout for hero section with text on the left and photo on the right */
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .hero-text {
+      flex: 1 1 60%;
+    }
+    .hero-pic {
+      flex: 0 0 auto;
+      max-width: 150px;
+      margin-left: 1rem;
     }
   </style>
   <script defer src="script.js"></script>
@@ -37,13 +52,16 @@
 
   <main id="top">
     <section class="hero container">
-      <!-- Name updated to Tristan -->
-      <h1>Bonjour, je suis <span class="accent">Tristan</span>.</h1>
-      <p class="lead">Journaliste &amp; enseignant — cultures numériques. J'analyse les usages, les médias et l'IA.</p>
-      <div class="cta">
-        <a class="btn" href="#projets">Voir mes projets</a>
-        <a class="btn btn-ghost" href="#contact">Me contacter</a>
+      <div class="hero-text">
+        <h1>Bonjour, je suis <span class="accent">Tristan</span>.</h1>
+        <p class="lead">Journaliste &amp; enseignant — cultures numériques. J'analyse les usages, les médias et l'IA.</p>
+        <div class="cta">
+          <a class="btn" href="#projets">Voir mes projets</a>
+          <a class="btn btn-ghost" href="#contact">Me contacter</a>
+        </div>
       </div>
+      <!-- Portrait moved to top right of hero -->
+      <img src="profile.jpg" alt="Portrait de Tristan Mendès France" class="profile-pic hero-pic" />
     </section>
 
     <section id="projets" class="container section">
@@ -69,8 +87,6 @@
 
     <section id="apropos" class="container section">
       <h2>À propos</h2>
-    <!-- Portrait image inserted for a personal touch -->
-    <img src="profile.jpg" alt="Portrait de Tristan Mendès France" class="profile-pic" />
       <p>
         Tristan Mendès France est maître de conférences associé en cultures numériques à l’Université de Paris. Il enseigne aussi au CELSA et à la Sorbonne‑Nouvelle où il donne des cours sur les nouvelles cultures numériques. Journaliste, chroniqueur, essayiste et réalisateur travaillant dans le numérique, il coanime le podcast&nbsp;« Complorama » sur France&nbsp;Info. Il est également responsable de l’initiative Stop Hate Money visant à démonétiser la haine en ligne et collabore au projet Conspiracy&nbsp;Watch. Ses interventions portent sur l’impact des technologies, l’IA générative et la culture en ligne.
       </p>
@@ -78,7 +94,10 @@
 
     <section id="contact" class="container section">
       <h2>Contact</h2>
-      <form id="contactForm">
+      <form id="contactForm" action="https://formsubmit.co/betatristan@gmail.com" method="POST">
+        <!-- Hidden fields to set subject and disable captcha for FormSubmit -->
+        <input type="hidden" name="_subject" value="Contact via portfolio" />
+        <input type="hidden" name="_captcha" value="false" />
         <div class="form-group">
           <label for="name">Nom</label>
           <input type="text" id="name" name="name" required>
@@ -93,6 +112,9 @@
         </div>
         <button type="submit" class="btn">Envoyer</button>
       </form>
+      <div class="social">
+        <p>Réseaux sociaux : <a href="https://x.com/tristanmf" target="_blank" rel="noopener">Twitter</a></p>
+      </div>
     </section>
   </main>
 
@@ -103,25 +125,7 @@
     </div>
   </footer>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var form = document.getElementById('contactForm');
-      if (form) {
-        form.addEventListener('submit', function(e) {
-          e.preventDefault();
-          var name = form.name.value;
-          var email = form.email.value;
-          var message = form.message.value;
-          var to = 'betatristan@gmail.com';
-          var subject = encodeURIComponent('Contact via portfolio from ' + name);
-          var body = encodeURIComponent(message + '
-
-From: ' + name + ' <' + email + '>');
-          window.location.href = 'mailto:' + to + '?subject=' + subject + '&body=' + body;
-        });
-      }
-    });
-    </script>
+    <!-- No inline script needed for the contact form when using FormSubmit -->
 
 </body>
 </html>
