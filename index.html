@@ -32,7 +32,8 @@
     }
     .hero-pic {
       flex: 0 0 auto;
-      max-width: 150px;
+      /* Increase the hero portrait size for better visibility */
+      max-width: 200px;
       margin-left: 1rem;
     }
 
@@ -53,32 +54,45 @@
       border-radius: 8px;
     }
 
-    /* Style for about section band */
-    .about-section {
-      background-color: var(--surface);
-      padding: 2rem;
-      border-radius: 8px;
-      margin-top: 2rem;
-    }
+        /* Style for about section band */
+        .about-section {
+          background-color: var(--surface);
+          padding: 2rem;
+          border-radius: 8px;
+          /* Reduce the space above the about section to tighten layout */
+          margin-top: 1rem;
+        }
 
     /* Styles for embedded Google Form contact section */
-    .iframe-box {
-      position: relative;
-      width: 100%;
-      /* Use a proportional padding to control height; adjust as needed */
-      /* Reduce vertical space to avoid large empty area under the form */
-      padding-top: 60%;
-      /* Match the form container background to the site surface color */
-      background-color: var(--surface);
-      border-radius: 8px;
-    }
-    .iframe-box iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
+        /* Styles for custom contact form */
+        .contact-form {
+          background-color: var(--surface);
+          padding: 1rem;
+          border-radius: 8px;
+          max-width: 600px;
+        }
+        .contact-form input,
+        .contact-form textarea {
+          width: 100%;
+          background-color: var(--surface);
+          color: var(--text);
+          border: 1px solid var(--border);
+          border-radius: 4px;
+          padding: 0.5rem;
+          margin-bottom: 1rem;
+        }
+        .contact-form button {
+          padding: 0.5rem 1rem;
+          background-color: var(--accent);
+          color: var(--background);
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+        .contact-form button:hover {
+          background-color: var(--text);
+          color: var(--background);
+        }
 
     /* Add spacing above card headings so titles are not flush with the top of the card */
     .card h3 {
@@ -110,6 +124,29 @@
       height: 32px;
       fill: currentColor;
     }
+
+        /* Responsive adjustments for mobile screens */
+        @media (max-width: 768px) {
+          /* On small screens stack the elements and center them. Show the portrait at the top, followed by text and social icons */
+          .hero {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+          }
+          .hero-pic {
+            order: 1;
+            margin: 0 0 1rem 0;
+            max-width: 200px;
+          }
+          .hero-text {
+            order: 2;
+          }
+          .hero .social-icons {
+            order: 3;
+            justify-content: center;
+            margin-top: 1rem;
+          }
+        }
   </style>
   <script defer src="script.js"></script>
 </head>
@@ -264,12 +301,16 @@
 
     <section id="contact" class="container section">
       <h2>Contact</h2>
-      <!-- Embedded Google Form for contact (uses an iframe) -->
-      <p>Envoyez‑moi un message grâce à ce formulaire&nbsp;:</p>
-      <div class="iframe-box">
-        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSezLWfH7lfvSX9-I5O6zHR94e3JPL9i4CnDd1f9mb1B_2kClQ/viewform?embedded=true">Chargement…</iframe>
-      </div>
-      <!-- Social icons are now displayed in the hero section -->
+      <p>Envoyez‑moi un message&nbsp;:</p>
+      <!-- Use FormSubmit to send the message without exposing the email address -->
+      <form class="contact-form" action="https://formsubmit.co/betatristan@gmail.com" method="POST">
+        <input type="email" name="email" placeholder="Votre email" required>
+        <textarea name="message" placeholder="Votre message" rows="5" required></textarea>
+        <!-- Hidden fields for FormSubmit configuration -->
+        <input type="hidden" name="_subject" value="Message depuis le portfolio">
+        <input type="hidden" name="_captcha" value="false">
+        <button type="submit" class="btn">Envoyer</button>
+      </form>
     </section>
   </main>
 
@@ -280,7 +321,7 @@
     </div>
   </footer>
 
-    <!-- No inline script needed for the contact form when using FormSubmit -->
+    <!-- The contact form uses FormSubmit to handle submissions without exposing the email address -->
 
 </body>
 </html>
