@@ -94,6 +94,12 @@
           color: var(--background);
         }
 
+        /* Style for the thank you message that appears after submitting the contact form */
+        .success-message {
+          color: var(--accent);
+          font-weight: 600;
+        }
+
     /* Add spacing above card headings so titles are not flush with the top of the card */
     .card h3 {
       /* Increase top margin so the title doesn’t touch the card’s top border */
@@ -303,7 +309,8 @@
       <h2>Contact</h2>
       <p>Envoyez‑moi un message&nbsp;:</p>
       <!-- Use FormSubmit to send the message without exposing the email address -->
-      <form class="contact-form" action="https://formsubmit.co/betatristan@gmail.com" method="POST">
+      <!-- Add target and onsubmit handler so the submission loads into a hidden iframe and displays a thank‑you message on the same page -->
+      <form class="contact-form" action="https://formsubmit.co/betatristan@gmail.com" method="POST" target="hidden_iframe" onsubmit="this.style.display='none'; document.getElementById('formSuccess').style.display='block';">
         <input type="email" name="email" placeholder="Votre email" required>
         <textarea name="message" placeholder="Votre message" rows="5" required></textarea>
         <!-- Hidden fields for FormSubmit configuration -->
@@ -311,6 +318,10 @@
         <input type="hidden" name="_captcha" value="false">
         <button type="submit" class="btn">Envoyer</button>
       </form>
+      <!-- Hidden iframe to capture the FormSubmit response and prevent page navigation -->
+      <iframe name="hidden_iframe" style="display:none;"></iframe>
+      <!-- Success message displayed after the form has been submitted -->
+      <p id="formSuccess" class="success-message" style="display:none; margin-top:1rem;">Merci&nbsp;! Votre message a été envoyé.</p>
     </section>
   </main>
 
