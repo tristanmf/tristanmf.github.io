@@ -13,8 +13,9 @@
   <!-- Inline style for profile image with rounded corners -->
   <style>
     .profile-pic {
-      border-radius: 50%;
-      max-width: 150px;
+      /* Make the hero portrait rectangular with rounded corners and larger */
+      border-radius: 8px;
+      max-width: 200px;
       height: auto;
       display: block;
     }
@@ -42,6 +43,22 @@
       margin-bottom: 0.5rem;
       height: auto;
       display: block;
+    }
+
+    /* Style for special cards (e.g., conference/consultant card) */
+    .card.special {
+      background-color: var(--surface);
+      border: 1px solid var(--surface);
+      padding: 1.5rem;
+      border-radius: 8px;
+    }
+
+    /* Style for about section band */
+    .about-section {
+      background-color: var(--surface);
+      padding: 2rem;
+      border-radius: 8px;
+      margin-top: 2rem;
     }
 
     /* Styles for embedded Google Form contact section */
@@ -121,7 +138,7 @@
         <h1><span class="accent">Tristan Mendès France</span></h1>
         <!-- Neutral tagline describing areas of expertise -->
     <!-- Neutral tagline describing areas of expertise split across two lines -->
-    <p class="lead">Spécialiste des cultures numériques et des radicalités en ligne.<br>Enseignant et observateur de l’extrême en ligne.</p>
+    <p class="lead">Spécialiste des cultures numériques et des radicalités en ligne.<br>Enseignant et observateur de l’extrémisme en ligne.</p>
         <div class="cta">
           <a class="btn" href="#projets">Voir mes projets</a>
           <a class="btn btn-ghost" href="#contact">Me contacter</a>
@@ -159,61 +176,90 @@
       <img src="profile.jpg" alt="Portrait de Tristan Mendès France" class="profile-pic hero-pic" />
     </section>
 
+    <!-- About section moved above projects for better narrative flow -->
+    <section id="apropos" class="container section about-section">
+      <h2>À propos</h2>
+      <p>
+        Tristan Mendès France est maître de conférences associé en cultures numériques à l’Université de Paris et enseignant au CELSA. Spécialiste des cultures numériques et des radicalités en ligne, il coanime le podcast « Complorama » sur France Info, collabore à l’Observatoire du conspirationnisme (Conspiracy Watch) et participe à l’émission « Les Déconspirateurs ». Conférencier et consultant, il intervient sur l’impact du numérique et de l’intelligence artificielle, ainsi que sur l’extrémisme en ligne, et peut être contacté pour des interventions.
+      </p>
+    </section>
+
     <section id="projets" class="container section">
       <h2>Projets récents</h2>
       <div class="grid cards">
+        <!-- Complorama podcast card -->
         <article class="card">
-          <!-- Complorama podcast card with image -->
-          <img src="complorama.jpg" alt="Complorama" />
+          <a href="https://www.radiofrance.fr/franceinfo/podcasts/complorama" target="_blank" rel="noopener">
+            <img src="complorama.jpg" alt="Complorama" />
+          </a>
           <h3>Complorama</h3>
           <p>Podcast de France&nbsp;Info qui explore le complotisme et les désinformations.</p>
           <a class="link" href="https://www.radiofrance.fr/franceinfo/podcasts/complorama" target="_blank" rel="noopener">Écouter&nbsp;→</a>
         </article>
+        <!-- Antidote chronicles card -->
         <article class="card">
-          <!-- Antidote chronicles card with image -->
-          <img src="antidote.jpg" alt="Antidote" />
+          <a href="https://www.radiofrance.fr/franceinter/podcasts/antidote" target="_blank" rel="noopener">
+            <img src="antidote.jpg" alt="Antidote" />
+          </a>
           <h3>Antidote</h3>
           <p>Chroniques sur France&nbsp;Inter qui analysent l’actualité de la désinformation.</p>
           <a class="link" href="https://www.radiofrance.fr/franceinter/podcasts/antidote" target="_blank" rel="noopener">Découvrir&nbsp;→</a>
         </article>
+        <!-- Observatoire du conspirationnisme card -->
         <article class="card">
-          <!-- Observatoire du conspirationnisme card with image -->
-          <img src="conspiracywatch.jpg" alt="Conspiracy Watch" />
+          <a href="https://www.conspiracywatch.info" target="_blank" rel="noopener">
+            <img src="conspiracywatch.jpg" alt="Observatoire du conspirationnisme" />
+          </a>
           <h3>Observatoire du conspirationnisme</h3>
           <p>Site de l’Observatoire du conspirationnisme, qui édite Conspiracy&nbsp;Watch et décrypte l’actualité de la complosphère.</p>
           <a class="link" href="https://www.conspiracywatch.info" target="_blank" rel="noopener">Explorer&nbsp;→</a>
         </article>
+        <!-- Les Déconspirateurs card -->
         <article class="card">
-          <!-- Les Déconspirateurs card with image -->
-          <img src="deconspirateur.jpg" alt="Les Déconspirateurs" />
+          <a href="https://www.youtube.com/playlist?list=PLjzrEyZoLrso6n-zhX1NCFx4RM1GX_YVz" target="_blank" rel="noopener">
+            <img src="deconspirateur.jpg" alt="Les Déconspirateurs" />
+          </a>
           <h3>Les Déconspirateurs</h3>
           <p>Émission YouTube qui analyse le phénomène de la complosphère et déconstruit les récits conspirationnistes.</p>
           <a class="link" href="https://www.youtube.com/playlist?list=PLjzrEyZoLrso6n-zhX1NCFx4RM1GX_YVz" target="_blank" rel="noopener">Regarder&nbsp;→</a>
         </article>
+        <!-- Internet — Une infographie card -->
         <article class="card">
-          <!-- Internet — Une infographie card with image -->
-          <img src="infographie.jpg" alt="Internet — Une infographie" />
+          <a href="https://www.cnrseditions.fr/catalogue/societe/internet/" target="_blank" rel="noopener">
+            <img src="infographie.jpg" alt="Internet — Une infographie" />
+          </a>
           <h3>Internet — Une infographie</h3>
           <p>Ouvrage publié chez CNRS Éditions qui explore l’impact du numérique sur nos sociétés à travers des infographies.</p>
           <a class="link" href="https://www.cnrseditions.fr/catalogue/societe/internet/" target="_blank" rel="noopener">Découvrir&nbsp;→</a>
         </article>
-        <!-- New card replacing Conférences & interventions: CIPIP & Vérificateurs -->
+        <!-- CHIPIP card -->
         <article class="card">
-          <img src="france-medias-monde.jpg" alt="France Médias Monde" />
-          <h3>CIPIP & Vérificateurs</h3>
-          <p>Membre du Comité d’indépendance, pluralisme et intégrité de l’information (CIPIP) de France&nbsp;Médias&nbsp;Monde et consultant pour l’émission&nbsp;« Les Vérificateurs » sur LCI.</p>
-          <a class="link" href="https://www.francemediasmonde.com/fr/nos-engagements/deontologie/" target="_blank" rel="noopener">CIPIP&nbsp;→</a>
-          <a class="link" href="https://www.tf1info.fr/emissions/lci/verificateurs-14293/" target="_blank" rel="noopener">Les Vérificateurs&nbsp;→</a>
+          <a href="https://www.francemediasmonde.com/fr/nos-engagements/deontologie/" target="_blank" rel="noopener">
+            <img src="france-medias-monde.jpg" alt="CHIPIP" />
+          </a>
+          <h3>CHIPIP</h3>
+          <p>Membre du Comité d’indépendance, pluralisme et intégrité de l’information (CHIPIP) de France&nbsp;Médias&nbsp;Monde.</p>
+          <a class="link" href="https://www.francemediasmonde.com/fr/nos-engagements/deontologie/" target="_blank" rel="noopener">En savoir plus&nbsp;→</a>
+        </article>
+        <!-- Les Vérificateurs card -->
+        <article class="card">
+          <a href="https://www.tf1info.fr/emissions/lci/verificateurs-14293/" target="_blank" rel="noopener">
+            <img src="lci.jpg" alt="Les Vérificateurs" />
+          </a>
+          <h3>Les Vérificateurs</h3>
+          <p>Consultant pour l’émission&nbsp;« Les Vérificateurs » sur LCI qui vérifie les informations et lutte contre la désinformation.</p>
+          <a class="link" href="https://www.tf1info.fr/emissions/lci/verificateurs-14293/" target="_blank" rel="noopener">Regarder&nbsp;→</a>
+        </article>
+        <!-- Conférencier & Consultant card with distinct style -->
+        <article class="card special">
+          <h3>Conférencier & Consultant</h3>
+          <p>Disponible pour des conférences et interventions sur les technologies numériques, les usages émergents et l’extrémisme en ligne.</p>
+          <a class="link" href="#contact">Me contacter&nbsp;→</a>
         </article>
       </div>
     </section>
 
-    <section id="apropos" class="container section">
-      <h2>À propos</h2>
-      <p>
-        Tristan Mendès France est maître de conférences associé en cultures numériques à l’Université de Paris et enseignant au&nbsp;CELSA. Spécialiste des cultures numériques et des radicalités en ligne, il coanime le podcast&nbsp;« Complorama » sur France&nbsp;Info, collabore à l’Observatoire du conspirationnisme&nbsp;(Conspiracy&nbsp;Watch) et participe à l’émission&nbsp;« Les&nbsp;Déconspirateurs ». Conférencier et consultant, il intervient sur l’impact du numérique et de l’intelligence&nbsp;artificielle, ainsi que sur l’extrême en ligne, et peut être contacté pour des interventions.
-      </p>
-    </section>
+    <!-- Original À propos section moved above the projects section and styled separately -->
 
     <section id="contact" class="container section">
       <h2>Contact</h2>
