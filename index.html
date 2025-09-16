@@ -71,6 +71,7 @@
           padding: 1rem;
           border-radius: 8px;
           max-width: 600px;
+          position: relative;
         }
         .contact-form input,
         .contact-form textarea {
@@ -93,6 +94,11 @@
         .contact-form button:hover {
           background-color: var(--text);
           color: var(--background);
+        }
+        .contact-form .hidden-field {
+          position: absolute;
+          left: -10000px;
+          opacity: 0;
         }
 
         /* Style for the thank you message that appears after submitting the contact form */
@@ -326,9 +332,13 @@
       <form class="contact-form" action="https://formsubmit.co/betatristan@gmail.com" method="POST" target="hidden_iframe" onsubmit="this.style.display='none'; document.getElementById('formSuccess').style.display='block';">
         <input type="email" name="email" placeholder="Votre email" required>
         <textarea name="message" placeholder="Votre message" rows="5" required></textarea>
+        <div class="hidden-field" aria-hidden="true">
+          <label for="website">Laissez ce champ vide</label>
+          <input type="text" id="website" name="_honey" tabindex="-1" autocomplete="off">
+        </div>
         <!-- Hidden fields for FormSubmit configuration -->
         <input type="hidden" name="_subject" value="Message depuis le portfolio">
-        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_captcha" value="true">
         <button type="submit" class="btn">Envoyer</button>
       </form>
       <!-- Hidden iframe to capture the FormSubmit response and prevent page navigation -->
