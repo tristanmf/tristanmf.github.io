@@ -329,96 +329,71 @@
   <h2>Contact</h2>
   <p>Envoyez-moi un message&nbsp;:</p>
 
-  <form class="contact-form"
-      action="https://formspree.io/f/mwpwlrkq"
-      method="POST">
-  <input type="text"  name="name"  placeholder="Votre nom" required>
-  <input type="email" name="email" placeholder="Votre email" required>
-  <textarea name="message" placeholder="Votre message" rows="5" required></textarea>
-
-  <!-- anti-bot -->
-  <input type="text" name="_honey" style="display:none">
-
-  <!-- optionnel -->
-  <input type="hidden" name="_subject" value="Message depuis Tristan.pro">
-
-  <button type="submit" class="btn">Envoyer</button>
-</form>
-
-<p id="formSuccess" class="success-message" style="display:none;margin-top:1rem;">
-  Merci ! Votre message a été envoyé.
-</p>
-<p id="formError" class="error-message" style="display:none;margin-top:1rem;">
-  Envoi impossible pour le moment. Réessayez plus tard.
-</p>
+  <!-- Bouton e-mail à la place du formulaire -->
+<button id="mailBtn" class="btn-mail" aria-label="Envoyer un e-mail">Envoyer un e-mail</button>
+<noscript>
+  <p>Envoyer à :
+    <a href="mailto:prodige-clairs.4p@icloud.com">prodige-clairs.4p@icloud.com</a>
+  </p>
+</noscript>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.querySelector('.contact-form');
-  const ok = document.getElementById('formSuccess');
-  const err = document.getElementById('formError');
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = form.querySelector('button[type="submit"]');
-    btn.disabled = true;
-
-    try {
-      const res = await fetch(form.action, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: new FormData(form)
-      });
-      if (res.ok) {
-        form.reset();
-        form.style.display = 'none';
-        ok.style.display = 'block';
-      } else {
-        err.style.display = 'block';
-      }
-    } catch {
-      err.style.display = 'block';
-    } finally {
-      btn.disabled = false;
-    }
+(function(){
+  const btn = document.getElementById('mailBtn');
+  const user = 'prodige-clairs.4p';
+  const host = 'icloud.com';
+  const to = user + '@' + host;
+  const subject = encodeURIComponent('Contact depuis Tristan.pro');
+  const body = encodeURIComponent('Bonjour,\n\nJe vous contacte depuis tristan.pro au sujet de :\n');
+  btn.addEventListener('click', () => {
+    window.location.href = 'mailto:' + to + '?subject=' + subject + '&body=' + body;
   });
-});
+})();
 </script>
 </section>
   </main>
 
- <footer class="site-footer">
-  <div class="container">
-    <p>© <span id="year"></span> Tristan — vibecodé avec ChatGPT (mode Agent) & GitHub Pages 
-      <span class="bouncer" aria-hidden="true">👾</span>
-    </p>
-  </div>
-</footer>
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Tristan — vibecodé avec ChatGPT (mode Agent) & GitHub Pages 
+        <span class="bouncer" aria-hidden="true">👾</span>
+      </p>
+    </div>
+  </footer>
 
-<style>
-  .bouncer {
-    display: inline-block;
-    margin-left: .4rem;
-    font-size: 1.1em;  /* taille du 👾 */
-    line-height: 1;
-    vertical-align: baseline;
-    transform-origin: bottom;
-    animation: bounce 1.8s ease-in-out infinite;
-  }
+  <style>
+    /* Bouton e-mail */
+    .btn-mail{
+      display:inline-block;
+      padding:0.65rem 1.1rem;
+      font-size:1rem;
+      border-radius:0.5rem;
+      border:0;
+      cursor:pointer;
+      background:#222;
+      color:#fff;
+      box-shadow:0 6px 18px rgba(0,0,0,0.12);
+      transition:transform .08s ease, box-shadow .12s ease;
+    }
+    .btn-mail:active{ transform:translateY(1px); box-shadow:0 4px 10px rgba(0,0,0,0.10); }
+    .btn-mail:focus{ outline:3px solid rgba(34,34,34,0.12); outline-offset:3px; }
 
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50%      { transform: translateY(-6px) scale(1.05); }
-  }
-
-  /* accessibilité */
-  @media (prefers-reduced-motion: reduce) {
-    .bouncer { animation: none; }
-  }
-</style>
- 
-
-    <!-- The contact form uses FormSubmit to handle submissions without exposing the email address -->
-
+    .bouncer {
+      display: inline-block;
+      margin-left: .4rem;
+      font-size: 1.1em;
+      line-height: 1;
+      vertical-align: baseline;
+      transform-origin: bottom;
+      animation: bounce 1.8s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%      { transform: translateY(-6px) scale(1.05); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .bouncer { animation: none; }
+    }
+  </style>
 </body>
 </html>
