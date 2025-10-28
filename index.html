@@ -330,28 +330,60 @@
   <p>Envoyez-moi un message&nbsp;:</p>
 
   <form class="contact-form"
-        action="https://formsubmit.co/betatristan@gmail.com"
-        method="POST">
-    <input type="text"  name="name"  placeholder="Votre nom" required>
-    <input type="email" name="email" placeholder="Votre email" required>
-    <textarea name="message" placeholder="Votre message" rows="5" required></textarea>
+      action="https://formspree.io/f/mwpwlrkq"
+      method="POST">
+  <input type="text"  name="name"  placeholder="Votre nom" required>
+  <input type="email" name="email" placeholder="Votre email" required>
+  <textarea name="message" placeholder="Votre message" rows="5" required></textarea>
 
-    <!-- anti-bot -->
-    <div class="hidden-field" aria-hidden="true">
-      <label for="website">Laissez ce champ vide</label>
-      <input type="text" id="website" name="_honey" tabindex="-1" autocomplete="off">
-    </div>
+  <!-- anti-bot -->
+  <input type="text" name="_honey" style="display:none">
 
-    <!-- options FormSubmit -->
-    <input type="hidden" name="_subject" value="Message depuis le portfolio">
-    <input type="hidden" name="_captcha" value="false">
-    <input type="hidden" name="_next" value="https://tristan.pro/merci.html">
-    <!-- optionnel: réponse auto
-    <input type="hidden" name="_autoresponse" value="Merci, bien reçu.">
-    -->
+  <!-- optionnel -->
+  <input type="hidden" name="_subject" value="Message depuis Tristan.pro">
 
-    <button type="submit" class="btn">Envoyer</button>
-  </form>
+  <button type="submit" class="btn">Envoyer</button>
+</form>
+
+<p id="formSuccess" class="success-message" style="display:none;margin-top:1rem;">
+  Merci ! Votre message a été envoyé.
+</p>
+<p id="formError" class="error-message" style="display:none;margin-top:1rem;">
+  Envoi impossible pour le moment. Réessayez plus tard.
+</p>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('.contact-form');
+  const ok = document.getElementById('formSuccess');
+  const err = document.getElementById('formError');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(form)
+      });
+      if (res.ok) {
+        form.reset();
+        form.style.display = 'none';
+        ok.style.display = 'block';
+      } else {
+        err.style.display = 'block';
+      }
+    } catch {
+      err.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+    }
+  });
+});
+</script>
 </section>
   </main>
 
