@@ -192,7 +192,7 @@
     <p class="lead">Spécialiste des cultures numériques et des radicalités en ligne.</p>
         <div class="cta">
           <a class="btn" href="#projets">Voir mes projets</a>
-          <a class="btn btn-ghost" href="#contact">Me contacter</a>
+          <a class="btn btn-ghost" id="mailLink">Me contacter</a>
         </div>
     <!-- Social media icons moved here from contact section -->
     <div class="social-icons">
@@ -325,31 +325,18 @@
 
     <!-- Original À propos section moved above the projects section and styled separately -->
 
-    <section id="contact" class="container section">
+    <!-- ... ton code inchangé jusqu’à la section #contact ... -->
+
+<section id="contact" class="container section">
   <h2>Contact</h2>
 
-
   <!-- Bouton e-mail à la place du formulaire -->
-<button id="mailBtn" class="btn-mail" aria-label="Envoyer un e-mail">Envoyer un e-mail</button>
-<noscript>
-  <p>Envoyer à :
-    <a href="mailto:prodige-clairs.4p@icloud.com">prodige-clairs.4p@icloud.com</a>
-  </p>
-</noscript>
-
-<script>
-(function(){
-  const btn = document.getElementById('mailBtn');
-  const user = 'prodige-clairs.4p';
-  const host = 'icloud.com';
-  const to = user + '@' + host;
-  const subject = encodeURIComponent('Contact depuis Tristan.pro');
-  const body = encodeURIComponent('Bonjour,\n\nJe vous contacte depuis tristan.pro au sujet de :\n');
-  btn.addEventListener('click', () => {
-    window.location.href = 'mailto:' + to + '?subject=' + subject + '&body=' + body;
-  });
-})();
-</script>
+  <button id="mailBtn" class="btn-mail" aria-label="Envoyer un e-mail">Envoyer un e-mail</button>
+  <noscript>
+    <p>Envoyer à :
+      <a href="mailto:prodige-clairs.4p@icloud.com">prodige-clairs.4p@icloud.com</a>
+    </p>
+  </noscript>
 </section>
   </main>
 
@@ -395,5 +382,30 @@
       .bouncer { animation: none; }
     }
   </style>
+
+  <script>
+  // Fonction unique pour les deux boutons
+  (function(){
+    const user = 'prodige-clairs.4p';
+    const host = 'icloud.com';
+    const to = user + '@' + host;
+    const subject = encodeURIComponent('Contact depuis Tristan.pro');
+    const body = encodeURIComponent('Bonjour,\n\nJe vous contacte depuis tristan.pro au sujet de :\n');
+
+    function openMail(){
+      window.location.href = 'mailto:' + to + '?subject=' + subject + '&body=' + body;
+    }
+
+    const btn = document.getElementById('mailBtn');
+    if (btn) btn.addEventListener('click', openMail);
+
+    const link = document.querySelector('.btn.btn-ghost[href="#contact"]');
+    if (link) {
+      link.id = 'mailLink';
+      link.removeAttribute('href');
+      link.addEventListener('click', openMail);
+    }
+  })();
+  </script>
 </body>
 </html>
