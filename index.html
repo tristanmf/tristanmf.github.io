@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="scroll-smooth">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
 
   <style>
-    /* --- RESET & VARIABLES --- */
+    /* --- VARIABLES & RESET --- */
     :root {
       --bg: #050505;
       --surface: #121212;
@@ -25,11 +25,7 @@
       --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background-color: var(--bg);
@@ -40,20 +36,9 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    a { 
-      text-decoration: none; 
-      color: inherit; 
-      transition: opacity 0.2s; 
-    }
-    
-    ul { 
-      list-style: none; 
-    }
-    
-    img { 
-      max-width: 100%; 
-      display: block; 
-    }
+    a { text-decoration: none; color: inherit; transition: opacity 0.2s; }
+    ul { list-style: none; }
+    img { max-width: 100%; display: block; }
 
     /* --- LAYOUT --- */
     .container {
@@ -62,17 +47,12 @@
       padding: 0 1.5rem;
     }
 
-    h1, h2, h3 { 
-      color: var(--accent); 
-      letter-spacing: -0.02em; 
-    }
+    h1, h2, h3 { color: var(--accent); letter-spacing: -0.02em; }
     
-    /* --- HEADER (Correction VS Code) --- */
+    /* Header */
     .site-header {
       position: fixed;
-      top: 0; 
-      left: 0; 
-      right: 0;
+      top: 0; left: 0; right: 0;
       z-index: 100;
       padding: 1rem 0;
       background: rgba(5, 5, 5, 0.85);
@@ -80,27 +60,11 @@
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(255,255,255,0.1);
     }
+    .header-inner { display: flex; justify-content: space-between; align-items: center; }
+    .nav a { margin-left: 1.2rem; font-size: 0.95rem; font-weight: 500; color: #ccc; }
+    .nav a:hover { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
 
-    .header-inner { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-    }
-
-    .nav a { 
-      margin-left: 1.2rem; 
-      font-size: 0.95rem; 
-      font-weight: 500; 
-      color: #ccc; 
-    }
-
-    .nav a:hover { 
-      color: #fff; 
-      text-decoration: underline; 
-      text-underline-offset: 4px; 
-    }
-
-    /* --- HERO SECTION --- */
+    /* --- HERO --- */
     .hero {
       min-height: 85vh;
       display: flex;
@@ -142,12 +106,7 @@
     }
 
     /* --- BOUTONS --- */
-    .cta-group { 
-      display: flex; 
-      gap: 1rem; 
-      align-items: center; 
-      flex-wrap: wrap; 
-    }
+    .cta-group { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
     
     .btn {
       display: inline-flex;
@@ -166,7 +125,6 @@
       color: #000;
       border: 1px solid var(--accent);
     }
-    
     .btn-primary:hover {
       background: #e0e0e0;
       transform: translateY(-2px);
@@ -177,25 +135,76 @@
       color: #fff;
       border: 2px solid rgba(255, 255, 255, 0.4);
     }
-    
     .btn-ghost:hover {
       border-color: #fff;
       background: rgba(255,255,255,0.1);
     }
 
-    /* --- SOCIAL ICONS --- */
-    .social-icons { 
-      display: flex; 
-      gap: 1rem; 
-      margin-top: 2rem; 
-      flex-wrap: wrap; 
+    /* Réseaux Sociaux */
+    .social-icons { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+    .social-icons a { color: #888; padding: 5px; }
+    .social-icons a:hover { color: #fff; transform: scale(1.1); }
+    .social-icons svg { width: 26px; height: 26px; fill: currentColor; }
+
+    /* --- SECTIONS --- */
+    .section-title {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      padding-top: 4rem;
+      border-top: 1px solid var(--border);
+      display: inline-block;
+      padding-right: 2rem;
     }
-    
-    .social-icons a { 
-      color: #888; 
-      padding: 5px; 
+
+    .about-text {
+      font-size: 1.15rem;
+      color: #dcdcdc;
+      max-width: 800px;
+      line-height: 1.7;
     }
-    
-    .social-icons a:hover { 
-      color: #fff; 
-      transform: scale(1.1);
+
+    /* --- GRILLE --- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+      height: 100%;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px -10px rgba(0,0,0,0.5);
+      border-color: #666;
+    }
+
+    .card-img-wrap {
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: #000;
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s var(--ease-out);
+      image-rendering: -webkit-optimize-contrast;
+    }
+
+    .card:hover img { transform: scale(1.05); }
+
+    .card-content { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
+    .card h3 { font-size: 1.3rem; margin-bottom: 0.5rem
