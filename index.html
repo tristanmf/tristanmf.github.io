@@ -18,8 +18,8 @@
       --surface: #121212;
       --surface-hover: #1e1e1e;
       --border: #333333;
-      --text: #f0f0f0;     /* Texte plus blanc pour le contraste mobile */
-      --text-muted: #a0a0a0; /* Gris plus clair pour être lisible */
+      --text: #f0f0f0;     
+      --text-muted: #a0a0a0;
       --accent: #ffffff;
       --radius: 12px;
       --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -33,7 +33,7 @@
       font-family: 'Inter', sans-serif;
       line-height: 1.6;
       overflow-x: hidden;
-      -webkit-font-smoothing: antialiased; /* Rend le texte plus net sur Mac/iPhone */
+      -webkit-font-smoothing: antialiased;
     }
 
     a { text-decoration: none; color: inherit; transition: opacity 0.2s; }
@@ -55,7 +55,7 @@
       top: 0; left: 0; right: 0;
       z-index: 100;
       padding: 1rem 0;
-      background: rgba(5, 5, 5, 0.85); /* Plus opaque pour la lisibilité */
+      background: rgba(5, 5, 5, 0.85);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -105,14 +105,14 @@
       box-shadow: 0 20px 50px rgba(0,0,0,0.6);
     }
 
-    /* --- BOUTONS (CONTRASTE AMÉLIORÉ) --- */
+    /* --- BOUTONS --- */
     .cta-group { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
     
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 0.9rem 1.8rem; /* Plus gros pour le tactile */
+      padding: 0.9rem 1.8rem;
       border-radius: 8px;
       font-weight: 600;
       font-size: 1rem;
@@ -120,7 +120,6 @@
       cursor: pointer;
     }
     
-    /* Bouton Principal : Blanc sur Noir */
     .btn-primary {
       background: var(--accent);
       color: #000;
@@ -131,12 +130,10 @@
       transform: translateY(-2px);
     }
 
-    /* Bouton Secondaire : CORRECTION CONTRASTE */
     .btn-ghost {
       background: transparent;
       color: #fff;
-      /* Bordure blanche bien visible */
-      border: 2px solid rgba(255, 255, 255, 0.4); 
+      border: 2px solid rgba(255, 255, 255, 0.4);
     }
     .btn-ghost:hover {
       border-color: #fff;
@@ -144,8 +141,8 @@
     }
 
     /* Réseaux Sociaux */
-    .social-icons { display: flex; gap: 1.2rem; margin-top: 2rem; }
-    .social-icons a { color: #888; padding: 5px; /* Zone de touche plus grande */ }
+    .social-icons { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+    .social-icons a { color: #888; padding: 5px; }
     .social-icons a:hover { color: #fff; transform: scale(1.1); }
     .social-icons svg { width: 26px; height: 26px; fill: currentColor; }
 
@@ -160,16 +157,15 @@
     }
 
     .about-text {
-      font-size: 1.15rem; /* Un peu plus gros */
+      font-size: 1.15rem;
       color: #dcdcdc;
       max-width: 800px;
       line-height: 1.7;
     }
 
-    /* --- GRILLE PROJETS --- */
+    /* --- GRILLE --- */
     .grid {
       display: grid;
-      /* On réduit le minimum pour que ça passe sur les petits mobiles sans scroll horizontal */
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 1.5rem;
       margin-bottom: 4rem;
@@ -197,7 +193,7 @@
       height: 180px;
       overflow: hidden;
       border-bottom: 1px solid rgba(255,255,255,0.05);
-      background: #000; /* Fond noir si l'image ne remplit pas tout */
+      background: #000;
     }
 
     .card img {
@@ -205,287 +201,10 @@
       height: 100%;
       object-fit: cover;
       transition: transform 0.6s var(--ease-out);
-      /* Amélioration rendu image */
-      image-rendering: -webkit-optimize-contrast; 
+      image-rendering: -webkit-optimize-contrast;
     }
 
     .card:hover img { transform: scale(1.05); }
 
     .card-content { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
-    .card h3 { font-size: 1.3rem; margin-bottom: 0.5rem; font-weight: 700; color:#fff; }
-    .card p { font-size: 0.95rem; color: #aaa; margin-bottom: 1.5rem; flex-grow: 1; }
-    
-    .card-link {
-      font-size: 0.95rem; font-weight: 600; color: #fff;
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      text-decoration: underline; text-decoration-color: rgba(255,255,255,0.3);
-      text-underline-offset: 4px;
-    }
-
-    /* --- CARTE CONFÉRENCIER (CORRECTION CONTRASTE) --- */
-    .card.special {
-      /* Fond plus clair pour détacher du noir */
-      background: #1a1a1a; 
-      /* BORDURE BLANCHE forte */
-      border: 2px solid rgba(255,255,255,0.8); 
-      position: relative;
-    }
-    
-    /* Petit effet de lueur blanche au survol */
-    .card.special:hover {
-      box-shadow: 0 0 20px rgba(255,255,255,0.15);
-      border-color: #fff;
-    }
-
-    .card.special h3 { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
-
-    /* --- ANIMATION --- */
-    .reveal {
-      opacity: 0; transform: translateY(20px);
-      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    }
-    .reveal.active { opacity: 1; transform: translateY(0); }
-    .delay-1 { transition-delay: 0.1s; }
-    .delay-2 { transition-delay: 0.2s; }
-
-    /* --- FOOTER --- */
-    .site-footer {
-      border-top: 1px solid var(--border);
-      padding: 3rem 0; text-align: center; color: #666; margin-top: 4rem;
-    }
-
-    /* --- MOBILE RESPONSIVE --- */
-    @media (max-width: 768px) {
-      .container { padding: 0 1.25rem; } /* Marges latérales plus safe */
-      
-      .hero {
-        padding-top: 7rem; /* Plus d'espace sous le header */
-        min-height: auto;
-        text-align: center;
-      }
-      
-      .hero-content {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-      
-      .hero-pic {
-        order: -1;
-        margin: 0 auto;
-        width: 140px; height: 140px; /* Un peu plus petit pour laisser de la place au texte */
-      }
-      
-      h1 { font-size: 2.5rem; } /* Titre lisible mais pas géant */
-      
-      .cta-group { 
-        flex-direction: column; 
-        width: 100%; 
-      }
-      .btn { width: 100%; } /* Boutons pleine largeur sur mobile = plus facile à cliquer */
-      
-      .social-icons { justify-content: center; margin-bottom: 1rem; }
-      
-      .section-title { width: 100%; padding-top: 2rem; border-top: 0; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
-      
-      /* Ajustement image pour éviter trop de flou */
-      .card-img-wrap { height: 160px; }
-    }
-  </style>
-</head>
-<body>
-
-  <header class="site-header">
-    <div class="container header-inner">
-      <a href="#top" aria-label="Haut de page" style="color:#fff;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-      </a>
-      <nav class="nav">
-        <a href="#projets">Projets</a>
-        <a href="#apropos">À propos</a>
-        <a href="#contact">Contact</a>
-      </nav>
-    </div>
-  </header>
-
-  <main id="top">
-    
-    <section class="hero container">
-      <div class="hero-content reveal">
-        <div class="hero-text">
-          <h1>Tristan Mendès France</h1>
-          <p class="lead">Spécialiste des cultures numériques et des radicalités en ligne.</p>
-          
-          <div class="cta-group">
-            <a class="btn btn-primary" href="#projets">Voir mes projets</a>
-            <button class="btn btn-ghost" id="mailLinkHero">Me contacter</button>
-          </div>
-
-          <div class="social-icons">
-            <a href="http://www.linkedin.com/in/tristanmf" target="_blank" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>
-            <a href="https://x.com/tristanmf" target="_blank" aria-label="X"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26L22.5 21.75h-6.63l-5.21-6.817-5.967 6.817H1.385l7.73-8.835L1.5 2.25h6.77l4.713 6.231 5.261-6.231z"/></svg></a>
-            <a href="https://bsky.app/profile/tmf.bsky.social" target="_blank" aria-label="Bluesky"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 0 0 0 3.2c0 .324.018 2.846.166 3.653.644 3.515 4.363 4.606 6.758 3.553-2.585.808-3.484 2.505-1.782 4.629 2.508 2.508 5.768-.426 6.858-1.77.108-.134.217-.268.318-.396l.123.149c1.09 1.344 4.35 4.278 6.858 1.77 1.702-2.124.803-3.82-1.782-4.629 2.395 1.053 6.114-.038 6.758-3.553.148-.807.166-3.329.166-3.653 0-3.2-2.566-2.256-5.202-.395C16.046 4.747 13.087 8.686 12 10.8z"/></svg></a>
-            <a href="https://www.threads.com/@tristanmf" target="_blank" aria-label="Threads"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></path></svg></a>
-          </div>
-        </div>
-        <img src="profile.jpg" alt="Tristan Mendès France" class="hero-pic" />
-      </div>
-    </section>
-
-    <section id="apropos" class="container">
-      <h2 class="section-title reveal">À propos</h2>
-      <div class="reveal delay-1">
-        <p class="about-text">
-          Maître de conférences associé en cultures numériques à l’Université Paris Cité et enseignant au CELSA, je suis spécialiste des cultures numériques et des radicalités en ligne. Je coanime le podcast <strong>« Complorama »</strong> (France Info), collabore à <strong>Conspiracy Watch</strong> et participe à l’émission <strong>« Les Déconspirateurs »</strong>.
-        </p>
-      </div>
-    </section>
-
-    <section id="projets" class="container">
-      <h2 class="section-title reveal">Projets récents</h2>
-      
-      <div class="grid">
-        <article class="card reveal delay-1">
-          <div class="card-img-wrap">
-            <a href="https://www.radiofrance.fr/franceinfo/podcasts/complorama" target="_blank"><img src="complorama.jpg" alt="Complorama" loading="lazy"></a>
-          </div>
-          <div class="card-content">
-            <h3>Complorama</h3>
-            <p>Podcast France Info explorant les dynamiques du complotisme.</p>
-            <a class="card-link" href="https://www.radiofrance.fr/franceinfo/podcasts/complorama" target="_blank">Écouter &rarr;</a>
-          </div>
-        </article>
-
-        <article class="card reveal delay-2">
-           <div class="card-img-wrap">
-            <a href="https://www.radiofrance.fr/franceinter/podcasts/antidote" target="_blank"><img src="antidote.jpg" alt="Antidote" loading="lazy"></a>
-          </div>
-          <div class="card-content">
-            <h3>Antidote</h3>
-            <p>Chroniques France Inter analysant l’actualité de la complosphère.</p>
-            <a class="card-link" href="https://www.radiofrance.fr/franceinter/podcasts/antidote" target="_blank">Découvrir &rarr;</a>
-          </div>
-        </article>
-
-        <article class="card reveal delay-3">
-           <div class="card-img-wrap">
-            <a href="https://www.conspiracywatch.info" target="_blank"><img src="conspiracywatch.jpg" alt="Conspiracy Watch" loading="lazy"></a>
-          </div>
-          <div class="card-content">
-            <h3>Conspiracy Watch</h3>
-            <p>Observatoire du conspirationnisme et décryptage de l'actualité.</p>
-            <a class="card-link" href="https://www.conspiracywatch.info" target="_blank">Explorer &rarr;</a>
-          </div>
-        </article>
-
-        <article class="card reveal">
-           <div class="card-img-wrap">
-            <a href="https://www.youtube.com/playlist?list=PLjzrEyZoLrso6n-zhX1NCFx4RM1GX_YVz" target="_blank"><img src="deconspirateur.jpg" alt="Les Déconspirateurs" loading="lazy"></a>
-          </div>
-          <div class="card-content">
-            <h3>Les Déconspirateurs</h3>
-            <p>Émission YouTube qui déconstruit les récits conspirationnistes.</p>
-            <a class="card-link" href="https://www.youtube.com/playlist?list=PLjzrEyZoLrso6n-zhX1NCFx4RM1GX_YVz" target="_blank">Regarder &rarr;</a>
-          </div>
-        </article>
-
-        <article class="card reveal delay-1">
-           <div class="card-img-wrap">
-            <a href="https://www.cnrseditions.fr/catalogue/societe/internet/" target="_blank"><img src="internet_infographie_cnrs.png" alt="Internet Infographie" loading="lazy"></a>
-          </div>
-          <div class="card-content">
-            <h3>Internet — Infographie</h3>
-            <p>Ouvrage chez CNRS Éditions sur l’impact du numérique.</p>
-            <a class="card-link" href="https://www.cnrseditions.fr/catalogue/societe/internet/" target="_blank">Voir le livre &rarr;</a>
-          </div>
-        </article>
-        
-        <article class="card reveal delay-2">
-           <div class="card-img-wrap">
-            <a href="https://www.tf1info.fr/emissions/lci/verificateurs-14293/" target="_blank"><img src="lci.jpg" alt="Les Vérificateurs" loading="lazy"></a>
-          </div>
-          <div class="card-content">
-            <h3>Les Vérificateurs</h3>
-            <p>Consultant pour l’émission sur LCI contre la désinformation.</p>
-            <a class="card-link" href="https://www.tf1info.fr/emissions/lci/verificateurs-14293/" target="_blank">Regarder &rarr;</a>
-          </div>
-        </article>
-
-        <article class="card reveal delay-3">
-           <div class="card-img-wrap">
-            <a href="https://www.francemediasmonde.com/fr/nos-engagements/deontologie/" target="_blank"><img src="france-medias-monde.jpg" alt="CHIPIP" loading="lazy"></a>
-          </div>
-          <div class="card-content">
-            <h3>CHIPIP</h3>
-            <p>Membre du Comité d’indépendance et intégrité de France Médias Monde.</p>
-            <a class="card-link" href="https://www.francemediasmonde.com/fr/nos-engagements/deontologie/" target="_blank">En savoir plus &rarr;</a>
-          </div>
-        </article>
-
-        <article class="card special reveal">
-          <div class="card-content" style="text-align:center;">
-             <h3 style="justify-content:center; margin-bottom:1rem;">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-              Conférencier
-            </h3>
-            <p style="color:#ddd;">Disponible pour conférences et interventions sur les technologies numériques.</p>
-            <button class="btn" style="background:#fff; color:#000; font-weight:700; border:none; margin: 1rem auto 0 auto;" id="mailLinkCard">Me contacter</button>
-          </div>
-        </article>
-
-      </div>
-    </section>
-
-    <section id="contact" class="container reveal">
-      <div style="text-align:center; padding: 2rem 0;">
-        <h2 class="section-title" style="border:none; padding-top:0;">Contact</h2>
-        <button id="mailBtn" class="btn btn-primary">Envoyer un e-mail</button>
-        <noscript>
-          <p style="margin-top:1rem; color:#888;">Envoyer à : <a href="mailto:prodige-clairs.4p@icloud.com" style="color:#fff;">prodige-clairs.4p@icloud.com</a></p>
-        </noscript>
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <p>© <span id="year"></span> Tristan Mendès France</p>
-    </div>
-  </footer>
-
-  <script>
-    (function(){
-      // Mail script
-      const user = 'prodige-clairs.4p';
-      const host = 'icloud.com';
-      const email = user + '@' + host;
-      const subject = encodeURIComponent('Contact depuis Tristan.pro');
-      const body = encodeURIComponent('Bonjour,\n\nJe vous contacte au sujet de :\n');
-
-      function openMail(){
-        window.location.href = 'mailto:' + email + '?subject=' + subject + '&body=' + body;
-      }
-
-      ['mailBtn', 'mailLinkHero', 'mailLinkCard'].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.addEventListener('click', openMail);
-      });
-
-      document.getElementById('year').textContent = new Date().getFullYear();
-
-      // Scroll Reveal
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('active');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
-
-      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    })();
-  </script>
-
-</body>
-</html>
+    .card h3 { font-size: 1.3rem; margin-bottom: 0.5rem
