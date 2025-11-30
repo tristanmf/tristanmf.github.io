@@ -1,24 +1,546 @@
-// Thème clair/sombre + année dynamique
-const root = document.documentElement;
-const btn = document.getElementById('themeToggle');
-const saved = localStorage.getItem('theme');
-if (saved) root.setAttribute('data-theme', saved);
-btn?.addEventListener('click', () => {
-  const current = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-  root.setAttribute('data-theme', current);
-  localStorage.setItem('theme', current);
-  btn.textContent = current === 'light' ? '☾' : '☼';
-});
-document.getElementById('year').textContent = new Date().getFullYear();
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio — Tristan Mendès France</title>
+  <meta name="description" content="Spécialiste des cultures numériques et des radicalités en ligne." />
+  <link rel="icon" type="image/png" href="favicon.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-// Smooth scroll
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    const id = a.getAttribute('href').slice(1);
-    const el = document.getElementById(id);
-    if (el) {
-      e.preventDefault();
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  <style>
+    /* --- VARIABLES & RESET --- */
+    :root {
+      --bg: #030305;
+      --text: #ffffff;     
+      --text-muted: #9ca3af;
+      --accent-glow: #3b82f6; /* Bleu électrique */
+      --accent-secondary: #8b5cf6; /* Violet */
+      --glass-surface: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-highlight: rgba(255, 255, 255, 0.15);
+      --radius: 16px;
+      --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
     }
-  });
-});
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      position: relative;
+    }
+
+    a { text-decoration: none; color: inherit; transition: all 0.2s var(--ease-out); }
+    ul { list-style: none; }
+    img { max-width: 100%; display: block; }
+
+    /* --- BACKGROUND FX --- */
+    .noise-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 50;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+    }
+
+    .aurora-blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      z-index: -1;
+      animation: float 10s ease-in-out infinite;
+    }
+
+    .blob-1 {
+      width: 500px; height: 500px;
+      background: var(--accent-glow);
+      top: -10%; left: -10%;
+      animation-delay: 0s;
+    }
+    .blob-2 {
+      width: 400px; height: 400px;
+      background: var(--accent-secondary);
+      bottom: 10%; right: -5%;
+      animation-delay: -5s;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(30px, 40px) scale(1.1); }
+    }
+
+    /* --- LAYOUT --- */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      position: relative; z-index: 10;
+    }
+
+    /* Header */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.2rem 0;
+      background: rgba(3, 3, 5, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .header-inner { display: flex; justify-content: space-between; align-items: center; }
+    .nav a { 
+      margin-left: 1.5rem; font-size: 0.9rem; font-weight: 500; color: #ccc; 
+      position: relative;
+    }
+    .nav a:hover { color: #fff; }
+    .nav a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px;
+      background: #fff; transition: width 0.3s var(--ease-out);
+    }
+    .nav a:hover::after { width: 100%; }
+
+    /* --- HERO --- */
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 6rem;
+      padding-bottom: 4rem;
+    }
+    
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 5.5vw, 4.2rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.2rem;
+      background: linear-gradient(to right bottom, #ffffff, #a5b4fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .lead {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 580px;
+      margin-bottom: 2.5rem;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-pic-wrapper {
+      position: relative;
+      width: 200px; height: 200px;
+    }
+    .hero-pic-wrapper::before {
+      content: ''; position: absolute; inset: -3px;
+      background: linear-gradient(45deg, var(--accent-glow), var(--accent-secondary));
+      border-radius: var(--radius); z-index: -1;
+      opacity: 0.7; filter: blur(10px);
+    }
+    .hero-pic {
+      width: 100%; height: 100%;
+      border-radius: var(--radius);
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* --- BOUTONS (Style Glossy) --- */
+    .cta-group { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.9rem 2rem;
+      border-radius: 99px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s var(--ease-out);
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+    }
+    
+    .btn-primary {
+      background: rgba(255, 255, 255, 0.15); 
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .btn-primary:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255,255,255,0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px rgba(255,255,255,0.15);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #aaa;
+      border: 1px solid transparent; 
+    }
+    .btn-ghost:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Réseaux Sociaux */
+    .social-icons { display: flex; gap: 1.5rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .social-icons a { 
+      color: #888; 
+      transition: transform 0.2s var(--ease-out), color 0.2s; 
+    }
+    .social-icons a:hover { color: #fff; transform: translateY(-3px); }
+    .social-icons svg { width: 24px; height: 24px; fill: currentColor; }
+
+    /* --- SECTIONS --- */
+    .section-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 3rem;
+      padding-top: 4rem;
+      display: inline-block;
+      background: linear-gradient(to right, #fff, rgba(255,255,255,0.5));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .about-text {
+      font-size: 1.3rem;
+      color: #e5e5e5;
+      max-width: 900px;
+      line-height: 1.6;
+      font-weight: 300;
+    }
+    .about-text strong { color: #fff; font-weight: 600; }
+
+    /* --- GRILLE PROJETS --- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .spotlight-wrapper {
+      max-width: 500px;
+      margin: 0 auto 6rem auto;
+    }
+
+    .card {
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.4s var(--ease-out);
+      height: 100%;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      border-color: var(--glass-highlight);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .card-img-wrap {
+      width: 100%;
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s var(--ease-out);
+    }
+
+    /* Correction spéciale pour la carte conférencier : alignement haut */
+    .card.special img {
+       object-position: top center;
+    }
+
+    .card:hover img { transform: scale(1.08); }
+
+    .card-content { padding: 1.8rem; flex-grow: 1; display: flex; flex-direction: column; }
+    
+    .card h3 { font-size: 1.25rem; margin-bottom: 0.6rem; font-weight: 700; color:#fff; }
+    .card p { font-size: 0.95rem; color: #a3a3a3; margin-bottom: 1.5rem; flex-grow: 1; line-height: 1.5; }
+    
+    .card-link {
+      font-size: 0.9rem; font-weight: 600; color: #fff;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      opacity: 0.8;
+    }
+    .card:hover .card-link { opacity: 1; gap: 0.8rem; }
+
+    /* --- ANIMATION (Scroll Reveal) --- */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+    }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+
+    /* --- FOOTER --- */
+    .site-footer {
+      border-top: 1px solid var(--glass-border);
+      padding: 4rem 0 2rem 0; 
+      text-align: center; color: #555; margin-top: 4rem;
+      font-size: 0.9rem;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .bouncer {
+      display: inline-block;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* --- MOBILE RESPONSIVE --- */
+    @media (max-width: 850px) {
+      .hero-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        text-align: center;
+      }
+      .hero-pic-wrapper {
+        order: -1;
+        margin: 0 auto;
+        width: 160px; height: 160px;
+      }
+      h1 { font-size: 2.8rem; }
+      .cta-group { justify-content: center; }
+      .social-icons { justify-content: center; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="noise-overlay"></div>
+  <div class="aurora-blob blob-1"></div>
+  <div class="aurora-blob blob-2"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#top" aria-label="Haut de page" style="color:#fff; opacity:0.8;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+      </a>
+      <nav class="nav">
+        <a href="#projets">Projets</a>
+        <a href="#apropos">À propos</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    
+    <section class="hero container">
+      <div class="hero-content reveal">
+        <div class="hero-text">
+          <h1>Tristan Mendès France</h1>
+          <p class="lead">Spécialiste des cultures numériques<br> et des radicalités en ligne.</p>
+          
+          <div class="cta-group">
+            <a class="btn btn-primary" href="#projets">Voir mes projets</a>
+            <button class="btn btn-ghost" id="mailLinkHero">Me contacter</button>
+          </div>
+
+          <div class="social-icons">
+            <a href="http://www.linkedin.com/in/tristanmf" target="_blank" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>
+            <a href="https://www.facebook.com/tristan.mendes.france" target="_blank" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+            <a href="https://www.instagram.com/tristanmf/" target="_blank" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+            <a href="https://x.com/tristanmf" target="_blank" aria-label="X"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26L22.5 21.75h-6.63l-5.21-6.817-5.967 6.817H1.385l7.73-8.835L1.5 2.25h6.77l4.713 6.231 5.261-6.231z"/></svg></a>
+            <a href="https://bsky.app/profile/tmf.bsky.social" target="_blank" aria-label="Bluesky"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 0 0 0 3.2c0 .324.018 2.846.166 3.653.644 3.515 4.363 4.606 6.758 3.553-2.585.808-3.484 2.505-1.782 4.629 2.508 2.508 5.768-.426 6.858-1.77.108-.134.217-.268.318-.396l.123.149c1.09 1.344 4.35 4.278 6.858 1.77 1.702-2.124.803-3.82-1.782-4.629 2.395 1.053 6.114-.038 6.758-3.553.148-.807.166-3.329.166-3.653 0-3.2-2.566-2.256-5.202-.395C16.046 4.747 13.087 8.686 12 10.8z"/></svg></a>
+            <a href="https://www.threads.com/@tristanmf" target="_blank" aria-label="Threads"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></path></svg></a>
+          </div>
+        </div>
+        
+        <div class="hero-pic-wrapper">
+          <img src="profile.jpg" alt="Tristan Mendès France" class="hero-pic" />
+        </div>
+      </div>
+    </section>
+
+    <section id="apropos" class="container">
+      <h2 class="section-title reveal">À propos</h2>
+      <div class="reveal delay-1">
+        <p class="about-text">
+          Maître de conférences associé en cultures numériques à l’Université Paris Cité et enseignant au CELSA, je suis spécialiste des cultures numériques et des radicalités en ligne. Je coanime le podcast <strong>« Complorama »</strong> (France Info), collabore à <strong>Conspiracy Watch</strong> et participe à l’émission <strong>« Les Vérificateurs »</strong> (LCI).
+        </p>
+      </div>
+    </section>
+
+    <section id="projets" class="container">
+      <h2 class="section-title reveal">Projets récents</h2>
+      
+      <div class="grid">
+        
+        <article class="card reveal delay-1">
+          <div class="card-img-wrap">
+            <a href="https://www.radiofrance.fr/franceinfo/podcasts/complorama" target="_blank"><img src="complorama.jpg" alt="Complorama" loading="lazy"></a>
+          </div>
+          <div class="card-content">
+            <h3>Complorama</h3>
+            <p>Co-producteur de ce podcast France Info qui explore les dynamiques du complotisme.</p>
+            <a class="card-link" href="https://www.radiofrance.fr/franceinfo/podcasts/complorama" target="_blank">Écouter &rarr;</a>
+          </div>
+        </article>
+
+        <article class="card reveal delay-2">
+           <div class="card-img-wrap">
+            <a href="https://www.conspiracywatch.info" target="_blank"><img src="conspiracywatch.jpg" alt="Conspiracy Watch" loading="lazy"></a>
+          </div>
+          <div class="card-content">
+            <h3>Conspiracy Watch</h3>
+            <p>Collaborateur de l'Observatoire du conspirationnisme.</p>
+            <a class="card-link" href="https://www.conspiracywatch.info" target="_blank">Explorer &rarr;</a>
+          </div>
+        </article>
+        
+        <article class="card reveal delay-3">
+           <div class="card-img-wrap">
+            <a href="https://www.tf1info.fr/emissions/lci/verificateurs-14293/" target="_blank"><img src="lci.jpg" alt="Les Vérificateurs" loading="lazy"></a>
+          </div>
+          <div class="card-content">
+            <h3>Les Vérificateurs</h3>
+            <p>Consultant pour l’émission sur LCI contre la désinformation.</p>
+            <a class="card-link" href="https://www.tf1info.fr/emissions/lci/verificateurs-14293/" target="_blank">Regarder &rarr;</a>
+          </div>
+        </article>
+
+        <article class="card reveal">
+           <div class="card-img-wrap">
+            <a href="https://www.cnrseditions.fr/catalogue/societe/internet/" target="_blank"><img src="infographie.jpg" alt="Internet Infographie" loading="lazy"></a>
+          </div>
+          <div class="card-content">
+            <h3>Internet, une infographie</h3>
+            <p>Ouvrage aux éditions CNRS, sur l'impact du numérique.</p>
+            <a class="card-link" href="https://www.cnrseditions.fr/catalogue/societe/internet/" target="_blank">Voir le livre &rarr;</a>
+          </div>
+        </article>
+
+        <article class="card reveal delay-1">
+           <div class="card-img-wrap">
+            <a href="https://www.francemediasmonde.com/fr/nos-engagements/deontologie/" target="_blank"><img src="france-medias-monde.jpg" alt="CHIPIP" loading="lazy"></a>
+          </div>
+          <div class="card-content">
+            <h3>CHIPIP</h3>
+            <p>Membre du Comité d’indépendance et intégrité de France Médias Monde.</p>
+            <a class="card-link" href="https://www.francemediasmonde.com/fr/nos-engagements/deontologie/" target="_blank">En savoir plus &rarr;</a>
+          </div>
+        </article>
+
+        <article class="card reveal delay-2">
+           <div class="card-img-wrap">
+            <a href="https://www.radiofrance.fr/franceinter/podcasts/antidote" target="_blank"><img src="antidote.jpg" alt="Antidote" loading="lazy"></a>
+          </div>
+          <div class="card-content">
+            <h3>Antidote</h3>
+            <p>Chroniqueur dans la matinale de France Inter (2020-2022) analysant l’actualité de la complosphère.</p>
+            <a class="card-link" href="https://www.radiofrance.fr/franceinter/podcasts/antidote" target="_blank">Découvrir &rarr;</a>
+          </div>
+        </article>
+
+      </div> <div class="spotlight-wrapper reveal delay-3">
+        <article class="card special">
+           <div class="card-img-wrap">
+            <img src="conference.jpg" alt="Conférences" loading="lazy">
+          </div>
+          <div class="card-content" style="text-align:center;">
+             <h3 style="justify-content:center;">Conférencier</h3>
+            <p>J'interviens sur les innovations numériques et les radicalités en ligne.</p>
+            <button class="btn btn-primary" style="margin-top: 1rem;" id="mailLinkCard">Me contacter</button>
+          </div>
+        </article>
+      </div>
+
+    </section>
+
+    <section id="contact" class="container reveal">
+      <div style="text-align:center; padding: 2rem 0;">
+        <h2 class="section-title" style="border:none; padding-top:0;">Contact</h2>
+        <button id="mailBtn" class="btn btn-primary">Envoyer un e-mail</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Tristan — vibecodé avec décontraction
+        <span class="bouncer" aria-hidden="true">👾</span>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      // Mail script
+      const user = 'prodige-clairs.4p';
+      const host = 'icloud.com';
+      const email = user + '@' + host;
+      const subject = encodeURIComponent('Contact depuis Tristan.pro');
+      const body = encodeURIComponent('Bonjour,\n\nJe vous contacte au sujet de :\n');
+
+      function openMail(){
+        window.location.href = 'mailto:' + email + '?subject=' + subject + '&body=' + body;
+      }
+
+      ['mailBtn', 'mailLinkHero', 'mailLinkCard'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.addEventListener('click', openMail);
+      });
+
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Scroll Reveal
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    })();
+  </script>
+
+</body>
+</html>
