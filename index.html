@@ -19,10 +19,11 @@
       --text-muted: #9ca3af;
       --accent-glow: #3b82f6; /* Bleu électrique */
       --accent-secondary: #8b5cf6; /* Violet */
-      --glass-surface: rgba(255, 255, 255, 0.03);
-      --glass-border: rgba(255, 255, 255, 0.08);
-      --glass-highlight: rgba(255, 255, 255, 0.15);
-      --radius: 16px;
+      /* GLASSMORHPISM AMÉLIORÉ */
+      --glass-surface: rgba(255, 255, 255, 0.05); /* Plus clair, moins d'opacité */
+      --glass-border: rgba(255, 255, 255, 0.15); /* Bordure plus visible */
+      --glass-highlight: rgba(255, 255, 255, 0.25); /* Highlight plus lumineux */
+      --radius: 18px; /* Un peu plus arrondi (iOS style) */
       --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
@@ -77,6 +78,13 @@
       50% { transform: translate(30px, 40px) scale(1.1); }
     }
 
+    /* Nouveau Keyframe pour l'effet de halo du titre */
+    @keyframes glow-float {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.002); opacity: 0.98; }
+    }
+
+
     /* --- LAYOUT --- */
     .container {
       max-width: 1100px;
@@ -91,9 +99,10 @@
       top: 0; left: 0; right: 0;
       z-index: 100;
       padding: 1.2rem 0;
-      background: rgba(3, 3, 5, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      /* Glassmorphism amélioré */
+      background: rgba(3, 3, 5, 0.6);
+      backdrop-filter: blur(16px); 
+      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--glass-border);
     }
     .header-inner { display: flex; justify-content: space-between; align-items: center; }
@@ -135,6 +144,9 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      /* Effet de halo et mouvement subtil */
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.1); 
+      animation: glow-float 15s ease-in-out infinite;
     }
     
     .lead {
@@ -163,7 +175,7 @@
       border: 1px solid rgba(255,255,255,0.2);
     }
 
-    /* --- BOUTONS (Style Glossy) --- */
+    /* --- BOUTONS (Style Glossy AMÉLIORÉ) --- */
     .cta-group { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
     
     .btn {
@@ -183,13 +195,14 @@
       background: rgba(255, 255, 255, 0.15); 
       color: #fff;
       border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      /* Effet Glossy subtil */
+      box-shadow: inset 0 0 5px rgba(255,255,255,0.1), 0 4px 20px rgba(0,0,0,0.2);
     }
     .btn-primary:hover {
-      background: rgba(255, 255, 255, 0.25);
-      border-color: rgba(255,255,255,0.6);
-      transform: translateY(-2px);
-      box-shadow: 0 0 20px rgba(255,255,255,0.15);
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255,255,255,0.7);
+      transform: translateY(-3px); /* Montée plus prononcée */
+      box-shadow: inset 0 0 5px rgba(255,255,255,0.2), 0 10px 30px rgba(0,0,0,0.4);
     }
 
     .btn-ghost {
@@ -199,8 +212,8 @@
     }
     .btn-ghost:hover {
       color: #fff;
-      background: rgba(255,255,255,0.05);
-      border-color: rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.08); /* Plus de fond */
+      border-color: rgba(255, 255, 255, 0.15); /* Plus de bordure */
     }
 
     /* Réseaux Sociaux */
@@ -234,7 +247,7 @@
     }
     .about-text strong { color: #fff; font-weight: 600; }
 
-    /* --- GRILLE PROJETS --- */
+    /* --- GRILLE PROJETS (CARDS AMÉLIORÉS) --- */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -251,21 +264,23 @@
       background: var(--glass-surface);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(24px); /* FLOU PLUS FORT */
+      -webkit-backdrop-filter: blur(24px);
       overflow: hidden;
       display: flex;
       flex-direction: column;
       transition: all 0.4s var(--ease-out);
       height: 100%;
       position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* Ombre de base */
     }
 
     .card:hover {
       transform: translateY(-8px);
       border-color: var(--glass-highlight);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-      background: rgba(255, 255, 255, 0.06);
+      /* Ombre plus diffuse pour simuler un "éclat" subtil */
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 15px rgba(59, 130, 246, 0.1), 0 0 15px rgba(139, 92, 246, 0.1); 
+      background: rgba(255, 255, 255, 0.08); /* Plus de luminosité au survol */
     }
 
     .card-img-wrap {
@@ -387,7 +402,7 @@
             <a href="https://www.instagram.com/tristanmf/" target="_blank" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
             <a href="https://x.com/tristanmf" target="_blank" aria-label="X"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26L22.5 21.75h-6.63l-5.21-6.817-5.967 6.817H1.385l7.73-8.835L1.5 2.25h6.77l4.713 6.231 5.261-6.231z"/></svg></a>
             <a href="https://bsky.app/profile/tmf.bsky.social" target="_blank" aria-label="Bluesky"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 0 0 0 3.2c0 .324.018 2.846.166 3.653.644 3.515 4.363 4.606 6.758 3.553-2.585.808-3.484 2.505-1.782 4.629 2.508 2.508 5.768-.426 6.858-1.77.108-.134.217-.268.318-.396l.123.149c1.09 1.344 4.35 4.278 6.858 1.77 1.702-2.124.803-3.82-1.782-4.629 2.395 1.053 6.114-.038 6.758-3.553.148-.807.166-3.329.166-3.653 0-3.2-2.566-2.256-5.202-.395C16.046 4.747 13.087 8.686 12 10.8z"/></svg></a>
-            <a href="https://www.threads.com/@tristanmf" target="_blank" aria-label="Threads"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></path></svg></a>
+            <a href="https://www.threads.com/@tristanmf" target="_blank" aria-label="Threads"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></svg></a>
           </div>
         </div>
         
