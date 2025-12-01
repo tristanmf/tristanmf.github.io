@@ -19,11 +19,11 @@
       --text-muted: #9ca3af;
       --accent-glow: #3b82f6; /* Bleu électrique */
       --accent-secondary: #8b5cf6; /* Violet */
-      /* GLASSMORHPISM AMÉLIORÉ */
-      --glass-surface: rgba(255, 255, 255, 0.05); /* Plus clair, moins d'opacité */
-      --glass-border: rgba(255, 255, 255, 0.15); /* Bordure plus visible */
-      --glass-highlight: rgba(255, 255, 255, 0.25); /* Highlight plus lumineux */
-      --radius: 18px; /* Un peu plus arrondi (iOS style) */
+      /* GLASSMORPHISM AMÉLIORÉ */
+      --glass-surface: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --glass-highlight: rgba(255, 255, 255, 0.25);
+      --radius: 18px; 
       --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
@@ -78,12 +78,23 @@
       50% { transform: translate(30px, 40px) scale(1.1); }
     }
 
-    /* Nouveau Keyframe pour l'effet de halo du titre */
+    /* Keyframe pour l'effet de halo du titre */
     @keyframes glow-float {
       0%, 100% { transform: scale(1); opacity: 1; }
       50% { transform: scale(1.002); opacity: 0.98; }
     }
 
+    /* --- BARRE DE PROGRESSION SCROLL --- */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      width: 0;
+      z-index: 200;
+      background: linear-gradient(to right, var(--accent-glow), var(--accent-secondary));
+      pointer-events: none;
+    }
 
     /* --- LAYOUT --- */
     .container {
@@ -97,9 +108,8 @@
     .site-header {
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 100;
+      z-index: 150;
       padding: 1.2rem 0;
-      /* Glassmorphism amélioré */
       background: rgba(3, 3, 5, 0.6);
       backdrop-filter: blur(16px); 
       -webkit-backdrop-filter: blur(16px);
@@ -139,18 +149,27 @@
       font-weight: 800;
       line-height: 1.05;
       letter-spacing: -0.03em;
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.6rem;
       background: linear-gradient(to right bottom, #ffffff, #a5b4fc);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      /* Effet de halo et mouvement subtil */
       text-shadow: 0 0 15px rgba(255, 255, 255, 0.1); 
       animation: glow-float 15s ease-in-out infinite;
     }
+
+    .meta-line {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      margin-bottom: 1.4rem;
+      opacity: 0.9;
+    }
     
     .lead {
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       color: var(--text-muted);
       max-width: 580px;
       margin-bottom: 2.5rem;
@@ -189,19 +208,20 @@
       transition: all 0.3s var(--ease-out);
       cursor: pointer;
       backdrop-filter: blur(8px);
+      position: relative;
+      overflow: hidden;
     }
     
     .btn-primary {
       background: rgba(255, 255, 255, 0.15); 
       color: #fff;
       border: 1px solid rgba(255, 255, 255, 0.3);
-      /* Effet Glossy subtil */
       box-shadow: inset 0 0 5px rgba(255,255,255,0.1), 0 4px 20px rgba(0,0,0,0.2);
     }
     .btn-primary:hover {
       background: rgba(255, 255, 255, 0.3);
       border-color: rgba(255,255,255,0.7);
-      transform: translateY(-3px); /* Montée plus prononcée */
+      transform: translateY(-3px);
       box-shadow: inset 0 0 5px rgba(255,255,255,0.2), 0 10px 30px rgba(0,0,0,0.4);
     }
 
@@ -212,8 +232,8 @@
     }
     .btn-ghost:hover {
       color: #fff;
-      background: rgba(255,255,255,0.08); /* Plus de fond */
-      border-color: rgba(255, 255, 255, 0.15); /* Plus de bordure */
+      background: rgba(255,255,255,0.08); 
+      border-color: rgba(255, 255, 255, 0.15); 
     }
 
     /* Réseaux Sociaux */
@@ -247,12 +267,24 @@
     }
     .about-text strong { color: #fff; font-weight: 600; }
 
-    /* --- GRILLE PROJETS (CARDS AMÉLIORÉS) --- */
+    /* --- GRILLE PROJETS (CARDS) --- */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 2rem;
       margin-bottom: 3rem;
+    }
+
+    /* Effet de focus sur la grille */
+    .grid:hover .card {
+      opacity: 0.65;
+      filter: grayscale(0.05);
+      transition: opacity 0.3s var(--ease-out), filter 0.3s var(--ease-out), transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out), background 0.4s var(--ease-out);
+    }
+
+    .grid:hover .card:hover {
+      opacity: 1;
+      filter: none;
     }
 
     .spotlight-wrapper {
@@ -264,7 +296,7 @@
       background: var(--glass-surface);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius);
-      backdrop-filter: blur(24px); /* FLOU PLUS FORT */
+      backdrop-filter: blur(24px); 
       -webkit-backdrop-filter: blur(24px);
       overflow: hidden;
       display: flex;
@@ -272,15 +304,15 @@
       transition: all 0.4s var(--ease-out);
       height: 100%;
       position: relative;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* Ombre de base */
+      z-index: 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
     }
 
     .card:hover {
-      transform: translateY(-8px);
+      transform: translateY(-8px) scale(1.01);
       border-color: var(--glass-highlight);
-      /* Ombre plus diffuse pour simuler un "éclat" subtil */
       box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 15px rgba(59, 130, 246, 0.1), 0 0 15px rgba(139, 92, 246, 0.1); 
-      background: rgba(255, 255, 255, 0.08); /* Plus de luminosité au survol */
+      background: rgba(255, 255, 255, 0.08); 
     }
 
     .card-img-wrap {
@@ -290,31 +322,144 @@
       position: relative;
     }
 
+    .card-img-wrap::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: transparent; 
+      z-index: 2; 
+      transition: background 0.4s var(--ease-out);
+    }
+
     .card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.7s var(--ease-out);
+      transition: transform 0.7s var(--ease-out), filter 0.4s var(--ease-out), opacity 0.4s var(--ease-out);
+      filter: saturate(0.9) brightness(0.95);
     }
 
-    /* Correction spéciale pour la carte conférencier : alignement haut */
+    .card:hover img { 
+      transform: scale(1.08); 
+      filter: saturate(1.05) brightness(1.02);
+    }
+
     .card.special img {
        object-position: top center;
     }
 
-    .card:hover img { transform: scale(1.08); }
-
     .card-content { padding: 1.8rem; flex-grow: 1; display: flex; flex-direction: column; }
+
+    .card-tag {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent-glow);
+      opacity: 0.85;
+      margin-bottom: 0.4rem;
+    }
     
-    .card h3 { font-size: 1.25rem; margin-bottom: 0.6rem; font-weight: 700; color:#fff; }
+    .card h3 { 
+        font-size: 1.25rem; 
+        margin-bottom: 0.6rem; 
+        font-weight: 700; 
+        color:#fff; 
+        pointer-events: none;
+    }
     .card p { font-size: 0.95rem; color: #a3a3a3; margin-bottom: 1.5rem; flex-grow: 1; line-height: 1.5; }
     
     .card-link {
       font-size: 0.9rem; font-weight: 600; color: #fff;
       display: inline-flex; align-items: center; gap: 0.5rem;
       opacity: 0.8;
+      position: relative;
     }
     .card:hover .card-link { opacity: 1; gap: 0.8rem; }
+    
+    /* --- STRETCHED LINK --- */
+    .card-link::after {
+        content: "";
+        position: absolute;
+        top: -100%;
+        right: -100%; 
+        bottom: -100%;
+        left: -100%;
+        z-index: 1;
+        pointer-events: auto;
+        background: transparent;
+    }
+
+    /* --- EFFET SHINE (ATTÉNUÉ) --- */
+    .shine-effect {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shine-effect::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -200%; 
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.04) 30%,
+        rgba(255, 255, 255, 0.12) 50%,
+        rgba(255, 255, 255, 0.04) 70%,
+        transparent 100%
+      );
+      transform: skewX(-20deg); 
+      transition: left 0.6s var(--ease-out);
+      pointer-events: none;
+      opacity: 0.5;
+      z-index: 2;
+    }
+
+    .shine-effect:hover::after {
+      left: 100%; 
+    }
+
+    /* --- CONTACT CTA --- */
+    .contact-cta {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2.2rem 3rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--glass-border);
+      background: rgba(255,255,255,0.03);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      cursor: pointer;
+      transition: all 0.35s var(--ease-out);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .contact-cta:hover {
+      transform: translateY(-4px);
+      border-color: var(--glass-highlight);
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.55);
+    }
+
+    .contact-title {
+      font-size: 2.4rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #fff, rgba(255,255,255,0.6));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.4rem;
+    }
+
+    .contact-subtitle {
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
 
     /* --- ANIMATION (Scroll Reveal) --- */
     .reveal {
@@ -345,6 +490,23 @@
       50% { transform: translateY(-5px); }
     }
 
+    /* --- PREFERS REDUCED MOTION --- */
+    @media (prefers-reduced-motion: reduce) {
+      .aurora-blob,
+      h1,
+      .bouncer {
+        animation: none !important;
+      }
+      .reveal {
+        transition: none;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+      .shine-effect::after {
+        transition: none;
+      }
+    }
+
     /* --- MOBILE RESPONSIVE --- */
     @media (max-width: 850px) {
       .hero-content {
@@ -361,10 +523,15 @@
       .cta-group { justify-content: center; }
       .social-icons { justify-content: center; }
       .grid { grid-template-columns: 1fr; }
+      .meta-line {
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
+
+  <div class="scroll-progress" id="scrollProgress"></div>
 
   <div class="noise-overlay"></div>
   <div class="aurora-blob blob-1"></div>
@@ -389,10 +556,15 @@
       <div class="hero-content reveal">
         <div class="hero-text">
           <h1>Tristan Mendès France</h1>
-          <p class="lead">Spécialiste des cultures numériques<br> et des radicalités en ligne.</p>
+          <div class="meta-line">
+            journalisme · cultures numériques · complotisme &amp; radicalités en ligne
+          </div>
+          <p class="lead">
+            Je travaille sur la façon dont le numérique transforme l’information, la démocratie et les formes contemporaines de radicalité.
+          </p>
           
           <div class="cta-group">
-            <a class="btn btn-primary" href="#projets">Voir mes projets</a>
+            <a class="btn btn-primary shine-effect" href="#projets">Voir mes projets</a>
             <button class="btn btn-ghost" id="mailLinkHero">Me contacter</button>
           </div>
 
@@ -426,81 +598,90 @@
       
       <div class="grid">
         
-        <article class="card reveal delay-1">
+        <article class="card reveal delay-1 shine-effect">
           <div class="card-img-wrap">
-            <a href="https://www.radiofrance.fr/franceinfo/podcasts/complorama" target="_blank"><img src="complorama.jpg" alt="Complorama" loading="lazy"></a>
+            <img src="complorama.jpg" alt="Complorama" loading="lazy">
           </div>
           <div class="card-content">
+            <div class="card-tag">Podcast</div>
             <h3>Complorama</h3>
             <p>Co-producteur de ce podcast France Info qui explore les dynamiques du complotisme.</p>
             <a class="card-link" href="https://www.radiofrance.fr/franceinfo/podcasts/complorama" target="_blank">Écouter &rarr;</a>
           </div>
         </article>
 
-        <article class="card reveal delay-2">
-           <div class="card-img-wrap">
-            <a href="https://www.conspiracywatch.info" target="_blank"><img src="conspiracywatch.jpg" alt="Conspiracy Watch" loading="lazy"></a>
+        <article class="card reveal delay-2 shine-effect">
+          <div class="card-img-wrap">
+            <img src="conspiracywatch.jpg" alt="Conspiracy Watch" loading="lazy">
           </div>
           <div class="card-content">
+            <div class="card-tag">Observatoire</div>
             <h3>Conspiracy Watch</h3>
             <p>Collaborateur de l'Observatoire du conspirationnisme.</p>
             <a class="card-link" href="https://www.conspiracywatch.info" target="_blank">Explorer &rarr;</a>
           </div>
         </article>
         
-        <article class="card reveal delay-3">
-           <div class="card-img-wrap">
-            <a href="https://www.tf1info.fr/emissions/lci/verificateurs-14293/" target="_blank"><img src="lci.jpg" alt="Les Vérificateurs" loading="lazy"></a>
+        <article class="card reveal delay-3 shine-effect">
+          <div class="card-img-wrap">
+            <img src="lci.jpg" alt="Les Vérificateurs" loading="lazy">
           </div>
           <div class="card-content">
+            <div class="card-tag">TV</div>
             <h3>Les Vérificateurs</h3>
             <p>Consultant pour l’émission sur LCI contre la désinformation.</p>
             <a class="card-link" href="https://www.tf1info.fr/emissions/lci/verificateurs-14293/" target="_blank">Regarder &rarr;</a>
           </div>
         </article>
 
-        <article class="card reveal">
-           <div class="card-img-wrap">
-            <a href="https://www.cnrseditions.fr/catalogue/societe/internet/" target="_blank"><img src="infographie.jpg" alt="Internet Infographie" loading="lazy"></a>
+        <article class="card reveal shine-effect">
+          <div class="card-img-wrap">
+            <img src="infographie.jpg" alt="Internet, une infographie" loading="lazy">
           </div>
           <div class="card-content">
+            <div class="card-tag">Livre</div>
             <h3>Internet, une infographie</h3>
             <p>Ouvrage aux éditions CNRS, sur l'impact du numérique.</p>
             <a class="card-link" href="https://www.cnrseditions.fr/catalogue/societe/internet/" target="_blank">Voir le livre &rarr;</a>
           </div>
         </article>
 
-        <article class="card reveal delay-1">
-           <div class="card-img-wrap">
-            <a href="https://www.francemediasmonde.com/fr/nos-engagements/deontologie/" target="_blank"><img src="france-medias-monde.jpg" alt="CHIPIP" loading="lazy"></a>
+        <article class="card reveal delay-1 shine-effect">
+          <div class="card-img-wrap">
+            <img src="france-medias-monde.jpg" alt="CHIPIP" loading="lazy">
           </div>
           <div class="card-content">
+            <div class="card-tag">Gouvernance</div>
             <h3>CHIPIP</h3>
             <p>Membre du Comité d’indépendance et intégrité de France Médias Monde.</p>
             <a class="card-link" href="https://www.francemediasmonde.com/fr/nos-engagements/deontologie/" target="_blank">En savoir plus &rarr;</a>
           </div>
         </article>
 
-        <article class="card reveal delay-2">
-           <div class="card-img-wrap">
-            <a href="https://www.radiofrance.fr/franceinter/podcasts/antidote" target="_blank"><img src="antidote.jpg" alt="Antidote" loading="lazy"></a>
+        <article class="card reveal delay-2 shine-effect">
+          <div class="card-img-wrap">
+            <img src="antidote.jpg" alt="Antidote" loading="lazy">
           </div>
           <div class="card-content">
+            <div class="card-tag">Chronique radio</div>
             <h3>Antidote</h3>
             <p>Chroniqueur dans la matinale de France Inter (2020-2022) analysant l’actualité de la complosphère.</p>
             <a class="card-link" href="https://www.radiofrance.fr/franceinter/podcasts/antidote" target="_blank">Découvrir &rarr;</a>
           </div>
         </article>
 
-      </div> <div class="spotlight-wrapper reveal delay-3">
-        <article class="card special">
-           <div class="card-img-wrap">
+      </div> 
+      
+      <div class="spotlight-wrapper reveal delay-3">
+        <article class="card special shine-effect">
+          <div class="card-img-wrap">
             <img src="conference.jpg" alt="Conférences" loading="lazy">
           </div>
           <div class="card-content" style="text-align:center;">
-             <h3 style="justify-content:center;">Conférencier</h3>
-            <p>J'interviens sur les innovations numériques et les radicalités en ligne.</p>
-            <button class="btn btn-primary" style="margin-top: 1rem;" id="mailLinkCard">Me contacter</button>
+            <div class="card-tag">Conférencier</div>
+            <h3 style="justify-content:center;">Interventions & conférences</h3>
+            <p>J'interviens sur les innovations numériques, la désinformation et les radicalités en ligne.</p>
+            <button class="btn btn-primary shine-effect" style="margin-top: 1rem;" id="mailLinkCard">Me contacter</button>
           </div>
         </article>
       </div>
@@ -508,9 +689,11 @@
     </section>
 
     <section id="contact" class="container reveal">
-      <div style="text-align:center; padding: 2rem 0;">
-        <h2 class="section-title" style="border:none; padding-top:0;">Contact</h2>
-        <button id="mailBtn" class="btn btn-primary">Envoyer un e-mail</button>
+      <div style="text-align:center; padding: 3rem 0 4rem 0;">
+        <div id="contactCta" class="contact-cta" role="button" tabindex="0" aria-label="Envoyer un e-mail à Tristan">
+          <span class="contact-title">Contact</span>
+          <span class="contact-subtitle">Envoyez-moi un e-mail</span>
+        </div>
       </div>
     </section>
 
@@ -531,16 +714,28 @@
       const host = 'icloud.com';
       const email = user + '@' + host;
       const subject = encodeURIComponent('Contact depuis Tristan.pro');
-      const body = encodeURIComponent('Bonjour,\n\nJe vous contacte au sujet de :\n');
+      const body = encodeURIComponent('Bonjour,\\n\\nJe vous contacte au sujet de :\\n');
 
       function openMail(){
         window.location.href = 'mailto:' + email + '?subject=' + subject + '&body=' + body;
       }
 
-      ['mailBtn', 'mailLinkHero', 'mailLinkCard'].forEach(id => {
+      // Boutons / zones cliquables
+      ['mailLinkHero', 'mailLinkCard', 'contactCta'].forEach(id => {
         const el = document.getElementById(id);
         if(el) el.addEventListener('click', openMail);
       });
+
+      // Accessibilité clavier pour le bloc contact
+      const contactCta = document.getElementById('contactCta');
+      if (contactCta) {
+        contactCta.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openMail();
+          }
+        });
+      }
 
       document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -555,6 +750,18 @@
       }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
 
       document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+      // Barre de progression de scroll
+      const progressBar = document.getElementById('scrollProgress');
+      function updateScrollProgress() {
+        const scrollTop = window.scrollY || window.pageYOffset;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = progress + '%';
+      }
+
+      window.addEventListener('scroll', updateScrollProgress);
+      updateScrollProgress();
     })();
   </script>
 
