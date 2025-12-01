@@ -194,9 +194,51 @@
       border: 1px solid rgba(255,255,255,0.2);
     }
 
-    /* --- BOUTONS (Style Glossy AMÉLIORÉ) --- */
-    .cta-group { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
-    
+    /* --- CTA PILL --- */
+    .cta-group { 
+      display: flex; 
+      gap: 1rem; 
+      align-items: stretch; 
+      flex-wrap: wrap; 
+    }
+
+    .pill-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.9rem 1.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);      /* plus lisible */
+      background: rgba(15, 23, 42, 0.75);              /* un peu plus clair que le fond */
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
+      cursor: pointer;
+      transition: all 0.3s var(--ease-out);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pill-cta:hover {
+      transform: translateY(-3px);
+      border-color: var(--glass-highlight);
+      background: rgba(15, 23, 42, 0.9);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .pill-label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: none;
+      color: #e5e7eb;
+    }
+
+    .pill-cta:hover .pill-label {
+      color: #ffffff;
+    }
+
+    /* Anciennes classes de boutons (utilisées pour le CTA contact) */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -218,22 +260,10 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
       box-shadow: inset 0 0 5px rgba(255,255,255,0.1), 0 4px 20px rgba(0,0,0,0.2);
     }
-    .btn-primary:hover {
-      background: rgba(255, 255, 255, 0.3);
-      border-color: rgba(255,255,255,0.7);
-      transform: translateY(-3px);
-      box-shadow: inset 0 0 5px rgba(255,255,255,0.2), 0 10px 30px rgba(0,0,0,0.4);
-    }
-
     .btn-ghost {
       background: transparent;
       color: #aaa;
       border: 1px solid transparent; 
-    }
-    .btn-ghost:hover {
-      color: #fff;
-      background: rgba(255,255,255,0.08); 
-      border-color: rgba(255, 255, 255, 0.15); 
     }
 
     /* Réseaux Sociaux */
@@ -275,7 +305,6 @@
       margin-bottom: 3rem;
     }
 
-    /* Effet de focus sur la grille */
     .grid:hover .card {
       opacity: 0.65;
       filter: grayscale(0.05);
@@ -317,7 +346,8 @@
 
     .card-img-wrap {
       width: 100%;
-      height: 200px;
+      aspect-ratio: 8 / 5;   /* adapté à tes 640x400 */
+      height: auto;
       overflow: hidden;
       position: relative;
     }
@@ -377,7 +407,6 @@
     }
     .card:hover .card-link { opacity: 1; gap: 0.8rem; }
     
-    /* --- STRETCHED LINK --- */
     .card-link::after {
         content: "";
         position: absolute;
@@ -459,6 +488,18 @@
     .contact-subtitle {
       font-size: 1rem;
       color: var(--text-muted);
+    }
+
+    .inline-contact-link {
+      font-weight: 500;
+      color: #e5e7eb;
+      border-bottom: 1px solid rgba(229,231,235,0.4);
+      padding-bottom: 1px;
+    }
+
+    .inline-contact-link:hover {
+      color: #fff;
+      border-bottom-color: #fff;
     }
 
     /* --- ANIMATION (Scroll Reveal) --- */
@@ -564,8 +605,12 @@
           </p>
           
           <div class="cta-group">
-            <a class="btn btn-primary shine-effect" href="#projets">Voir mes projets</a>
-            <button class="btn btn-ghost" id="mailLinkHero">Me contacter</button>
+            <button class="pill-cta shine-effect" id="scrollToProjets">
+              <span class="pill-label">Voir mes projets</span>
+            </button>
+            <button class="pill-cta shine-effect" id="mailLinkHero">
+              <span class="pill-label">Me contacter</span>
+            </button>
           </div>
 
           <div class="social-icons">
@@ -680,8 +725,10 @@
           <div class="card-content" style="text-align:center;">
             <div class="card-tag">Conférencier</div>
             <h3 style="justify-content:center;">Interventions & conférences</h3>
-            <p>J'interviens sur les innovations numériques, la désinformation et les radicalités en ligne.</p>
-            <button class="btn btn-primary shine-effect" style="margin-top: 1rem;" id="mailLinkCard">Me contacter</button>
+            <p>
+              J'interviens sur les innovations numériques, la désinformation et les radicalités en ligne. 
+              <a href="#contact" class="inline-contact-link">Me contacter pour une intervention</a>.
+            </p>
           </div>
         </article>
       </div>
@@ -714,14 +761,14 @@
       const host = 'icloud.com';
       const email = user + '@' + host;
       const subject = encodeURIComponent('Contact depuis Tristan.pro');
-      const body = encodeURIComponent('Bonjour,\\n\\nJe vous contacte au sujet de :\\n');
+      const body = encodeURIComponent('Bonjour,\n\nJe vous contacte au sujet de :\n');
 
       function openMail(){
         window.location.href = 'mailto:' + email + '?subject=' + subject + '&body=' + body;
       }
 
-      // Boutons / zones cliquables
-      ['mailLinkHero', 'mailLinkCard', 'contactCta'].forEach(id => {
+      // Boutons / zones cliquables vers mail
+      ['mailLinkHero', 'contactCta'].forEach(id => {
         const el = document.getElementById(id);
         if(el) el.addEventListener('click', openMail);
       });
@@ -733,6 +780,17 @@
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             openMail();
+          }
+        });
+      }
+
+      // Scroll vers Projets depuis le pill du hero
+      const scrollToProjets = document.getElementById('scrollToProjets');
+      if (scrollToProjets) {
+        scrollToProjets.addEventListener('click', () => {
+          const section = document.getElementById('projets');
+          if (section) {
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         });
       }
