@@ -1,0 +1,66 @@
+<svg width="1280" height="800" viewBox="0 0 1280 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#13050B"/>
+      <stop offset="0.5" stop-color="#090910"/>
+      <stop offset="1" stop-color="#070A12"/>
+    </linearGradient>
+    <linearGradient id="techno" x1="320" y1="0" x2="930" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F3F4F6"/>
+      <stop offset="1" stop-color="#C7D2FE"/>
+    </linearGradient>
+    <linearGradient id="fascisme" x1="320" y1="0" x2="990" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF4D6D"/>
+      <stop offset="1" stop-color="#67E8F9"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="16" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="800" fill="url(#bg)"/>
+
+  <g opacity="0.12" stroke="#FF4D6D">
+    <path d="M0 80H1280"/>
+    <path d="M0 180H1280"/>
+    <path d="M0 280H1280"/>
+    <path d="M0 380H1280"/>
+    <path d="M0 480H1280"/>
+    <path d="M0 580H1280"/>
+    <path d="M0 680H1280"/>
+    <path d="M80 0V800"/>
+    <path d="M240 0V800"/>
+    <path d="M400 0V800"/>
+    <path d="M560 0V800"/>
+    <path d="M720 0V800"/>
+    <path d="M880 0V800"/>
+    <path d="M1040 0V800"/>
+    <path d="M1200 0V800"/>
+  </g>
+
+  <rect x="90" y="90" width="1100" height="620" rx="28" fill="#080A12" fill-opacity="0.35" stroke="#FFFFFF" stroke-opacity="0.10"/>
+
+  <text x="640" y="150" text-anchor="middle" fill="#F87171" font-family="Inter, Arial, sans-serif" font-size="28" letter-spacing="9">UNE EXPLORATION • FIGURES, IDÉOLOGIES, ENJEUX</text>
+
+  <text x="320" y="300" fill="url(#techno)" font-family="Inter, Arial, sans-serif" font-size="124" font-weight="800" filter="url(#glow)">TECHNO</text>
+  <text x="320" y="420" fill="url(#fascisme)" font-family="Inter, Arial, sans-serif" font-size="124" font-weight="800" filter="url(#glow)">FASCISME</text>
+
+  <text x="640" y="510" text-anchor="middle" fill="#D1D5DB" font-family="Inter, Arial, sans-serif" font-size="34">
+    <tspan x="640" dy="0">Comment les géants de la technologie convergent</tspan>
+    <tspan x="640" dy="52">avec des idéologies autoritaires pour remodeler</tspan>
+    <tspan x="640" dy="52">le pouvoir et éroder les démocraties.</tspan>
+  </text>
+
+  <g>
+    <rect x="170" y="620" width="300" height="74" rx="14" fill="#E11D48"/>
+    <rect x="490" y="620" width="270" height="74" rx="14" stroke="#38BDF8"/>
+    <rect x="780" y="620" width="250" height="74" rx="14" stroke="#FFFFFF" stroke-opacity="0.25"/>
+    <text x="320" y="666" text-anchor="middle" fill="white" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">EXPLORER</text>
+    <text x="625" y="666" text-anchor="middle" fill="#67E8F9" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="600">LES FIGURES CLÉS</text>
+    <text x="905" y="666" text-anchor="middle" fill="#D1D5DB" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="500">VOIR LES CHAPITRES</text>
+  </g>
+</svg>
