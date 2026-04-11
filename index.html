@@ -24,6 +24,10 @@
   <meta name="twitter:image" content="https://tristan.pro/profile.jpg" />
 
   <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Tristan Mendès France">
+  <meta name="theme-color" content="#030305">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,6 +50,7 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-padding-top: 80px; }
 
     body {
       background-color: var(--bg);
@@ -144,6 +149,8 @@
       background: #fff; transition: width 0.3s var(--ease-out);
     }
     .nav a:hover::after { width: 100%; }
+    .nav a.active { color: #fff; }
+    .nav a.active::after { width: 100%; }
 
     /* --- HERO --- */
     .hero {
@@ -960,6 +967,24 @@
       }
       window.addEventListener('scroll', updateBackToTop, { passive: true });
       backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+      // Scroll spy — surligne le lien nav de la section visible
+      const navLinks = document.querySelectorAll('.nav a[href^="#"]');
+      const spyObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            navLinks.forEach(link => {
+              link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+            });
+          }
+        });
+      }, { rootMargin: '-20% 0px -70% 0px' });
+      document.querySelectorAll('section[id]').forEach(s => spyObserver.observe(s));
+
+      // Sécurité : rel="noopener noreferrer" sur tous les liens externes
+      document.querySelectorAll('a[target="_blank"]:not([rel])').forEach(a => {
+        a.rel = 'noopener noreferrer';
+      });
 
       // Scroll Reveal
       const observer = new IntersectionObserver((entries) => {
