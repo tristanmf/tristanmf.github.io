@@ -958,6 +958,8 @@
         const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
         root.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
+        // Force repaint iOS Safari (backdrop-filter + position:fixed ne se rafraîchissent pas seuls)
+        void document.documentElement.offsetHeight;
       });
 
       // Bouton flottant retour en haut
