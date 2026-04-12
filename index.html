@@ -950,16 +950,25 @@
       document.getElementById('year').textContent = new Date().getFullYear();
 
       // Theme toggle (dark / light)
+      // iOS Safari ne repeint pas immédiatement les layers GPU (blobs animés, backdrop-filter).
+      // On applique directement les propriétés les plus visibles via JS pour bypasser la cascade CSS.
       const root = document.documentElement;
       const themeToggle = document.getElementById('themeToggle');
-      const savedTheme = localStorage.getItem('theme') || 'dark';
-      root.setAttribute('data-theme', savedTheme);
+      const blobs = document.querySelectorAll('.aurora-blob');
+
+      function applyTheme(theme) {
+        root.setAttribute('data-theme', theme);
+        const isLight = theme === 'light';
+        document.body.style.backgroundColor = isLight ? '#f0f0f7' : '#030305';
+        blobs.forEach(el => { el.style.opacity = isLight ? '0.2' : '0.4'; });
+      }
+
+      applyTheme(localStorage.getItem('theme') || 'dark');
+
       themeToggle.addEventListener('click', () => {
         const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-        root.setAttribute('data-theme', next);
+        applyTheme(next);
         localStorage.setItem('theme', next);
-        // Force repaint iOS Safari (backdrop-filter + position:fixed ne se rafraîchissent pas seuls)
-        void document.documentElement.offsetHeight;
       });
 
       // Bouton flottant retour en haut
