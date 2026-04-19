@@ -1,1027 +1,874 @@
-<!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<!doctype html>
+<html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tristan Mendès France — Cultures numériques & radicalités en ligne</title>
-  <meta name="description" content="Tristan Mendès France — Maître de conférences, journaliste et spécialiste des cultures numériques, du complotisme et des radicalités en ligne. Podcast Complorama, Conspiracy Watch, Les Vérificateurs (LCI)." />
-  <link rel="canonical" href="https://tristan.pro/" />
-
-  <!-- Open Graph -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://tristan.pro/" />
-  <meta property="og:title" content="Tristan Mendès France — Cultures numériques & radicalités en ligne" />
-  <meta property="og:description" content="Maître de conférences, journaliste et spécialiste des cultures numériques, du complotisme et des radicalités en ligne. Podcast Complorama, Conspiracy Watch, Les Vérificateurs (LCI)." />
-  <meta property="og:image" content="https://tristan.pro/profile.jpg" />
-  <meta property="og:locale" content="fr_FR" />
-  <meta property="og:site_name" content="Tristan Mendès France" />
-
-  <!-- Twitter / X Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@tristanmf" />
-  <meta name="twitter:title" content="Tristan Mendès France — Cultures numériques & radicalités en ligne" />
-  <meta name="twitter:description" content="Maître de conférences, journaliste et spécialiste des cultures numériques, du complotisme et des radicalités en ligne." />
-  <meta name="twitter:image" content="https://tristan.pro/profile.jpg" />
-
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="apple-touch-icon" href="favicon.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Tristan Mendès France">
-  <meta name="theme-color" content="#030305">
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    /* --- VARIABLES & RESET --- */
-    :root {
-      --bg: #030305;
-      --text: #ffffff;     
-      --text-muted: #9ca3af;
-      --accent-glow: #3b82f6; /* Bleu électrique */
-      --accent-secondary: #8b5cf6; /* Violet */
-      /* GLASSMORPHISM AMÉLIORÉ */
-      --glass-surface: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.15);
-      --glass-highlight: rgba(255, 255, 255, 0.25);
-      --radius: 18px; 
-      --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-padding-top: 80px; }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      line-height: 1.6;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-      position: relative;
-    }
-
-    a { text-decoration: none; color: inherit; transition: all 0.2s var(--ease-out); }
-    ul { list-style: none; }
-    img { max-width: 100%; display: block; }
-
-    /* --- BACKGROUND FX --- */
-    .noise-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none; z-index: 50;
-      opacity: 0.04;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
-    }
-
-    .aurora-blob {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.4;
-      z-index: -1;
-      animation: float 10s ease-in-out infinite;
-    }
-
-    .blob-1 {
-      width: 500px; height: 500px;
-      background: var(--accent-glow);
-      top: -10%; left: -10%;
-      animation-delay: 0s;
-    }
-    .blob-2 {
-      width: 400px; height: 400px;
-      background: var(--accent-secondary);
-      bottom: 10%; right: -5%;
-      animation-delay: -5s;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0); }
-      50% { transform: translate(30px, 40px) scale(1.1); }
-    }
-
-    /* Keyframe pour l'effet de halo du titre */
-    @keyframes glow-float {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.002); opacity: 0.98; }
-    }
-
-    /* --- BARRE DE PROGRESSION SCROLL --- */
-    .scroll-progress {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 2px;
-      width: 0;
-      z-index: 200;
-      background: linear-gradient(to right, var(--accent-glow), var(--accent-secondary));
-      pointer-events: none;
-    }
-
-    /* --- LAYOUT --- */
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-      position: relative; z-index: 10;
-    }
-
-    /* Header */
-    .site-header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 150;
-      padding: 1.2rem 0;
-      background: rgba(3, 3, 5, 0.6);
-      backdrop-filter: blur(16px); 
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--glass-border);
-    }
-    .header-inner { display: flex; justify-content: space-between; align-items: center; }
-    .nav a { 
-      margin-left: 1.5rem; font-size: 0.9rem; font-weight: 500; color: #ccc; 
-      position: relative;
-    }
-    .nav a:hover { color: #fff; }
-    .nav a::after {
-      content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px;
-      background: #fff; transition: width 0.3s var(--ease-out);
-    }
-    .nav a:hover::after { width: 100%; }
-    .nav a.active { color: #fff; }
-    .nav a.active::after { width: 100%; }
-
-    /* --- HERO --- */
-    .hero {
-      min-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding-top: 6rem;
-      padding-bottom: 4rem;
-    }
-    
-    .hero-content {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 4rem;
-      align-items: center;
-    }
-
-    h1 {
-      font-size: clamp(2.5rem, 5.5vw, 4.2rem);
-      font-weight: 800;
-      line-height: 1.05;
-      letter-spacing: -0.03em;
-      margin-bottom: 0.6rem;
-      background: linear-gradient(to right bottom, #ffffff, #a5b4fc);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-shadow: 0 0 15px rgba(255, 255, 255, 0.1); 
-      animation: glow-float 15s ease-in-out infinite;
-    }
-
-    .meta-line {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--text-muted);
-      margin-bottom: 1.4rem;
-      opacity: 0.9;
-    }
-    
-    .lead {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      max-width: 580px;
-      margin-bottom: 2.5rem;
-      font-weight: 300;
-      letter-spacing: -0.01em;
-    }
-
-    .hero-pic-wrapper {
-      position: relative;
-      width: 200px; height: 200px;
-    }
-    .hero-pic-wrapper::before {
-      content: ''; position: absolute; inset: -3px;
-      background: linear-gradient(45deg, var(--accent-glow), var(--accent-secondary));
-      border-radius: var(--radius); z-index: -1;
-      opacity: 0.7; filter: blur(10px);
-    }
-    .hero-pic {
-      width: 100%; height: 100%;
-      border-radius: var(--radius);
-      object-fit: cover;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    /* --- CTA PILL (aligné visuellement sur le contact du bas) --- */
-    .cta-group { 
-      display: flex; 
-      gap: 1rem; 
-      align-items: stretch; 
-      flex-wrap: wrap; 
-    }
-
-    .pill-cta {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.9rem 1.8rem;
-      border-radius: 999px;
-      border: 1px solid var(--glass-border);
-      background: rgba(255,255,255,0.03);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-      cursor: pointer;
-      transition: all 0.3s var(--ease-out);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .pill-cta:hover {
-      transform: translateY(-4px);
-      border-color: var(--glass-highlight);
-      background: rgba(255,255,255,0.06);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.55);
-    }
-
-    .pill-label {
-      font-size: 0.95rem;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      text-transform: none;
-      color: #e5e7eb;
-    }
-
-    .pill-cta:hover .pill-label {
-      color: #ffffff;
-    }
-
-    /* Anciennes classes de boutons (utilisées pour le CTA contact dans les cartes si besoin) */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.9rem 2rem;
-      border-radius: 99px;
-      font-weight: 600;
-      font-size: 1rem;
-      transition: all 0.3s var(--ease-out);
-      cursor: pointer;
-      backdrop-filter: blur(8px);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .btn-primary {
-      background: rgba(255, 255, 255, 0.15); 
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: inset 0 0 5px rgba(255,255,255,0.1), 0 4px 20px rgba(0,0,0,0.2);
-    }
-    .btn-ghost {
-      background: transparent;
-      color: #aaa;
-      border: 1px solid transparent; 
-    }
-
-    /* Réseaux Sociaux */
-    .social-icons { display: flex; gap: 1.5rem; margin-top: 2.5rem; flex-wrap: wrap; }
-    .social-icons a { 
-      color: #888; 
-      transition: transform 0.2s var(--ease-out), color 0.2s; 
-    }
-    .social-icons a:hover { color: #fff; transform: translateY(-3px); }
-    .social-icons svg { width: 24px; height: 24px; fill: currentColor; }
-
-    /* --- SECTIONS --- */
-    .section-title {
-      font-size: 2.2rem;
-      font-weight: 700;
-      margin-bottom: 3rem;
-      padding-top: 4rem;
-      display: inline-block;
-      background: linear-gradient(to right, #fff, rgba(255,255,255,0.5));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .about-text {
-      font-size: 1.3rem;
-      color: #e5e5e5;
-      max-width: 900px;
-      line-height: 1.6;
-      font-weight: 300;
-    }
-    .about-text strong { color: #fff; font-weight: 600; }
-
-    /* --- GRILLE PROJETS (CARDS) --- */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 2rem;
-      margin-bottom: 3rem;
-    }
-
-    .grid:hover .card {
-      opacity: 0.65;
-      filter: grayscale(0.05);
-      transition: opacity 0.3s var(--ease-out), filter 0.3s var(--ease-out), transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out), background 0.4s var(--ease-out);
-    }
-
-    .grid:hover .card:hover {
-      opacity: 1;
-      filter: none;
-    }
-
-    .spotlight-wrapper {
-      max-width: 500px;
-      margin: 0 auto 6rem auto;
-    }
-
-    .card {
-      background: var(--glass-surface);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius);
-      backdrop-filter: blur(24px); 
-      -webkit-backdrop-filter: blur(24px);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: all 0.4s var(--ease-out);
-      height: 100%;
-      position: relative;
-      z-index: 0;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
-    }
-
-    .card:hover {
-      transform: translateY(-8px) scale(1.01);
-      border-color: var(--glass-highlight);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 15px rgba(59, 130, 246, 0.1), 0 0 15px rgba(139, 92, 246, 0.1); 
-      background: rgba(255, 255, 255, 0.08); 
-    }
-
-    .card-img-wrap {
-      width: 100%;
-      aspect-ratio: 8 / 5;   /* adapté à tes 640x400 */
-      height: auto;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .card-img-wrap::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: transparent; 
-      z-index: 2; 
-      transition: background 0.4s var(--ease-out);
-    }
-
-    .card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.7s var(--ease-out), filter 0.4s var(--ease-out), opacity 0.4s var(--ease-out);
-      filter: saturate(0.9) brightness(0.95);
-    }
-
-    .card:hover img { 
-      transform: scale(1.08); 
-      filter: saturate(1.05) brightness(1.02);
-    }
-
-    .card.special img {
-       object-position: top center;
-    }
-
-    .card.technofascisme img {
-      object-position: center top;
-    }
-
-    .card-content { padding: 1.8rem; flex-grow: 1; display: flex; flex-direction: column; }
-
-    .card-tag {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--accent-glow);
-      opacity: 0.85;
-      margin-bottom: 0.4rem;
-    }
-    
-    .card h3 { 
-        font-size: 1.25rem; 
-        margin-bottom: 0.6rem; 
-        font-weight: 700; 
-        color:#fff; 
-        pointer-events: none;
-    }
-    .card p { font-size: 0.95rem; color: #a3a3a3; margin-bottom: 1.5rem; flex-grow: 1; line-height: 1.5; }
-    
-    .card-link {
-      font-size: 0.9rem; font-weight: 600; color: #fff;
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      opacity: 0.8;
-      position: relative;
-    }
-    .card:hover .card-link { opacity: 1; gap: 0.8rem; }
-    
-    .card-link::after {
-        content: "";
-        position: absolute;
-        top: -100%;
-        right: -100%; 
-        bottom: -100%;
-        left: -100%;
-        z-index: 1;
-        pointer-events: auto;
-        background: transparent;
-    }
-
-    /* --- EFFET SHINE (ATTÉNUÉ) --- */
-    .shine-effect {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .shine-effect::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -200%; 
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.04) 30%,
-        rgba(255, 255, 255, 0.12) 50%,
-        rgba(255, 255, 255, 0.04) 70%,
-        transparent 100%
-      );
-      transform: skewX(-20deg); 
-      transition: left 0.6s var(--ease-out);
-      pointer-events: none;
-      opacity: 0.5;
-      z-index: 2;
-    }
-
-    .shine-effect:hover::after {
-      left: 100%; 
-    }
-
-    /* --- CONTACT CTA --- */
-    .contact-cta {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2.2rem 3rem;
-      border-radius: var(--radius);
-      border: 1px solid var(--glass-border);
-      background: rgba(255,255,255,0.03);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-      cursor: pointer;
-      transition: all 0.35s var(--ease-out);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-    }
-
-    .contact-cta:hover {
-      transform: translateY(-4px);
-      border-color: var(--glass-highlight);
-      background: rgba(255,255,255,0.06);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.55);
-    }
-
-    .contact-title {
-      font-size: 2.4rem;
-      font-weight: 700;
-      background: linear-gradient(to right, #fff, rgba(255,255,255,0.6));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 0.4rem;
-    }
-
-    .contact-subtitle {
-      font-size: 1rem;
-      color: var(--text-muted);
-    }
-
-    .inline-contact-link {
-      font-weight: 500;
-      color: #e5e7eb;
-      border-bottom: 1px solid rgba(229,231,235,0.4);
-      padding-bottom: 1px;
-    }
-
-    .inline-contact-link:hover {
-      color: #fff;
-      border-bottom-color: #fff;
-    }
-
-    /* --- ANIMATION (Scroll Reveal) --- */
-    .reveal {
-      opacity: 0; transform: translateY(30px);
-      transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
-    }
-    .reveal.active { opacity: 1; transform: translateY(0); }
-    
-    .delay-1 { transition-delay: 0.1s; }
-    .delay-2 { transition-delay: 0.2s; }
-    .delay-3 { transition-delay: 0.3s; }
-
-    /* --- FOOTER --- */
-    .site-footer {
-      border-top: 1px solid var(--glass-border);
-      padding: 4rem 0 2rem 0; 
-      text-align: center; color: #555; margin-top: 4rem;
-      font-size: 0.9rem;
-      background: rgba(0,0,0,0.3);
-    }
-
-    .bouncer {
-      display: inline-block;
-      animation: bounce 2s ease-in-out infinite;
-    }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
-    }
-
-    /* --- THEME TOGGLE BUTTON --- */
-    .theme-toggle {
-      background: none;
-      border: 1px solid var(--glass-border);
-      border-radius: 50%;
-      width: 34px; height: 34px;
-      cursor: pointer;
-      color: var(--text-muted);
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s var(--ease-out);
-      margin-left: 1rem;
-      flex-shrink: 0;
-    }
-    .theme-toggle:hover { color: var(--text); border-color: var(--glass-highlight); }
-    .theme-toggle svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
-    .icon-sun { display: none; }
-    .icon-moon { display: block; }
-
-    /* --- BACK TO TOP --- */
-    .back-to-top {
-      position: fixed;
-      bottom: 2rem; right: 2rem;
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      background: var(--glass-surface);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      color: var(--text-muted);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      z-index: 120;
-      opacity: 0;
-      transform: translateY(10px);
-      pointer-events: none;
-      transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out), color 0.2s, border-color 0.2s;
-    }
-    .back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
-    .back-to-top:hover { color: var(--text); border-color: var(--glass-highlight); }
-    .back-to-top svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
-
-    /* --- LIGHT MODE --- */
-    :root[data-theme="light"] {
-      --bg: #f0f0f7;
-      --text: #0d0d12;
-      --text-muted: #6b7280;
-      --accent-glow: #2563eb;
-      --accent-secondary: #7c3aed;
-      --glass-surface: rgba(255, 255, 255, 0.65);
-      --glass-border: rgba(0, 0, 0, 0.09);
-      --glass-highlight: rgba(0, 0, 0, 0.18);
-    }
-    [data-theme="light"] body { background-color: var(--bg); }
-    [data-theme="light"] .site-header { background: rgba(240, 240, 247, 0.75); }
-    [data-theme="light"] .nav-home { color: #0d0d12 !important; opacity: 0.7; }
-    [data-theme="light"] .nav a { color: #555; }
-    [data-theme="light"] .nav a:hover { color: #0d0d12; }
-    [data-theme="light"] .nav a::after { background: #0d0d12; }
-    [data-theme="light"] h1 {
-      background: linear-gradient(to right bottom, #0d0d12, #4338ca);
-      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    [data-theme="light"] .section-title {
-      background: linear-gradient(to right, #0d0d12, rgba(13,13,18,0.5));
-      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    [data-theme="light"] .contact-title {
-      background: linear-gradient(to right, #0d0d12, rgba(13,13,18,0.6));
-      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    [data-theme="light"] .about-text { color: #1a1a2e; }
-    [data-theme="light"] .about-text strong { color: #0d0d12; }
-    [data-theme="light"] .card h3 { color: #0d0d12; }
-    [data-theme="light"] .card p { color: #4b5563; }
-    [data-theme="light"] .card-link { color: #0d0d12; }
-    [data-theme="light"] .card-tag { color: var(--accent-glow); }
-    [data-theme="light"] .pill-label { color: #1a1a2e; }
-    [data-theme="light"] .contact-subtitle { color: var(--text-muted); }
-    [data-theme="light"] .site-footer { background: rgba(255,255,255,0.4); color: #999; }
-    [data-theme="light"] .aurora-blob { opacity: 0.2; }
-    [data-theme="light"] .noise-overlay { opacity: 0.02; }
-    [data-theme="light"] .icon-sun { display: block; }
-    [data-theme="light"] .icon-moon { display: none; }
-
-    /* Transition douce lors du changement de thème */
-    body, .site-header, .card, .pill-cta, .contact-cta, .site-footer, .back-to-top {
-      transition-property: background-color, background, border-color, color, box-shadow;
-      transition-duration: 0.35s;
-      transition-timing-function: var(--ease-out);
-    }
-
-    /* --- PREFERS REDUCED MOTION --- */
-    @media (prefers-reduced-motion: reduce) {
-      .aurora-blob,
-      h1,
-      .bouncer {
-        animation: none !important;
-      }
-      .reveal {
-        transition: none;
-        opacity: 1 !important;
-        transform: none !important;
-      }
-      .shine-effect::after {
-        transition: none;
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tristan Mendès France — Cultures numériques & radicalités en ligne</title>
+<meta name="description" content="Tristan Mendès France — Maître de conférences, journaliste et spécialiste des cultures numériques, du complotisme et des radicalités en ligne. Podcast Complorama, Conspiracy Watch, Les Vérificateurs (LCI)." />
+<link rel="canonical" href="https://tristan.pro/" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://tristan.pro/" />
+<meta property="og:title" content="Tristan Mendès France — Cultures numériques & radicalités en ligne" />
+<meta property="og:description" content="Maître de conférences, journaliste et spécialiste des cultures numériques, du complotisme et des radicalités en ligne. Podcast Complorama, Conspiracy Watch, Les Vérificateurs (LCI)." />
+<meta property="og:image" content="https://tristan.pro/profile.jpg" />
+<meta property="og:locale" content="fr_FR" />
+<meta property="og:site_name" content="Tristan Mendès France" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@tristanmf" />
+<meta name="twitter:title" content="Tristan Mendès France — Cultures numériques & radicalités en ligne" />
+<meta name="twitter:description" content="Maître de conférences, journaliste et spécialiste des cultures numériques, du complotisme et des radicalités en ligne." />
+<meta name="twitter:image" content="https://tristan.pro/profile.jpg" />
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tristan Mendès France">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.15/dist/hls.min.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/framer-motion@10.18.0/dist/framer-motion.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        heading: ["'Instrument Serif'", "serif"],
+        body: ["'Barlow'", "sans-serif"],
+      },
+      colors: {
+        foreground: 'hsl(0 0% 100%)',
       }
     }
+  }
+}
+</script>
+<style>
+  html, body { background: #000; color: #fff; }
+  body { font-family: 'Barlow', sans-serif; -webkit-font-smoothing: antialiased; }
+  .font-heading { font-family: 'Instrument Serif', serif; }
+  .font-body { font-family: 'Barlow', sans-serif; }
 
-    /* --- MOBILE RESPONSIVE --- */
-    @media (max-width: 850px) {
-      .hero-content {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-        text-align: center;
-      }
-      .hero-pic-wrapper {
-        order: -1;
-        margin: 0 auto;
-        width: 160px; height: 160px;
-      }
-      h1 { font-size: 2.1rem; }
-      .cta-group { justify-content: center; }
-      .social-icons { justify-content: center; }
-      .grid { grid-template-columns: 1fr; }
-      .meta-line {
-        justify-content: center;
-      }
-    }
-  </style>
+  .liquid-glass {
+    background: rgba(255, 255, 255, 0.04);
+    background-blend-mode: luminosity;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: none;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .liquid-glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.4px;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(255, 255, 255, 0.15) 20%,
+      rgba(255, 255, 255, 0) 40%,
+      rgba(255, 255, 255, 0) 60%,
+      rgba(255, 255, 255, 0.15) 80%,
+      rgba(255, 255, 255, 0.45) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .liquid-glass-strong {
+    background: rgba(255, 255, 255, 0.06);
+    background-blend-mode: luminosity;
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+    border: none;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.05),
+      inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  .liquid-glass-strong::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.4px;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.5) 0%,
+      rgba(255, 255, 255, 0.2) 20%,
+      rgba(255, 255, 255, 0) 40%,
+      rgba(255, 255, 255, 0) 60%,
+      rgba(255, 255, 255, 0.2) 80%,
+      rgba(255, 255, 255, 0.5) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* content above pseudo-element */
+  .liquid-glass > *, .liquid-glass-strong > * { position: relative; z-index: 1; }
+
+  .desat { filter: saturate(0); }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+
+  /* subtle vignette grain on body to keep premium feel on the pure-black gaps */
+  .bg-noise {
+    background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 3px 3px;
+  }
+</style>
 </head>
-<body>
+<body class="bg-black">
+<div id="root"></div>
 
-  <div class="scroll-progress" id="scrollProgress"></div>
+<script type="text/babel" data-presets="react">
 
-  <div class="noise-overlay"></div>
-  <div class="aurora-blob blob-1"></div>
-  <div class="aurora-blob blob-2"></div>
 
-  <header class="site-header">
-    <div class="container header-inner">
-      <a href="#top" aria-label="Haut de page" class="nav-home" style="color:#fff; opacity:0.8;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-      </a>
-      <nav class="nav" style="display:flex; align-items:center;">
-        <a href="#projets">Projets</a>
-        <a href="#apropos">À propos</a>
-        <a href="#contact">Contact</a>
-        <button id="themeToggle" class="theme-toggle" aria-label="Basculer le thème clair / sombre">
-          <svg class="icon-moon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          <svg class="icon-sun" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+const { useEffect, useRef, useState, useMemo } = React;
+const { motion, AnimatePresence } = window.Motion || window.FramerMotion || window.framerMotion || window["framer-motion"] || {};
+// framer-motion UMD exposes itself as global `Motion` sometimes; fallback
+const M = window.Motion || window["framer-motion"];
+const mot = M && M.motion || motion;
+
+// ---------- Icons (inline SVG, matching lucide stroke style) ----------
+const Icon = ({ children, size = 16, className = "", strokeWidth = 1.75 }) =>
+<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}>
+    {children}
+  </svg>;
+
+const ArrowUpRight = (p) => <Icon {...p}><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></Icon>;
+const Play = (p) => <Icon {...p}><polygon points="6 4 20 12 6 20 6 4" fill="currentColor" stroke="currentColor" /></Icon>;
+const Zap = (p) => <Icon {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></Icon>;
+const Palette = (p) => <Icon {...p}><circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /><circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.8 0 1.5-.7 1.5-1.5 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.8.7-1.5 1.5-1.5H16c3.3 0 6-2.7 6-6 0-5-4.5-9-10-9z" /></Icon>;
+const BarChart3 = (p) => <Icon {...p}><path d="M3 3v18h18" /><path d="M8 17V9" /><path d="M13 17V5" /><path d="M18 17v-3" /></Icon>;
+const Shield = (p) => <Icon {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></Icon>;
+const Menu = (p) => <Icon {...p}><line x1="4" y1="8" x2="20" y2="8" /><line x1="4" y1="16" x2="20" y2="16" /></Icon>;
+
+// ---------- HLS video hook ----------
+function useHls(src) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const video = ref.current;
+    if (!video || !src) return;
+    let hls;
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = src;
+    } else if (window.Hls && window.Hls.isSupported()) {
+      hls = new window.Hls({ enableWorker: true });
+      hls.loadSource(src);
+      hls.attachMedia(video);
+    } else {
+      video.src = src;
+    }
+    const tryPlay = () => {video.play().catch(() => {});};
+    video.addEventListener('canplay', tryPlay);
+    return () => {
+      video.removeEventListener('canplay', tryPlay);
+      if (hls) hls.destroy();
+    };
+  }, [src]);
+  return ref;
+}
+
+// ---------- Obfuscated mail link (anti-spam) ----------
+// Email stored as base64 split parts. Assembled only on user interaction.
+const MAIL_USER_B64 = "cHJvZGlnZS1jbGFpcnMuNHA="; // "prodige-clairs.4p"
+const MAIL_DOMAIN_B64 = "aWNsb3VkLmNvbQ=="; // "icloud.com"
+function decodeMail() {
+  try {
+    return atob(MAIL_USER_B64) + String.fromCharCode(64) + atob(MAIL_DOMAIN_B64);
+  } catch (e) {return "";}
+}
+function MailLink({ subject, children, className, style }) {
+  const handleClick = (e) => {
+    e.preventDefault();
+    const addr = decodeMail();
+    const q = subject ? "?subject=" + encodeURIComponent(subject) : "";
+    window.location.href = "mai" + "lto:" + addr + q;
+  };
+  return (
+    <a href="#contact" onClick={handleClick} className={className} style={style} rel="nofollow">
+      {children}
+    </a>);
+
+}
+
+// ---------- BlurText ----------
+function BlurText({ text, className = "", delay = 100, direction = "bottom", as = "h1", splitBy = "word" }) {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {setVisible(true);io.disconnect();}
+    }, { threshold: 0.2 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const tokens = splitBy === 'word' ? text.split(' ') : text.split('');
+  const Tag = as;
+  const fromY = direction === 'bottom' ? 50 : -50;
+  return (
+    <Tag ref={ref} className={className}>
+      {tokens.map((t, i) => {
+        const isLast = i === tokens.length - 1;
+        const isWordSplit = splitBy === 'word';
+        return (
+          <React.Fragment key={i}>
+            <mot.span
+              style={{ display: 'inline-block', willChange: 'transform,filter,opacity' }}
+              initial={{ filter: 'blur(10px)', opacity: 0, y: fromY }}
+              animate={visible ? { filter: 'blur(0px)', opacity: 1, y: 0 } : {}}
+              transition={{
+                duration: 0.7,
+                delay: i * delay / 1000,
+                ease: [0.2, 0.7, 0.2, 1]
+              }}>
+              
+              {t === ' ' ? '\u00A0' : t}
+            </mot.span>
+            {isWordSplit && !isLast ?
+            <span style={{ display: 'inline-block', width: '0.75em' }} aria-hidden="true" /> :
+            null}
+          </React.Fragment>);
+
+      })}
+    </Tag>);
+
+}
+
+// ---------- Fade-in wrapper ----------
+function FadeIn({ children, delay = 0, y = 20, className = "" }) {
+  const kids = React.Children.map(children, (c, i) =>
+  React.isValidElement(c) ? React.cloneElement(c, { key: c.key || `fi-${i}` }) : c
+  );
+  return (
+    <mot.div
+      initial={{ filter: 'blur(10px)', opacity: 0, y }}
+      whileInView={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.6, delay, ease: [0.2, 0.7, 0.2, 1] }}
+      className={className}>
+      
+      {kids}
+    </mot.div>);
+
+}
+
+// ---------- Navbar ----------
+function Navbar() {
+  const links = [{ l: "Accueil", h: "#top" }, { l: "Médias", h: "#projets" }, { l: "Productions", h: "#productions" }, { l: "Conférences", h: "#conferences" }, { l: "À propos", h: "#apropos" }];
+  const [active, setActive] = React.useState("#top");
+  React.useEffect(() => {
+    const ids = ["top", "projets", "productions", "conferences", "apropos", "contact"];
+    const sections = ids.map(id => document.getElementById(id)).filter(Boolean);
+    if (!sections.length) return;
+    const io = new IntersectionObserver((entries) => {
+      const visible = entries.filter(e => e.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio);
+      if (visible[0]) setActive("#" + visible[0].target.id);
+    }, { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.1, 0.25, 0.5] });
+    sections.forEach(s => io.observe(s));
+    return () => io.disconnect();
+  }, []);
+  return (
+    <nav className="fixed top-4 left-0 right-0 z-50 px-4 md:px-8 lg:px-16 py-3">
+      <div className="flex items-center justify-between">
+        <a href="#top" className="flex items-center gap-2">
+          <div className="h-10 w-10 rounded-full liquid-glass-strong flex items-center justify-center">
+            <ArrowUpRight size={18} strokeWidth={2.2} className="text-white" />
+          </div>
+          <span className="hidden sm:inline font-heading italic text-xl text-white tracking-tight whitespace-nowrap">tristan.pro</span>
+        </a>
+
+        <div className="hidden md:flex items-center rounded-full px-1.5 py-1 border border-white/10" style={{ background: 'rgba(8,10,18,0.55)', backdropFilter: 'blur(18px) saturate(140%)', WebkitBackdropFilter: 'blur(18px) saturate(140%)', boxShadow: '0 8px 24px -12px rgba(0,0,0,0.5)' }}>
+          {links.map(({ l, h }) => {
+            const isActive = active === h;
+            return (
+              <a key={l} href={h} className={"relative px-3 py-2 text-sm font-medium font-body transition-colors whitespace-nowrap " + (isActive ? "text-white" : "text-white/70 hover:text-white")}>
+                {l}
+                {isActive && (
+                  <mot.span
+                    layoutId="nav-active-pill"
+                    className="absolute inset-0 rounded-full bg-white/12 border border-white/15 -z-10"
+                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                  />
+                )}
+              </a>
+            );
+          })}
+          <MailLink className="ml-1 bg-white text-black rounded-full px-3.5 py-1.5 text-sm font-medium font-body flex items-center gap-1 hover:bg-white/90 transition-colors whitespace-nowrap">
+            Me contacter <ArrowUpRight size={14} strokeWidth={2} />
+          </MailLink>
+        </div>
+
+        <button className="md:hidden h-10 w-10 rounded-full liquid-glass flex items-center justify-center text-white">
+          <Menu size={18} />
         </button>
-      </nav>
-    </div>
-  </header>
+      </div>
+    </nav>);
 
-  <main id="top">
-    
-    <section class="hero container">
-      <div class="hero-content reveal">
-        <div class="hero-text">
-          <h1>Tristan Mendès France</h1>
-          <div class="meta-line">
-            journalisme · cultures numériques · complotisme &amp; radicalités en ligne
-          </div>
-          <p class="lead">
-            Je travaille sur la façon dont le numérique transforme l’information, la démocratie et les formes contemporaines de radicalité.
-          </p>
+}
+
+// ---------- Hero ----------
+function Hero() {
+  const videoRef = useHls("https://stream.mux.com/QgTir2Bu4u6d01CqyKEBCks68PIm2nCM7vhwXgenS00tw.m3u8");
+  return (
+    <section className="relative overflow-hidden" style={{ height: 1000 }}>
+      <video
+        ref={videoRef}
+        className="absolute inset-0 w-full h-full object-cover z-0"
+        autoPlay loop muted playsInline />
+      
+      <div className="absolute inset-0 bg-black/20 z-0" />
+      <div
+        className="absolute left-0 right-0 bottom-0 z-[1] pointer-events-none"
+        style={{ height: 300, background: 'linear-gradient(to bottom, transparent, #000)' }} />
+      
+      <div
+        className="absolute left-0 right-0 top-0 z-[1] pointer-events-none"
+        style={{ height: 180, background: 'linear-gradient(to top, transparent, rgba(0,0,0,0.6))' }} />
+      
+
+      <div className="relative z-10 h-full flex flex-col items-center px-6" style={{ paddingTop: 130 }}>
+        <mot.div
+          initial={{ filter: 'blur(10px)', opacity: 0, scale: 0.8 }}
+          animate={{ filter: 'blur(0px)', opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.1, ease: [0.2, 0.7, 0.2, 1] }}
+          className="relative mb-6">
           
-          <div class="cta-group">
-            <button class="pill-cta shine-effect" id="scrollToProjets">
-              <span class="pill-label">Voir mes projets</span>
-            </button>
-            <button class="pill-cta shine-effect" id="mailLinkHero">
-              <span class="pill-label">Me contacter</span>
-            </button>
+          <div className="liquid-glass-strong rounded-full p-1">
+            <img
+              src="./profile.jpg"
+              alt="Tristan Mendès France"
+              className="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover"
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                const img = e.currentTarget;
+                const parent = img.parentElement;
+                if (!parent || parent.querySelector('[data-avatar-fb]')) return;
+                img.style.display = 'none';
+                const fb = document.createElement('div');
+                fb.setAttribute('data-avatar-fb', '');
+                fb.className = 'w-24 h-24 md:w-28 md:h-28 rounded-full flex items-center justify-center font-heading italic text-white/95 text-3xl md:text-4xl tracking-tight';
+                fb.style.background = 'radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,0.18), rgba(255,255,255,0.04) 55%, rgba(0,0,0,0.4))';
+                fb.textContent = 'tmf';
+                parent.appendChild(fb);
+              }} />
+            
           </div>
+          <span className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-400 ring-2 ring-black/80" aria-hidden />
+        </mot.div>
 
-          <div class="social-icons">
-            <a href="http://www.linkedin.com/in/tristanmf" target="_blank" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>
-            <a href="https://www.facebook.com/tristan.mendes.france" target="_blank" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
-            <a href="https://www.instagram.com/tristanmf/" target="_blank" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
-            <a href="https://x.com/tristanmf" target="_blank" aria-label="X"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26L22.5 21.75h-6.63l-5.21-6.817-5.967 6.817H1.385l7.73-8.835L1.5 2.25h6.77l4.713 6.231 5.261-6.231z"/></svg></a>
-            <a href="https://bsky.app/profile/tmf.bsky.social" target="_blank" aria-label="Bluesky"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 0 0 0 3.2c0 .324.018 2.846.166 3.653.644 3.515 4.363 4.606 6.758 3.553-2.585.808-3.484 2.505-1.782 4.629 2.508 2.508 5.768-.426 6.858-1.77.108-.134.217-.268.318-.396l.123.149c1.09 1.344 4.35 4.278 6.858 1.77 1.702-2.124.803-3.82-1.782-4.629 2.395 1.053 6.114-.038 6.758-3.553.148-.807.166-3.329.166-3.653 0-3.2-2.566-2.256-5.202-.395C16.046 4.747 13.087 8.686 12 10.8z"/></svg></a>
-            <a href="https://www.threads.com/@tristanmf" target="_blank" aria-label="Threads"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></svg></a>
+        <FadeIn delay={0.25}>
+          <div className="liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-4 whitespace-nowrap">
+            <span className="bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body">2026</span>
+            <span className="text-sm text-white/90 font-body">Disponible pour confs & interviews</span>
           </div>
+        </FadeIn>
+
+        <div className="mt-6 text-center w-full px-4">
+          <BlurText
+            text="Tristan Mendès France"
+            as="h1"
+            delay={100}
+            className="font-heading italic text-white leading-[0.9] whitespace-nowrap text-[clamp(2.25rem,8.5vw,5.5rem)]"
+            splitBy="word" />
+          
         </div>
-        
-        <div class="hero-pic-wrapper">
-          <img src="profile.jpg" alt="Tristan Mendès France" class="hero-pic" />
+
+        <mot.div
+          initial={{ filter: 'blur(10px)', opacity: 0, y: 12 }}
+          animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.65, ease: [0.2, 0.7, 0.2, 1] }}
+          className="mt-6 text-sm md:text-base text-white/75 font-body uppercase tracking-[0.22em] text-center max-w-3xl leading-relaxed">
+          
+          Journalisme <span className="mx-2 text-white/35">·</span> cultures numériques <span className="mx-2 text-white/35">·</span> complotisme & radicalités en ligne
+        </mot.div>
+
+        <mot.p
+          initial={{ filter: 'blur(10px)', opacity: 0, y: 20 }}
+          animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.9, ease: [0.2, 0.7, 0.2, 1] }}
+          className="mt-6 text-base md:text-xl text-white/85 font-body font-light leading-relaxed text-center max-w-2xl">
+          
+          Je travaille sur la façon dont le numérique transforme l'information, la démocratie et les formes contemporaines de radicalité.
+        </mot.p>
+
+        <mot.div
+          initial={{ filter: 'blur(10px)', opacity: 0, y: 20 }}
+          animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.1, ease: [0.2, 0.7, 0.2, 1] }}
+          className="mt-8 flex items-center gap-5">
+          
+          <a href="#projets" className="liquid-glass-strong rounded-full px-6 py-3 text-base font-medium text-white font-body whitespace-nowrap hover:bg-white/10 transition-colors">
+            Voir les projets
+          </a>
+          <MailLink className="liquid-glass rounded-full px-6 py-3 text-base font-medium text-white/90 flex items-center gap-2 font-body hover:text-white whitespace-nowrap transition-colors">
+            <Play size={14} /> Me contacter
+          </MailLink>
+        </mot.div>
+
+        <mot.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.35, ease: [0.2,0.7,0.2,1] }}
+          className="mt-7 flex items-center gap-3"
+        >
+          <a href="http://www.linkedin.com/in/tristanmf" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <a href="https://www.facebook.com/tristan.mendes.france" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/tristanmf/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="https://x.com/tristanmf" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" className="liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="https://bsky.app/profile/tmf.bsky.social" target="_blank" rel="noopener noreferrer" aria-label="Bluesky" className="liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 0 0 0 3.2c0 .324.018 2.846.166 3.653.644 3.515 4.363 4.606 6.758 3.553-2.585.808-3.484 2.505-1.782 4.629 2.508 2.508 5.768-.426 6.858-1.77.108-.134.217-.268.318-.396l.123.149c1.09 1.344 4.35 4.278 6.858 1.77 1.702-2.124.803-3.82-1.782-4.629 2.395 1.053 6.114-.038 6.758-3.553.148-.807.166-3.329.166-3.653 0-3.2-2.566-2.256-5.202-.395C16.046 4.747 13.087 8.686 12 10.8z"/></svg>
+          </a>
+          <a href="https://www.threads.com/@tristanmf" target="_blank" rel="noopener noreferrer" aria-label="Threads" className="liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65z"/></svg>
+          </a>
+        </mot.div>
+
+        <mot.a
+          href="#projets"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.6, ease: [0.2, 0.7, 0.2, 1] }}
+          className="absolute left-1/2 -translate-x-1/2 bottom-10 flex flex-col items-center gap-2 group"
+          aria-label="Défiler vers les projets">
+          
+          <span className="text-[11px] uppercase tracking-[0.18em] text-white/50 font-body group-hover:text-white/80 transition-colors">Défiler</span>
+          <mot.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+            className="liquid-glass-strong rounded-full h-10 w-10 flex items-center justify-center text-white">
+            
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M19 12l-7 7-7-7" /></svg>
+          </mot.div>
+        </mot.a>
+      </div>
+    </section>);
+
+}
+
+// ---------- Start Section ----------
+function StartSection() {
+  const ref = useHls("https://stream.mux.com/9JXDljEVWYwWu01PUkAemafDugK89o01BR6zqJ3aS9u00A.m3u8");
+  return (
+    <section id="apropos" className="relative overflow-hidden" style={{ minHeight: 620 }}>
+      <video ref={ref} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0" />
+      <div className="absolute inset-x-0 top-0 z-[1] pointer-events-none" style={{ height: 200, background: 'linear-gradient(to bottom, #000, transparent)' }} />
+      <div className="absolute inset-x-0 bottom-0 z-[1] pointer-events-none" style={{ height: 200, background: 'linear-gradient(to top, #000, transparent)' }} />
+      <div className="absolute inset-0 bg-black/30 z-[1]" />
+
+      <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 py-40" style={{ minHeight: 620 }}>
+        <FadeIn>
+          <div className="liquid-glass rounded-full px-5 py-2 text-sm font-medium text-white font-body whitespace-nowrap">À propos</div>
+        </FadeIn>
+        <div className="mt-6 max-w-3xl">
+          <BlurText
+            text="Comprendre ce qui se joue en ligne."
+            as="h2"
+            delay={90}
+            splitBy="word"
+            className="text-3xl md:text-4xl lg:text-5xl font-heading italic tracking-tight leading-[1.05] text-white whitespace-nowrap" />
+          
+        </div>
+        <FadeIn delay={0.3}>
+          <p className="mt-6 max-w-2xl text-white/85 font-body font-light text-base md:text-lg leading-relaxed">Maître de conférences associé en cultures numériques à l'Université Paris Cité et enseignant au CELSA, je suis spécialiste des cultures numériques et des radicalités en ligne. Je coanime le podcast <span className="italic text-white">«&nbsp;Complorama&nbsp;»</span> (France Info), collabore à <span className="italic text-white">Conspiracy Watch</span> et participe à l'émission <span className="italic text-white">«&nbsp;Les Vérificateurs&nbsp;»</span> (LCI).</p>
+        </FadeIn>
+        <FadeIn delay={0.5}>
+          <a href="#projets" className="mt-8 inline-flex liquid-glass-strong rounded-full px-6 py-3 text-sm font-medium text-white items-center font-body whitespace-nowrap">
+            Découvrir mes projets
+          </a>
+        </FadeIn>
+      </div>
+    </section>);
+
+}
+
+// ---------- Features Chess ----------
+// ---------- Card with real image ----------
+function MediaCard({ href, img, kicker, title, body, cta, badge, compact }) {
+  const aspect = compact ? 'aspect-[3/2]' : 'aspect-[4/3]';
+  return (
+    <a href={href} target="_blank" rel="noopener" className="group block liquid-glass rounded-2xl overflow-hidden h-full flex flex-col">
+      <div className={`relative ${aspect} overflow-hidden`}>
+        <img src={img} alt={title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+        {badge &&
+        <div className="absolute top-4 left-4 liquid-glass rounded-full px-3 py-1 text-[11px] font-medium text-white font-body">{badge}</div>
+        }
+      </div>
+      <div className="p-6 flex-1 flex flex-col">
+        {kicker && <div className="text-[11px] uppercase tracking-[0.15em] text-white/50 font-body font-medium mb-2">{kicker}</div>}
+        <h4 className="font-heading italic text-2xl md:text-3xl text-white leading-tight">{title}</h4>
+        <p className="mt-3 text-white/65 font-body font-light text-sm leading-relaxed flex-1">{body}</p>
+        <div className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-white/90 font-body">
+          {cta} <ArrowUpRight size={14} strokeWidth={2} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </div>
       </div>
-    </section>
+    </a>);
 
-    <section id="apropos" class="container">
-      <h2 class="section-title reveal">À propos</h2>
-      <div class="reveal delay-1">
-        <p class="about-text">
-          Maître de conférences associé en cultures numériques à l’Université Paris Cité et enseignant au CELSA, je suis spécialiste des cultures numériques et des radicalités en ligne. Je coanime le podcast <strong>« Complorama »</strong> (France Info), collabore à <strong>Conspiracy Watch</strong> et participe à l’émission <strong>« Les Vérificateurs »</strong> (LCI).
-        </p>
+}
+
+// ---------- Features Chess ----------
+function FeatureRow({ reverse, title, body, cta, href, label, tint }) {
+  return (
+    <div className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-10 md:gap-16`}>
+      <div className="flex-1 max-w-xl">
+        <FadeIn>
+          <h3 className="text-3xl md:text-4xl lg:text-5xl font-heading italic text-white tracking-tight leading-[0.95]">
+            {title}
+          </h3>
+        </FadeIn>
+        <FadeIn delay={0.15}>
+          <p className="mt-5 text-white/70 font-body font-light text-sm md:text-base max-w-md">
+            {body}
+          </p>
+        </FadeIn>
+        <FadeIn delay={0.3}>
+          <a href={href} target="_blank" rel="noopener" className="mt-7 inline-flex liquid-glass-strong rounded-full px-5 py-2.5 text-sm font-medium text-white items-center gap-2 font-body">
+            {cta} <ArrowUpRight size={14} strokeWidth={2} />
+          </a>
+        </FadeIn>
       </div>
-    </section>
+      <FadeIn delay={0.2} className="flex-1 w-full">
+        <div className="liquid-glass rounded-2xl overflow-hidden aspect-[4/3] w-full relative">
+          {/* placeholder graphic — stand-in for product preview GIF */}
+          <div className="absolute inset-0">
+            <div className="absolute inset-0" style={{
+              background: tint || 'radial-gradient(120% 80% at 30% 20%, rgba(120,160,220,0.25), transparent 60%), radial-gradient(100% 80% at 80% 90%, rgba(180,200,240,0.18), transparent 60%), #0b1220'
+            }} />
+            {/* editorial placeholder — article/visualisation preview */}
+            <div className="absolute inset-6 rounded-xl bg-black/40 border border-white/10 p-5 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-white/30"></span>
+                  <span className="h-2 w-2 rounded-full bg-white/30"></span>
+                  <span className="h-2 w-2 rounded-full bg-white/30"></span>
+                </div>
+                <div className="text-[10px] text-white/40 font-mono uppercase tracking-wider">on air</div>
+              </div>
+              <div className="flex-1 flex flex-col justify-end gap-3">
+                <div className="h-3 w-20 rounded-full bg-white/20"></div>
+                <div className="font-heading italic text-white text-2xl md:text-3xl leading-tight">
+                  {label}
+                </div>
+                <div className="h-2 w-32 rounded-full bg-white/10"></div>
+                <div className="h-2 w-24 rounded-full bg-white/10"></div>
+                <div className="mt-2 flex gap-2">
+                  <div className="h-1 flex-1 rounded-full bg-white/30"></div>
+                  <div className="h-1 flex-1 rounded-full bg-white/10"></div>
+                  <div className="h-1 flex-1 rounded-full bg-white/10"></div>
+                  <div className="h-1 flex-1 rounded-full bg-white/10"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </FadeIn>
+    </div>);
 
-    <section id="projets" class="container">
-      <h2 class="section-title reveal">Projets récents</h2>
-      
-      <div class="grid">
-        
-        <article class="card reveal delay-1 shine-effect">
-          <div class="card-img-wrap">
-            <img src="complorama.jpg" alt="Complorama" loading="lazy">
-          </div>
-          <div class="card-content">
-            <div class="card-tag">Podcast</div>
-            <h3>Complorama</h3>
-            <p>Co-producteur de ce podcast France Info qui explore les dynamiques du complotisme.</p>
-            <a class="card-link" href="https://www.radiofrance.fr/franceinfo/podcasts/complorama" target="_blank">Écouter &rarr;</a>
-          </div>
-        </article>
+}
 
-        <article class="card reveal delay-2 shine-effect">
-          <div class="card-img-wrap">
-            <img src="conspiracywatch.jpg" alt="Conspiracy Watch" loading="lazy">
+function FeaturesChess() {
+  return (
+    <section id="projets" className="px-6 md:px-12 lg:px-24 py-28">
+      <div className="max-w-3xl mb-16">
+        <FadeIn>
+          <div className="inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap">
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/60">[&thinsp;01&thinsp;]</span>
+            <span className="text-white font-body text-base md:text-lg tracking-tight">Télé, radio, podcast</span>
           </div>
-          <div class="card-content">
-            <div class="card-tag">Observatoire</div>
-            <h3>Conspiracy Watch</h3>
-            <p>Collaborateur de l'Observatoire du conspirationnisme.</p>
-            <a class="card-link" href="https://www.conspiracywatch.info" target="_blank">Explorer &rarr;</a>
-          </div>
-        </article>
-        
-        <article class="card reveal delay-3 shine-effect">
-          <div class="card-img-wrap">
-            <img src="lci.jpg" alt="Les Vérificateurs" loading="lazy">
-          </div>
-          <div class="card-content">
-            <div class="card-tag">TV</div>
-            <h3>Les Vérificateurs</h3>
-            <p>Consultant pour l’émission sur LCI contre la désinformation.</p>
-            <a class="card-link" href="https://www.tf1info.fr/emissions/lci/verificateurs-14293/" target="_blank">Regarder &rarr;</a>
-          </div>
-        </article>
+        </FadeIn>
+      </div>
 
-        <article class="card reveal shine-effect">
-          <div class="card-img-wrap">
-            <img src="infographie.jpg" alt="Internet, une infographie" loading="lazy">
-          </div>
-          <div class="card-content">
-            <div class="card-tag">Livre</div>
-            <h3>Internet, une infographie</h3>
-            <p>Ouvrage aux éditions CNRS, sur l'impact du numérique.</p>
-            <a class="card-link" href="https://www.cnrseditions.fr/catalogue/societe/internet/" target="_blank">Voir le livre &rarr;</a>
-          </div>
-        </article>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <FadeIn delay={0}>
+          <MediaCard
+            href="https://www.radiofrance.fr/franceinfo/podcasts/complorama"
+            img="./complorama.jpg"
+            badge="Podcast"
+            kicker="France Info"
+            title="Complorama"
+            body="Co-producteur et coanimateur de ce podcast France Info qui explore les dynamiques du complotisme contemporain."
+            cta="Écouter" />
+          
+        </FadeIn>
+        <FadeIn delay={0.1}>
+          <MediaCard
+            href="https://www.tf1info.fr/emissions/lci/verificateurs-14293/"
+            img="./lci.jpg"
+            badge="TV"
+            kicker="LCI"
+            title="Les Vérificateurs"
+            body="Consultant de l'émission de LCI qui déconstruit la désinformation et vérifie l'info en direct."
+            cta="Regarder" />
+          
+        </FadeIn>
+        <FadeIn delay={0.2}>
+          <MediaCard
+            href="https://www.radiofrance.fr/franceinter/podcasts/antidote"
+            img="./antidote.jpg"
+            badge="Radio"
+            kicker="France Inter"
+            title="Antidote"
+            body="Chroniqueur de la matinale de France Inter de 2020 à 2022 — un an et demi à décrypter, chaque semaine, les soubresauts de la complosphère."
+            cta="Découvrir" />
+          
+        </FadeIn>
+      </div>
+    </section>);
 
-        <article class="card reveal delay-1 shine-effect">
-          <div class="card-img-wrap">
-            <img src="france-medias-monde.jpg" alt="CHIPIP" loading="lazy">
-          </div>
-          <div class="card-content">
-            <div class="card-tag">Gouvernance</div>
-            <h3>CHIPIP</h3>
-            <p>Membre du Comité d’indépendance et intégrité de France Médias Monde.</p>
-            <a class="card-link" href="https://www.francemediasmonde.com/fr/nos-engagements/deontologie/" target="_blank">En savoir plus &rarr;</a>
-          </div>
-        </article>
+}
 
-        <article class="card reveal delay-2 shine-effect">
-          <div class="card-img-wrap">
-            <img src="antidote.jpg" alt="Antidote" loading="lazy">
-          </div>
-          <div class="card-content">
-            <div class="card-tag">Chronique radio</div>
-            <h3>Antidote</h3>
-            <p>Chroniqueur dans la matinale de France Inter (2020-2022) analysant l’actualité de la complosphère.</p>
-            <a class="card-link" href="https://www.radiofrance.fr/franceinter/podcasts/antidote" target="_blank">Découvrir &rarr;</a>
-          </div>
-        </article>
+// ---------- Features Grid (Institutionnel) ----------
+function FeaturesGrid() {
+  const items = [
+  {
+    img: "./conspiracywatch.jpg",
+    kicker: "Observatoire",
+    title: "Conspiracy Watch",
+    body: "Collaborateur de l'Observatoire du conspirationnisme, qui documente et analyse les théories du complot depuis 2007.",
+    href: "https://www.conspiracywatch.info",
+    cta: "Explorer"
+  },
+  {
+    img: "./france-medias-monde.jpg",
+    kicker: "Gouvernance",
+    title: "CHIPIP — France Médias Monde",
+    body: "Membre du Comité d'indépendance et d'intégrité du groupe audiovisuel public à destination internationale.",
+    href: "https://www.francemediasmonde.com/fr/nos-engagements/deontologie/",
+    cta: "En savoir plus"
+  }];
 
-        <article class="card reveal delay-3 shine-effect">
-          <div class="card-img-wrap">
-            <img src="comploscore.jpg" alt="ComploScore" loading="lazy">
+  return (
+    <section id="institutionnel" className="px-6 md:px-12 lg:px-24 py-28">
+      <div className="max-w-3xl mb-14">
+        <FadeIn>
+          <div className="inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap">
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/60">[&thinsp;03&thinsp;]</span>
+            <span className="text-white font-body text-base md:text-lg tracking-tight">Recherche & veille</span>
           </div>
-          <div class="card-content">
-            <div class="card-tag">Cartographie</div>
-            <h3>ComploScore</h3>
-            <p>Un nutri-score du complotisme sous forme de carte interactive pour visualiser les niveaux de conspirationnisme par pays.</p>
-            <a class="card-link" href="https://tristan.pro/carte-complotisme/" target="_blank">Explorer &rarr;</a>
-          </div>
-        </article>
+        </FadeIn>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl">
+        {items.map((it, i) =>
+        <FadeIn key={it.title} delay={i * 0.1}>
+            <MediaCard {...it} compact />
+          </FadeIn>
+        )}
+      </div>
+    </section>);
 
-        <article class="card technofascisme reveal shine-effect">
-          <div class="card-img-wrap">
-            <img src="technofascisme-preview.svg" alt="Aperçu du projet Technofascisme" loading="lazy">
-          </div>
-          <div class="card-content">
-            <div class="card-tag">Infographie interactive</div>
-            <h3>Technofascisme</h3>
-            <p>Une exploration visuelle des figures, idéologies et enjeux du technofascisme contemporain.</p>
-            <a class="card-link" href="https://tristan.pro/TECHNOFASCISME-Infographie-interactive/" target="_blank" rel="noopener noreferrer">Explorer &rarr;</a>
-          </div>
-        </article>
+}
 
-      </div> 
-      
-      <div class="spotlight-wrapper reveal delay-3">
-        <article class="card special shine-effect">
-          <div class="card-img-wrap">
-            <img src="conference.jpg" alt="Conférences" loading="lazy">
+// ---------- Conferencier (replaces Stats) ----------
+function Conferencier() {
+  const ref = useHls("https://stream.mux.com/NcU3HlHeF7CUL86azTTzpy3Tlb00d6iF3BmCdFslMJYM.m3u8");
+  return (
+    <section id="conferences" className="relative overflow-hidden py-24">
+      <video ref={ref} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0 desat" />
+      <div className="absolute inset-x-0 top-0 z-[1] pointer-events-none" style={{ height: 200, background: 'linear-gradient(to bottom, #000, transparent)' }} />
+      <div className="absolute inset-x-0 bottom-0 z-[1] pointer-events-none" style={{ height: 200, background: 'linear-gradient(to top, #000, transparent)' }} />
+      <div className="absolute inset-0 bg-black/50 z-[1]" />
+
+      <div className="relative z-10 px-6 md:px-12 lg:px-24">
+        <FadeIn>
+          <div className="liquid-glass rounded-3xl p-10 md:p-16 overflow-hidden">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10">
+              <div className="max-w-2xl">
+                <div className="inline-block liquid-glass rounded-full px-3.5 py-1 text-xs font-medium text-white font-body">Conférencier</div>
+                <h2 className="mt-6 text-5xl md:text-6xl lg:text-7xl font-heading italic text-white leading-[0.85] tracking-tight">
+                  Inviter quelqu'un<br />qui comprend <em className="not-italic text-white/70">vraiment</em><br />ce qui se joue en ligne.
+                </h2>
+                <p className="mt-7 text-white/75 font-body font-light text-base md:text-lg leading-relaxed max-w-xl">
+                  Conférences, keynotes, tables rondes, masterclass : j'interviens auprès des entreprises, des universités, des administrations et des médias sur les radicalités en ligne, la désinformation, les IA génératives, les mutations démocratiques du numérique et, plus largement, les cultures numériques.
+                </p>
+                <div className="mt-8 flex flex-wrap gap-4">
+                  <MailLink subject="Demande de conférence" className="liquid-glass-strong rounded-full px-6 py-3 text-sm font-medium text-white flex items-center gap-2 font-body whitespace-nowrap">
+                    Réserver une intervention <ArrowUpRight size={14} strokeWidth={2} />
+                  </MailLink>
+                  <a href="#contact" className="bg-white text-black rounded-full px-6 py-3 text-sm font-medium font-body hover:bg-white/90 transition-colors whitespace-nowrap">
+                    Demander un devis
+                  </a>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4 lg:w-80 shrink-0">
+                {[
+                ["Entreprises", "Keynotes & comex"],
+                ["Universités", "Cours & séminaires"],
+                ["Médias", "Tables rondes"],
+                ["Administrations", "Formations"]].
+                map(([k, v]) =>
+                <div key={k} className="liquid-glass-strong rounded-2xl p-4">
+                    <div className="font-heading italic text-xl text-white leading-tight">{k}</div>
+                    <div className="mt-1 text-white/60 text-xs font-body font-light">{v}</div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-          <div class="card-content" style="text-align:center;">
-            <div class="card-tag">Conférencier</div>
-            <h3 style="justify-content:center;">Interventions & conférences</h3>
-            <p>
-              J'interviens sur les innovations numériques, la désinformation et les radicalités en ligne. 
-              <br><a href="#contact" class="inline-contact-link">Me contacter pour une intervention</a>.
+        </FadeIn>
+      </div>
+    </section>);
+
+}
+
+// ---------- Productions ----------
+function Testimonials() {
+  const items = [
+  {
+    href: "https://www.cnrseditions.fr/catalogue/societe/internet/",
+    img: "./infographie.jpg",
+    badge: "Livre",
+    kicker: "Éditions CNRS",
+    title: "Internet, une infographie",
+    body: "Un ouvrage grand public qui décrypte, visuellement, l'impact du numérique sur nos sociétés — réseaux, plateformes, nouveaux pouvoirs.",
+    cta: "Voir le livre"
+  },
+  {
+    href: "./carte-complotisme/",
+    img: "./comploscore.jpg",
+    badge: "Data viz",
+    kicker: "Cartographie interactive",
+    title: "ComploScore",
+    body: "Un nutri-score du complotisme : carte interactive pour visualiser et comparer les niveaux de conspirationnisme par pays.",
+    cta: "Explorer la carte"
+  },
+  {
+    href: "./TECHNOFASCISME-Infographie-interactive/",
+    img: "./technofascisme-preview.svg",
+    badge: "Infographie",
+    kicker: "Exploration interactive",
+    title: "Technofascisme",
+    body: "Une exploration visuelle des figures, idéologies et réseaux qui structurent le technofascisme contemporain.",
+    cta: "Explorer"
+  }];
+
+  return (
+    <section id="productions" className="px-6 md:px-12 lg:px-24 py-28">
+      <div className="max-w-3xl mb-14">
+        <FadeIn>
+          <div className="inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap">
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/60">[&thinsp;02&thinsp;]</span>
+            <span className="text-white font-body text-base md:text-lg tracking-tight">Livre, web, interactif</span>
+          </div>
+        </FadeIn>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {items.map((t, i) =>
+        <FadeIn key={t.title} delay={i * 0.08}>
+            <MediaCard {...t} />
+          </FadeIn>
+        )}
+      </div>
+    </section>);
+
+}
+
+// ---------- CTA + Footer ----------
+function CtaFooter() {
+  const ref = useHls("https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260306_074215_04640ca7-042c-45d6-bb56-58b1e8a42489.mp4");
+  return (
+    <section id="contact" className="relative overflow-hidden">
+      <video ref={ref} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0" />
+      <div className="absolute inset-x-0 top-0 z-[1] pointer-events-none" style={{ height: 200, background: 'linear-gradient(to bottom, #000, transparent)' }} />
+      <div className="absolute inset-x-0 bottom-0 z-[1] pointer-events-none" style={{ height: 240, background: 'linear-gradient(to top, #000, transparent)' }} />
+      <div className="absolute inset-0 bg-black/35 z-[1]" />
+
+      <div className="relative z-10 px-6 md:px-12 lg:px-24 pt-32 pb-10">
+        <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
+          <BlurText
+            text="Parlons-en."
+            as="h2"
+            splitBy="word"
+            className="text-5xl md:text-6xl lg:text-7xl font-heading italic text-white leading-[1.05] pb-4" />
+          
+          <FadeIn delay={0.4}>
+            <p className="mt-10 text-white font-body font-light text-base md:text-lg max-w-lg leading-relaxed" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.85)' }}>
+              Conférences, interviews, consultations, collaborations éditoriales&nbsp;: écrivez-moi. Je réponds personnellement à chaque message.
             </p>
+          </FadeIn>
+          <FadeIn delay={0.6}>
+            <div className="mt-10 flex justify-center">
+              <MailLink className="liquid-glass-strong rounded-full px-10 py-5 text-lg md:text-xl font-medium text-white font-body hover:bg-white/15 transition-colors whitespace-nowrap shadow-[0_10px_40px_-10px_rgba(0,0,0,0.7)]">
+                M'envoyer un e-mail
+              </MailLink>
+            </div>
+          </FadeIn>
+        </div>
+
+        <div className="mt-20 flex justify-center">
+          <a
+            href="#top"
+            onClick={(e) => {e.preventDefault();window.scrollTo({ top: 0, behavior: 'smooth' });}}
+            className="group flex flex-col items-center gap-2 text-white/50 hover:text-white/90 transition-colors"
+            aria-label="Retour en haut">
+            
+            <span className="text-[11px] font-body uppercase tracking-[0.22em]">Retour en haut</span>
+            <mot.span
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+              className="liquid-glass h-10 w-10 rounded-full flex items-center justify-center">
+              
+              <ArrowUpRight size={16} strokeWidth={2} style={{ transform: 'rotate(-45deg)' }} />
+            </mot.span>
+          </a>
+        </div>
+
+        <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="text-white/40 text-xs font-body">© 2026 Tristan Mendès France — vibécodé avec décontraction.</div>
+          <div className="flex items-center gap-6">
+            <a href="#projets" className="text-white/40 text-xs font-body hover:text-white/70">Projets</a>
+            <a href="#apropos" className="text-white/40 text-xs font-body hover:text-white/70">À propos</a>
+            <MailLink className="text-white/40 text-xs font-body hover:text-white/70">Contact</MailLink>
           </div>
-        </article>
-      </div>
-
-    </section>
-
-    <section id="contact" class="container reveal">
-      <div style="text-align:center; padding: 3rem 0 4rem 0;">
-        <div id="contactCta" class="contact-cta" role="button" tabindex="0" aria-label="Envoyer un e-mail à Tristan">
-          <span class="contact-title">Contact</span>
-          <span class="contact-subtitle">Envoyez-moi un e-mail</span>
         </div>
       </div>
-    </section>
+    </section>);
 
-  </main>
+}
 
-  <footer class="site-footer">
-    <div class="container">
-      <p>© <span id="year"></span> Tristan — vibecodé avec décontraction
-        <span class="bouncer" aria-hidden="true">👾</span>
-      </p>
-    </div>
-  </footer>
+// ---------- App ----------
+function App() {
+  return (
+    <div className="bg-black min-h-screen">
+      <Navbar />
+      <Hero />
+      <div className="bg-black">
+        <StartSection />
+        <FeaturesChess />
+        <Testimonials />
+        <FeaturesGrid />
+        <Conferencier />
+        <CtaFooter />
+      </div>
+    </div>);
 
-  <button id="backToTop" class="back-to-top" aria-label="Retour en haut de page">
-    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
-  </button>
+}
 
-  <script>
-    (function(){
-      // Mail script
-      const user = 'prodige-clairs.4p';
-      const host = 'icloud.com';
-      const email = user + '@' + host;
-      const subject = encodeURIComponent('Contact depuis Tristan.pro');
-      const body = encodeURIComponent('Bonjour,\n\nJe vous contacte au sujet de :\n');
-
-      function openMail(){
-        window.location.href = 'mailto:' + email + '?subject=' + subject + '&body=' + body;
-      }
-
-      // Boutons / zones cliquables vers mail
-      ['mailLinkHero', 'contactCta'].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.addEventListener('click', openMail);
-      });
-
-      // Accessibilité clavier pour le bloc contact
-      const contactCta = document.getElementById('contactCta');
-      if (contactCta) {
-        contactCta.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            openMail();
-          }
-        });
-      }
-
-      // Scroll vers Projets depuis le pill du hero
-      const scrollToProjets = document.getElementById('scrollToProjets');
-      if (scrollToProjets) {
-        scrollToProjets.addEventListener('click', () => {
-          const section = document.getElementById('projets');
-          if (section) {
-            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        });
-      }
-
-      document.getElementById('year').textContent = new Date().getFullYear();
-
-      // Theme toggle (dark / light)
-      // iOS Safari ne repeint pas immédiatement les layers GPU (blobs animés, backdrop-filter).
-      // On applique directement les propriétés les plus visibles via JS pour bypasser la cascade CSS.
-      const root = document.documentElement;
-      const themeToggle = document.getElementById('themeToggle');
-      const blobs = document.querySelectorAll('.aurora-blob');
-
-      function applyTheme(theme) {
-        root.setAttribute('data-theme', theme);
-        const isLight = theme === 'light';
-        document.body.style.backgroundColor = isLight ? '#f0f0f7' : '#030305';
-        blobs.forEach(el => { el.style.opacity = isLight ? '0.2' : '0.4'; });
-      }
-
-      applyTheme(localStorage.getItem('theme') || 'dark');
-
-      themeToggle.addEventListener('click', () => {
-        const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-        applyTheme(next);
-        localStorage.setItem('theme', next);
-      });
-
-      // Bouton flottant retour en haut
-      const backToTopBtn = document.getElementById('backToTop');
-      function updateBackToTop() {
-        backToTopBtn.classList.toggle('visible', window.scrollY > 400);
-      }
-      window.addEventListener('scroll', updateBackToTop, { passive: true });
-      backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-      // Scroll spy — surligne le lien nav de la section visible
-      const navLinks = document.querySelectorAll('.nav a[href^="#"]');
-      const spyObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            navLinks.forEach(link => {
-              link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
-            });
-          }
-        });
-      }, { rootMargin: '-20% 0px -70% 0px' });
-      document.querySelectorAll('section[id]').forEach(s => spyObserver.observe(s));
-
-      // Sécurité : rel="noopener noreferrer" sur tous les liens externes
-      document.querySelectorAll('a[target="_blank"]:not([rel])').forEach(a => {
-        a.rel = 'noopener noreferrer';
-      });
-
-      // Scroll Reveal
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('active');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
-
-      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-      // Barre de progression de scroll
-      const progressBar = document.getElementById('scrollProgress');
-      function updateScrollProgress() {
-        const scrollTop = window.scrollY || window.pageYOffset;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-        progressBar.style.width = progress + '%';
-      }
-
-      window.addEventListener('scroll', updateScrollProgress);
-      updateScrollProgress();
-    })();
-  </script>
-
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
 </body>
 </html>
