@@ -128,6 +128,21 @@ tailwind.config = {
     background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
     background-size: 3px 3px;
   }
+
+  /* Hide iOS Safari's "tap to play" overlay shown when autoplay is blocked
+     (typically in Low Power Mode). Falls back to a static first frame. */
+  video::-webkit-media-controls-start-playback-button {
+    display: none !important;
+    -webkit-appearance: none;
+  }
+  video::-webkit-media-controls-overlay-play-button {
+    display: none !important;
+    -webkit-appearance: none;
+  }
+  video::-webkit-media-controls {
+    display: none !important;
+    -webkit-appearance: none;
+  }
 </style>
 </head>
 <body class="bg-black">
