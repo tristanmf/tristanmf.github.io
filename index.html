@@ -128,6 +128,39 @@ tailwind.config = {
     background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
     background-size: 3px 3px;
   }
+
+  /* Aurora blobs : halos bleu et violet translucides en arrière-plan,
+     visibles sur les sections noires entre les vidéos */
+  .aurora-blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.22;
+    z-index: 0;
+    pointer-events: none;
+    will-change: transform;
+    animation: aurora-float 16s ease-in-out infinite;
+  }
+  .aurora-blob.blob-1 {
+    width: 520px; height: 520px;
+    background: #3b82f6;
+    top: 18%; left: -12%;
+    animation-delay: 0s;
+  }
+  .aurora-blob.blob-2 {
+    width: 440px; height: 440px;
+    background: #8b5cf6;
+    bottom: 14%; right: -8%;
+    animation-delay: -8s;
+  }
+  @keyframes aurora-float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(40px, 30px) scale(1.08); }
+  }
+  @media (max-width: 767px) {
+    .aurora-blob.blob-1 { width: 320px; height: 320px; filter: blur(70px); }
+    .aurora-blob.blob-2 { width: 280px; height: 280px; filter: blur(70px); }
+  }
 </style>
 </head>
 <body class="bg-black">
@@ -939,7 +972,9 @@ function CtaFooter() {
 // ---------- App ----------
 function App() {
   return (
-    <div className="bg-black min-h-screen">
+    <div className="bg-black min-h-screen relative">
+      <div className="aurora-blob blob-1" aria-hidden="true"></div>
+      <div className="aurora-blob blob-2" aria-hidden="true"></div>
       <Navbar />
       <Hero />
       <div className="bg-black">
