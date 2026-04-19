@@ -938,6 +938,31 @@ function CtaFooter() {
 
 // ---------- App ----------
 function App() {
+  React.useEffect(() => {
+    const playAll = () => {
+      document.querySelectorAll('video').forEach((v) => {
+        v.muted = true;
+        v.playsInline = true;
+        if (v.paused) v.play().catch(() => {});
+      });
+    };
+    const onVisibility = () => { if (!document.hidden) playAll(); };
+    document.addEventListener('touchstart', playAll, { passive: true });
+    document.addEventListener('click', playAll, { passive: true });
+    document.addEventListener('scroll', playAll, { passive: true });
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('pageshow', playAll);
+    let n = 0;
+    const itv = setInterval(() => { playAll(); if (++n >= 5) clearInterval(itv); }, 2000);
+    return () => {
+      document.removeEventListener('touchstart', playAll);
+      document.removeEventListener('click', playAll);
+      document.removeEventListener('scroll', playAll);
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('pageshow', playAll);
+      clearInterval(itv);
+    };
+  }, []);
   return (
     <div className="bg-black min-h-screen">
       <Navbar />
