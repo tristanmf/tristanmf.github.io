@@ -276,7 +276,7 @@ function FadeIn({ children, delay = 0, y = 20, className = "" }) {
 
 // ---------- Navbar ----------
 function Navbar() {
-  const links = [{ l: "Accueil", h: "#top" }, { l: "Médias", h: "#projets" }, { l: "Productions", h: "#productions" }, { l: "Conférences", h: "#conferences" }, { l: "À propos", h: "#apropos" }];
+  const links = [{ l: "Accueil", h: "#top" }, { l: "À propos", h: "#apropos" }, { l: "Médias", h: "#projets" }, { l: "Productions", h: "#productions" }, { l: "Conférences", h: "#conferences" }];
   const [active, setActive] = React.useState("#top");
   const [menuOpen, setMenuOpen] = React.useState(false);
   React.useEffect(() => {
@@ -327,11 +327,11 @@ function Navbar() {
       </div>
 
       {menuOpen && (
-        <div className="md:hidden mt-3 rounded-2xl p-2 border border-white/10" style={{ background: 'rgba(8,10,18,0.9)', backdropFilter: 'blur(22px) saturate(140%)', WebkitBackdropFilter: 'blur(22px) saturate(140%)', boxShadow: '0 12px 40px -12px rgba(0,0,0,0.6)' }}>
+        <div className="md:hidden mt-3 ml-auto w-64 max-w-[calc(100vw-2rem)] rounded-3xl p-2 border border-white/10" style={{ background: 'rgba(12,14,24,0.55)', backdropFilter: 'blur(32px) saturate(160%)', WebkitBackdropFilter: 'blur(32px) saturate(160%)', boxShadow: '0 20px 60px -20px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.08)' }}>
           {links.map(({ l, h }) => (
-            <a key={l} href={h} onClick={() => setMenuOpen(false)} className="block px-4 py-3 rounded-xl text-white/90 hover:bg-white/10 font-body text-base whitespace-nowrap">{l}</a>
+            <a key={l} href={h} onClick={() => setMenuOpen(false)} className="block px-4 py-2.5 rounded-2xl text-white/90 hover:bg-white/10 font-body text-base whitespace-nowrap">{l}</a>
           ))}
-          <MailLink className="block mt-1 px-4 py-3 rounded-xl bg-white text-black font-medium font-body text-base text-center">Me contacter</MailLink>
+          <MailLink className="block mt-1 px-4 py-2.5 rounded-2xl bg-white text-black font-medium font-body text-base text-center">Me contacter</MailLink>
         </div>
       )}
     </nav>);
@@ -342,7 +342,7 @@ function Navbar() {
 function Hero() {
   const videoRef = useHls("./hero.mp4");
   return (
-    <section className="relative overflow-hidden" style={{ height: 1000 }}>
+    <section id="top" className="relative overflow-hidden" style={{ height: 1000 }}>
       <video
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover z-0"
