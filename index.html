@@ -165,6 +165,11 @@ function useHls(src) {
   useEffect(() => {
     const video = ref.current;
     if (!video || !src) return;
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
     let hls;
     const isHls = /\.m3u8(\?|$)/i.test(src);
     if (!isHls) {
@@ -179,9 +184,18 @@ function useHls(src) {
       video.src = src;
     }
     const tryPlay = () => {video.play().catch(() => {});};
+    video.addEventListener('loadedmetadata', tryPlay);
+    video.addEventListener('loadeddata', tryPlay);
     video.addEventListener('canplay', tryPlay);
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) tryPlay(); });
+    }, { threshold: 0.1 });
+    io.observe(video);
     return () => {
+      video.removeEventListener('loadedmetadata', tryPlay);
+      video.removeEventListener('loadeddata', tryPlay);
       video.removeEventListener('canplay', tryPlay);
+      io.disconnect();
       if (hls) hls.destroy();
     };
   }, [src]);
@@ -342,7 +356,7 @@ function Navbar() {
 function Hero() {
   const videoRef = useHls("./hero.mp4");
   return (
-    <section id="top" className="relative overflow-hidden min-h-[100svh] md:h-[1000px]">
+    <section id="top" className="relative overflow-hidden min-h-[100svh] md:min-h-0 md:h-screen md:max-h-[1000px]">
       <video
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover z-0"
@@ -418,7 +432,7 @@ function Hero() {
           initial={{ filter: 'blur(10px)', opacity: 0, y: 20 }}
           animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.9, ease: [0.2, 0.7, 0.2, 1] }}
-          className="mt-6 text-base md:text-xl text-white/85 font-body font-light leading-relaxed text-center max-w-2xl">
+          className="mt-6 text-lg md:text-2xl text-white/85 font-body font-light leading-relaxed text-center max-w-2xl">
           
           Je travaille sur la façon dont le numérique transforme l'information, la démocratie et les formes contemporaines de radicalité.
         </mot.p>
@@ -468,7 +482,7 @@ function Hero() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.6, ease: [0.2, 0.7, 0.2, 1] }}
-          className="absolute left-1/2 -translate-x-1/2 bottom-10 flex flex-col items-center gap-2 group"
+          className="hidden md:flex absolute left-1/2 -translate-x-1/2 bottom-10 flex-col items-center gap-2 group"
           aria-label="Défiler vers les projets">
           
           <span className="text-[11px] uppercase tracking-[0.18em] text-white/50 font-body group-hover:text-white/80 transition-colors">Défiler</span>
@@ -509,7 +523,7 @@ function StartSection() {
           
         </div>
         <FadeIn delay={0.3}>
-          <p className="mt-6 max-w-2xl text-white/85 font-body font-light text-base md:text-lg leading-relaxed">Maître de conférences associé en cultures numériques à l'Université Paris Cité et enseignant au CELSA, je suis spécialiste des cultures numériques et des radicalités en ligne. Je coanime le podcast <span className="italic text-white">«&nbsp;Complorama&nbsp;»</span> (France Info), collabore à <span className="italic text-white">Conspiracy Watch</span> et participe à l'émission <span className="italic text-white">«&nbsp;Les Vérificateurs&nbsp;»</span> (LCI).</p>
+          <p className="mt-6 max-w-2xl text-white/85 font-body font-light text-lg md:text-xl leading-relaxed">Maître de conférences associé en cultures numériques à l'Université Paris Cité et enseignant au CELSA, je suis spécialiste des cultures numériques et des radicalités en ligne. Je coanime le podcast <span className="italic text-white">«&nbsp;Complorama&nbsp;»</span> (France Info), collabore à <span className="italic text-white">Conspiracy Watch</span> et participe à l'émission <span className="italic text-white">«&nbsp;Les Vérificateurs&nbsp;»</span> (LCI).</p>
         </FadeIn>
         <FadeIn delay={0.5}>
           <a href="#projets" className="mt-8 inline-flex liquid-glass-strong rounded-full px-6 py-3 text-sm font-medium text-white items-center font-body whitespace-nowrap">
@@ -537,7 +551,7 @@ function MediaCard({ href, img, kicker, title, body, cta, badge, compact }) {
       <div className="p-6 flex-1 flex flex-col">
         {kicker && <div className="text-[11px] uppercase tracking-[0.15em] text-white/50 font-body font-medium mb-2">{kicker}</div>}
         <h4 className="font-heading italic text-2xl md:text-3xl text-white leading-tight">{title}</h4>
-        <p className="mt-3 text-white/65 font-body font-light text-sm leading-relaxed flex-1">{body}</p>
+        <p className="mt-3 text-white/65 font-body font-light text-base leading-relaxed flex-1">{body}</p>
         <div className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-white/90 font-body">
           {cta} <ArrowUpRight size={14} strokeWidth={2} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </div>
