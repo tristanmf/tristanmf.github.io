@@ -164,7 +164,10 @@ function useHls(src) {
     const video = ref.current;
     if (!video || !src) return;
     let hls;
-    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    const isHls = /\.m3u8(\?|$)/i.test(src);
+    if (!isHls) {
+      video.src = src;
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = src;
     } else if (window.Hls && window.Hls.isSupported()) {
       hls = new window.Hls({ enableWorker: true });
@@ -325,7 +328,7 @@ function Navbar() {
 
 // ---------- Hero ----------
 function Hero() {
-  const videoRef = useHls("https://stream.mux.com/QgTir2Bu4u6d01CqyKEBCks68PIm2nCM7vhwXgenS00tw.m3u8");
+  const videoRef = useHls("./hero.mp4");
   return (
     <section className="relative overflow-hidden" style={{ height: 1000 }}>
       <video
@@ -789,7 +792,7 @@ function Testimonials() {
 
 // ---------- CTA + Footer ----------
 function CtaFooter() {
-  const ref = useHls("https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260306_074215_04640ca7-042c-45d6-bb56-58b1e8a42489.mp4");
+  const ref = useHls("./bottom.mp4");
   return (
     <section id="contact" className="relative overflow-hidden">
       <video ref={ref} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0" />
