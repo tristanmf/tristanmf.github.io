@@ -359,7 +359,7 @@ function Hero() {
     <section id="top" className="relative overflow-hidden min-h-[100svh] md:min-h-0 md:h-screen md:max-h-[1000px]">
       <video
         ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover z-0"
+        className="absolute inset-0 w-full h-full object-contain md:object-cover z-0"
         autoPlay loop muted playsInline preload="auto" />
       
       <div className="absolute inset-0 bg-black/20 z-0" />
@@ -478,12 +478,12 @@ function Hero() {
         </mot.div>
 
         <mot.a
-          href="#projets"
+          href="#apropos"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.6, ease: [0.2, 0.7, 0.2, 1] }}
           className="mt-8 md:mt-0 flex md:absolute md:left-1/2 md:-translate-x-1/2 md:bottom-16 flex-col items-center gap-2 group"
-          aria-label="Défiler vers les projets">
+          aria-label="Défiler vers À propos">
           
           <span className="text-[11px] uppercase tracking-[0.18em] text-white/50 font-body group-hover:text-white/80 transition-colors">Défiler</span>
           <mot.div
