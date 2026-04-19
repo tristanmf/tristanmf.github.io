@@ -475,7 +475,7 @@ function Hero() {
 
 // ---------- Start Section ----------
 function StartSection() {
-  const ref = useHls("https://stream.mux.com/9JXDljEVWYwWu01PUkAemafDugK89o01BR6zqJ3aS9u00A.m3u8");
+  const ref = useHls("./apropos.mp4");
   return (
     <section id="apropos" className="relative overflow-hidden" style={{ minHeight: 620 }}>
       <video ref={ref} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0" />
@@ -688,7 +688,7 @@ function FeaturesGrid() {
 
 // ---------- Conferencier (replaces Stats) ----------
 function Conferencier() {
-  const ref = useHls("https://stream.mux.com/NcU3HlHeF7CUL86azTTzpy3Tlb00d6iF3BmCdFslMJYM.m3u8");
+  const ref = useHls("./conf.mp4");
   return (
     <section id="conferences" className="relative overflow-hidden py-24">
       <video ref={ref} autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0 desat" />
