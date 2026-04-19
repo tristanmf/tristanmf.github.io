@@ -242,7 +242,7 @@ function BlurText({ text, className = "", delay = 100, direction = "bottom", as 
               {t === ' ' ? '\u00A0' : t}
             </mot.span>
             {isWordSplit && !isLast ?
-            <span style={{ display: 'inline-block', width: '0.75em' }} aria-hidden="true" /> :
+            <span style={{ display: 'inline-block', width: '0.2em' }} aria-hidden="true" /> :
             null}
           </React.Fragment>);
 
@@ -394,7 +394,7 @@ function Hero() {
           initial={{ filter: 'blur(10px)', opacity: 0, y: 12 }}
           animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.65, ease: [0.2, 0.7, 0.2, 1] }}
-          className="mt-6 text-sm md:text-base text-white/75 font-body uppercase tracking-[0.22em] text-center max-w-3xl leading-relaxed">
+          className="mt-6 text-sm md:text-base text-white/75 font-body uppercase tracking-[0.18em] text-center max-w-5xl md:whitespace-nowrap leading-relaxed">
           
           Journalisme <span className="mx-2 text-white/35">·</span> cultures numériques <span className="mx-2 text-white/35">·</span> complotisme & radicalités en ligne
         </mot.div>
