@@ -128,6 +128,49 @@ tailwind.config = {
     background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
     background-size: 3px 3px;
   }
+
+  /* Aurora blobs : halos bleu et violet translucides en arrière-plan,
+     visibles sur les sections noires entre les vidéos */
+  .aurora-blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.22;
+    z-index: 0;
+    pointer-events: none;
+    will-change: transform;
+    animation: aurora-float 16s ease-in-out infinite;
+  }
+  .aurora-blob.blob-1 {
+    width: 520px; height: 520px;
+    background: #3b82f6;
+    top: 18%; left: -12%;
+    animation-delay: 0s;
+  }
+  .aurora-blob.blob-2 {
+    width: 440px; height: 440px;
+    background: #8b5cf6;
+    bottom: 14%; right: -8%;
+    animation-delay: -8s;
+  }
+  @keyframes aurora-float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(40px, 30px) scale(1.08); }
+  }
+  @media (max-width: 767px) {
+    .aurora-blob.blob-1 { width: 320px; height: 320px; filter: blur(70px); }
+    .aurora-blob.blob-2 { width: 280px; height: 280px; filter: blur(70px); }
+  }
+
+  /* Fondu doux des bords des vidéos vers le noir ambiant (aurora blobs) */
+  .edge-fade-bottom {
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 62%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 0%, black 62%, transparent 100%);
+  }
+  .edge-fade-top {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 38%, black 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 38%, black 100%);
+  }
 </style>
 </head>
 <body class="bg-black">
@@ -359,14 +402,11 @@ function Hero() {
     <section id="top" className="relative overflow-hidden min-h-[100svh] md:min-h-0 md:h-screen md:max-h-[1000px]">
       <video
         ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover object-[70%_center] md:object-center z-0"
+        className="absolute inset-0 w-full h-full object-cover object-[70%_center] md:object-center z-0 edge-fade-bottom"
         autoPlay loop muted playsInline preload="auto" />
-      
-      <div className="absolute inset-0 bg-black/20 z-0" />
-      <div
-        className="absolute left-0 right-0 bottom-0 z-[1] pointer-events-none"
-        style={{ height: 300, background: 'linear-gradient(to bottom, transparent, #000)' }} />
-      
+
+      <div className="absolute inset-0 bg-black/20 z-0 edge-fade-bottom" />
+
       <div
         className="absolute left-0 right-0 top-0 z-[1] pointer-events-none"
         style={{ height: 180, background: 'linear-gradient(to top, transparent, rgba(0,0,0,0.6))' }} />
@@ -432,7 +472,7 @@ function Hero() {
           initial={{ filter: 'blur(10px)', opacity: 0, y: 20 }}
           animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.9, ease: [0.2, 0.7, 0.2, 1] }}
-          className="mt-6 text-lg md:text-2xl text-white/85 font-body font-light leading-relaxed text-center max-w-2xl">
+          className="mt-6 text-lg md:text-xl text-white/85 font-body font-light leading-relaxed text-center max-w-2xl">
           
           Je travaille sur la façon dont le numérique transforme l'information, la démocratie et les formes contemporaines de radicalité.
         </mot.p>
@@ -501,15 +541,10 @@ function Hero() {
 
 // ---------- Start Section ----------
 function StartSection() {
-  const ref = useHls("./apropos.mp4");
   return (
-    <section id="apropos" className="relative overflow-hidden min-h-[460px] md:min-h-[620px]">
-      <video ref={ref} autoPlay loop muted playsInline preload="auto" className="absolute inset-0 w-full h-full object-cover z-0" />
-      <div className="absolute inset-x-0 top-0 z-[1] pointer-events-none" style={{ height: 200, background: 'linear-gradient(to bottom, #000, transparent)' }} />
-      <div className="absolute inset-x-0 bottom-0 z-[1] pointer-events-none" style={{ height: 200, background: 'linear-gradient(to top, #000, transparent)' }} />
-      <div className="absolute inset-0 bg-black/30 z-[1]" />
+    <section id="apropos" className="relative overflow-hidden min-h-[360px] md:min-h-[480px]">
 
-      <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 py-20 md:py-40 min-h-[460px] md:min-h-[620px]">
+      <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 py-16 md:py-28 min-h-[360px] md:min-h-[480px]">
         <FadeIn>
           <div className="liquid-glass rounded-full px-5 py-2 text-sm font-medium text-white font-body whitespace-nowrap">À propos</div>
         </FadeIn>
@@ -524,11 +559,6 @@ function StartSection() {
         </div>
         <FadeIn delay={0.3}>
           <p className="mt-6 max-w-2xl text-white/85 font-body font-light text-lg md:text-xl leading-relaxed">Maître de conférences associé en cultures numériques à l'Université Paris Cité et enseignant au CELSA, je suis spécialiste des cultures numériques et des radicalités en ligne.<br /><br />Je coanime le podcast <span className="italic text-white">«&nbsp;Complorama&nbsp;»</span> (France Info), collabore à <span className="italic text-white">Conspiracy Watch</span> et participe à l'émission <span className="italic text-white">«&nbsp;Les Vérificateurs&nbsp;»</span> (LCI).</p>
-        </FadeIn>
-        <FadeIn delay={0.5}>
-          <a href="#projets" className="mt-8 inline-flex liquid-glass-strong rounded-full px-6 py-3 text-sm font-medium text-white items-center font-body whitespace-nowrap">
-            Découvrir mes projets
-          </a>
         </FadeIn>
       </div>
     </section>);
@@ -714,13 +744,8 @@ function FeaturesGrid() {
 
 // ---------- Conferencier (replaces Stats) ----------
 function Conferencier() {
-  const ref = useHls("./conf.mp4");
   return (
     <section id="conferences" className="relative overflow-hidden py-14 md:py-24">
-      <video ref={ref} autoPlay loop muted playsInline preload="auto" className="absolute inset-0 w-full h-full object-cover z-0 desat" />
-      <div className="absolute inset-x-0 top-0 z-[1] pointer-events-none" style={{ height: 200, background: 'linear-gradient(to bottom, #000, transparent)' }} />
-      <div className="absolute inset-x-0 bottom-0 z-[1] pointer-events-none" style={{ height: 200, background: 'linear-gradient(to top, #000, transparent)' }} />
-      <div className="absolute inset-0 bg-black/50 z-[1]" />
 
       <div className="relative z-10 px-6 md:px-12 lg:px-24">
         <FadeIn>
@@ -878,10 +903,8 @@ function CrossfadeVideo({ src, className, crossfade = 1.2 }) {
 function CtaFooter() {
   return (
     <section id="contact" className="relative overflow-hidden">
-      <CrossfadeVideo src="./bottom.mp4" className="absolute inset-0 w-full h-full object-cover z-0" crossfade={1.2} />
-      <div className="absolute inset-x-0 top-0 z-[1] pointer-events-none" style={{ height: 200, background: 'linear-gradient(to bottom, #000, transparent)' }} />
-      <div className="absolute inset-x-0 bottom-0 z-[1] pointer-events-none" style={{ height: 240, background: 'linear-gradient(to top, #000, transparent)' }} />
-      <div className="absolute inset-0 bg-black/35 z-[1]" />
+      <CrossfadeVideo src="./bottom.mp4" className="absolute inset-0 w-full h-full object-cover z-0 edge-fade-top" crossfade={1.2} />
+      <div className="absolute inset-0 bg-black/35 z-[1] edge-fade-top" />
 
       <div className="relative z-10 px-6 md:px-12 lg:px-24 pt-32 pb-10">
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
@@ -939,7 +962,9 @@ function CtaFooter() {
 // ---------- App ----------
 function App() {
   return (
-    <div className="bg-black min-h-screen">
+    <div className="bg-black min-h-screen relative">
+      <div className="aurora-blob blob-1" aria-hidden="true"></div>
+      <div className="aurora-blob blob-2" aria-hidden="true"></div>
       <Navbar />
       <Hero />
       <div className="bg-black">
