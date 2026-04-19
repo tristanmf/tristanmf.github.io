@@ -150,12 +150,14 @@ strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className
   </svg>;
 
 const ArrowUpRight = (p) => <Icon {...p}><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></Icon>;
+const ArrowUp = (p) => <Icon {...p}><line x1="12" y1="19" x2="12" y2="5" /><polyline points="5 12 12 5 19 12" /></Icon>;
 const Play = (p) => <Icon {...p}><polygon points="6 4 20 12 6 20 6 4" fill="currentColor" stroke="currentColor" /></Icon>;
 const Zap = (p) => <Icon {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></Icon>;
 const Palette = (p) => <Icon {...p}><circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /><circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.8 0 1.5-.7 1.5-1.5 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.8.7-1.5 1.5-1.5H16c3.3 0 6-2.7 6-6 0-5-4.5-9-10-9z" /></Icon>;
 const BarChart3 = (p) => <Icon {...p}><path d="M3 3v18h18" /><path d="M8 17V9" /><path d="M13 17V5" /><path d="M18 17v-3" /></Icon>;
 const Shield = (p) => <Icon {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></Icon>;
 const Menu = (p) => <Icon {...p}><line x1="4" y1="8" x2="20" y2="8" /><line x1="4" y1="16" x2="20" y2="16" /></Icon>;
+const X = (p) => <Icon {...p}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></Icon>;
 
 // ---------- HLS video hook ----------
 function useHls(src) {
@@ -276,6 +278,7 @@ function FadeIn({ children, delay = 0, y = 20, className = "" }) {
 function Navbar() {
   const links = [{ l: "Accueil", h: "#top" }, { l: "Médias", h: "#projets" }, { l: "Productions", h: "#productions" }, { l: "Conférences", h: "#conferences" }, { l: "À propos", h: "#apropos" }];
   const [active, setActive] = React.useState("#top");
+  const [menuOpen, setMenuOpen] = React.useState(false);
   React.useEffect(() => {
     const ids = ["top", "projets", "productions", "conferences", "apropos", "contact"];
     const sections = ids.map(id => document.getElementById(id)).filter(Boolean);
@@ -292,7 +295,7 @@ function Navbar() {
       <div className="flex items-center justify-between">
         <a href="#top" className="flex items-center gap-2">
           <div className="h-10 w-10 rounded-full liquid-glass-strong flex items-center justify-center">
-            <ArrowUpRight size={18} strokeWidth={2.2} className="text-white" />
+            <ArrowUp size={18} strokeWidth={2.2} className="text-white" />
           </div>
           <span className="hidden sm:inline font-heading italic text-xl text-white tracking-tight whitespace-nowrap">tristan.pro</span>
         </a>
@@ -318,10 +321,19 @@ function Navbar() {
           </MailLink>
         </div>
 
-        <button className="md:hidden h-10 w-10 rounded-full liquid-glass flex items-center justify-center text-white">
-          <Menu size={18} />
+        <button onClick={() => setMenuOpen(o => !o)} aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"} className="md:hidden h-10 w-10 rounded-full liquid-glass flex items-center justify-center text-white">
+          {menuOpen ? <X size={18} /> : <Menu size={18} />}
         </button>
       </div>
+
+      {menuOpen && (
+        <div className="md:hidden mt-3 rounded-2xl p-2 border border-white/10" style={{ background: 'rgba(8,10,18,0.9)', backdropFilter: 'blur(22px) saturate(140%)', WebkitBackdropFilter: 'blur(22px) saturate(140%)', boxShadow: '0 12px 40px -12px rgba(0,0,0,0.6)' }}>
+          {links.map(({ l, h }) => (
+            <a key={l} href={h} onClick={() => setMenuOpen(false)} className="block px-4 py-3 rounded-xl text-white/90 hover:bg-white/10 font-body text-base whitespace-nowrap">{l}</a>
+          ))}
+          <MailLink className="block mt-1 px-4 py-3 rounded-xl bg-white text-black font-medium font-body text-base text-center">Me contacter</MailLink>
+        </div>
+      )}
     </nav>);
 
 }
@@ -519,7 +531,7 @@ function MediaCard({ href, img, kicker, title, body, cta, badge, compact }) {
         <img src={img} alt={title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         {badge &&
-        <div className="absolute top-4 left-4 liquid-glass rounded-full px-3 py-1 text-[11px] font-medium text-white font-body">{badge}</div>
+        <div className="absolute top-4 left-4 rounded-full px-3 py-1 text-[11px] font-medium text-white font-body border border-white/15" style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }}>{badge}</div>
         }
       </div>
       <div className="p-6 flex-1 flex flex-col">
@@ -671,7 +683,7 @@ function FeaturesGrid() {
         <FadeIn>
           <div className="inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap">
             <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/60">[&thinsp;03&thinsp;]</span>
-            <span className="text-white font-body text-base md:text-lg tracking-tight">Recherche & veille</span>
+            <span className="text-white font-body text-base md:text-lg tracking-tight">Recherche, veille & institutionnel</span>
           </div>
         </FadeIn>
       </div>
@@ -775,7 +787,7 @@ function Testimonials() {
         <FadeIn>
           <div className="inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap">
             <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/60">[&thinsp;02&thinsp;]</span>
-            <span className="text-white font-body text-base md:text-lg tracking-tight">Livre, web, interactif</span>
+            <span className="text-white font-body text-base md:text-lg tracking-tight">Livre, web interactif</span>
           </div>
         </FadeIn>
       </div>
@@ -835,7 +847,7 @@ function CtaFooter() {
               transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
               className="liquid-glass h-10 w-10 rounded-full flex items-center justify-center">
               
-              <ArrowUpRight size={16} strokeWidth={2} style={{ transform: 'rotate(-45deg)' }} />
+              <ArrowUp size={16} strokeWidth={2} />
             </mot.span>
           </a>
         </div>
