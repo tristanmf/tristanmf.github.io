@@ -816,12 +816,69 @@ function Testimonials() {
 
 }
 
+// ---------- Crossfade video loop (seamless dissolve) ----------
+function CrossfadeVideo({ src, className, crossfade = 1.2 }) {
+  const refA = useRef(null);
+  const refB = useRef(null);
+  useEffect(() => {
+    const a = refA.current;
+    const b = refB.current;
+    if (!a || !b) return;
+    [a, b].forEach((v) => {
+      v.muted = true;
+      v.playsInline = true;
+      v.loop = true;
+      v.setAttribute('muted', '');
+      v.setAttribute('playsinline', '');
+      v.setAttribute('webkit-playsinline', '');
+    });
+    a.style.opacity = '1';
+    b.style.opacity = '0';
+    const syncAndPlay = () => {
+      if (!a.duration || isNaN(a.duration)) return;
+      b.currentTime = (a.currentTime + a.duration / 2) % a.duration;
+      a.play().catch(() => {});
+      b.play().catch(() => {});
+    };
+    a.addEventListener('loadedmetadata', syncAndPlay);
+    a.addEventListener('loadeddata', syncAndPlay);
+    a.addEventListener('canplay', syncAndPlay);
+    let raf;
+    const tick = () => {
+      const D = a.duration;
+      if (D && !isNaN(D)) {
+        const cf = Math.min(crossfade, D / 2.5);
+        const op = (t) => {
+          if (t < cf) return t / cf;
+          if (t > D - cf) return Math.max(0, (D - t) / cf);
+          return 1;
+        };
+        a.style.opacity = String(op(a.currentTime));
+        b.style.opacity = String(op(b.currentTime));
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => {
+      a.removeEventListener('loadedmetadata', syncAndPlay);
+      a.removeEventListener('loadeddata', syncAndPlay);
+      a.removeEventListener('canplay', syncAndPlay);
+      cancelAnimationFrame(raf);
+    };
+  }, [src, crossfade]);
+  return (
+    <>
+      <video ref={refA} src={src} autoPlay loop muted playsInline preload="auto" className={className} style={{ opacity: 1 }} />
+      <video ref={refB} src={src} autoPlay loop muted playsInline preload="auto" className={className} style={{ opacity: 0 }} />
+    </>
+  );
+}
+
 // ---------- CTA + Footer ----------
 function CtaFooter() {
-  const ref = useHls("./bottom.mp4");
   return (
     <section id="contact" className="relative overflow-hidden">
-      <video ref={ref} autoPlay loop muted playsInline preload="auto" className="absolute inset-0 w-full h-full object-cover z-0" />
+      <CrossfadeVideo src="./bottom.mp4" className="absolute inset-0 w-full h-full object-cover z-0" crossfade={1.2} />
       <div className="absolute inset-x-0 top-0 z-[1] pointer-events-none" style={{ height: 200, background: 'linear-gradient(to bottom, #000, transparent)' }} />
       <div className="absolute inset-x-0 bottom-0 z-[1] pointer-events-none" style={{ height: 240, background: 'linear-gradient(to top, #000, transparent)' }} />
       <div className="absolute inset-0 bg-black/35 z-[1]" />
