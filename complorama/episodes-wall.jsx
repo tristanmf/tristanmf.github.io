@@ -52,6 +52,31 @@ const SUBSCRIBE_LINKS = [
     ),
   },
   {
+    name: 'Amazon Music',
+    short: 'Amazon',
+    url: 'https://music.amazon.fr/podcasts/3df44b2f-e59b-4152-aa46-c5c8b44fdc64/complorama',
+    color: '#25D1DA',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" strokeWidth="1.6" />
+        <circle cx="12" cy="12" r="2" />
+        <path d="M3.5 18 C 8 22, 16 22, 20.5 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Podcast Addict',
+    short: 'Podcast Addict',
+    url: 'https://podcastaddict.com/podcast/complorama/3222339',
+    color: '#F4791F',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 2 a10 10 0 1 0 0 20 a10 10 0 0 0 0 -20 z M12 6 a6 6 0 1 1 -0.01 0 z" />
+        <circle cx="12" cy="12" r="2.4" />
+      </svg>
+    ),
+  },
+  {
     name: 'YouTube',
     short: 'YouTube',
     url: 'https://www.youtube.com/playlist?list=PLg6GanYvTasWMem6U2VUxc9sQ6a7T7sIe',
@@ -64,15 +89,15 @@ const SUBSCRIBE_LINKS = [
     ),
   },
   {
-    name: 'Radio France',
-    short: 'Radio France',
-    url: 'https://www.radiofrance.fr/franceinfo/podcasts/complorama',
-    color: '#E20917',
+    name: 'Flux RSS',
+    short: 'RSS',
+    url: 'https://radiofrance-podcast.net/podcast09/podcast_adc482ba-ae2e-47ec-adda-4838cd022cd4.xml',
+    color: '#F26522',
     icon: (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-        <circle cx="12" cy="12" r="9" />
-        <circle cx="12" cy="12" r="3" fill="currentColor" />
-        <path d="M12 3 v4 M12 17 v4 M3 12 h4 M17 12 h4" strokeLinecap="round" />
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <circle cx="5" cy="19" r="2.6" />
+        <path d="M3 11 a10 10 0 0 1 10 10 h-3 a7 7 0 0 0 -7 -7 z" />
+        <path d="M3 4 a17 17 0 0 1 17 17 h-3 a14 14 0 0 0 -14 -14 z" />
       </svg>
     ),
   },
@@ -414,6 +439,7 @@ function EpisodesWall() {
           background: '#0a0a0c',
         }}>
           <img
+            className="hero-illustration"
             src="assets/logo-banner.webp"
             alt="Complorama"
             style={{
@@ -422,14 +448,14 @@ function EpisodesWall() {
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              objectPosition: 'center right',
-              opacity: 0.95,
+              objectPosition: '85% center',
+              opacity: 0.92,
             }}
           />
-          <div style={{
+          <div className="hero-shade-h" style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(to right, rgba(10,10,12,1) 0%, rgba(10,10,12,0.92) 28%, rgba(10,10,12,0.55) 48%, rgba(10,10,12,0) 72%)',
+            background: 'linear-gradient(to right, rgba(10,10,12,1) 0%, rgba(10,10,12,1) 40%, rgba(10,10,12,0.88) 58%, rgba(10,10,12,0.4) 76%, rgba(10,10,12,0) 92%)',
             pointerEvents: 'none',
           }} />
           <div style={{
@@ -443,14 +469,14 @@ function EpisodesWall() {
         <div className="hero-meta" style={{
           position: 'relative',
           padding: '56px 48px 36px',
-          minHeight: 320,
+          minHeight: 360,
           display: 'flex',
           alignItems: 'flex-end',
           justifyContent: 'space-between',
           gap: 32,
           flexWrap: 'wrap',
         }}>
-          <div style={{ flex: '1 1 auto', minWidth: 280 }}>
+          <div style={{ flex: '1 1 auto', minWidth: 280, maxWidth: 720 }}>
             <div style={{
               fontFamily: '"DM Mono", monospace',
               fontSize: 11,
@@ -465,8 +491,8 @@ function EpisodesWall() {
               margin: 0,
               fontFamily: '"Archivo", "Helvetica Neue", sans-serif',
               fontWeight: 800,
-              fontSize: 'clamp(48px, 7vw, 84px)',
-              lineHeight: 0.92,
+              fontSize: 'clamp(44px, 6vw, 72px)',
+              lineHeight: 0.95,
               letterSpacing: '-0.035em',
               color: '#fff',
             }}>
@@ -694,8 +720,10 @@ function EpisodesWall() {
         }
         @media (max-width: 900px) {
           .ep-grid { grid-template-columns: repeat(3, 1fr); }
-          .hero-meta { padding: 36px 24px 24px !important; min-height: 240px !important; }
+          .hero-meta { padding: 36px 24px 24px !important; min-height: 280px !important; }
           .search-bar { padding: 12px 24px !important; }
+          .hero-illustration { object-position: 110% center !important; opacity: 0.55 !important; }
+          .hero-shade-h { background: linear-gradient(to right, rgba(10,10,12,1) 0%, rgba(10,10,12,0.95) 60%, rgba(10,10,12,0.6) 88%, rgba(10,10,12,0.3) 100%) !important; }
         }
         @media (max-width: 600px) {
           .ep-grid { grid-template-columns: repeat(2, 1fr); }
