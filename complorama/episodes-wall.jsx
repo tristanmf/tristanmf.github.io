@@ -5,6 +5,167 @@
 
 const PAGE_SIZE = 20;
 
+const SUBSCRIBE_LINKS = [
+  {
+    name: 'Apple Podcasts',
+    short: 'Apple',
+    url: 'https://podcasts.apple.com/fr/podcast/complorama/id1550565028',
+    color: '#A855F7',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.7 3.1 8.7 7.4 10v-3.5c-.5-.2-1-.5-1.4-.9-.6-.6-1-1.4-1-2.3 0-1.7 1.4-3.1 3.5-3.1s3.5 1.4 3.5 3.1c0 .9-.4 1.7-1 2.3-.4.4-.9.7-1.4.9V22c4.3-1.3 7.4-5.3 7.4-10 0-5.8-4.7-10.5-10.5-10.5zm0 5.4c1.7 0 3.1 1.4 3.1 3.1S13.7 13.1 12 13.1s-3.1-1.4-3.1-3.1S10.3 6.9 12 6.9z"/>
+      </svg>
+    ),
+  },
+  {
+    name: 'Spotify',
+    short: 'Spotify',
+    url: 'https://open.spotify.com/show/0wERGyH0D5UKL6ZZkG9SMW',
+    color: '#1DB954',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm5.5 17.3c-.2.4-.7.5-1 .3-2.8-1.7-6.4-2.1-10.6-1.1-.4.1-.8-.2-.9-.5-.1-.4.2-.8.5-.9 4.6-1 8.5-.6 11.7 1.3.3.2.4.6.3.9zm1.5-3.2c-.3.4-.8.6-1.3.3-3.2-2-8.1-2.5-11.9-1.4-.5.2-1-.1-1.2-.6-.2-.5.1-1 .6-1.2 4.3-1.3 9.7-.7 13.4 1.5.4.3.6.9.4 1.4zm.1-3.4C15.3 8.4 8.7 8.2 4.9 9.4c-.6.2-1.2-.2-1.4-.7-.2-.6.2-1.2.7-1.4 4.3-1.3 11.6-1.1 16 1.5.5.3.7 1 .4 1.5-.3.5-1 .7-1.5.4z"/>
+      </svg>
+    ),
+  },
+  {
+    name: 'Deezer',
+    short: 'Deezer',
+    url: 'https://www.deezer.com/fr/show/2272072',
+    color: '#A238FF',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <rect x="0"  y="17" width="4" height="4" rx="0.6" />
+        <rect x="5"  y="17" width="4" height="4" rx="0.6" />
+        <rect x="10" y="17" width="4" height="4" rx="0.6" />
+        <rect x="15" y="17" width="4" height="4" rx="0.6" />
+        <rect x="20" y="17" width="4" height="4" rx="0.6" />
+        <rect x="5"  y="12" width="4" height="4" rx="0.6" />
+        <rect x="10" y="12" width="4" height="4" rx="0.6" />
+        <rect x="15" y="12" width="4" height="4" rx="0.6" />
+        <rect x="20" y="12" width="4" height="4" rx="0.6" />
+        <rect x="10" y="7"  width="4" height="4" rx="0.6" />
+        <rect x="15" y="7"  width="4" height="4" rx="0.6" />
+        <rect x="20" y="7"  width="4" height="4" rx="0.6" />
+        <rect x="20" y="2"  width="4" height="4" rx="0.6" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Amazon Music',
+    short: 'Amazon',
+    url: 'https://music.amazon.fr/podcasts/3df44b2f-e59b-4152-aa46-c5c8b44fdc64/complorama',
+    color: '#25D1DA',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" strokeWidth="1.6" />
+        <circle cx="12" cy="12" r="2" />
+        <path d="M3.5 18 C 8 22, 16 22, 20.5 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Podcast Addict',
+    short: 'Podcast Addict',
+    url: 'https://podcastaddict.com/podcast/complorama/3222339',
+    color: '#F4791F',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 2 a10 10 0 1 0 0 20 a10 10 0 0 0 0 -20 z M12 6 a6 6 0 1 1 -0.01 0 z" />
+        <circle cx="12" cy="12" r="2.4" />
+      </svg>
+    ),
+  },
+  {
+    name: 'YouTube',
+    short: 'YouTube',
+    url: 'https://www.youtube.com/playlist?list=PLg6GanYvTasWMem6U2VUxc9sQ6a7T7sIe',
+    color: '#FF0000',
+    icon: (
+      <svg width="16" height="14" viewBox="0 0 24 17" fill="currentColor" aria-hidden="true">
+        <path d="M23.5 2.7c-.3-1-1.1-1.8-2.1-2.1C19.5 0 12 0 12 0S4.5 0 2.6.6C1.6.9.8 1.7.5 2.7 0 4.6 0 8.5 0 8.5s0 3.9.5 5.8c.3 1 1.1 1.8 2.1 2.1 1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6c1-.3 1.8-1.1 2.1-2.1.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8z"/>
+        <polygon points="9.5,12.1 15.8,8.5 9.5,4.9" fill="#0a0a0c"/>
+      </svg>
+    ),
+  },
+  {
+    name: 'Flux RSS',
+    short: 'RSS',
+    url: 'https://radiofrance-podcast.net/podcast09/podcast_adc482ba-ae2e-47ec-adda-4838cd022cd4.xml',
+    color: '#F26522',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <circle cx="5" cy="19" r="2.6" />
+        <path d="M3 11 a10 10 0 0 1 10 10 h-3 a7 7 0 0 0 -7 -7 z" />
+        <path d="M3 4 a17 17 0 0 1 17 17 h-3 a14 14 0 0 0 -14 -14 z" />
+      </svg>
+    ),
+  },
+];
+
+function SubscribeButton({ platform }) {
+  const [hover, setHover] = React.useState(false);
+  return (
+    <a
+      href={platform.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      title={`S'abonner sur ${platform.name}`}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 8,
+        padding: '8px 14px',
+        borderRadius: 999,
+        background: hover ? platform.color : 'rgba(255,255,255,0.06)',
+        border: `1px solid ${hover ? platform.color : 'rgba(255,255,255,0.14)'}`,
+        color: hover ? '#fff' : platform.color,
+        textDecoration: 'none',
+        fontFamily: '"DM Mono", monospace',
+        fontSize: 11,
+        letterSpacing: '0.12em',
+        textTransform: 'uppercase',
+        fontWeight: 500,
+        transition: 'background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s',
+        transform: hover ? 'translateY(-1px)' : 'translateY(0)',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      <span style={{ display: 'inline-flex', lineHeight: 0 }}>{platform.icon}</span>
+      <span className="subscribe-label">{platform.short}</span>
+    </a>
+  );
+}
+
+function SubscribeBar() {
+  return (
+    <div
+      className="subscribe-bar"
+      style={{
+        marginTop: 22,
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        gap: 8,
+      }}
+    >
+      <span style={{
+        fontFamily: '"DM Mono", monospace',
+        fontSize: 10,
+        letterSpacing: '0.22em',
+        textTransform: 'uppercase',
+        color: 'rgba(243,239,230,0.45)',
+        marginRight: 6,
+      }}>
+        S'abonner ↗
+      </span>
+      {SUBSCRIBE_LINKS.map(p => <SubscribeButton key={p.name} platform={p} />)}
+    </div>
+  );
+}
+
 function EpisodeTile({ ep }) {
   const [hover, setHover] = React.useState(false);
   const [imgError, setImgError] = React.useState(false);
@@ -278,6 +439,7 @@ function EpisodesWall() {
           background: '#0a0a0c',
         }}>
           <img
+            className="hero-illustration"
             src="assets/logo-banner.webp"
             alt="Complorama"
             style={{
@@ -286,14 +448,14 @@ function EpisodesWall() {
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              objectPosition: 'center right',
-              opacity: 0.95,
+              objectPosition: '85% center',
+              opacity: 0.92,
             }}
           />
-          <div style={{
+          <div className="hero-shade-h" style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(to right, rgba(10,10,12,1) 0%, rgba(10,10,12,0.92) 28%, rgba(10,10,12,0.55) 48%, rgba(10,10,12,0) 72%)',
+            background: 'linear-gradient(to right, rgba(10,10,12,1) 0%, rgba(10,10,12,1) 40%, rgba(10,10,12,0.88) 58%, rgba(10,10,12,0.4) 76%, rgba(10,10,12,0) 92%)',
             pointerEvents: 'none',
           }} />
           <div style={{
@@ -307,14 +469,14 @@ function EpisodesWall() {
         <div className="hero-meta" style={{
           position: 'relative',
           padding: '56px 48px 36px',
-          minHeight: 320,
+          minHeight: 360,
           display: 'flex',
           alignItems: 'flex-end',
           justifyContent: 'space-between',
           gap: 32,
           flexWrap: 'wrap',
         }}>
-          <div style={{ flex: '1 1 auto', minWidth: 280 }}>
+          <div style={{ flex: '1 1 auto', minWidth: 280, maxWidth: 720 }}>
             <div style={{
               fontFamily: '"DM Mono", monospace',
               fontSize: 11,
@@ -329,8 +491,8 @@ function EpisodesWall() {
               margin: 0,
               fontFamily: '"Archivo", "Helvetica Neue", sans-serif',
               fontWeight: 800,
-              fontSize: 'clamp(48px, 7vw, 84px)',
-              lineHeight: 0.92,
+              fontSize: 'clamp(44px, 6vw, 72px)',
+              lineHeight: 0.95,
               letterSpacing: '-0.035em',
               color: '#fff',
             }}>
@@ -351,6 +513,7 @@ function EpisodesWall() {
               <em style={{ fontStyle: 'normal', color: '#f3efe6' }}>Noé Da Silva</em>.{' '}
               Décryptage de l'activité de la complosphère, en lien avec l'actualité.
             </div>
+            <SubscribeBar />
           </div>
 
           <div style={{
@@ -557,11 +720,14 @@ function EpisodesWall() {
         }
         @media (max-width: 900px) {
           .ep-grid { grid-template-columns: repeat(3, 1fr); }
-          .hero-meta { padding: 36px 24px 24px !important; min-height: 240px !important; }
+          .hero-meta { padding: 36px 24px 24px !important; min-height: 280px !important; }
           .search-bar { padding: 12px 24px !important; }
+          .hero-illustration { object-position: 110% center !important; opacity: 0.55 !important; }
+          .hero-shade-h { background: linear-gradient(to right, rgba(10,10,12,1) 0%, rgba(10,10,12,0.95) 60%, rgba(10,10,12,0.6) 88%, rgba(10,10,12,0.3) 100%) !important; }
         }
         @media (max-width: 600px) {
           .ep-grid { grid-template-columns: repeat(2, 1fr); }
+          .subscribe-bar .subscribe-label { display: none; }
         }
       `}</style>
     </div>
