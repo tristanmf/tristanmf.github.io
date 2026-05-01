@@ -1,0 +1,42 @@
+name: Sync new episodes
+
+on:
+  schedule:
+    # Every Wednesday at 06:30 UTC (~07:30/08:30 Paris). Cron is GitHub-side
+    # and may be delayed by a few minutes during peak hours.
+    - cron: '30 6 * * 3'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Append new episodes from RSS + back-fill YouTube
+        run: node scripts/sync-new-episodes.mjs
+
+      - name: Mirror episode images locally
+        run: node scripts/download-episode-images.mjs
+
+      - name: Commit changes
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add complorama/assets/episodes complorama/episodes-data.js
+          if git diff --staged --quiet; then
+            echo "Nothing to commit."
+          else
+            git commit -m "chore(complorama): auto-sync new episodes + YouTube links"
+            git push
+          fi
