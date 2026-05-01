@@ -265,16 +265,15 @@ function EpisodesWall() {
       fontFamily: '"Archivo", "Helvetica Neue", system-ui, sans-serif',
     }}>
       {/* Hero header with logo banner */}
-      <header style={{
+      <header className="hero" style={{
         position: 'relative',
         background: '#0a0a0c',
         borderBottom: '1px solid rgba(255,255,255,0.08)',
+        overflow: 'hidden',
       }}>
-        <div style={{
-          position: 'relative',
-          width: '100%',
-          aspectRatio: '2048 / 512',
-          maxHeight: 260,
+        <div className="hero-banner" style={{
+          position: 'absolute',
+          inset: 0,
           overflow: 'hidden',
           background: '#0a0a0c',
         }}>
@@ -287,20 +286,28 @@ function EpisodesWall() {
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              objectPosition: 'center',
+              objectPosition: 'center right',
               opacity: 0.95,
             }}
           />
           <div style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(to bottom, rgba(10,10,12,0) 55%, rgba(10,10,12,1) 100%)',
+            background: 'linear-gradient(to right, rgba(10,10,12,1) 0%, rgba(10,10,12,0.92) 28%, rgba(10,10,12,0.55) 48%, rgba(10,10,12,0) 72%)',
+            pointerEvents: 'none',
+          }} />
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to bottom, rgba(10,10,12,0) 70%, rgba(10,10,12,0.85) 100%)',
             pointerEvents: 'none',
           }} />
         </div>
 
         <div className="hero-meta" style={{
-          padding: '24px 48px 32px',
+          position: 'relative',
+          padding: '56px 48px 36px',
+          minHeight: 320,
           display: 'flex',
           alignItems: 'flex-end',
           justifyContent: 'space-between',
@@ -550,7 +557,7 @@ function EpisodesWall() {
         }
         @media (max-width: 900px) {
           .ep-grid { grid-template-columns: repeat(3, 1fr); }
-          .hero-meta { padding: 20px 24px 24px !important; }
+          .hero-meta { padding: 36px 24px 24px !important; min-height: 240px !important; }
           .search-bar { padding: 12px 24px !important; }
         }
         @media (max-width: 600px) {
