@@ -5,6 +5,142 @@
 
 const PAGE_SIZE = 20;
 
+const SUBSCRIBE_LINKS = [
+  {
+    name: 'Apple Podcasts',
+    short: 'Apple',
+    url: 'https://podcasts.apple.com/fr/podcast/complorama/id1550565028',
+    color: '#A855F7',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 1.5C6.2 1.5 1.5 6.2 1.5 12c0 4.7 3.1 8.7 7.4 10v-3.5c-.5-.2-1-.5-1.4-.9-.6-.6-1-1.4-1-2.3 0-1.7 1.4-3.1 3.5-3.1s3.5 1.4 3.5 3.1c0 .9-.4 1.7-1 2.3-.4.4-.9.7-1.4.9V22c4.3-1.3 7.4-5.3 7.4-10 0-5.8-4.7-10.5-10.5-10.5zm0 5.4c1.7 0 3.1 1.4 3.1 3.1S13.7 13.1 12 13.1s-3.1-1.4-3.1-3.1S10.3 6.9 12 6.9z"/>
+      </svg>
+    ),
+  },
+  {
+    name: 'Spotify',
+    short: 'Spotify',
+    url: 'https://open.spotify.com/show/0wERGyH0D5UKL6ZZkG9SMW',
+    color: '#1DB954',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm5.5 17.3c-.2.4-.7.5-1 .3-2.8-1.7-6.4-2.1-10.6-1.1-.4.1-.8-.2-.9-.5-.1-.4.2-.8.5-.9 4.6-1 8.5-.6 11.7 1.3.3.2.4.6.3.9zm1.5-3.2c-.3.4-.8.6-1.3.3-3.2-2-8.1-2.5-11.9-1.4-.5.2-1-.1-1.2-.6-.2-.5.1-1 .6-1.2 4.3-1.3 9.7-.7 13.4 1.5.4.3.6.9.4 1.4zm.1-3.4C15.3 8.4 8.7 8.2 4.9 9.4c-.6.2-1.2-.2-1.4-.7-.2-.6.2-1.2.7-1.4 4.3-1.3 11.6-1.1 16 1.5.5.3.7 1 .4 1.5-.3.5-1 .7-1.5.4z"/>
+      </svg>
+    ),
+  },
+  {
+    name: 'Deezer',
+    short: 'Deezer',
+    url: 'https://www.deezer.com/fr/show/2272072',
+    color: '#A238FF',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <rect x="0"  y="17" width="4" height="4" rx="0.6" />
+        <rect x="5"  y="17" width="4" height="4" rx="0.6" />
+        <rect x="10" y="17" width="4" height="4" rx="0.6" />
+        <rect x="15" y="17" width="4" height="4" rx="0.6" />
+        <rect x="20" y="17" width="4" height="4" rx="0.6" />
+        <rect x="5"  y="12" width="4" height="4" rx="0.6" />
+        <rect x="10" y="12" width="4" height="4" rx="0.6" />
+        <rect x="15" y="12" width="4" height="4" rx="0.6" />
+        <rect x="20" y="12" width="4" height="4" rx="0.6" />
+        <rect x="10" y="7"  width="4" height="4" rx="0.6" />
+        <rect x="15" y="7"  width="4" height="4" rx="0.6" />
+        <rect x="20" y="7"  width="4" height="4" rx="0.6" />
+        <rect x="20" y="2"  width="4" height="4" rx="0.6" />
+      </svg>
+    ),
+  },
+  {
+    name: 'YouTube',
+    short: 'YouTube',
+    url: 'https://www.youtube.com/playlist?list=PLg6GanYvTasWMem6U2VUxc9sQ6a7T7sIe',
+    color: '#FF0000',
+    icon: (
+      <svg width="16" height="14" viewBox="0 0 24 17" fill="currentColor" aria-hidden="true">
+        <path d="M23.5 2.7c-.3-1-1.1-1.8-2.1-2.1C19.5 0 12 0 12 0S4.5 0 2.6.6C1.6.9.8 1.7.5 2.7 0 4.6 0 8.5 0 8.5s0 3.9.5 5.8c.3 1 1.1 1.8 2.1 2.1 1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6c1-.3 1.8-1.1 2.1-2.1.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8z"/>
+        <polygon points="9.5,12.1 15.8,8.5 9.5,4.9" fill="#0a0a0c"/>
+      </svg>
+    ),
+  },
+  {
+    name: 'Radio France',
+    short: 'Radio France',
+    url: 'https://www.radiofrance.fr/franceinfo/podcasts/complorama',
+    color: '#E20917',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <circle cx="12" cy="12" r="3" fill="currentColor" />
+        <path d="M12 3 v4 M12 17 v4 M3 12 h4 M17 12 h4" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+];
+
+function SubscribeButton({ platform }) {
+  const [hover, setHover] = React.useState(false);
+  return (
+    <a
+      href={platform.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      title={`S'abonner sur ${platform.name}`}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 8,
+        padding: '8px 14px',
+        borderRadius: 999,
+        background: hover ? platform.color : 'rgba(255,255,255,0.06)',
+        border: `1px solid ${hover ? platform.color : 'rgba(255,255,255,0.14)'}`,
+        color: hover ? '#fff' : platform.color,
+        textDecoration: 'none',
+        fontFamily: '"DM Mono", monospace',
+        fontSize: 11,
+        letterSpacing: '0.12em',
+        textTransform: 'uppercase',
+        fontWeight: 500,
+        transition: 'background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s',
+        transform: hover ? 'translateY(-1px)' : 'translateY(0)',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      <span style={{ display: 'inline-flex', lineHeight: 0 }}>{platform.icon}</span>
+      <span className="subscribe-label">{platform.short}</span>
+    </a>
+  );
+}
+
+function SubscribeBar() {
+  return (
+    <div
+      className="subscribe-bar"
+      style={{
+        marginTop: 22,
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        gap: 8,
+      }}
+    >
+      <span style={{
+        fontFamily: '"DM Mono", monospace',
+        fontSize: 10,
+        letterSpacing: '0.22em',
+        textTransform: 'uppercase',
+        color: 'rgba(243,239,230,0.45)',
+        marginRight: 6,
+      }}>
+        S'abonner ↗
+      </span>
+      {SUBSCRIBE_LINKS.map(p => <SubscribeButton key={p.name} platform={p} />)}
+    </div>
+  );
+}
+
 function EpisodeTile({ ep }) {
   const [hover, setHover] = React.useState(false);
   const [imgError, setImgError] = React.useState(false);
@@ -351,6 +487,7 @@ function EpisodesWall() {
               <em style={{ fontStyle: 'normal', color: '#f3efe6' }}>Noé Da Silva</em>.{' '}
               Décryptage de l'activité de la complosphère, en lien avec l'actualité.
             </div>
+            <SubscribeBar />
           </div>
 
           <div style={{
@@ -562,6 +699,7 @@ function EpisodesWall() {
         }
         @media (max-width: 600px) {
           .ep-grid { grid-template-columns: repeat(2, 1fr); }
+          .subscribe-bar .subscribe-label { display: none; }
         }
       `}</style>
     </div>
