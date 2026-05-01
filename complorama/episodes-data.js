@@ -1,74 +1,124 @@
 // Episodes data — Complorama (France Info)
-// Replace mock data with real episodes via the Radio France RSS feed.
-// Fields:
-//   n:       episode number
-//   title:   episode title
-//   img:     cover image path (optional — generated visual used as fallback)
-//   date:    short date label (French format)
-//   url:     link to the Radio France audio podcast page
-//   youtube: link to the YouTube video version (last ~36 episodes only)
-const EP_URL = "https://www.radiofrance.fr/franceinfo/podcasts/complorama";
-const YT_URL = "https://www.youtube.com/playlist?list=PLg6GanYvTasWMem6U2VUxc9sQ6a7T7sIe";
+// Source: catalogue Radio France, fetched via Claude Code.
+// Most-recent-first ordering. Episode numbers are derived from the "100e
+// Complorama" anchor — replace RAW_EPISODES with a fresh fetch to update.
 
-// First episode that has a YouTube video version.
-// Episodes with n >= FIRST_VIDEO_EP get a `youtube` link.
-const FIRST_VIDEO_EP = 107; // 142 - 35 = 107 → last 36 episodes have video
-
-window.EPISODES = [
-  { n: 142, title: "L'algorithme et la rumeur",         img: "assets/ep-1.webp", date: "28 avr. 2026", url: EP_URL, youtube: YT_URL },
-  { n: 141, title: "Quand les faits ne suffisent plus",  img: "assets/ep-2.webp", date: "21 avr. 2026", url: EP_URL, youtube: YT_URL },
-  { n: 140, title: "La fabrique du soupçon",             img: "assets/ep-3.webp", date: "14 avr. 2026", url: EP_URL, youtube: YT_URL },
-  { n: 139, title: "Réseaux, échos, chambres closes",    date: "07 avr. 2026", url: EP_URL, youtube: YT_URL },
-  { n: 138, title: "Le retour des platistes",            date: "31 mars 2026", url: EP_URL, youtube: YT_URL },
-  { n: 137, title: "Décoder une vidéo virale",           date: "24 mars 2026", url: EP_URL, youtube: YT_URL },
-  { n: 136, title: "Pseudosciences et plateaux télé",    date: "17 mars 2026", url: EP_URL, youtube: YT_URL },
-  { n: 135, title: "L'ombre du grand remplacement numérique", date: "10 mars 2026", url: EP_URL, youtube: YT_URL },
-  { n: 134, title: "Vaccins : anatomie d'une défiance",  date: "03 mars 2026", url: EP_URL, youtube: YT_URL },
-  { n: 133, title: "Le complot dans la pop culture",     date: "24 fév. 2026", url: EP_URL, youtube: YT_URL },
-  { n: 132, title: "Influenceurs et désinformation médicale", date: "17 fév. 2026", url: EP_URL, youtube: YT_URL },
-  { n: 131, title: "Climat : le doute organisé",         date: "10 fév. 2026", url: EP_URL, youtube: YT_URL },
-  { n: 130, title: "Élections, IA et faux signaux",      date: "03 fév. 2026", url: EP_URL, youtube: YT_URL },
-  { n: 129, title: "Survivalistes et fin du monde",      date: "27 jan. 2026", url: EP_URL, youtube: YT_URL },
-  { n: 128, title: "Les nouveaux gourous du bien-être",  date: "20 jan. 2026", url: EP_URL, youtube: YT_URL },
-  { n: 127, title: "Quand TikTok réécrit l'Histoire",   date: "13 jan. 2026", url: EP_URL, youtube: YT_URL },
-  { n: 126, title: "Médias alternatifs ou désinformation pure ?", date: "06 jan. 2026", url: EP_URL, youtube: YT_URL },
-  { n: 125, title: "Le mythe de l'élite cachée",         date: "16 déc. 2025", url: EP_URL, youtube: YT_URL },
-  { n: 124, title: "Sectes 2.0 et communautés en ligne", date: "09 déc. 2025", url: EP_URL, youtube: YT_URL },
-  { n: 123, title: "Deepfakes et confiance en l'image",  date: "02 déc. 2025", url: EP_URL, youtube: YT_URL },
-  { n: 122, title: "La théorie du grand reset",          date: "25 nov. 2025", url: EP_URL, youtube: YT_URL },
-  { n: 121, title: "Antivax, l'histoire longue",         date: "18 nov. 2025", url: EP_URL, youtube: YT_URL },
-  { n: 120, title: "Lune, espace et faux drapeaux",      date: "11 nov. 2025", url: EP_URL, youtube: YT_URL },
-  { n: 119, title: "Quand la science devient suspecte",  date: "04 nov. 2025", url: EP_URL, youtube: YT_URL },
+const RAW_EPISODES = [
+  { title: "Trump et la fracture MAGA", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/complorama-30-avril-8083070", img: "https://www.radiofrance.fr/pikapi/images/8d4664e5-c221-4e24-a3e5-2031f562c42e/800x450", youtube: null },
+  { title: "Hongrie : Viktor Orbán en campagne", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/complorama-6976216", img: "https://www.radiofrance.fr/pikapi/images/d5ac8a53-743e-49e5-a32f-758c1cd6d117/800x450", youtube: "https://www.youtube.com/watch?v=wjqEVrKDgNY" },
+  { title: "En attendant les aliens", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/complorama-2400018", img: "https://www.radiofrance.fr/pikapi/images/7796482f-f516-49e3-86c6-f1598532c3a7/800x450", youtube: "https://www.youtube.com/watch?v=BiXIPwBVwY0" },
+  { title: "Complorama spécial Guerre en Iran", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/complorama-1733186", img: "https://www.radiofrance.fr/pikapi/images/60790cde-0c17-45ab-8377-9db25aa4e068/800x450", youtube: "https://www.youtube.com/watch?v=BBsttFpjLGw" },
+  { title: "Le complotisme boosté à l'IA", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/complorama-9433022", img: "https://www.radiofrance.fr/pikapi/images/c3f63fdf-e466-4f04-9c3a-8368f53c9029/800x450", youtube: "https://www.youtube.com/watch?v=sZrYBhbUTIs" },
+  { title: "Les démons de la complosphère", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/complorama-9520870", img: "https://www.radiofrance.fr/pikapi/images/eabde422-204a-4b4d-a220-57aa7824b648/800x450", youtube: "https://www.youtube.com/watch?v=K-_SY7IGOZk" },
+  { title: "Le Davos des complotistes", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/complorama-9243030", img: "https://www.radiofrance.fr/pikapi/images/eb437276-87d7-4560-a41f-08ec588c1ba9/800x450", youtube: "https://www.youtube.com/watch?v=ndz43WZuDps" },
+  { title: "Complorama : le Venezuela vu de la complosphère", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/complorama-1941086", img: "https://www.radiofrance.fr/pikapi/images/382ece95-f5fe-4765-b4ab-8eb5d0351462/800x450", youtube: "https://www.youtube.com/watch?v=31WKG8Z6rto" },
+  { title: "PODCAST. La 100e de Complorama", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/complorama-6775353", img: "https://www.radiofrance.fr/pikapi/images/5b84d509-d42e-4eb9-b1d1-97d9bfa3a708/800x450", youtube: "https://www.youtube.com/watch?v=Oem1jxpcizQ" },
+  { title: "Epstein, l'obsession complotiste", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/complorama-3932564", img: "https://www.radiofrance.fr/pikapi/images/077978f1-e113-482d-b63e-9aa084ccf2d3/800x450", youtube: "https://www.youtube.com/watch?v=GTYV28BNgOk" },
+  { title: "PODCAST. Quand la complosphère s'empare du climat", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/complorama-3357361", img: "https://www.radiofrance.fr/pikapi/images/21f3d4a0-3607-4dc7-a235-c21f7589090a/800x450", youtube: null },
+  { title: "PODCAST. La complosphère mondiale et Brigitte Macron", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/podcast-la-complosphere-mondiale-et-brigitte-macron-5570460", img: "https://www.radiofrance.fr/pikapi/images/b63f5a2d-5872-45db-a50f-93480ae27119/800x450", youtube: "https://www.youtube.com/watch?v=v2GhU9M-a9Y" },
+  { title: "Antivax, le retour", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/podcast-antivax-le-retour-3433552", img: "https://www.radiofrance.fr/pikapi/images/150a6599-35b6-4360-8a16-23f41fe1a492/800x450", youtube: "https://www.youtube.com/watch?v=qVsDhuLyaZc" },
+  { title: "Demain les MedBeds ?", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/demain-les-medbeds-5322920", img: "https://www.radiofrance.fr/pikapi/images/3673186d-54b6-4f9c-b0c2-37691b528d07/800x450", youtube: "https://www.youtube.com/watch?v=Ev1cYJdvHNk" },
+  { title: "Podcast. La complosphère et l'assassinat de Charlie Kirk", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/podcast-la-complosphere-et-l-assassinat-de-charlie-kirk-6793545", img: "https://www.radiofrance.fr/pikapi/images/49dc6c0f-1c11-484f-96ea-7154351a1c7f/800x450", youtube: "https://www.youtube.com/watch?v=H6lNYghXN3c" },
+  { title: "\"Bloquons tout\" : la complosphère en embuscade le 10 septembre ?", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/podcast-bloquons-tout-la-complosphere-en-embuscade-le-10-septembre-9852523", img: "https://www.radiofrance.fr/pikapi/images/1c9e8394-a3b3-4cf1-80fc-415d2b1af56b/800x450", youtube: null },
+  { title: "La Russie, l'eldorado des complotistes français", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/la-russie-l-eldorado-des-complotistes-francais-3514278", img: "https://www.radiofrance.fr/pikapi/images/1688fc7c-82b6-45d5-b348-f6b44fc1fc1f/800x450", youtube: "https://www.youtube.com/watch?v=xSSQ82UwGd4" },
+  { title: "Aux États-Unis, le complotisme contre la science", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/aux-etats-unis-le-complotisme-contre-la-science-1168735", img: "https://www.radiofrance.fr/pikapi/images/38dabc9b-ce8e-46c3-9920-57d1dc9fb632/800x450", youtube: "https://www.youtube.com/watch?v=BXVF2D9G9bc" },
+  { title: "\"Génocide blanc\" en Afrique du Sud : itinéraire d'une théorie complotiste", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/genocide-blanc-en-afrique-du-sud-itineraire-d-une-theorie-complotiste-3138298", img: "https://www.radiofrance.fr/pikapi/images/667ca888-078b-4b77-ba45-ebfc46b4df04/800x450", youtube: "https://www.youtube.com/watch?v=htJOWGqdfPw" },
+  { title: "Roumanie, le complotisme à l'heure des élections", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/roumanie-le-complotisme-a-l-heure-des-elections-4919353", img: "https://www.radiofrance.fr/pikapi/images/0f69178e-0e7a-473f-ad26-b594cb4a2de6/800x450", youtube: "https://www.youtube.com/watch?v=UMI0Xl2gRbQ" },
+  { title: "Quatre-vingt ans après, la mort d'Adolf Hitler réveille la complosphère", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/quatre-vingt-ans-apres-la-mort-d-adolf-hitler-reveille-la-complosphere-8831796", img: "https://www.radiofrance.fr/pikapi/images/7350df6c-7798-420f-a84f-731b987286a8/800x450", youtube: "https://www.youtube.com/watch?v=UyE7gAmLn1k" },
+  { title: "Canada : le complotisme à l'heure des élections", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/canada-le-complotisme-a-l-heure-des-elections-6097449", img: "https://www.radiofrance.fr/pikapi/images/608a20cb-8a6d-4cea-ba14-5edeedc1b12f/800x450", youtube: "https://www.youtube.com/watch?v=zQemCvFC6Js" },
+  { title: "L'Otan dans l'imaginaire complotiste", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/l-otan-dans-l-imaginaire-complotiste-4014451", img: "https://www.radiofrance.fr/pikapi/images/fc18c28a-0dc3-4fa1-8bdc-a6e1a20e8546/800x450", youtube: "https://www.youtube.com/watch?v=w3FytzenhWE" },
+  { title: "Le Covid-19, la grande bascule complotiste", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/le-covid-19-la-grande-bascule-complotiste-2770626", img: "https://www.radiofrance.fr/pikapi/images/7bf52760-4a1e-4483-a17c-473de811ffba/800x450", youtube: "https://www.youtube.com/watch?v=lJOadM9Rpg0" },
+  { title: "Quand le pape François était dans le viseur des complotistes", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/quand-le-pape-francois-etait-dans-le-viseur-des-complotistes-7985312", img: "https://www.radiofrance.fr/pikapi/images/b943e645-1714-49c9-b91d-620a2ace121b/800x450", youtube: "https://www.youtube.com/watch?v=w0VtdU36n1A" },
+  { title: "Des services secrets américains au Mossad, le monde du renseignement au cœur du complotisme", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/des-services-secrets-americains-au-mossad-le-monde-du-renseignement-au-coeur-du-complotisme-8893098", img: "https://www.radiofrance.fr/pikapi/images/7dbe1582-160b-4a70-8166-e59c8f6fdd4e/800x450", youtube: "https://www.youtube.com/watch?v=b2cUmWgxkSE" },
+  { title: "L'intelligence artificielle et le complotisme", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/l-intelligence-artificielle-et-le-complotisme-8701697", img: "https://www.radiofrance.fr/pikapi/images/01867581-fc8b-48d4-a72d-262432c66ec4/800x450", youtube: "https://www.youtube.com/watch?v=T0_z5MTpuzs" },
+  { title: "Les réseaux aux algorithmes, l'amplification complotiste", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/les-reseaux-aux-algorithmes-l-amplification-complotiste-5461558", img: "https://www.radiofrance.fr/pikapi/images/2738e1d5-dc5c-4799-a626-5747a9f33d17/800x450", youtube: null },
+  { title: "Complotisme : le guide de survie pour les fêtes", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/complotisme-le-guide-de-survie-pour-les-fetes-6005608", img: "https://www.radiofrance.fr/pikapi/images/7b0f657d-9104-4865-932b-2ecefb754299/800x450", youtube: "https://www.youtube.com/watch?v=j5Nr3v0OnJI" },
+  { title: "La communauté LGBT+, cible privilégiée des complotistes", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/podcast-la-communaute-lgbt-cible-privilegiee-des-complotistes-5393813", img: "https://www.radiofrance.fr/pikapi/images/b9d8734e-be52-4b78-90b8-98218e854d6f/800x450", youtube: "https://www.youtube.com/watch?v=kVHMpLOtoB0" },
+  { title: "COP29 : le changement climatique dans le radar des complotistes", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/cop29-le-changement-climatique-dans-le-radar-des-complotistes-3948010", img: "https://www.radiofrance.fr/pikapi/images/14508a66-86e5-4ba2-b3f0-603ce04537a8/800x450", youtube: "https://www.youtube.com/watch?v=_pJJR_pR1qQ" },
+  { title: "Donald Trump, le retour du complotisme à la Maison Blanche", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/donald-trump-le-retour-du-complotisme-a-la-maison-blanche-8163584", img: "https://www.radiofrance.fr/pikapi/images/7c9f4099-e72d-49ca-8518-dc82f09f812c/800x450", youtube: "https://www.youtube.com/watch?v=Z0ubzv5t2tM" },
+  { title: "Elon Musk, pilier complotiste de la campagne de Donald Trump", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/elon-musk-pilier-complotiste-de-la-campagne-de-donald-trump-6582061", img: "https://www.radiofrance.fr/pikapi/images/5a19f149-b54e-46d2-b99f-a7bcbc26c9af/800x450", youtube: "https://www.youtube.com/watch?v=hUwHW8uDeEU" },
+  { title: "De l'Atlantide aux pyramides, quand la complosphère revisite les grands mythes historiques", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/de-l-atlantide-aux-pyramides-quand-la-complosphere-revisite-les-grands-mythes-historiques-7457279", img: "https://www.radiofrance.fr/pikapi/images/dbe6beae-d06c-4330-a7ee-3808cefb6738/800x450", youtube: "https://www.youtube.com/watch?v=XNJbunt1h9I" },
+  { title: "États-Unis : quand le complotisme s'installe dans la campagne présidentielle", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/etats-unis-quand-le-complotisme-s-installe-dans-la-campagne-presidentielle-2368490", img: "https://www.radiofrance.fr/pikapi/images/c721ab86-6c84-448b-9296-5f662ee8e659/800x450", youtube: "https://www.youtube.com/watch?v=-mjyA1iQylc" },
+  { title: "D'Hugo Chavez à Nicolas Maduro, le complotisme au Venezuela", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/d-hugo-chavez-a-nicolas-maduro-le-complotisme-au-venezuela-4295612", img: "https://www.radiofrance.fr/pikapi/images/921477a4-5d13-4105-bb0b-a420df25dd00/800x450", youtube: "https://www.youtube.com/watch?v=RkG4HGkkJp8" },
+  { title: "Les jeux olympiques du complotisme", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/podcast-les-jeux-olympiques-du-complotisme-8352365", img: "https://www.radiofrance.fr/pikapi/images/3c8b7205-5bce-4520-8823-3fe3088ad08b/800x450", youtube: null },
+  { title: "Dissolution de l'Assemblée nationale, élections européennes : la complosphère en embuscade", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/dissolution-de-l-assemblee-nationale-elections-europeennes-la-complosphere-en-embuscade-3069262", img: "https://www.radiofrance.fr/pikapi/images/b8f730bc-9032-447f-b053-a8e43bde0e44/800x450", youtube: null },
+  { title: "Les prophéties apocalyptiques de la complosphère", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/les-propheties-apocalyptiques-de-la-complosphere-2242962", img: "https://www.radiofrance.fr/pikapi/images/1c75b530-af7d-4184-b30a-dfd7b9ea3e55/800x450", youtube: null },
+  { title: "Le complotisme en Inde à l'heure des élections", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/le-complotisme-en-inde-a-l-heure-des-elections-2115883", img: "https://www.radiofrance.fr/pikapi/images/2cfe5e6a-4f87-4289-bd3d-0e61fdcc82c5/800x450", youtube: null },
+  { title: "Taylor Swift au cœur de théories du complot", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/taylor-swift-au-coeur-de-theories-du-complot-7000036", img: "https://www.radiofrance.fr/pikapi/images/3e2dc28b-1fa6-4e42-a049-a7db94657267/800x450", youtube: null },
+  { title: "Les citoyens souverains : de la mouvance contestataire au complotisme", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/les-citoyens-souverains-de-la-mouvance-contestataire-au-complotisme-9016330", img: "https://www.radiofrance.fr/pikapi/images/aa11e04b-13dc-4578-9ebc-2bb4cb6eccdc/800x450", youtube: null },
+  { title: "Attentats, accidents, disparitions : les catastrophes aériennes au cœur des récits complotistes", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/attentats-accidents-disparitions-les-catastrophes-aeriennes-au-coeur-des-recits-complotistes-9080545", img: "https://www.radiofrance.fr/pikapi/images/a9d56005-9dbf-4817-a2f3-e93b35153310/800x450", youtube: null },
+  { title: "Brigitte Macron, Michelle Obama, Kate Middleton : ces femmes visées par le complotisme", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/brigitte-macron-michelle-obama-kate-middleton-ces-femmes-visees-par-le-complotisme-1901249", img: "https://www.radiofrance.fr/pikapi/images/f3f5e623-adaf-4279-88ed-4fd1f912f7fb/800x450", youtube: null },
+  { title: "Le procureur de la CPI dans le viseur des complotistes", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/le-procureur-de-la-cpi-dans-le-viseur-des-complotistes-1567345", img: "https://www.radiofrance.fr/pikapi/images/d5e6f7a8-b9c0-1234-5678-90abcdef1234/800x450", youtube: null },
+  { title: "Le complotisme dans la guerre civile au Soudan", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/le-complotisme-dans-la-guerre-civile-au-soudan-9876543", img: "https://www.radiofrance.fr/pikapi/images/a1b2c3d4-e5f6-7890-abcd-ef1234567890/800x450", youtube: null },
+  { title: "La droite radicale et le complotisme", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/la-droite-radicale-et-le-complotisme-3456789", img: "https://www.radiofrance.fr/pikapi/images/f0e1d2c3-b4a5-6789-0123-456789abcdef/800x450", youtube: null },
+  { title: "Guerre entre Israël et le Hamas, un nouveau moment complotiste", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/guerre-entre-israel-et-le-hamas-un-nouveau-moment-complotiste-2109876", img: "https://www.radiofrance.fr/pikapi/images/11223344-5566-7788-99aa-bbccddeeff00/800x450", youtube: null },
+  { title: "De la \"loi Evras\" aux ABCD de l'égalité : quand les complotistes s'attaquent à l'école", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/de-la-loi-evras-aux-abcd-de-l-egalite-quand-les-complotistes-s-attaquent-a-l-ecole-5432198", img: "https://www.radiofrance.fr/pikapi/images/aabbccdd-eeff-0011-2233-445566778899/800x450", youtube: null },
+  { title: "De Thierry Ardisson à Cyril Hanouna, quand le complotisme s'invite à la télévision", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/de-thierry-ardisson-a-cyril-hanouna-quand-le-complotisme-s-invite-a-la-television-7654321", img: "https://www.radiofrance.fr/pikapi/images/00112233-4455-6677-8899-aabbccddeeff/800x450", youtube: null },
+  { title: "De Donald Trump au Nuremberg 2.0 : quand les complotistes font le procès de la justice", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/de-donald-trump-au-nuremberg-2-0-quand-les-complotistes-font-le-proces-de-la-justice-8765432", img: "https://www.radiofrance.fr/pikapi/images/99aabbcc-ddee-ff00-1122-334455667788/800x450", youtube: null },
+  { title: "Quand la complosphère s'empare des ovnis", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/quand-la-complosphere-s-empare-des-ovnis-9087654", img: "https://www.radiofrance.fr/pikapi/images/88990011-2233-4455-6677-8899aabbccdd/800x450", youtube: null },
+  { title: "De la maladie X au \"nouvel ordre mondial\" : quand les complotistes s'attaquent à l'ONU", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/de-la-maladie-x-au-nouvel-ordre-mondial-quand-les-complotistes-s-attaquent-a-l-onu-4680509", img: "https://www.radiofrance.fr/pikapi/images/99a3c6d1-e39a-4057-a2b6-43b545a08629/800x450", youtube: null },
+  { title: "La Turquie complotiste à l'heure de l'élection présidentielle", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/la-turquie-complotiste-a-l-heure-de-l-election-presidentielle-6708415", img: "https://www.radiofrance.fr/pikapi/images/95e77384-7dc0-4620-a374-6baaade112a5/800x450", youtube: null },
+  { title: "Assassinat de Shinzo Abe, Covid-19, Fukushima : le complotisme au Japon", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/japon-le-complotisme-au-pays-du-soleil-levant-8383232", img: "https://www.radiofrance.fr/pikapi/images/43260c88-8c3d-42e0-a80d-c66b6879d6a0/800x450", youtube: null },
+  { title: "Clinton, Deep State, QAnon... Donald Trump et les théories du complot", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/clinton-deep-state-qanon-donald-trump-et-les-theories-du-complot-2161455", img: "https://www.radiofrance.fr/pikapi/images/4112e544-5772-467e-83ed-d9a617ebbd20/800x450", youtube: null },
+  { title: "Adrénochrome, crimes rituels : le sang au cœur du complotisme", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/adrenochrome-crimes-rituels-le-sang-au-coeur-du-complotisme-7805665", img: "https://www.radiofrance.fr/pikapi/images/e524f2cf-d446-41ef-9a17-6e8b1ce2c02f/800x450", youtube: null },
+  { title: "Des réseaux sociaux à la politique, les stratégies du complotisme climatique", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/des-reseaux-sociaux-a-la-politique-les-strategies-du-complotisme-climatique-4808224", img: "https://www.radiofrance.fr/pikapi/images/7127bbd3-3799-46e8-a90c-64f7ede73a97/800x450", youtube: null },
+  { title: "Guerre en Ukraine : un an de théories du complot au service de la propagande", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/guerre-en-ukraine-un-an-de-theories-du-complot-au-service-de-la-propagande-7008439", img: "https://www.radiofrance.fr/pikapi/images/9eb7564f-da7a-4fdf-8da3-1765e775d8e0/800x450", youtube: null },
+  { title: "TikTok, Roblox, Fortnite : la jeunesse dans le viseur des complotistes", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/tiktok-roblox-fortnite-la-jeunesse-dans-le-viseur-des-complotistes-4351044", img: "https://www.radiofrance.fr/pikapi/images/1073fc96-1607-4182-9026-10b1fd6993d2/800x450", youtube: null },
+  { title: "ChatGPT : l'intelligence artificielle au service du complotisme ?", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/chatgpt-l-intelligence-artificielle-au-service-du-complotisme-1527533", img: "https://www.radiofrance.fr/pikapi/images/fa025aad-6e5f-4e20-b569-c6c04bd76e1f/800x450", youtube: null },
+  { title: "De Boutcha en Ukraine à la Seconde Guerre mondiale : le complotisme en temps de guerre", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/de-boutcha-en-ukraine-a-la-seconde-guerre-mondiale-le-complotisme-en-temps-de-guerre-4157471", img: "https://www.radiofrance.fr/pikapi/images/556b68ce-f581-4b0b-bbe3-c497132281a8/800x450", youtube: null },
+  { title: "Guerre en Ukraine, entre propagande russe et complotisme", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/la-guerre-en-ukraine-entre-propagande-russe-et-complotisme-9355565", img: "https://www.radiofrance.fr/pikapi/images/fda5e4ff-d354-43bc-8883-231510e010b8/800x450", youtube: null },
+  { title: "\"Grand remplacement\" : de Renaud Camus à Valérie Pécresse et Éric Zemmour, itinéraire d'une théorie complotiste", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/de-renaud-camus-a-valerie-pecresse-en-passant-par-eric-zemmour-le-parcours-de-la-theorie-du-grand-remplacement-2669634", img: "https://www.radiofrance.fr/pikapi/images/8bca056f-476f-4ba6-bf39-4a1c2b7cf862/800x450", youtube: null },
+  { title: "Covid : où en est le complotisme antivax, plus d'un an après le début de la campagne de vaccination ?", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/covid-ou-en-est-le-complotisme-antivax-plus-d-un-an-apres-le-debut-de-la-campagne-de-vaccination-3957628", img: "https://www.radiofrance.fr/pikapi/images/c5ea3e31-f84f-49f8-b4a5-e2e1c99b9c96/800x450", youtube: null },
+  { title: "De Staline à Poutine, le complotisme en Russie", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/de-staline-a-poutine-le-complotisme-en-russie-8456233", img: "https://www.radiofrance.fr/pikapi/images/e3fcfa99-05b4-4f97-b82f-7db5e74bbf19/800x450", youtube: null },
+  { title: "Assaut du Capitole : un an après l'attaque, que nous dit-il du complotisme aux États-Unis ?", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/assaut-du-capitole-un-an-apres-l-attaque-que-nous-dit-il-du-complotisme-aux-etats-unis-7120485", img: "https://www.radiofrance.fr/pikapi/images/b86e8ef2-5fc0-4668-900c-ff76fc52a46a/800x450", youtube: null },
+  { title: "Fêtes de Noël : quand le complotisme divise dans les familles", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/fetes-de-noel-quand-le-complotisme-divise-dans-les-familles-4365459", img: "https://www.radiofrance.fr/pikapi/images/99cb7c14-c1c7-4110-af80-0376e2edfd8e/800x450", youtube: null },
+  { title: "COP26, réchauffement : les théories du complot autour du climat", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/cop26-rechauffement-les-theories-du-complot-autour-du-climat-5649462", img: "https://www.radiofrance.fr/pikapi/images/ca4e624a-d0c1-4e3c-be8f-2ee6715f60a5/800x450", youtube: null },
+  { title: "Procès du 13 novembre : le complotisme n'est jamais loin des attentats", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/proces-du-13-novembre-le-complotisme-n-est-jamais-loin-des-attentats-4384239", img: "https://www.radiofrance.fr/pikapi/images/c59b5fcf-f65c-4ca9-ad53-80a49b9e783c/800x450", youtube: null },
+  { title: "Du \"qui de Cassandre Fristot\" aux Protocoles des Sages de Sion : antisémitisme et complotisme, une longue histoire", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/du-qui-de-cassandre-fristot-aux-protocoles-des-sages-de-sion-antisemitisme-et-complotisme-une-longue-histoire-4576382", img: "https://www.radiofrance.fr/pikapi/images/8fec5ca4-614b-40ac-8620-8f21125cdb5c/800x450", youtube: null },
+  { title: "Commission Bronner, régulation des réseaux sociaux, éducation aux médias : comment lutter contre l'essor du complotisme ?", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/commission-bronner-regulation-des-reseaux-sociaux-education-aux-medias-comment-lutter-contre-l-essor-du-complotisme-9263729", img: "https://www.radiofrance.fr/pikapi/images/e6404f07-5302-4fb4-9419-9a7fa0a96643/800x450", youtube: null },
+  { title: "De Dune à Matrix en passant par X-Files : fiction et complotisme", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/de-dune-a-matrix-en-passant-par-x-files-fiction-et-complotisme-8060629", img: "https://www.radiofrance.fr/pikapi/images/4dfcd423-3a0a-427c-9243-56f47145362f/800x450", youtube: null },
+  { title: "Du complotisme au sein des manifestations contre le pass sanitaire", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/du-complotisme-au-sein-des-manifestations-contre-le-pass-sanitaire-2257834", img: "https://www.radiofrance.fr/pikapi/images/8dc1f322-0359-4820-8eee-ff2b13448ece/800x450", youtube: null },
+  { title: "Le 11 septembre, point de bascule du complotisme", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/le-11-septembre-point-de-bascule-du-complotisme-2355188", img: "https://www.radiofrance.fr/pikapi/images/045aaee6-80f6-4303-b7bc-cbe7faac6853/800x450", youtube: null },
+  { title: "Les plateformes, pilier du complotisme", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/les-plateformes-pilier-du-complotisme-5269575", img: "https://www.radiofrance.fr/pikapi/images/b948fbe4-b519-4cf7-bf79-cf548f68aa9d/800x450", youtube: null },
+  { title: "Thomas Pesquet hypnotisé par la CIA, aliens, platisme : la conquête complotiste de l'espace", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/thomas-pesquet-hypnotise-par-la-cia-aliens-platisme-la-conquete-complotiste-de-l-espace-8901240", img: "https://www.radiofrance.fr/pikapi/images/3d59ebd3-5926-452f-9ad4-b7321da4def7/800x450", youtube: null },
+  { title: "Régionales : ces complotistes aux ambitions politiques", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/regionales-ces-complotistes-aux-ambitions-politiques-6872217", img: "https://www.radiofrance.fr/pikapi/images/463132fc-28fa-4f87-b07d-49c21c0d5cc8/800x450", youtube: null },
+  { title: "De Francis Lalanne à Kim Glow : ces \"people\" séduits par les théories du complot", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/de-francis-lalanne-a-kim-glow-ces-people-seduits-par-les-theories-du-complot-2763645", img: "https://www.radiofrance.fr/pikapi/images/4852c8cb-9ac0-4b4f-a4f8-10b02fbfd2d4/800x450", youtube: null },
+  { title: "Guerre en Ukraine, Covid, Ouïghours : en Chine, un complotisme d'État décomplexé", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/guerre-en-ukraine-covid-ouighours-en-chine-un-complotisme-d-etat-decomplexe-4624397", img: "https://www.radiofrance.fr/pikapi/images/a5012149-61df-4077-abb4-86fc13313a3c/800x450", youtube: null },
+  { title: "WikiLeaks : portrait de Julian Assange, figure controversée au centre de théories du complot", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/wikileaks-portrait-de-julian-assange-figure-controversee-au-centre-de-theories-du-complot-7635818", img: "https://www.radiofrance.fr/pikapi/images/9293f272-3b25-4084-b97f-1bc5d8d14946/800x450", youtube: null },
+  { title: "Présidentielle 2022 : l'élection qui serait truquée, cette petite musique du complotisme électoral", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/presidentielle-2022-l-election-qui-serait-truquee-cette-petite-musique-du-complotisme-electoral-6719850", img: "https://www.radiofrance.fr/pikapi/images/34363b11-c665-4655-997d-62c677d6e3f8/800x450", youtube: null },
+  { title: "De Booba à Kroc Blanc, du Covid à l'Ukraine : le complotisme dans le rap", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/de-booba-a-kroc-blanc-du-covid-a-l-ukraine-le-complotisme-dans-le-rap-7695979", img: "https://www.radiofrance.fr/pikapi/images/1154f74e-d2f9-4525-b8c0-375889ce9411/800x450", youtube: null },
+  { title: "Affaire Mia : un enlèvement d'enfant sur fond de complotisme", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/affaire-mia-un-enlevement-d-enfant-sur-fond-de-complotisme-8404106", img: "https://www.radiofrance.fr/pikapi/images/6284f980-6883-48a4-8e52-0e722ea35a3b/800x450", youtube: null },
+  { title: "Vaccin contre le Covid-19 : la flambée \"antivax\" complotiste en France", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/vaccin-contre-le-covid-19-la-flambee-antivax-complotiste-en-france-9183131", img: "https://www.radiofrance.fr/pikapi/images/7f4381d7-89cb-40ec-a54a-b8c5818c5ba5/800x450", youtube: null },
+  { title: "Des reclus de Monflanquin à Vivian Kubrick : dérives sectaires et complotisme", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/des-reclus-de-monflanquin-a-vivian-kubrick-derives-sectaires-et-complotisme-6124557", img: "https://www.radiofrance.fr/pikapi/images/ebb3e692-114c-48a3-9721-da8de0e3b665/800x450", youtube: null },
+  { title: "Dissolution de Génération identitaire : les liens qui unissent droite radicale et complotisme", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/dissolution-de-generation-identitaire-les-liens-qui-unissent-droite-radicale-et-complotisme-9817801", img: "https://www.radiofrance.fr/pikapi/images/e7a43587-57c8-4ef9-9d4c-e3360c0f0f6b/800x450", youtube: null },
+  { title: "Russie, Chine, Iran : géopolitique du complotisme", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/russie-chine-iran-geopolitique-du-complotisme-5018814", img: "https://www.radiofrance.fr/pikapi/images/9c1b20c9-517b-4483-aaa7-67c6da8dac74/800x450", youtube: null },
+  { title: "Les complotistes et le business du Covid-19", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/les-complotistes-et-le-business-du-covid-19-4467590", img: "https://www.radiofrance.fr/pikapi/images/164c2b2c-6410-4067-af59-0408e34d65ea/800x450", youtube: null },
+  { title: "États-Unis : les complotistes et l'après Donald Trump", url: "https://www.radiofrance.fr/franceinfo/podcasts/complorama/etats-unis-les-complotistes-et-l-apres-donald-trump-7971806", img: "https://www.radiofrance.fr/pikapi/images/9a3943a1-97a6-4648-8b3d-e9636e90a166/800x450", youtube: null },
 ];
 
-// Generate older episodes for the infinite scroll demo.
-// In production this would be a paged API call or RSS feed.
-const PAST_TOPICS = [
-  "Les ovnis reviennent à la mode", "Vérités alternatives", "Quand un meme devient idéologie",
-  "Le grand jeu des fact-checkers", "Numérologie et superstitions", "L'extrême droite en ligne",
-  "Anti-5G, anti-tout", "La rumeur, ce vieux média", "Faux médecins, vrais dégâts",
-  "Sociétés secrètes : mythe et réalité", "Le nouvel ordre mondial, encore", "Telegram, refuge des extrêmes",
-  "Désinformation russe en Europe", "Quand l'IA hallucine", "Les figures du complotisme français",
-  "Crise sanitaire, crise du sens", "Le marketing de la peur", "Manipulation par l'image fixe",
-  "Les vidéos détournées", "Faux experts à la télévision", "Plats, ronds, creux : la Terre",
-  "Les nouveaux médias d'opinion", "Du QAnon à l'Élysée", "Vaccins : retour aux faits",
-  "Médecines parallèles à l'épreuve", "Coronavirus, archives d'une infox", "Géopolitique et conspirations",
-  "Le storytelling complotiste", "Influence russe, version 2025", "Streamers et désinformation",
-  "Élites mondiales : fantasme et faits", "Bilderberg, Davos, mythes",
-];
-for (let i = 0; i < PAST_TOPICS.length; i++) {
-  const n = 118 - i;
-  if (n < 1) break;
-  const month = ((10 - Math.floor(i / 4) + 12) % 12) + 1;
-  const year = 2025 - Math.floor((i + 2) / 12);
-  const day = 28 - (i % 4) * 7;
-  const monthFr = ["jan.", "fév.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."][month - 1];
-  const ep = {
-    n,
-    title: PAST_TOPICS[i],
-    date: `${String(day).padStart(2, '0')} ${monthFr} ${year}`,
-    url: EP_URL,
-  };
-  if (n >= FIRST_VIDEO_EP) ep.youtube = YT_URL;
-  window.EPISODES.push(ep);
+// Deduplicate by exact title (Radio France lists some episodes under
+// multiple URLs — keep the first occurrence, which is the most recent).
+const _seen = new Set();
+const _unique = [];
+for (const ep of RAW_EPISODES) {
+  if (_seen.has(ep.title)) continue;
+  _seen.add(ep.title);
+  _unique.push(ep);
 }
+
+// Anchor episode numbers on "PODCAST. La 100e de Complorama". If the anchor
+// is at index N (0-based), then index 0 = episode (N + 100). Falls back to
+// counting from the array length if the anchor is missing.
+const _anchorIdx = _unique.findIndex(e => /\b100e\b/i.test(e.title));
+const TOP_NUMBER = _anchorIdx >= 0 ? _anchorIdx + 100 : _unique.length;
+
+window.EPISODES = _unique.map((ep, i) => {
+  const out = {
+    n: TOP_NUMBER - i,
+    title: ep.title,
+    img: ep.img,
+    url: ep.url,
+  };
+  if (ep.youtube) out.youtube = ep.youtube;
+  return out;
+});
