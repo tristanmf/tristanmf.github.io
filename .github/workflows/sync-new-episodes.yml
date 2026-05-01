@@ -2,9 +2,20 @@ name: Sync new episodes
 
 on:
   schedule:
-    # Every Wednesday at 06:30 UTC (~07:30/08:30 Paris). Cron is GitHub-side
-    # and may be delayed by a few minutes during peak hours.
-    - cron: '30 6 * * 3'
+    # Times are UTC. Paris is UTC+2 in summer (CEST), UTC+1 in winter (CET).
+    # Cron may be delayed by a few minutes during GitHub peak hours.
+    #
+    # Audio drop window — Complorama publishes Friday evening, biweekly:
+    - cron: '0 18 * * 5'   # Fri 18:00 UTC = ~20:00 Paris (audio sync)
+    - cron: '0 8 * * 6'    # Sat 08:00 UTC = ~10:00 Paris (catch late drops)
+    #
+    # YouTube back-fill window — the video edit usually ships within a week:
+    - cron: '0 10 * * 1'   # Mon 10:00 UTC = ~12:00 Paris
+    - cron: '0 10 * * 4'   # Thu 10:00 UTC = ~12:00 Paris
+    #
+    # The script is idempotent: each run is a no-op when nothing's new, so
+    # running weekly instead of strictly biweekly costs nothing extra and
+    # also catches off-schedule special episodes.
   workflow_dispatch:
 
 permissions:
