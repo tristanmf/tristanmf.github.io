@@ -7,6 +7,7 @@ const PAGE_SIZE = 20;
 
 function EpisodeTile({ ep }) {
   const [hover, setHover] = React.useState(false);
+  const [imgError, setImgError] = React.useState(false);
   const accent = '#e63946';
   const hasVideo = !!ep.youtube;
 
@@ -29,10 +30,11 @@ function EpisodeTile({ ep }) {
       }}
     >
       {/* Visual layer */}
-      {ep.img ? (
+      {ep.img && !imgError ? (
         <img
           src={ep.img}
           alt=""
+          onError={() => setImgError(true)}
           style={{
             position: 'absolute',
             inset: 0,
@@ -373,7 +375,7 @@ function EpisodesWall() {
               }} />
               EN COURS
             </div>
-            <div>{window.EPISODES.length} ÉPISODES</div>
+            <div>{window.EPISODES[0] ? window.EPISODES[0].n : window.EPISODES.length} ÉPISODES</div>
             <div>SAISON 06</div>
           </div>
         </div>
@@ -517,6 +519,21 @@ function EpisodesWall() {
             color: 'rgba(243,239,230,0.3)',
           }}>
             complorama · le mur des épisodes
+          </div>
+          <div style={{
+            marginTop: 16,
+            fontFamily: '"DM Mono", monospace',
+            fontSize: 10,
+            letterSpacing: '0.15em',
+            color: 'rgba(243,239,230,0.25)',
+          }}>
+            vibécodé par{' '}
+            <a
+              href="https://tristan.pro"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: 'rgba(243,239,230,0.4)', textDecoration: 'none' }}
+            >Tristan Mendès France</a>
           </div>
         </footer>
       )}
