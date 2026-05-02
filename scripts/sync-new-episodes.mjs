@@ -125,13 +125,50 @@ function existingUrls(src) {
   return urls;
 }
 
-function existingPikapiPaths(src) {
-  // Episodes whose img has already been rewritten to a local path use the
-  // UUID we'd derive from the pikapi URL — track both forms to dedupe by
-  // image as a secondary signal.
+function existingNormalizedTitles(src) {
+  // Primary dedup signal — Radio France serves the same episode under both
+  // www.radiofrance.fr/franceinfo/podcasts/... and www.franceinfo.fr/replay-
+  // radio/... URLs, so URL-based dedup alone is not enough.
   const set = new Set();
-  for (const m of src.matchAll(/assets\/episodes\/([a-f0-9-]+)\.webp/g)) set.add(m[1]);
+  for (const m of src.matchAll(/title:\s*"((?:[^"\\]|\\.)*)"/g)) {
+    try {
+      const decoded = JSON.parse(`"${m[1]}"`);
+      set.add(normalizeTitle(decoded));
+    } catch { /* skip malformed */ }
+  }
   return set;
+}
+
+function existingImageUuids(src) {
+  // Track every UUID we've already mirrored or referenced, in any form:
+  // - mirrored local path:  assets/episodes/<UUID>.webp
+  // - legacy pikapi remote: pikapi.radiofrance.fr/images/<UUID>/...
+  // - new s3 cruiser remote: radiofrance.fr/s3/cruiser-production-eu3/.../<UUID>/...
+  const set = new Set();
+  for (const m of src.matchAll(/assets\/episodes\/([a-f0-9-]{36})\.webp/g)) set.add(m[1]);
+  for (const m of src.matchAll(/\/images\/([a-f0-9-]{36})\//g)) set.add(m[1]);
+  for (const m of src.matchAll(/\/cruiser-production[^/]*\/\d{4}\/\d{2}\/([a-f0-9-]{36})\//g)) set.add(m[1]);
+  return set;
+}
+
+// Known UUID of the generic Complorama show artwork that Radio France
+// substitutes when an episode has no specific illustration. Re-using it
+// would create visually duplicate tiles.
+const GENERIC_SHOW_UUID = '39bbb292-d2d5-4b77-9f89-1b320bd4a4a5';
+
+function extractImageUuid(url) {
+  const m = url.match(/\/images\/([a-f0-9-]{36})\//)
+         || url.match(/\/cruiser-production[^/]*\/\d{4}\/\d{2}\/([a-f0-9-]{36})\//);
+  return m ? m[1] : null;
+}
+
+// Promo / non-episode items the RSS occasionally carries (e.g. the sticky
+// "Retrouvez tous les épisodes sur l'appli Radio France" tile).
+function isPromoItem(item) {
+  if (!item.link) return true;
+  if (!/\/complorama\//i.test(item.link)) return true;
+  if (/application-mobile-radio-france/i.test(item.link)) return true;
+  return false;
 }
 
 function formatEntry(ep) {
@@ -193,20 +230,31 @@ async function main() {
 
   const src = await readFile(DATA_FILE, 'utf8');
   const knownUrls = existingUrls(src);
-  const knownImgUuids = existingPikapiPaths(src);
+  const knownImgUuids = existingImageUuids(src);
+  const knownTitles = existingNormalizedTitles(src);
 
   const newEps = [];
   for (const item of rssItems) {
+    if (isPromoItem(item)) {
+      console.log(`Skipping (promo / non-episode): ${item.title}`);
+      continue;
+    }
     if (knownUrls.has(item.link)) continue;
-    // Some entries can share an image UUID with an existing one (re-uploads,
-    // teaser republications). Skip if so to avoid duplicates.
-    const uuidMatch = item.image && item.image.match(/\/images\/([a-f0-9-]+)\//);
-    if (uuidMatch && knownImgUuids.has(uuidMatch[1])) {
-      console.log(`Skipping (image already known): ${item.title}`);
+    if (knownTitles.has(normalizeTitle(item.title))) {
+      console.log(`Skipping (title already known, likely RSS-vs-canonical URL alias): ${item.title}`);
       continue;
     }
     if (!item.image) {
       console.warn(`Skipping (no image in RSS): ${item.title}`);
+      continue;
+    }
+    const uuid = extractImageUuid(item.image);
+    if (uuid && knownImgUuids.has(uuid)) {
+      console.log(`Skipping (image UUID already known): ${item.title}`);
+      continue;
+    }
+    if (uuid === GENERIC_SHOW_UUID) {
+      console.log(`Skipping (generic show artwork — no episode-specific image yet): ${item.title}`);
       continue;
     }
     const youtube = findYoutubeMatch(item.title, ytIndex);
