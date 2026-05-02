@@ -398,9 +398,21 @@ function EpisodesWall() {
   const [shown, setShown] = React.useState(PAGE_SIZE);
   const sentinelRef = React.useRef(null);
 
-  const filtered = window.EPISODES.filter(e =>
-    !query || e.title.toLowerCase().includes(query.toLowerCase()) || String(e.n).includes(query)
-  );
+  // Normalize accents and case so "Orban" matches "Orbán" and "elections"
+  // matches "élections". Searches the title, the editor-written description
+  // (when present), and the raw episode number.
+  const normalize = (s) => s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '');
+  const q = normalize(query);
+  const filtered = window.EPISODES.filter(e => {
+    if (!q) return true;
+    if (normalize(e.title).includes(q)) return true;
+    if (e.description && normalize(e.description).includes(q)) return true;
+    if (String(e.n).includes(query)) return true;
+    return false;
+  });
   const visible = filtered.slice(0, shown);
   const hasMore = visible.length < filtered.length;
 
