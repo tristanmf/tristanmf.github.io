@@ -40,6 +40,9 @@ jobs:
       - name: Mirror episode images locally
         run: node scripts/download-episode-images.mjs
 
+      - name: Fetch missing episode descriptions from Radio France
+        run: node scripts/fetch-episode-descriptions.mjs
+
       - name: Commit changes
         run: |
           git config user.name  "github-actions[bot]"

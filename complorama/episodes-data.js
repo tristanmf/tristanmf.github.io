@@ -139,5 +139,6 @@ window.EPISODES = _unique.map((ep, i) => {
     url: ep.url,
   };
   if (ep.youtube) out.youtube = ep.youtube;
+  if (ep.description) out.description = ep.description;
   return out;
 });
