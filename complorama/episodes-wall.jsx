@@ -153,7 +153,7 @@ function SubscribeBar() {
         gap: 8,
       }}
     >
-      <span style={{
+      <span className="subscribe-prefix" style={{
         fontFamily: '"DM Mono", monospace',
         fontSize: 10,
         letterSpacing: '0.22em',
@@ -729,7 +729,9 @@ function EpisodesWall() {
         }
         @media (max-width: 600px) {
           .ep-grid { grid-template-columns: repeat(2, 1fr); }
-          .subscribe-bar .subscribe-label { display: none; }
+          .subscribe-bar { gap: 6px !important; margin-top: 16px !important; }
+          .subscribe-bar .subscribe-prefix { display: none; }
+          .subscribe-bar a { padding: 6px 10px !important; font-size: 10px !important; gap: 6px !important; letter-spacing: 0.08em !important; }
         }
       `}</style>
     </div>
