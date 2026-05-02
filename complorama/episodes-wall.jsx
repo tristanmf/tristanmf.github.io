@@ -119,17 +119,19 @@ function SubscribeButton({ platform }) {
         gap: 8,
         padding: '8px 14px',
         borderRadius: 999,
-        background: hover ? platform.color : 'rgba(255,255,255,0.06)',
-        border: `1px solid ${hover ? platform.color : 'rgba(255,255,255,0.14)'}`,
-        color: hover ? '#fff' : platform.color,
+        background: platform.color,
+        border: `1px solid ${platform.color}`,
+        color: '#fff',
         textDecoration: 'none',
         fontFamily: '"DM Mono", monospace',
         fontSize: 11,
         letterSpacing: '0.12em',
         textTransform: 'uppercase',
-        fontWeight: 500,
-        transition: 'background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s',
-        transform: hover ? 'translateY(-1px)' : 'translateY(0)',
+        fontWeight: 600,
+        transition: 'transform 0.2s, box-shadow 0.2s, filter 0.2s',
+        transform: hover ? 'translateY(-2px)' : 'translateY(0)',
+        boxShadow: hover ? `0 8px 24px -6px ${platform.color}80` : '0 1px 0 rgba(0,0,0,0.2)',
+        filter: hover ? 'brightness(1.12)' : 'brightness(1)',
         whiteSpace: 'nowrap',
       }}
     >
@@ -507,8 +509,8 @@ function EpisodesWall() {
               fontWeight: 400,
             }}>
               Par{' '}
-              <em style={{ fontStyle: 'normal', color: '#f3efe6' }}>Rudy Reichstadt</em>,{' '}
-              <em style={{ fontStyle: 'normal', color: '#f3efe6' }}>Tristan Mendès France</em>{' '}
+              <em style={{ fontStyle: 'normal', color: '#f3efe6' }}>Tristan Mendès France</em>,{' '}
+              <em style={{ fontStyle: 'normal', color: '#f3efe6' }}>Rudy Reichstadt</em>{' '}
               et{' '}
               <em style={{ fontStyle: 'normal', color: '#f3efe6' }}>Noé Da Silva</em>.{' '}
               Décryptage de l'activité de la complosphère, en lien avec l'actualité.
