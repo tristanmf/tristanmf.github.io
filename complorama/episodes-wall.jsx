@@ -499,7 +499,7 @@ function EpisodesWall() {
               color: 'rgba(243,239,230,0.55)',
               marginBottom: 10,
             }}>
-              franceinfo · podcast
+              podcast · franceinfo
             </div>
             <h1 style={{
               margin: 0,
@@ -520,12 +520,36 @@ function EpisodesWall() {
               maxWidth: 640,
               fontWeight: 400,
             }}>
-              Par{' '}
-              <em style={{ fontStyle: 'normal', color: '#f3efe6' }}>Tristan Mendès France</em>,{' '}
-              <em style={{ fontStyle: 'normal', color: '#f3efe6' }}>Rudy Reichstadt</em>{' '}
-              et{' '}
-              <em style={{ fontStyle: 'normal', color: '#f3efe6' }}>Noé Da Silva</em>.{' '}
-              Décryptage de l'activité de la complosphère, en lien avec l'actualité.
+              <div>
+                Par{' '}
+                <a
+                  href="https://tristan.pro"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    fontStyle: 'normal',
+                    color: '#f3efe6',
+                    textDecoration: 'none',
+                    borderBottom: '1px solid rgba(230,57,70,0.6)',
+                  }}
+                >Tristan Mendès France</a>,{' '}
+                <em style={{ fontStyle: 'normal', color: '#f3efe6' }}>Rudy Reichstadt</em>{' '}
+                et{' '}
+                <em style={{ fontStyle: 'normal', color: '#f3efe6' }}>Noé Da Silva</em>.
+              </div>
+              <div style={{ marginTop: 10 }}>
+                Décryptage de l'activité de la complosphère, en lien avec l'actualité.
+              </div>
+              <div style={{
+                marginTop: 14,
+                fontFamily: '"Fraunces", "Georgia", serif',
+                fontStyle: 'italic',
+                fontSize: 13,
+                color: 'rgba(243,239,230,0.45)',
+                lineHeight: 1.45,
+              }}>
+                Mur des épisodes — un index visuel renvoyant vers Radio France.
+              </div>
             </div>
             <SubscribeBar />
           </div>
