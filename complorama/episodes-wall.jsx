@@ -448,27 +448,26 @@ function EpisodesWall() {
       }}>
         <a
           className="hero-avatar"
-          href="https://tristan.pro"
+          href="https://www.radiofrance.fr/franceinfo/podcasts/complorama"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Tristan Mendès France — tristan.pro"
-          title="Tristan Mendès France — tristan.pro"
+          aria-label="Complorama sur Radio France"
+          title="Complorama sur Radio France"
           style={{
             position: 'absolute',
-            top: 22,
-            right: 24,
-            width: 52,
-            height: 52,
+            top: 28,
+            right: 32,
+            width: 132,
+            height: 132,
             borderRadius: '50%',
             overflow: 'hidden',
             zIndex: 5,
-            opacity: 0.28,
-            transition: 'opacity 0.25s, transform 0.25s',
+            opacity: 0.32,
+            transition: 'opacity 0.3s, transform 0.3s',
             border: '1px solid rgba(255,255,255,0.18)',
-            backdropFilter: 'blur(2px)',
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = 'scale(1.04)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.28'; e.currentTarget.style.transform = 'scale(1)'; }}
+          onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.78'; e.currentTarget.style.transform = 'scale(1.03)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.32'; e.currentTarget.style.transform = 'scale(1)'; }}
         >
           <img
             src="https://pbs.twimg.com/profile_images/1773289797198442496/OmD2YCbd_400x400.jpg"
@@ -798,12 +797,14 @@ function EpisodesWall() {
           .search-bar { padding: 12px 24px !important; }
           .hero-illustration { object-position: 110% center !important; opacity: 0.55 !important; }
           .hero-shade-h { background: linear-gradient(to right, rgba(10,10,12,1) 0%, rgba(10,10,12,0.95) 60%, rgba(10,10,12,0.6) 88%, rgba(10,10,12,0.3) 100%) !important; }
+          .hero-avatar { width: 84px !important; height: 84px !important; top: 20px !important; right: 20px !important; }
         }
         @media (max-width: 600px) {
           .ep-grid { grid-template-columns: repeat(2, 1fr); }
           .subscribe-bar { gap: 6px !important; margin-top: 16px !important; }
           .subscribe-bar .subscribe-prefix { display: none; }
           .subscribe-bar a { padding: 6px 10px !important; font-size: 10px !important; gap: 6px !important; letter-spacing: 0.08em !important; }
+          .hero-avatar { width: 64px !important; height: 64px !important; top: 16px !important; right: 16px !important; }
         }
       `}</style>
     </div>
