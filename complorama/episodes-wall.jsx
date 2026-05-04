@@ -446,6 +446,42 @@ function EpisodesWall() {
         borderBottom: '1px solid rgba(255,255,255,0.08)',
         overflow: 'hidden',
       }}>
+        <a
+          className="hero-avatar"
+          href="https://tristan.pro"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Tristan Mendès France — tristan.pro"
+          title="Tristan Mendès France — tristan.pro"
+          style={{
+            position: 'absolute',
+            top: 22,
+            right: 24,
+            width: 52,
+            height: 52,
+            borderRadius: '50%',
+            overflow: 'hidden',
+            zIndex: 5,
+            opacity: 0.28,
+            transition: 'opacity 0.25s, transform 0.25s',
+            border: '1px solid rgba(255,255,255,0.18)',
+            backdropFilter: 'blur(2px)',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = 'scale(1.04)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.28'; e.currentTarget.style.transform = 'scale(1)'; }}
+        >
+          <img
+            src="https://pbs.twimg.com/profile_images/1773289797198442496/OmD2YCbd_400x400.jpg"
+            alt=""
+            referrerPolicy="no-referrer"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+            }}
+          />
+        </a>
         <div className="hero-banner" style={{
           position: 'absolute',
           inset: 0,
