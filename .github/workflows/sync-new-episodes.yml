@@ -37,11 +37,11 @@ jobs:
       - name: Append new episodes from RSS + back-fill YouTube
         run: node scripts/sync-new-episodes.mjs
 
+      - name: Fetch missing descriptions + upgrade generic show art
+        run: node scripts/fetch-episode-descriptions.mjs
+
       - name: Mirror episode images locally
         run: node scripts/download-episode-images.mjs
-
-      - name: Fetch missing episode descriptions from Radio France
-        run: node scripts/fetch-episode-descriptions.mjs
 
       - name: Commit changes
         run: |

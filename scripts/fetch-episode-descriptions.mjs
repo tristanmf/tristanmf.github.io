@@ -1,8 +1,16 @@
-// Visit each Radio France episode page once and pull a short search-friendly
-// description (og:description preferred, fallback to <meta name=description>).
-// The text is stored on the corresponding entry in episodes-data.js so the
-// site's filter can match against it. Idempotent: episodes that already
-// have a non-empty description are skipped.
+// Visit each Radio France episode page once and pull:
+//   1. A short search-friendly description (og:description preferred,
+//      fallback to <meta name=description>). Stored on the entry so the
+//      on-site filter can match against it.
+//   2. The episode-specific og:image. If the entry currently uses the
+//      generic Complorama show artwork (UUID 39bbb292…) — which is what
+//      Radio France serves in the RSS for fresh episodes before the
+//      illustration is uploaded — we replace it with the og:image as
+//      soon as a real one is available. The next mirror run will pull
+//      the file into complorama/assets/episodes/.
+//
+// Idempotent: entries that already have both a description and a
+// non-generic image are left alone.
 //
 // Designed to run on the GitHub Actions runner — the local Claude Code
 // sandbox cannot reach radiofrance.fr.
@@ -15,6 +23,11 @@ const DATA_FILE = path.join(ROOT, 'complorama/episodes-data.js');
 
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
 const REQUEST_DELAY_MS = 250;   // be polite — ~30s for 108 episodes
+
+// Radio France serves this UUID as the show-wide placeholder until a
+// proper episode-specific illustration ships. We treat entries pointing
+// at it as upgradable.
+const GENERIC_SHOW_UUID = '39bbb292-d2d5-4b77-9f89-1b320bd4a4a5';
 
 function decodeEntities(s) {
   return s
@@ -43,11 +56,22 @@ function pickMeta(html, attr, key) {
 }
 
 function extractDescription(html) {
-  // og:description is usually the editor-written summary; meta description
-  // is the same on most franceinfo article pages but can be the lede.
   return pickMeta(html, 'property', 'og:description')
       || pickMeta(html, 'name', 'description')
       || pickMeta(html, 'name', 'twitter:description');
+}
+
+function extractOgImage(html) {
+  return pickMeta(html, 'property', 'og:image')
+      || pickMeta(html, 'name', 'twitter:image');
+}
+
+function extractImageUuid(imgValue) {
+  if (!imgValue) return null;
+  const m = imgValue.match(/assets\/episodes\/([a-f0-9-]{36})/)
+         || imgValue.match(/\/images\/([a-f0-9-]{36})\//)
+         || imgValue.match(/\/cruiser-production[^/]*\/\d{4}\/\d{2}\/([a-f0-9-]{36})\//);
+  return m ? m[1] : null;
 }
 
 async function fetchPageHtml(url) {
@@ -67,25 +91,31 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // --- File patching -------------------------------------------------------
 
-function entriesNeedingDescription(src) {
-  // Yield { url, lineIndex } for each entry line that does not already
-  // have a description: field.
+function entriesToProcess(src) {
+  // Yield { url, lineIndex, needsDescription, needsImageUpgrade } for
+  // each entry line that needs at least one of the two enrichments.
   const lines = src.split('\n');
   const out = [];
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     if (!/^\s*\{\s*title:/.test(line)) continue;
-    if (/description:\s*"/.test(line)) continue;
-    const m = line.match(/url:\s*"([^"]+)"/);
-    if (!m) continue;
-    out.push({ url: m[1], lineIndex: i });
+    const urlMatch = line.match(/url:\s*"([^"]+)"/);
+    if (!urlMatch) continue;
+
+    const needsDescription = !/description:\s*"/.test(line);
+
+    const imgMatch = line.match(/img:\s*"([^"]+)"/);
+    const currentUuid = imgMatch ? extractImageUuid(imgMatch[1]) : null;
+    const needsImageUpgrade = currentUuid === GENERIC_SHOW_UUID;
+
+    if (needsDescription || needsImageUpgrade) {
+      out.push({ url: urlMatch[1], lineIndex: i, needsDescription, needsImageUpgrade });
+    }
   }
   return { lines, todo: out };
 }
 
 function insertDescriptionInLine(line, description) {
-  // Find the LAST closing brace on the line and insert the new field
-  // immediately before it, preserving formatting + trailing comma.
   const idx = line.lastIndexOf('}');
   if (idx === -1) return line;
   const before = line.slice(0, idx).trimEnd();
@@ -93,35 +123,54 @@ function insertDescriptionInLine(line, description) {
   return `${before}${sep} description: ${JSON.stringify(description)} ${line.slice(idx)}`;
 }
 
+function replaceImageInLine(line, newImgUrl) {
+  return line.replace(/(img:\s*)"[^"]*"/, `$1${JSON.stringify(newImgUrl)}`);
+}
+
 // --- Main ----------------------------------------------------------------
 
 async function main() {
   const src = await readFile(DATA_FILE, 'utf8');
-  const { lines, todo } = entriesNeedingDescription(src);
+  const { lines, todo } = entriesToProcess(src);
 
   if (todo.length === 0) {
-    console.log('All episodes already have a description — nothing to do.');
+    console.log('All episodes have a description and a specific image — nothing to do.');
     return;
   }
 
-  console.log(`Fetching descriptions for ${todo.length} episode(s)…`);
+  console.log(`Visiting ${todo.length} episode page(s) for description and/or image upgrade…`);
 
-  let ok = 0, skipped = 0, failed = 0;
-  for (const { url, lineIndex } of todo) {
+  let descAdded = 0, imgUpgraded = 0, skipped = 0, failed = 0;
+  for (const { url, lineIndex, needsDescription, needsImageUpgrade } of todo) {
     try {
       const html = await fetchPageHtml(url);
-      const desc = extractDescription(html);
-      if (!desc || desc.length < 10) {
-        console.warn(`  ∅ ${url} — no usable description in HTML`);
-        skipped++;
-      } else {
-        // Trim very long descriptions to keep the data file readable; the
-        // first ~400 chars are enough for keyword search.
-        const compact = desc.length > 400 ? desc.slice(0, 397).trimEnd() + '…' : desc;
-        lines[lineIndex] = insertDescriptionInLine(lines[lineIndex], compact);
-        console.log(`  ✓ ${url}`);
-        ok++;
+
+      if (needsDescription) {
+        const desc = extractDescription(html);
+        if (desc && desc.length >= 10) {
+          const compact = desc.length > 400 ? desc.slice(0, 397).trimEnd() + '…' : desc;
+          lines[lineIndex] = insertDescriptionInLine(lines[lineIndex], compact);
+          descAdded++;
+        } else {
+          console.warn(`  ∅ desc ${url}`);
+          skipped++;
+        }
       }
+
+      if (needsImageUpgrade) {
+        const ogImg = extractOgImage(html);
+        const newUuid = extractImageUuid(ogImg);
+        if (ogImg && newUuid && newUuid !== GENERIC_SHOW_UUID) {
+          lines[lineIndex] = replaceImageInLine(lines[lineIndex], ogImg);
+          console.log(`  ↑ img upgraded for ${url} → ${newUuid}`);
+          imgUpgraded++;
+        } else {
+          // No real image available yet — leave it as the generic art
+          // for now; a later run will retry.
+        }
+      }
+
+      console.log(`  ✓ ${url}`);
     } catch (e) {
       console.error(`  ✗ ${url}: ${e.message}`);
       failed++;
@@ -130,7 +179,7 @@ async function main() {
   }
 
   await writeFile(DATA_FILE, lines.join('\n'));
-  console.log(`Done — added: ${ok}, skipped (no desc): ${skipped}, failed: ${failed}`);
+  console.log(`Done — descriptions added: ${descAdded}, images upgraded: ${imgUpgraded}, skipped: ${skipped}, failed: ${failed}`);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });
