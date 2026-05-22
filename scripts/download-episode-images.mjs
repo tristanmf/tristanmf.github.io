@@ -14,14 +14,16 @@ const OUT_DIR = path.join(ROOT, 'complorama/assets/episodes');
 const PUBLIC_PREFIX = 'assets/episodes/'; // relative to /complorama/index.html
 
 // Radio France serves episode artwork from two CDNs:
-//   - legacy "pikapi" (square WebP at 800x450)
-//   - new "cruiser" S3 bucket (typically 1400x1400 sc_carre JPG)
+//   - legacy "pikapi" (e.g. /pikapi/images/<UUID>/800x450 or /1200x680)
+//   - new "cruiser" S3 bucket (/s3/cruiser-production-eu*/YYYY/MM/<UUID>/...)
 // Both URLs embed the same UUIDv4 keying scheme. We mirror either form to
 // complorama/assets/episodes/<UUID>.webp — the file extension stays .webp
 // for backwards-compat with episodes already pinned to that path even
 // when the upstream is actually a JPG (browsers content-sniff fine).
+// Pikapi sizes are NOT hardcoded; RF uses various dimensions (800x450,
+// 1200x680, etc) depending on which page exposes the image.
 const REMOTE_RES = [
-  /https:\/\/www\.radiofrance\.fr\/pikapi\/images\/([a-f0-9-]{36})\/800x450/g,
+  /https:\/\/www\.radiofrance\.fr\/pikapi\/images\/([a-f0-9-]{36})\/\d+x\d+/g,
   /https:\/\/www\.radiofrance\.fr\/s3\/cruiser-production[^/]*\/\d{4}\/\d{2}\/([a-f0-9-]{36})\/[^"'\s)]+/g,
 ];
 
