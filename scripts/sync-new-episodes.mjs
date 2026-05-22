@@ -151,11 +151,6 @@ function existingImageUuids(src) {
   return set;
 }
 
-// Known UUID of the generic Complorama show artwork that Radio France
-// substitutes when an episode has no specific illustration. Re-using it
-// would create visually duplicate tiles.
-const GENERIC_SHOW_UUID = '39bbb292-d2d5-4b77-9f89-1b320bd4a4a5';
-
 function extractImageUuid(url) {
   const m = url.match(/\/images\/([a-f0-9-]{36})\//)
          || url.match(/\/cruiser-production[^/]*\/\d{4}\/\d{2}\/([a-f0-9-]{36})\//);
@@ -251,10 +246,6 @@ async function main() {
     const uuid = extractImageUuid(item.image);
     if (uuid && knownImgUuids.has(uuid)) {
       console.log(`Skipping (image UUID already known): ${item.title}`);
-      continue;
-    }
-    if (uuid === GENERIC_SHOW_UUID) {
-      console.log(`Skipping (generic show artwork — no episode-specific image yet): ${item.title}`);
       continue;
     }
     const youtube = findYoutubeMatch(item.title, ytIndex);
