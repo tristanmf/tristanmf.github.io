@@ -218,7 +218,8 @@ async function main() {
   try {
     const ytXml = await fetchText(YT_PLAYLIST_RSS);
     ytIndex = parseYoutubePlaylist(ytXml);
-    console.log(`Parsed ${ytIndex.length} videos from YouTube playlist`);
+    console.log(`Parsed ${ytIndex.length} videos from YouTube playlist:`);
+    for (const v of ytIndex) console.log(`  · ${v.title}`);
   } catch (e) {
     console.warn(`Could not fetch YouTube playlist (continuing without): ${e.message}`);
   }
