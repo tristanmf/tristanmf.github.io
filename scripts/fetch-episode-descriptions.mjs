@@ -29,15 +29,31 @@ const REQUEST_DELAY_MS = 250;   // be polite — ~30s for 108 episodes
 // at it as upgradable.
 const GENERIC_SHOW_UUID = '39bbb292-d2d5-4b77-9f89-1b320bd4a4a5';
 
+// HTML named entities Radio France's meta tags occasionally emit. Limited
+// to the ones we've actually seen so the table stays tractable — anything
+// else falls through to the numeric-entity decoders below.
+const NAMED_ENTITIES = {
+  amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ',
+  agrave: 'à', acirc: 'â', auml: 'ä', aring: 'å', aelig: 'æ', ccedil: 'ç',
+  egrave: 'è', eacute: 'é', ecirc: 'ê', euml: 'ë',
+  igrave: 'ì', iacute: 'í', icirc: 'î', iuml: 'ï',
+  ograve: 'ò', oacute: 'ó', ocirc: 'ô', ouml: 'ö', oelig: 'œ',
+  ugrave: 'ù', uacute: 'ú', ucirc: 'û', uuml: 'ü',
+  ntilde: 'ñ', yacute: 'ý', yuml: 'ÿ', szlig: 'ß',
+  Agrave: 'À', Acirc: 'Â', Auml: 'Ä', Aring: 'Å', AElig: 'Æ', Ccedil: 'Ç',
+  Egrave: 'È', Eacute: 'É', Ecirc: 'Ê', Euml: 'Ë',
+  Igrave: 'Ì', Iacute: 'Í', Icirc: 'Î', Iuml: 'Ï',
+  Ograve: 'Ò', Oacute: 'Ó', Ocirc: 'Ô', Ouml: 'Ö', OElig: 'Œ',
+  Ugrave: 'Ù', Uacute: 'Ú', Ucirc: 'Û', Uuml: 'Ü',
+  Ntilde: 'Ñ', Yacute: 'Ý', szlig: 'ß',
+  laquo: '«', raquo: '»', lsquo: '‘', rsquo: '’', ldquo: '“', rdquo: '”',
+  hellip: '…', mdash: '—', ndash: '–', copy: '©', reg: '®', trade: '™',
+  middot: '·', euro: '€', deg: '°',
+};
+
 function decodeEntities(s) {
   return s
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#039;/g, "'")
-    .replace(/&apos;/g, "'")
-    .replace(/&nbsp;/g, ' ')
+    .replace(/&([a-zA-Z]+);/g, (m, name) => NAMED_ENTITIES[name] ?? m)
     .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(parseInt(n, 10)))
     .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)));
 }
@@ -102,7 +118,12 @@ function entriesToProcess(src) {
     const urlMatch = line.match(/url:\s*"([^"]+)"/);
     if (!urlMatch) continue;
 
-    const needsDescription = !/description:\s*"/.test(line);
+    // Re-fetch if there's no description at all, OR if the existing one
+    // still contains a named HTML entity (left over from an older run of
+    // this script before the entity decoder was extended).
+    const descMatch = line.match(/description:\s*"((?:[^"\\]|\\.)*)"/);
+    const hasUndecodedEntity = descMatch && /&[a-zA-Z]+;/.test(descMatch[1]);
+    const needsDescription = !descMatch || hasUndecodedEntity;
 
     const imgMatch = line.match(/img:\s*"([^"]+)"/);
     const currentUuid = imgMatch ? extractImageUuid(imgMatch[1]) : null;
@@ -115,7 +136,13 @@ function entriesToProcess(src) {
   return { lines, todo: out };
 }
 
-function insertDescriptionInLine(line, description) {
+function setDescriptionInLine(line, description) {
+  // If the line already has a description: field (possibly with stale
+  // HTML entities), replace it in-place. Otherwise insert a new field
+  // immediately before the closing brace.
+  if (/description:\s*"/.test(line)) {
+    return line.replace(/(description:\s*)"(?:[^"\\]|\\.)*"/, `$1${JSON.stringify(description)}`);
+  }
   const idx = line.lastIndexOf('}');
   if (idx === -1) return line;
   const before = line.slice(0, idx).trimEnd();
@@ -149,7 +176,7 @@ async function main() {
         const desc = extractDescription(html);
         if (desc && desc.length >= 10) {
           const compact = desc.length > 400 ? desc.slice(0, 397).trimEnd() + '…' : desc;
-          lines[lineIndex] = insertDescriptionInLine(lines[lineIndex], compact);
+          lines[lineIndex] = setDescriptionInLine(lines[lineIndex], compact);
           descAdded++;
         } else {
           console.warn(`  ∅ desc ${url}`);
