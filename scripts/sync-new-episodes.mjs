@@ -188,18 +188,20 @@ function insertNewEpisodes(src, newEps) {
 }
 
 function backfillYoutube(src, ytIndex) {
-  // Find every entry where youtube is null and try to populate it.
-  // Entry shape (one per line):
-  //   { title: "...", url: "...", img: "...", youtube: null },
+  // Find every entry where youtube is null and try to populate it. The
+  // pattern intentionally does NOT anchor on the closing brace because
+  // entries also carry a `description` field that lands AFTER `youtube`
+  // — anchoring on `}` would silently miss every entry that has a
+  // description (i.e. all of them once the description backfill ran).
   let count = 0;
   const updated = src.replace(
-    /(\{\s*title:\s*"((?:[^"\\]|\\.)*)"[^}]*?youtube:\s*)null(\s*\})/g,
-    (full, prefix, title, suffix) => {
+    /(\{[^}]*?\btitle:\s*"((?:[^"\\]|\\.)*)"[^}]*?\byoutube:\s*)null/g,
+    (full, prefix, title) => {
       const decoded = JSON.parse(`"${title}"`);
       const match = findYoutubeMatch(decoded, ytIndex);
       if (!match) return full;
       count++;
-      return `${prefix}${JSON.stringify(match)}${suffix}`;
+      return `${prefix}${JSON.stringify(match)}`;
     }
   );
   return { src: updated, backfilled: count };
