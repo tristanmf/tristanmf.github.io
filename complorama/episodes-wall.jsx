@@ -268,14 +268,18 @@ function EpisodeTile({ ep }) {
             fontSize: 9,
             letterSpacing: '0.22em',
             color: '#fff',
-            background: 'rgba(255,255,255,0.14)',
-            border: '1px solid rgba(255,255,255,0.25)',
+            background: 'rgba(0,0,0,0.62)',
+            border: '1px solid rgba(255,255,255,0.22)',
             padding: '3px 7px',
             borderRadius: 3,
             backdropFilter: 'blur(6px)',
             WebkitBackdropFilter: 'blur(6px)',
+            textShadow: '0 1px 2px rgba(0,0,0,0.6)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 5,
           }}>
-            ● VIDÉO
+            <span style={{ color: '#e63946' }}>●</span> VIDÉO
           </div>
         )}
         {ep.date && (
