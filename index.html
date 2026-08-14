@@ -467,12 +467,16 @@ function useHls(src) {
 }
 
 // ---------- Obfuscated mail link (anti-spam) ----------
-// Email stored as base64 split parts. Assembled only on user interaction.
-const MAIL_USER_B64 = "cHJvZGlnZS1jbGFpcnMuNHA="; // "prodige-clairs.4p"
-const MAIL_DOMAIN_B64 = "aWNsb3VkLmNvbQ=="; // "icloud.com"
+// Les deux moitiés de l'adresse sont stockées en codes de caractères décalés,
+// jamais en base64 (que certains moissonneurs décodent au passage) ni en clair.
+// Elles ne sont réassemblées en mémoire qu'au clic du visiteur.
+const MAIL_OFFSET = 7;
+const MAIL_A = [123, 121, 112, 122, 123, 104, 117, 116, 109];
+const MAIL_B = [110, 116, 104, 112, 115, 53, 106, 118, 116];
 function decodeMail() {
   try {
-    return atob(MAIL_USER_B64) + String.fromCharCode(64) + atob(MAIL_DOMAIN_B64);
+    const part = (arr) => arr.map((c) => String.fromCharCode(c - MAIL_OFFSET)).join('');
+    return part(MAIL_A) + String.fromCharCode(64) + part(MAIL_B);
   } catch (e) {return "";}
 }
 function MailLink({ subject, children, className, style }) {
