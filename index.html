@@ -224,6 +224,12 @@ tailwind.config = {
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 38%, black 100%);
     mask-image: linear-gradient(to bottom, transparent 0%, black 38%, black 100%);
   }
+  /* Hero : au moins un écran (plafonné à 1000px), mais libre de s'étirer si le
+     contenu déborde — sinon l'indicateur de défilement se fait rogner. */
+  @media (min-width: 768px) {
+    #top { min-height: min(100vh, 1000px); }
+  }
+
   .edge-fade-both {
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 22%, black 78%, transparent 100%);
     mask-image: linear-gradient(to bottom, transparent 0%, black 22%, black 78%, transparent 100%);
@@ -624,7 +630,7 @@ function Navbar() {
 function Hero() {
   const videoRef = useHls("./hero.mp4");
   return (
-    <section id="top" className="relative overflow-hidden min-h-[100svh] md:min-h-0 md:h-screen md:max-h-[1000px]">
+    <section id="top" className="relative overflow-hidden flex flex-col min-h-[100svh]">
       <ParallaxLayer speed={0.14} scale={1.22} mobileFactor={0.55} className="absolute inset-0 z-0 overflow-hidden">
         <video
           ref={videoRef}
@@ -638,7 +644,7 @@ function Hero() {
         style={{ height: 180, background: 'linear-gradient(to top, transparent, rgba(0,0,0,0.6))' }} />
       
 
-      <HeroFade className="relative z-10 h-full flex flex-col items-center px-6 pt-24 md:pt-[130px] pb-10 md:pb-16">
+      <HeroFade className="relative z-10 flex-1 flex flex-col items-center px-6 pt-24 md:pt-[130px] pb-10 md:pb-16">
         <mot.div
           initial={{ filter: 'blur(10px)', opacity: 0, scale: 0.8 }}
           animate={{ filter: 'blur(0px)', opacity: 1, scale: 1 }}
