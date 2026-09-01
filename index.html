@@ -1033,8 +1033,8 @@ function Conferencier() {
                 {[
                 ["Entreprises", "Keynotes & comex"],
                 ["Universités", "Cours & séminaires"],
-                ["Médias", "Tables rondes"],
-                ["Administrations", "Formations"]].
+                ["Médias", "Interventions & tables rondes"],
+                ["Administrations", "Formations & conférences"]].
                 map(([k, v]) =>
                 <div key={k} className="liquid-glass-strong rounded-2xl p-4">
                     <div className="font-heading italic text-xl text-white leading-tight">{k}</div>
@@ -1232,7 +1232,7 @@ function CtaFooter() {
           <FadeIn delay={0.6}>
             <div className="mt-10 flex justify-center">
               <MailLink className="liquid-glass-strong rounded-full px-10 py-5 text-lg md:text-xl font-medium text-white font-body hover:bg-white/15 transition-colors whitespace-nowrap shadow-[0_10px_40px_-10px_rgba(0,0,0,0.7)]">
-                M'envoyer un e-mail
+                Écrivez-moi
               </MailLink>
             </div>
           </FadeIn>
