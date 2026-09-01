@@ -144,5 +144,7 @@ window.EPISODES = _unique.map((ep, i) => {
   };
   if (ep.youtube) out.youtube = ep.youtube;
   if (ep.description) out.description = ep.description;
+  if (ep.date) out.date = ep.date; // yyyy-mm-dd
+  if (ep.body) out.body = ep.body; // search-only article text
   return out;
 });

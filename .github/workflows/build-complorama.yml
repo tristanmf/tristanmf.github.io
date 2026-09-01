@@ -1,0 +1,48 @@
+name: Build Complorama JSX
+
+# Recompiles complorama/*.jsx → *.js whenever a source file changes on main,
+# and commits the result. The commit only touches the generated .js files,
+# which are outside the `paths` filter below, so it cannot retrigger itself
+# (the [skip ci] marker is a second safety net).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'complorama/**/*.jsx'
+      - 'scripts/build-jsx.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install Babel
+        run: npm install --no-save --no-audit --no-fund @babel/core@^7 @babel/preset-react@^7
+
+      - name: Compile JSX
+        run: node scripts/build-jsx.mjs
+
+      - name: Commit compiled output
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add complorama/episode-visual.js complorama/episodes-wall.js
+          if git diff --staged --quiet; then
+            echo "Nothing to commit."
+          else
+            git commit -m "build(complorama): recompile JSX [skip ci]"
+            git push
+          fi

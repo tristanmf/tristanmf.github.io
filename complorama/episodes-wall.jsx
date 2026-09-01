@@ -10,6 +10,28 @@ const PAGE_SIZE = 20;
 const SEASON = 7;
 const SEASON_START = '2026-09-11';
 
+// "2026-05-22" → "22 mai 2026". Noon anchor avoids off-by-one days across
+// timezones; the Intl instance is built once for the whole wall.
+const DATE_FMT = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(`${iso}T12:00:00`);
+  return isNaN(d) ? '' : DATE_FMT.format(d);
+}
+
+// Complorama seasons run September → August. Season 1 began in January 2021,
+// so everything before September 2021 is S1; September 2021 opens S2, etc.
+function seasonOf(iso) {
+  if (!iso) return null;
+  const y = +iso.slice(0, 4), m = +iso.slice(5, 7);
+  return y - 2020 + (m >= 9 ? 1 : 0);
+}
+function seasonLabel(s) {
+  const pad = String(s).padStart(2, '0');
+  const years = s === 1 ? '2021' : `${2019 + s}–${2020 + s}`;
+  return `Saison ${pad} · ${years}`;
+}
+
 const SUBSCRIBE_LINKS = [
   {
     name: 'Apple Podcasts',
@@ -146,6 +168,34 @@ function SubscribeButton({ platform }) {
   );
 }
 
+function SeasonChip({ active, onClick, title, children }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      title={title}
+      style={{
+        fontFamily: '"DM Mono", monospace',
+        fontSize: 10,
+        letterSpacing: '0.16em',
+        textTransform: 'uppercase',
+        padding: '6px 10px',
+        borderRadius: 999,
+        border: `1px solid ${active ? '#e63946' : 'rgba(255,255,255,0.16)'}`,
+        background: active ? '#e63946' : 'transparent',
+        color: active ? '#fff' : 'rgba(243,239,230,0.7)',
+        cursor: 'pointer',
+        whiteSpace: 'nowrap',
+        transition: 'background 0.15s, border-color 0.15s, color 0.15s',
+        flexShrink: 0,
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
 function SubscribeBar() {
   return (
     <div
@@ -259,7 +309,7 @@ function EpisodeTile({ ep }) {
         </div>
       </div>
 
-      {/* Top-right: VIDEO badge and/or date */}
+      {/* Top-right: VIDEO badge */}
       <div style={{
         position: 'absolute',
         top: 14,
@@ -290,17 +340,6 @@ function EpisodeTile({ ep }) {
             <span style={{ color: '#e63946' }}>●</span> VIDÉO
           </div>
         )}
-        {ep.date && (
-          <div style={{
-            fontFamily: '"Fraunces", "Georgia", serif',
-            fontStyle: 'italic',
-            fontSize: 12,
-            color: 'rgba(255,255,255,0.85)',
-            textShadow: '0 1px 4px rgba(0,0,0,0.5)',
-          }}>
-            {ep.date}
-          </div>
-        )}
       </div>
 
       {/* Bottom: red accent line + title + action buttons */}
@@ -311,6 +350,21 @@ function EpisodeTile({ ep }) {
         bottom: 16,
         pointerEvents: 'none',
       }}>
+        {/* Publication date — sits inside the bottom shade so it stays legible
+            on bright artwork; reads naturally as date → title. */}
+        {ep.date && (
+          <time dateTime={ep.date} style={{
+            display: 'block',
+            fontFamily: '"DM Mono", ui-monospace, monospace',
+            fontSize: 10,
+            letterSpacing: '0.16em',
+            textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.72)',
+            marginBottom: 7,
+          }}>
+            {formatDate(ep.date)}
+          </time>
+        )}
         <div style={{
           height: 2,
           background: accent,
@@ -410,28 +464,71 @@ function EpisodeTile({ ep }) {
 
 function EpisodesWall() {
   const [query, setQuery] = React.useState('');
+  const [season, setSeason] = React.useState(null); // null = all seasons
   const [shown, setShown] = React.useState(PAGE_SIZE);
   const sentinelRef = React.useRef(null);
 
+  // Seasons present in the catalogue (derived from publication dates), newest
+  // first. Empty until the sync bot has back-filled dates — the chip row
+  // simply doesn't render in that case.
+  const seasons = React.useMemo(() => {
+    const set = new Set();
+    for (const e of window.EPISODES) { const s = seasonOf(e.date); if (s) set.add(s); }
+    return [...set].sort((a, b) => b - a);
+  }, []);
+
   // Normalize accents and case so "Orban" matches "Orbán" and "elections"
-  // matches "élections". Searches the title, the editor-written description
-  // (when present), and the raw episode number.
+  // matches "élections".
   const normalize = (s) => s
     .toLowerCase()
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '');
-  const q = normalize(query);
-  // Tolerate "N°108", "n 108", "#108", "no 108" when matching the number.
-  const qNum = query.replace(/^\s*(?:n\s*°|n°|n\s+|#|no\.?\s*)\s*/i, '').trim();
-  const filtered = window.EPISODES.filter(e => {
-    if (!q) return true;
-    if (normalize(e.title).includes(q)) return true;
-    if (e.description && normalize(e.description).includes(q)) return true;
-    if (qNum && String(e.n).includes(qNum)) return true;
-    return false;
-  });
+
+  // Multi-word queries are ANDed: every token must be found somewhere in the
+  // episode. Each token's best hit is ranked title (0) < description (1) <
+  // body/date (2); the episode's tier is its weakest token, so results whose
+  // title carries all the words come first, then summary hits, then episodes
+  // that merely mention the terms in the article text. Within a tier the
+  // original (chronological) order is kept — Array#sort is stable.
+  const tokens = normalize(query)
+    .split(/\s+/)
+    .map(t => t.replace(/[,;:!?.]+$/, ''))
+    .filter(Boolean);
+
+  const matchTier = (e) => {
+    if (tokens.length === 0) return 0;
+    const title = normalize(e.title);
+    const desc = e.description ? normalize(e.description) : '';
+    const deep = [
+      e.body ? normalize(e.body) : '',
+      e.date ? `${e.date} ${normalize(formatDate(e.date))}` : '',
+    ].join(' ');
+    let tier = 0;
+    for (const tok of tokens) {
+      // "n°108" / "#108" / "no108" → "108"; an exact number hit is a title-grade match.
+      const num = tok.replace(/^(?:n°|n(?=\d)|#|no\.?)/, '');
+      if (/^\d+$/.test(num) && String(e.n) === num) continue;
+      if (title.includes(tok)) continue;
+      if (desc.includes(tok)) { tier = Math.max(tier, 1); continue; }
+      if (deep.includes(tok) || (/^\d+$/.test(num) && String(e.n).includes(num))) { tier = Math.max(tier, 2); continue; }
+      return -1; // token found nowhere → episode is out
+    }
+    return tier;
+  };
+
+  const scored = [];
+  for (const e of window.EPISODES) {
+    if (season != null && seasonOf(e.date) !== season) continue;
+    const tier = matchTier(e);
+    if (tier < 0) continue;
+    scored.push({ e, tier });
+  }
+  if (tokens.length > 0) scored.sort((a, b) => a.tier - b.tier);
+  const filtered = scored.map(s => s.e);
   const visible = filtered.slice(0, shown);
   const hasMore = visible.length < filtered.length;
+
+  const clearFilters = () => { setQuery(''); setSeason(null); };
 
   const seasonStartDate = new Date(`${SEASON_START}T00:00:00`);
   const seasonStarted = new Date() >= seasonStartDate;
@@ -440,7 +537,7 @@ function EpisodesWall() {
     .replace('.', '')
     .toUpperCase(); // e.g. "11 SEPT"
 
-  React.useEffect(() => { setShown(PAGE_SIZE); }, [query]);
+  React.useEffect(() => { setShown(PAGE_SIZE); }, [query, season]);
 
   // Infinite scroll: load more when sentinel enters viewport
   React.useEffect(() => {
@@ -661,9 +758,10 @@ function EpisodesWall() {
         display: 'flex',
         alignItems: 'center',
         gap: 16,
+        flexWrap: 'wrap',
       }}>
         <div style={{
-          flex: 1,
+          flex: '1 1 260px',
           display: 'flex',
           alignItems: 'center',
           gap: 12,
@@ -712,6 +810,32 @@ function EpisodesWall() {
             >✕</button>
           )}
         </div>
+
+        {seasons.length > 0 && (
+          <div className="season-chips" role="group" aria-label="Filtrer par saison" style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            overflowX: 'auto',
+            flex: '0 1 auto',
+            minWidth: 0,
+          }}>
+            <SeasonChip active={season == null} onClick={() => setSeason(null)} title="Toutes les saisons">
+              Toutes
+            </SeasonChip>
+            {seasons.map(s => (
+              <SeasonChip
+                key={s}
+                active={season === s}
+                onClick={() => setSeason(season === s ? null : s)}
+                title={seasonLabel(s)}
+              >
+                S{String(s).padStart(2, '0')}
+              </SeasonChip>
+            ))}
+          </div>
+        )}
+
         <div style={{
           fontFamily: '"DM Mono", monospace',
           fontSize: 11,
@@ -719,6 +843,7 @@ function EpisodesWall() {
           color: 'rgba(243,239,230,0.5)',
           textTransform: 'uppercase',
           whiteSpace: 'nowrap',
+          marginLeft: 'auto',
         }}>
           {String(filtered.length).padStart(3, '0')} / {String(window.EPISODES.length).padStart(3, '0')}
         </div>
@@ -741,10 +866,14 @@ function EpisodesWall() {
             color: 'rgba(243,239,230,0.7)',
             marginBottom: 18,
           }}>
-            Aucun épisode ne correspond à « {query} ».
+            {query && season != null
+              ? <>Aucun épisode de la {seasonLabel(season).toLowerCase()} ne correspond à « {query} ».</>
+              : query
+                ? <>Aucun épisode ne correspond à « {query} ».</>
+                : <>Aucun épisode daté pour la {seasonLabel(season).toLowerCase()}.</>}
           </div>
           <button
-            onClick={() => setQuery('')}
+            onClick={clearFilters}
             style={{
               padding: '10px 20px',
               borderRadius: 999,
@@ -758,7 +887,7 @@ function EpisodesWall() {
               textTransform: 'uppercase',
             }}
           >
-            Effacer la recherche
+            Effacer les filtres
           </button>
         </div>
       )}
@@ -896,8 +1025,15 @@ function EpisodesWall() {
           .hero-shade-h { background: linear-gradient(to right, rgba(10,10,12,1) 0%, rgba(10,10,12,0.95) 60%, rgba(10,10,12,0.6) 88%, rgba(10,10,12,0.3) 100%) !important; }
           .hero-avatar { width: 84px !important; height: 84px !important; top: 20px !important; right: 20px !important; }
         }
+        /* Season chips: hide the scrollbar of the horizontal strip. */
+        .season-chips { scrollbar-width: none; }
+        .season-chips::-webkit-scrollbar { display: none; }
+        .season-chips button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
         @media (max-width: 600px) {
           .ep-grid { grid-template-columns: repeat(2, 1fr); }
+          /* Chips drop to their own full-width line under the input + counter. */
+          .season-chips { flex: 1 0 100% !important; order: 3; padding-bottom: 2px; }
           .subscribe-bar { gap: 6px !important; margin-top: 16px !important; }
           .subscribe-bar .subscribe-prefix { display: none; }
           .subscribe-bar a { padding: 6px 10px !important; font-size: 10px !important; gap: 6px !important; letter-spacing: 0.08em !important; }
