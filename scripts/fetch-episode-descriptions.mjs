@@ -8,9 +8,16 @@
 //      illustration is uploaded — we replace it with the og:image as
 //      soon as a real one is available. The next mirror run will pull
 //      the file into complorama/assets/episodes/.
+//   3. The publication date (yyyy-mm-dd), from the page's JSON-LD
+//      datePublished / article:published_time / <time datetime>. The
+//      sync script already stamps new episodes from the RSS pubDate;
+//      this back-fills the catalogue that predates that.
+//   4. The article body (≤1500 chars, search-only, never displayed) so
+//      the on-site search can find episodes that merely *mention* a
+//      topic, not just the ones whose title/summary carries it.
 //
-// Idempotent: entries that already have both a description and a
-// non-generic image are left alone.
+// Idempotent: entries that already have a description, a non-generic
+// image, a date and a body are left alone.
 //
 // Designed to run on the GitHub Actions runner — the local Claude Code
 // sandbox cannot reach radiofrance.fr.
@@ -82,6 +89,55 @@ function extractOgImage(html) {
       || pickMeta(html, 'name', 'twitter:image');
 }
 
+function extractPublishedDate(html) {
+  // Prefer schema.org JSON-LD (most reliable on radiofrance.fr), then the
+  // Open Graph article tag, then any <time datetime>. Returns yyyy-mm-dd
+  // or null. When the source string already starts with an ISO date we
+  // keep it verbatim (that's the editor's local date); otherwise we parse
+  // and render in Europe/Paris so UTC runners don't shift the day.
+  const candidates = [
+    (html.match(/"datePublished"\s*:\s*"([^"]+)"/) || [])[1],
+    pickMeta(html, 'property', 'article:published_time'),
+    (html.match(/<time[^>]*\sdatetime=["']([^"']+)["']/i) || [])[1],
+  ];
+  for (const c of candidates) {
+    if (!c) continue;
+    const iso = c.match(/^(\d{4}-\d{2}-\d{2})/);
+    if (iso) return iso[1];
+    const d = new Date(c);
+    if (!isNaN(d)) return d.toLocaleDateString('en-CA', { timeZone: 'Europe/Paris' });
+  }
+  return null;
+}
+
+const BODY_MAX = 1500;
+const BODY_MIN = 200; // below this it's probably boilerplate, not an article
+
+function extractArticleBody(html) {
+  // 1) schema.org articleBody (already plain text, JSON-escaped)
+  let text = (html.match(/"articleBody"\s*:\s*"((?:[^"\\]|\\.)*)"/) || [])[1];
+  if (text) {
+    try { text = JSON.parse(`"${text}"`); } catch { text = null; }
+  }
+  // 2) every <p> inside the first <article> element
+  if (!text) {
+    const article = (html.match(/<article\b[\s\S]*?<\/article>/i) || [])[0];
+    if (article) {
+      text = [...article.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)].map(m => m[1]).join(' ');
+    }
+  }
+  if (!text) return null;
+  text = text
+    // Inline formatting tags sit inside words ("para<strong>graphe</strong>",
+    // "Alex <a>Jones</a>") — drop them outright so words stay whole…
+    .replace(/<\/?(?:a|abbr|b|em|i|mark|small|span|strong|sub|sup|u)\b[^>]*>/gi, '')
+    // …while any other tag (block-level, <br>, <img>…) acts as a separator.
+    .replace(/<[^>]+>/g, ' ');
+  text = decodeEntities(text).replace(/\s+/g, ' ').trim();
+  if (text.length < BODY_MIN) return null;
+  return text.length > BODY_MAX ? text.slice(0, BODY_MAX - 1).trimEnd() + '…' : text;
+}
+
 function extractImageUuid(imgValue) {
   if (!imgValue) return null;
   const m = imgValue.match(/assets\/episodes\/([a-f0-9-]{36})/)
@@ -129,8 +185,11 @@ function entriesToProcess(src) {
     const currentUuid = imgMatch ? extractImageUuid(imgMatch[1]) : null;
     const needsImageUpgrade = currentUuid === GENERIC_SHOW_UUID;
 
-    if (needsDescription || needsImageUpgrade) {
-      out.push({ url: urlMatch[1], lineIndex: i, needsDescription, needsImageUpgrade });
+    const needsDate = !/\bdate:\s*"\d{4}-\d{2}-\d{2}"/.test(line);
+    const needsBody = !/\bbody:\s*"/.test(line);
+
+    if (needsDescription || needsImageUpgrade || needsDate || needsBody) {
+      out.push({ url: urlMatch[1], lineIndex: i, needsDescription, needsImageUpgrade, needsDate, needsBody });
     }
   }
   return { lines, todo: out };
@@ -154,6 +213,20 @@ function replaceImageInLine(line, newImgUrl) {
   return line.replace(/(img:\s*)"[^"]*"/, `$1${JSON.stringify(newImgUrl)}`);
 }
 
+// Replace `key: "…"` in place if present, otherwise append it just before
+// the closing brace. `value` must already be a JSON string literal.
+function upsertFieldInLine(line, key, jsonValue) {
+  const present = new RegExp(`(\\b${key}:\\s*)"(?:[^"\\\\]|\\\\.)*"`);
+  if (present.test(line)) return line.replace(present, `$1${jsonValue}`);
+  const idx = line.lastIndexOf('}');
+  if (idx === -1) return line;
+  const before = line.slice(0, idx).trimEnd();
+  const sep = before.endsWith(',') ? '' : ',';
+  return `${before}${sep} ${key}: ${jsonValue} ${line.slice(idx)}`;
+}
+const setDateInLine = (line, iso)  => upsertFieldInLine(line, 'date', JSON.stringify(iso));
+const setBodyInLine = (line, text) => upsertFieldInLine(line, 'body', JSON.stringify(text));
+
 // --- Main ----------------------------------------------------------------
 
 async function main() {
@@ -161,14 +234,14 @@ async function main() {
   const { lines, todo } = entriesToProcess(src);
 
   if (todo.length === 0) {
-    console.log('All episodes have a description and a specific image — nothing to do.');
+    console.log('All episodes have a description, a specific image, a date and a body — nothing to do.');
     return;
   }
 
-  console.log(`Visiting ${todo.length} episode page(s) for description and/or image upgrade…`);
+  console.log(`Visiting ${todo.length} episode page(s) for description / image / date / body…`);
 
-  let descAdded = 0, imgUpgraded = 0, skipped = 0, failed = 0;
-  for (const { url, lineIndex, needsDescription, needsImageUpgrade } of todo) {
+  let descAdded = 0, imgUpgraded = 0, dateAdded = 0, bodyAdded = 0, skipped = 0, failed = 0;
+  for (const { url, lineIndex, needsDescription, needsImageUpgrade, needsDate, needsBody } of todo) {
     try {
       const html = await fetchPageHtml(url);
 
@@ -197,6 +270,26 @@ async function main() {
         }
       }
 
+      if (needsDate) {
+        const iso = extractPublishedDate(html);
+        if (iso) {
+          lines[lineIndex] = setDateInLine(lines[lineIndex], iso);
+          dateAdded++;
+        } else {
+          console.warn(`  ∅ date ${url}`);
+        }
+      }
+
+      if (needsBody) {
+        const body = extractArticleBody(html);
+        if (body) {
+          lines[lineIndex] = setBodyInLine(lines[lineIndex], body);
+          bodyAdded++;
+        } else {
+          console.warn(`  ∅ body ${url}`);
+        }
+      }
+
       console.log(`  ✓ ${url}`);
     } catch (e) {
       console.error(`  ✗ ${url}: ${e.message}`);
@@ -206,7 +299,7 @@ async function main() {
   }
 
   await writeFile(DATA_FILE, lines.join('\n'));
-  console.log(`Done — descriptions added: ${descAdded}, images upgraded: ${imgUpgraded}, skipped: ${skipped}, failed: ${failed}`);
+  console.log(`Done — descriptions: +${descAdded}, images upgraded: ${imgUpgraded}, dates: +${dateAdded}, bodies: +${bodyAdded}, skipped: ${skipped}, failed: ${failed}`);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });

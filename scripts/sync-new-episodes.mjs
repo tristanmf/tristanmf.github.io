@@ -166,6 +166,16 @@ function isPromoItem(item) {
   return false;
 }
 
+// RSS pubDate ("Fri, 22 May 2026 05:40:00 +0200") → "2026-05-22", expressed
+// in Paris local time so a late-evening publish doesn't slip a day when the
+// runner's clock is UTC.
+function toIsoDate(pubDate) {
+  if (!pubDate) return null;
+  const d = new Date(pubDate);
+  if (isNaN(d)) return null;
+  return d.toLocaleDateString('en-CA', { timeZone: 'Europe/Paris' }); // en-CA = yyyy-mm-dd
+}
+
 function formatEntry(ep) {
   // Match the existing one-line-per-episode style of episodes-data.js.
   const parts = [
@@ -174,6 +184,7 @@ function formatEntry(ep) {
     `img: ${JSON.stringify(ep.img)}`,
     `youtube: ${ep.youtube ? JSON.stringify(ep.youtube) : 'null'}`,
   ];
+  if (ep.date) parts.push(`date: ${JSON.stringify(ep.date)}`);
   return `  { ${parts.join(', ')} },`;
 }
 
@@ -257,6 +268,7 @@ async function main() {
       url: item.link,
       img: item.image,
       youtube: youtube || null,
+      date: toIsoDate(item.pubDate),
     });
     console.log(`+ ${item.title}${youtube ? ' [+ YouTube match]' : ''}`);
   }
