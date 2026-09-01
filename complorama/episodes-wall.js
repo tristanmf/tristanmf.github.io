@@ -452,6 +452,7 @@ function EpisodeTile({
       pointerEvents: 'none'
     }
   }, ep.date && /*#__PURE__*/React.createElement("time", {
+    className: "ep-date",
     dateTime: ep.date,
     style: {
       display: 'block',
@@ -471,6 +472,7 @@ function EpisodeTile({
       transition: 'width 0.3s cubic-bezier(.2,.7,.3,1)'
     }
   }), /*#__PURE__*/React.createElement("h2", {
+    className: "ep-title",
     style: {
       margin: 0,
       fontFamily: '"Archivo", "Helvetica Neue", system-ui, sans-serif',
@@ -1129,11 +1131,24 @@ function EpisodesWall() {
           .hero-illustration { object-position: 110% center !important; opacity: 0.55 !important; }
           .hero-shade-h { background: linear-gradient(to right, rgba(10,10,12,1) 0%, rgba(10,10,12,0.95) 60%, rgba(10,10,12,0.6) 88%, rgba(10,10,12,0.3) 100%) !important; }
           .hero-avatar { width: 84px !important; height: 84px !important; top: 20px !important; right: 20px !important; }
+          /* 3-col tablets: ~250px tiles with always-visible actions (no hover). */
+          .ep-title { font-size: 16px !important; -webkit-line-clamp: 5; }
         }
         /* Season chips: hide the scrollbar of the horizontal strip. */
         .season-chips { scrollbar-width: none; }
         .season-chips::-webkit-scrollbar { display: none; }
         .season-chips button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+        /* Tile title: hard cap on line count so the bottom block can never
+           outgrow the tile (date + title + action row are bottom-anchored
+           and would otherwise climb over the N° badge). Only the handful of
+           100+-character titles ever hit the cap. */
+        .ep-title {
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 6;
+          overflow: hidden;
+        }
 
         @media (max-width: 600px) {
           .ep-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1143,6 +1158,15 @@ function EpisodesWall() {
           .subscribe-bar .subscribe-prefix { display: none; }
           .subscribe-bar a { padding: 6px 10px !important; font-size: 10px !important; gap: 6px !important; letter-spacing: 0.08em !important; }
           .hero-avatar { width: 64px !important; height: 64px !important; top: 16px !important; right: 16px !important; }
+
+          /* 2-col phones (~187px tiles). Portrait 4:5 tiles buy ~25% more
+             height while staying edge-to-edge and uniform; the type and the
+             action row tighten up to match. */
+          .ep-tile { aspect-ratio: 4 / 5 !important; }
+          .ep-title { font-size: 15px !important; line-height: 1.18 !important; }
+          .ep-date { font-size: 9px !important; margin-bottom: 5px !important; }
+          .tile-actions { margin-top: 9px !important; }
+          .tile-actions a { padding: 5px 9px !important; font-size: 9px !important; letter-spacing: 0.14em !important; }
         }
       `));
 }
