@@ -1127,24 +1127,23 @@ function Testimonials() {
 
   return (
     <section id="productions" className="px-6 md:px-12 lg:px-24 py-16 md:py-28">
-      <div className="max-w-3xl mb-14">
-        <FadeIn>
-          <div className="inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap">
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/60">[&thinsp;03&thinsp;]</span>
-            <span className="text-white font-body text-base md:text-lg tracking-tight">Labo, web, documentaire</span>
-          </div>
-        </FadeIn>
-      </div>
       <LabTile video="./tmflab.mp4" logo="./tmflab-logo.svg" />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {items.map((t, i) =>
-        <Parallax key={t.title} speed={0} className="h-full">
-          <FadeIn delay={i * 0.08} className="h-full">
-            <MediaCard {...t} />
-          </FadeIn>
-        </Parallax>
-        )}
-      </div>
+      {/* La grille de cartes a été retirée au profit de la tuile. `items` est
+          conservé intact : pour la réactiver, remettre ici le bloc
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">…</div>
+          (voir l'historique git). */}
+      <FadeIn delay={0.2}>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] uppercase tracking-[0.18em] text-white/40">
+          <span>Voir aussi</span>
+          {items.map((t) =>
+            <React.Fragment key={t.title}>
+              <span aria-hidden="true" className="text-white/25">·</span>
+              <a href={t.href} target={t.href.startsWith('http') ? '_blank' : undefined} rel="noopener"
+                className="text-white/60 hover:text-white transition-colors">{t.title}</a>
+            </React.Fragment>
+          )}
+        </div>
+      </FadeIn>
     </section>);
 
 }
