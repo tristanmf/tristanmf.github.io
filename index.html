@@ -1052,36 +1052,43 @@ function Conferencier() {
 
 // ---------- Productions ----------
 // ---------- TMF Lab : tuile pleine largeur ----------
+// Charte du labo : fond #07080a, accent orange #ff5b2e (--feu), texte #e9eaee.
 const LAB_URL = "https://tmflab.tech/";
-const LAB_YELLOW = "#FFD500"; // à aligner sur le jaune exact de TMF Lab
+const LAB_ACCENT = "#ff5b2e";
 function LabTile({ video, logo }) {
+  const ref = useHls(video || "");
   return (
     <FadeIn className="mb-10">
       <a href={LAB_URL} target="_blank" rel="noopener"
         className="group relative block rounded-3xl overflow-hidden"
-        style={{ background: LAB_YELLOW }}>
+        style={{
+          background: '#07080a',
+          boxShadow: '0 0 0 1px rgba(255,91,46,0.35), 0 40px 90px -40px rgba(255,91,46,0.45)'
+        }}>
         {video &&
-          <video src={video} autoPlay loop muted playsInline preload="auto"
+          <video ref={ref} autoPlay loop muted playsInline preload="auto"
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />}
-        {video &&
-          <div className="absolute inset-0 pointer-events-none"
-            style={{ background: `linear-gradient(90deg, ${LAB_YELLOW} 0%, ${LAB_YELLOW} 38%, ${LAB_YELLOW}00 78%)` }} />}
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-8 p-8 md:p-14 min-h-[340px]">
-          <div className="flex-1 max-w-xl">
-            <div className="inline-block rounded-full px-3.5 py-1 text-xs font-medium font-body bg-black" style={{ color: LAB_YELLOW }}>Laboratoire</div>
-            <h3 className="mt-5 font-heading italic text-5xl md:text-7xl leading-[0.9] tracking-tight text-black">TMF Lab</h3>
-            <p className="mt-5 text-black/80 font-body font-light text-base md:text-lg leading-relaxed">Toutes mes expérimentations et explorations numériques, réunies sur mon espace labo.</p>
-            <div className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-black font-body">
-              Entrer dans le labo <ArrowUpRight size={14} strokeWidth={2} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </div>
-          </div>
-          {logo &&
-            <mot.img src={logo} alt="TMF Lab"
-              initial={{ opacity: 0, scale: 0.85, filter: 'blur(8px)' }}
-              whileInView={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: 'linear-gradient(90deg, rgba(7,8,10,0.94) 0%, rgba(7,8,10,0.72) 42%, rgba(7,8,10,0.12) 100%)' }} />
+        <div className="relative z-10 flex flex-col justify-center p-8 md:p-14 min-h-[380px] max-w-2xl">
+          {logo ?
+            <mot.img src={logo} alt="tmflab.tech"
+              initial={{ opacity: 0, y: 8, filter: 'blur(8px)' }}
+              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               viewport={{ once: true, amount: 0.4 }}
-              transition={{ duration: 0.9, delay: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
-              className="w-44 md:w-64 shrink-0 md:ml-auto drop-shadow-2xl" />}
+              transition={{ duration: 0.9, delay: 0.2, ease: [0.2, 0.7, 0.2, 1] }}
+              className="w-56 md:w-72 h-auto" /> :
+            <div className="font-mono text-xs uppercase tracking-[0.2em]" style={{ color: LAB_ACCENT }}>tmflab.tech</div>}
+          <h3 className="mt-7 font-heading italic text-4xl md:text-6xl leading-[0.95] tracking-tight text-white">
+            Je ne code pas.<br />J'expérimente.
+          </h3>
+          <p className="mt-5 text-white/75 font-body font-light text-base md:text-lg leading-relaxed">
+            Toutes mes expérimentations et explorations numériques, réunies dans mon laboratoire.
+          </p>
+          <div className="mt-8 inline-flex w-fit items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium font-body text-black transition-transform duration-300 group-hover:translate-x-0.5"
+            style={{ background: LAB_ACCENT }}>
+            Entrer dans le labo <ArrowUpRight size={14} strokeWidth={2} />
+          </div>
         </div>
       </a>
     </FadeIn>
@@ -1128,7 +1135,7 @@ function Testimonials() {
           </div>
         </FadeIn>
       </div>
-      <LabTile />
+      <LabTile video="./tmflab.mp4" logo="./tmflab-logo.svg" />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {items.map((t, i) =>
         <Parallax key={t.title} speed={0} className="h-full">
