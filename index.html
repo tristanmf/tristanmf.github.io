@@ -957,6 +957,14 @@ function FeaturesGrid() {
     body: "Membre du Comité d'indépendance et d'intégrité du groupe audiovisuel public à destination internationale.",
     href: "https://www.francemediasmonde.com/fr/nos-engagements/deontologie/",
     cta: "En savoir plus"
+  },
+  {
+    img: "./infographie.jpg",
+    kicker: "Livre · Éditions CNRS",
+    title: "Internet, une infographie",
+    body: "Un ouvrage grand public qui décrypte, visuellement, l'impact du numérique sur nos sociétés — réseaux, plateformes, nouveaux pouvoirs.",
+    href: "https://www.cnrseditions.fr/catalogue/societe/internet/",
+    cta: "Voir le livre"
   }];
 
   return (
@@ -965,7 +973,7 @@ function FeaturesGrid() {
         <FadeIn>
           <div className="inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap">
             <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/60">[&thinsp;02&thinsp;]</span>
-            <span className="text-white font-body text-base md:text-lg tracking-tight">Recherche, veille & institutionnel</span>
+            <span className="text-white font-body text-base md:text-lg tracking-tight">Recherche, livres & institutionnel</span>
           </div>
         </FadeIn>
       </div>
@@ -1035,17 +1043,45 @@ function Conferencier() {
 }
 
 // ---------- Productions ----------
+// ---------- TMF Lab : tuile pleine largeur ----------
+const LAB_URL = "https://tmflab.tech/";
+const LAB_YELLOW = "#FFD500"; // à aligner sur le jaune exact de TMF Lab
+function LabTile({ video, logo }) {
+  return (
+    <FadeIn className="mb-10">
+      <a href={LAB_URL} target="_blank" rel="noopener"
+        className="group relative block rounded-3xl overflow-hidden"
+        style={{ background: LAB_YELLOW }}>
+        {video &&
+          <video src={video} autoPlay loop muted playsInline preload="auto"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />}
+        {video &&
+          <div className="absolute inset-0 pointer-events-none"
+            style={{ background: `linear-gradient(90deg, ${LAB_YELLOW} 0%, ${LAB_YELLOW} 38%, ${LAB_YELLOW}00 78%)` }} />}
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-8 p-8 md:p-14 min-h-[340px]">
+          <div className="flex-1 max-w-xl">
+            <div className="inline-block rounded-full px-3.5 py-1 text-xs font-medium font-body bg-black" style={{ color: LAB_YELLOW }}>Laboratoire</div>
+            <h3 className="mt-5 font-heading italic text-5xl md:text-7xl leading-[0.9] tracking-tight text-black">TMF Lab</h3>
+            <p className="mt-5 text-black/80 font-body font-light text-base md:text-lg leading-relaxed">Toutes mes expérimentations et explorations numériques, réunies sur mon espace labo.</p>
+            <div className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-black font-body">
+              Entrer dans le labo <ArrowUpRight size={14} strokeWidth={2} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </div>
+          </div>
+          {logo &&
+            <mot.img src={logo} alt="TMF Lab"
+              initial={{ opacity: 0, scale: 0.85, filter: 'blur(8px)' }}
+              whileInView={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.9, delay: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
+              className="w-44 md:w-64 shrink-0 md:ml-auto drop-shadow-2xl" />}
+        </div>
+      </a>
+    </FadeIn>
+  );
+}
+
 function Testimonials() {
   const items = [
-  {
-    href: "https://www.cnrseditions.fr/catalogue/societe/internet/",
-    img: "./infographie.jpg",
-    badge: "Livre",
-    kicker: "Éditions CNRS",
-    title: "Internet, une infographie",
-    body: "Un ouvrage grand public qui décrypte, visuellement, l'impact du numérique sur nos sociétés — réseaux, plateformes, nouveaux pouvoirs.",
-    cta: "Voir le livre"
-  },
   {
     href: "./carte-complotisme/",
     img: "./comploscore.jpg",
@@ -1065,15 +1101,6 @@ function Testimonials() {
     cta: "Explorer"
   },
   {
-    href: "https://tristan.pro/clipflow/",
-    img: "./clipflow.jpg",
-    badge: "Open source",
-    kicker: "Création d'app open source · vibe coding",
-    title: "ClipFlow",
-    body: "Une expérience de vibe coding : j'ai fabriqué mon appli macOS en la décrivant à une IA — sous-titrer, traduire, découper et compresser mes vidéos, en local. Le code est ouvert, pour que chacun fasse le sien.",
-    cta: "Découvrir le projet"
-  },
-  {
     href: "https://www.egoblog.net/happyworld/",
     img: "./happyworld.jpg",
     badge: "Documentaire",
@@ -1081,15 +1108,6 @@ function Testimonials() {
     title: "Happy World",
     body: "Tourné clandestinement en Birmanie sous couverture touristique avec Gaël Bordier, ce documentaire satirique raconte la dictature par l'absurde — prix Orson Welles 2010. Son dispositif hypervidéo, éteint depuis, a été ressuscité par une migration menée avec l'IA.",
     cta: "Voir le film"
-  },
-  {
-    href: "https://www.blogtrotters.fr/",
-    img: "./blogtrotters.jpg",
-    badge: "Vidéoblog",
-    kicker: "Reportage participatif · 2006-2011",
-    title: "Blogtrotters",
-    body: "Un usage pionnier du web pour des sujets qui comptent : dès 2006, du reportage filmé sur place et diffusé en direct — Khmers rouges, génocide arménien, réfugiés du Darfour — en intégrant les questions des internautes. Prix Michel Colonna d'Istria 2007.",
-    cta: "Explorer le site"
   }];
 
   return (
@@ -1098,10 +1116,11 @@ function Testimonials() {
         <FadeIn>
           <div className="inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap">
             <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/60">[&thinsp;03&thinsp;]</span>
-            <span className="text-white font-body text-base md:text-lg tracking-tight">Livre, web, documentaire</span>
+            <span className="text-white font-body text-base md:text-lg tracking-tight">Labo, web, documentaire</span>
           </div>
         </FadeIn>
       </div>
+      <LabTile />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {items.map((t, i) =>
         <Parallax key={t.title} speed={0} className="h-full">
