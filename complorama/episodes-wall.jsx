@@ -5,6 +5,11 @@
 
 const PAGE_SIZE = 20;
 
+// Season metadata — bump both at each rentrée. Until SEASON_START the hero
+// stats block reads "REPRISE LE <date>" instead of "EN COURS".
+const SEASON = 7;
+const SEASON_START = '2026-09-11';
+
 const SUBSCRIBE_LINKS = [
   {
     name: 'Apple Podcasts',
@@ -158,7 +163,7 @@ function SubscribeBar() {
         fontSize: 10,
         letterSpacing: '0.22em',
         textTransform: 'uppercase',
-        color: 'rgba(243,239,230,0.45)',
+        color: 'rgba(243,239,230,0.55)',
         marginRight: 6,
       }}>
         S'abonner ↗
@@ -181,6 +186,7 @@ function EpisodeTile({ ep }) {
 
   return (
     <div
+      className="ep-tile"
       onClick={openAudio}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
@@ -197,6 +203,8 @@ function EpisodeTile({ ep }) {
         <img
           src={ep.img}
           alt=""
+          loading="lazy"
+          decoding="async"
           onError={() => setImgError(true)}
           style={{
             position: 'absolute',
@@ -310,7 +318,7 @@ function EpisodeTile({ ep }) {
           marginBottom: 10,
           transition: 'width 0.3s cubic-bezier(.2,.7,.3,1)',
         }} />
-        <h3 style={{
+        <h2 style={{
           margin: 0,
           fontFamily: '"Archivo", "Helvetica Neue", system-ui, sans-serif',
           fontWeight: 700,
@@ -322,10 +330,11 @@ function EpisodeTile({ ep }) {
           textWrap: 'balance',
         }}>
           {ep.title}
-        </h3>
+        </h2>
 
-        {/* Action buttons — appear on hover */}
-        <div style={{
+        {/* Action buttons — appear on hover / focus; always visible on
+            touch devices (see .tile-actions rules in the stylesheet). */}
+        <div className="tile-actions" style={{
           marginTop: 12,
           display: 'flex',
           gap: 8,
@@ -338,6 +347,7 @@ function EpisodeTile({ ep }) {
             href={ep.url || '#'}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label={`Écouter N°${ep.n} — ${ep.title} sur Radio France`}
             onClick={(e) => e.stopPropagation()}
             style={{
               display: 'inline-flex',
@@ -366,6 +376,7 @@ function EpisodeTile({ ep }) {
               href={ep.youtube}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={`Voir la vidéo de N°${ep.n} — ${ep.title} sur YouTube`}
               onClick={(e) => e.stopPropagation()}
               style={{
                 display: 'inline-flex',
@@ -410,15 +421,24 @@ function EpisodesWall() {
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '');
   const q = normalize(query);
+  // Tolerate "N°108", "n 108", "#108", "no 108" when matching the number.
+  const qNum = query.replace(/^\s*(?:n\s*°|n°|n\s+|#|no\.?\s*)\s*/i, '').trim();
   const filtered = window.EPISODES.filter(e => {
     if (!q) return true;
     if (normalize(e.title).includes(q)) return true;
     if (e.description && normalize(e.description).includes(q)) return true;
-    if (String(e.n).includes(query)) return true;
+    if (qNum && String(e.n).includes(qNum)) return true;
     return false;
   });
   const visible = filtered.slice(0, shown);
   const hasMore = visible.length < filtered.length;
+
+  const seasonStartDate = new Date(`${SEASON_START}T00:00:00`);
+  const seasonStarted = new Date() >= seasonStartDate;
+  const seasonStartLabel = seasonStartDate
+    .toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+    .replace('.', '')
+    .toUpperCase(); // e.g. "11 SEPT"
 
   React.useEffect(() => { setShown(PAGE_SIZE); }, [query]);
 
@@ -584,7 +604,7 @@ function EpisodesWall() {
                 fontFamily: '"Fraunces", "Georgia", serif',
                 fontStyle: 'italic',
                 fontSize: 13,
-                color: 'rgba(243,239,230,0.45)',
+                color: 'rgba(243,239,230,0.55)',
                 lineHeight: 1.45,
               }}>
                 Mur des épisodes — un index visuel renvoyant vers Radio France.
@@ -593,7 +613,7 @@ function EpisodesWall() {
             <SubscribeBar />
           </div>
 
-          <div style={{
+          <div className="hero-stats" style={{
             fontFamily: '"DM Mono", monospace',
             fontSize: 12,
             color: 'rgba(243,239,230,0.5)',
@@ -604,7 +624,7 @@ function EpisodesWall() {
             whiteSpace: 'nowrap',
             minWidth: 140,
           }}>
-            <div style={{
+            <div className="hero-stats-live" style={{
               color: '#e63946',
               fontWeight: 500,
               display: 'flex',
@@ -612,7 +632,7 @@ function EpisodesWall() {
               gap: 8,
               justifyContent: 'flex-end',
             }}>
-              <span style={{
+              <span className={seasonStarted ? 'pulse-dot' : undefined} style={{
                 width: 8,
                 height: 8,
                 borderRadius: '50%',
@@ -620,16 +640,16 @@ function EpisodesWall() {
                 boxShadow: '0 0 10px #e63946',
                 display: 'inline-block',
               }} />
-              EN COURS
+              {seasonStarted ? 'EN COURS' : `REPRISE LE ${seasonStartLabel}`}
             </div>
             <div>{window.EPISODES[0] ? window.EPISODES[0].n : window.EPISODES.length} ÉPISODES</div>
-            <div>SAISON 06</div>
+            <div>SAISON {String(SEASON).padStart(2, '0')}</div>
           </div>
         </div>
       </header>
 
       {/* Sticky search bar */}
-      <div className="search-bar" style={{
+      <div className="search-bar" role="search" style={{
         position: 'sticky',
         top: 0,
         zIndex: 10,
@@ -658,6 +678,8 @@ function EpisodesWall() {
           </svg>
           <input
             type="text"
+            aria-label="Rechercher un épisode par titre, thème ou numéro"
+            autoComplete="off"
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Chercher un épisode, un thème, un numéro…"
@@ -676,6 +698,7 @@ function EpisodesWall() {
           {query && (
             <button
               onClick={() => setQuery('')}
+              aria-label="Effacer la recherche"
               style={{
                 background: 'transparent',
                 border: 'none',
@@ -702,9 +725,43 @@ function EpisodesWall() {
       </div>
 
       {/* Episode wall — responsive, edge-to-edge, no gap */}
-      <div className="ep-grid">
-        {visible.map(ep => <EpisodeTile key={ep.n} ep={ep} />)}
-      </div>
+      {filtered.length > 0 ? (
+        <div className="ep-grid">
+          {visible.map(ep => <EpisodeTile key={ep.n} ep={ep} />)}
+        </div>
+      ) : (
+        <div role="status" style={{
+          padding: '88px 48px 96px',
+          textAlign: 'center',
+        }}>
+          <div style={{
+            fontFamily: '"Fraunces", Georgia, serif',
+            fontStyle: 'italic',
+            fontSize: 22,
+            color: 'rgba(243,239,230,0.7)',
+            marginBottom: 18,
+          }}>
+            Aucun épisode ne correspond à « {query} ».
+          </div>
+          <button
+            onClick={() => setQuery('')}
+            style={{
+              padding: '10px 20px',
+              borderRadius: 999,
+              background: 'transparent',
+              border: '1px solid rgba(255,255,255,0.22)',
+              color: '#f3efe6',
+              cursor: 'pointer',
+              fontFamily: '"DM Mono", monospace',
+              fontSize: 11,
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+            }}
+          >
+            Effacer la recherche
+          </button>
+        </div>
+      )}
 
       {/* Sentinel for infinite scroll */}
       {hasMore && (
@@ -715,14 +772,14 @@ function EpisodesWall() {
           fontSize: 11,
           letterSpacing: '0.2em',
           textTransform: 'uppercase',
-          color: 'rgba(243,239,230,0.4)',
+          color: 'rgba(243,239,230,0.5)',
         }}>
           chargement…
         </div>
       )}
 
       {/* End of catalogue footer */}
-      {!hasMore && (
+      {!hasMore && filtered.length > 0 && (
         <footer style={{
           padding: '56px 48px 64px',
           borderTop: '1px solid rgba(255,255,255,0.08)',
@@ -763,7 +820,7 @@ function EpisodesWall() {
             fontSize: 10,
             letterSpacing: '0.2em',
             textTransform: 'uppercase',
-            color: 'rgba(243,239,230,0.3)',
+            color: 'rgba(243,239,230,0.42)',
           }}>
             complorama · le mur des épisodes
           </div>
@@ -772,32 +829,68 @@ function EpisodesWall() {
             fontFamily: '"DM Mono", monospace',
             fontSize: 10,
             letterSpacing: '0.15em',
-            color: 'rgba(243,239,230,0.25)',
+            color: 'rgba(243,239,230,0.4)',
           }}>
             vibécodé par{' '}
             <a
               href="https://tristan.pro"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: 'rgba(243,239,230,0.4)', textDecoration: 'none' }}
+              style={{ color: 'rgba(243,239,230,0.6)', textDecoration: 'none', borderBottom: '1px solid rgba(243,239,230,0.25)' }}
             >Tristan Mendès France</a>
           </div>
         </footer>
       )}
 
-      {/* Responsive grid */}
+      {/* Responsive grid + interaction states */}
       <style>{`
         .ep-grid {
           display: grid;
           grid-template-columns: repeat(5, 1fr);
           gap: 0;
         }
+
+        /* Keyboard: Tab lands on the (visually hidden) Écouter / Vidéo links
+           inside a tile; :focus-within then reveals the whole action row,
+           mirroring the mouse hover state. */
+        .ep-tile:focus-within .tile-actions {
+          opacity: 1 !important;
+          transform: none !important;
+          pointer-events: auto !important;
+        }
+        .tile-actions a:focus-visible {
+          outline: 2px solid #fff;
+          outline-offset: 2px;
+        }
+
+        /* Touch devices have no hover — keep the action buttons visible so the
+           Vidéo link is actually reachable. */
+        @media (hover: none) {
+          .tile-actions {
+            opacity: 1 !important;
+            transform: none !important;
+            pointer-events: auto !important;
+          }
+        }
+
+        /* Live indicator: soft breathing glow once the season is on air. */
+        @keyframes pulse-dot {
+          0%, 100% { box-shadow: 0 0 6px #e63946; }
+          50%      { box-shadow: 0 0 14px #e63946; }
+        }
+        .pulse-dot { animation: pulse-dot 2.4s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) {
+          .pulse-dot { animation: none; }
+        }
+
         @media (max-width: 1280px) {
           .ep-grid { grid-template-columns: repeat(4, 1fr); }
         }
         @media (max-width: 900px) {
           .ep-grid { grid-template-columns: repeat(3, 1fr); }
           .hero-meta { padding: 36px 24px 24px !important; min-height: 280px !important; }
+          .hero-stats { text-align: left !important; }
+          .hero-stats-live { justify-content: flex-start !important; }
           .search-bar { padding: 12px 24px !important; }
           .hero-illustration { object-position: 110% center !important; opacity: 0.55 !important; }
           .hero-shade-h { background: linear-gradient(to right, rgba(10,10,12,1) 0%, rgba(10,10,12,0.95) 60%, rgba(10,10,12,0.6) 88%, rgba(10,10,12,0.3) 100%) !important; }

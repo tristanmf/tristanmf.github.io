@@ -5,17 +5,13 @@ on:
     # Times are UTC. Paris is UTC+2 in summer (CEST), UTC+1 in winter (CET).
     # Cron may be delayed by a few minutes during GitHub peak hours.
     #
-    # Audio drop window — Complorama publishes Friday evening, biweekly:
-    - cron: '0 18 * * 5'   # Fri 18:00 UTC = ~20:00 Paris (audio sync)
-    - cron: '0 8 * * 6'    # Sat 08:00 UTC = ~10:00 Paris (catch late drops)
-    #
-    # YouTube back-fill window — the video edit usually ships within a week:
-    - cron: '0 10 * * 1'   # Mon 10:00 UTC = ~12:00 Paris
-    - cron: '0 10 * * 4'   # Thu 10:00 UTC = ~12:00 Paris
-    #
-    # The script is idempotent: each run is a no-op when nothing's new, so
-    # running weekly instead of strictly biweekly costs nothing extra and
-    # also catches off-schedule special episodes.
+    # Two passes a day, every day. Each run is idempotent (no-op + no
+    # commit when nothing changed, ~15s), so this costs nothing and — unlike
+    # the previous Fri/Sat/Mon/Thu schedule — it doesn't depend on which
+    # weekday the show publishes. Worst case an episode / video / artwork
+    # is picked up within 12h of Radio France or YouTube exposing it.
+    - cron: '0 18 * * *'   # 18:00 UTC = ~20:00 Paris
+    - cron: '0 8 * * *'    # 08:00 UTC = ~10:00 Paris
   workflow_dispatch:
 
 permissions:

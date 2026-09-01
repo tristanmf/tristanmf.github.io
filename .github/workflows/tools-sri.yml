@@ -1,0 +1,34 @@
+name: Tools · SRI hashes
+
+# Dev helper. Prints the Subresource Integrity attribute for one or more
+# CDN URLs so we can pin third-party scripts in index.html without having
+# to trust the CDN blindly. Run it from the Actions tab whenever a CDN
+# dependency is bumped, then paste the printed integrity="…" into the
+# matching <script> tag.
+
+on:
+  workflow_dispatch:
+    inputs:
+      urls:
+        description: 'Space-separated list of URLs to hash'
+        required: true
+        default: 'https://unpkg.com/react@18.3.1/umd/react.production.min.js https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js'
+
+permissions:
+  contents: read
+
+jobs:
+  sri:
+    runs-on: ubuntu-latest
+    env:
+      URLS: ${{ inputs.urls }}
+    steps:
+      - name: Compute sha384 integrity attributes
+        run: |
+          set -euo pipefail
+          for u in $URLS; do
+            h="$(curl -fsSL "$u" | openssl dgst -sha384 -binary | openssl base64 -A)"
+            echo "$u"
+            echo "  integrity=\"sha384-$h\""
+            echo
+          done
