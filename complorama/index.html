@@ -33,25 +33,16 @@
      re-run it and update these if the version is ever bumped. -->
 <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-
+<!-- The .jsx sources are precompiled to .js by scripts/build-jsx.mjs (CI reruns
+     it on every push that touches a .jsx) — no in-browser Babel any more.
+     Edit the .jsx, never the generated .js. -->
 <script src="episodes-data.js"></script>
-<script type="text/babel" src="episode-visual.jsx"></script>
-<script type="text/babel" src="episodes-wall.jsx"></script>
+<script src="episode-visual.js"></script>
+<script src="episodes-wall.js"></script>
 
-<script type="text/babel">
-  function App() {
-    return <window.EpisodesWall />;
-  }
-
-  function mount() {
-    if (typeof window.EpisodesWall === 'undefined' || typeof window.EpisodeVisual === 'undefined') {
-      setTimeout(mount, 30);
-      return;
-    }
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-  }
-  mount();
+<script>
+  ReactDOM.createRoot(document.getElementById('root'))
+    .render(React.createElement(window.EpisodesWall));
 </script>
 </body>
 </html>
