@@ -66,10 +66,10 @@ jobs:
             done
           done
 
-          bar "5 · Same URL, different clients (User-Agent matrix) — https://$host/"
+          bar "2b · Same URL, different clients (User-Agent matrix) — https://$host/"
           printf '    %-22s %-6s %s\n' CLIENT HTTP LOCATION
           while IFS='|' read -r label ua; do
-            meta="$(curl -sS -o /dev/null --max-time 20 --max-redirs 0 -A "$ua" -w '%{http_code}|%{redirect_url}' "https://$host/" 2>/dev/null || echo 'ERR|')"
+            meta="$(curl -sS -o /dev/null --max-time 20 --max-redirs 0 -A "$ua" -w '%{http_code}|%{redirect_url}' "https://$host/" 2>/dev/null)" || meta="ERR|"
             printf '    %-22s %-6s %s\n' "$label" "${meta%%|*}" "${meta#*|}"
           done <<'EOF'
           Safari iPhone|Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1
