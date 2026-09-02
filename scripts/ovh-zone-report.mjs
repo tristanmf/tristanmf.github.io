@@ -53,25 +53,48 @@ try {
 
 // 4. hostings
 if (withHosting) {
-  h('4 · Hébergements web OVH du compte');
+  h('4 · Hébergements web OVH');
+  const inZone = (d) => d === zone || d.endsWith('.' + zone);
+  // The account-wide list needs the bare right "GET /hosting/web" (OVH
+  // wildcards such as /hosting/web/* do not cover it). When it is refused,
+  // fall back to "which hosting(s) is <zone> / www.<zone> attached to?",
+  // which only needs /hosting/web/* — enough for a zone-centric report.
+  let services = [];
   try {
-    const services = await call('GET', '/hosting/web');
-    if (!services.length) console.log('  (aucun hébergement web)');
-    for (const sn of services) {
-      let info = {}; try { info = await call('GET', `/hosting/web/${sn}`); } catch (e) { info = { error: fail(e) }; }
-      console.log(`\n  ▸ ${sn}  —  ${info.displayName || ''}  ·  ${info.offer || ''}  ·  état ${info.state || '?'}  ·  cluster ${info.cluster || '?'}  ·  IP ${info.hostingIp || '?'}`);
-      let sslInfo = null; try { sslInfo = await call('GET', `/hosting/web/${sn}/ssl`); } catch (e) { sslInfo = { none: fail(e) }; }
-      console.log(`    certificat SSL de l'hébergement : ${sslInfo && !sslInfo.none ? `${sslInfo.provider || '?'} · ${sslInfo.type || '?'} · ${sslInfo.status || '?'}${sslInfo.regenerable !== undefined ? ` · regenerable=${sslInfo.regenerable}` : ''}` : `aucun ${sslInfo && sslInfo.none ? sslInfo.none : ''}`}`);
-      let attached = []; try { attached = await call('GET', `/hosting/web/${sn}/attachedDomain`); } catch (e) { console.log(`    domaines attachés : ${fail(e)}`); continue; }
-      console.log(`    domaines attachés (${attached.length}) : ${attached.join(', ') || '—'}`);
-      for (const d of attached) {
-        if (!(d === zone || d.endsWith('.' + zone))) continue;
-        try {
-          const det = await call('GET', `/hosting/web/${sn}/attachedDomain/${d}`);
-          console.log(`    ★ ${d} appartient à ${zone} → ` + JSON.stringify(redact(det)));
-        } catch (e) { console.log(`    ★ ${d} : ${fail(e)}`); }
-      }
+    services = await call('GET', '/hosting/web');
+    console.log(`  ${services.length} hébergement(s) sur le compte`);
+  } catch (e) {
+    console.log(`  liste complète du compte indisponible ${fail(e)}`);
+    console.log(`  → repli : hébergement(s) auxquels ${zone} / www.${zone} sont rattachés`);
+    for (const d of [zone, `www.${zone}`]) {
+      try {
+        for (const sn of await call('GET', `/hosting/web/attachedDomain?domain=${encodeURIComponent(d)}`)) if (!services.includes(sn)) services.push(sn);
+      } catch (e2) { console.log(`    ${d} : ${fail(e2)}`); }
     }
-  } catch (e) { console.log(`  ${fail(e)}`); }
+  }
+  if (!services.length) console.log('  (aucun hébergement web trouvé)');
+  for (const sn of services) {
+    let info = {}; try { info = await call('GET', `/hosting/web/${sn}`); } catch (e) { info = { error: fail(e) }; }
+    console.log(`\n  ▸ ${sn}  —  ${info.displayName || ''}  ·  ${info.offer || ''}  ·  état ${info.state || '?'}  ·  cluster ${info.cluster || '?'}  ·  IP ${info.hostingIp || '?'}${info.error ? `  ${info.error}` : ''}`);
+
+    let sslInfo = null; try { sslInfo = await call('GET', `/hosting/web/${sn}/ssl`); } catch (e) { sslInfo = { none: fail(e) }; }
+    console.log(`    certificat SSL de l'hébergement : ${sslInfo && !sslInfo.none ? `${sslInfo.provider || '?'} · ${sslInfo.type || '?'} · ${sslInfo.status || '?'}${sslInfo.regenerable !== undefined ? ` · regenerable=${sslInfo.regenerable}` : ''}` : `aucun ${sslInfo && sslInfo.none ? sslInfo.none : ''}`}`);
+    let sslDomains = null; try { sslDomains = await call('GET', `/hosting/web/${sn}/ssl/domains`); } catch (e) { console.log(`    noms couverts par le certificat : ${fail(e)}`); }
+    if (Array.isArray(sslDomains)) {
+      console.log(`    noms couverts par le certificat (${sslDomains.length}) : ${sslDomains.join(', ') || '—'}`);
+      const covered = sslDomains.filter(inZone);
+      console.log(`    → ${zone} : ${covered.length ? `✓ couvert (${covered.join(', ')})` : `✗ NON couvert par le certificat → avertissement de sécurité sur https://${zone}/`}`);
+    }
+
+    let attached = []; try { attached = await call('GET', `/hosting/web/${sn}/attachedDomain`); } catch (e) { console.log(`    domaines attachés : ${fail(e)}`); continue; }
+    console.log(`    domaines attachés (${attached.length}) : ${attached.join(', ') || '—'}`);
+    for (const d of attached.filter(inZone)) {
+      try {
+        const det = await call('GET', `/hosting/web/${sn}/attachedDomain/${d}`);
+        console.log(`    ★ ${d} → dossier ${det.path ?? '?'} · ssl=${det.ssl} · cdn=${det.cdn ?? '—'} · firewall=${det.firewall ?? '—'} · état ${det.status ?? '?'}`);
+        console.log(`      ${JSON.stringify(redact(det))}`);
+      } catch (e) { console.log(`    ★ ${d} : ${fail(e)}`); }
+    }
+  }
 }
 console.log('');
