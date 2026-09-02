@@ -1,0 +1,43 @@
+name: Tools · OVH API schema
+
+# Lists the routes of one OVHcloud API section (public schema, no secrets
+# needed) — the quickest way to find the exact path, method and body of a
+# call before dispatching "Tools · OVH API". See scripts/ovh-schema.mjs.
+
+on:
+  workflow_dispatch:
+    inputs:
+      api:
+        description: 'API section, e.g. /hosting/web or /domain/zone'
+        required: true
+        default: '/hosting/web'
+      filter:
+        description: 'Only routes whose path matches this regex (optional), e.g. ssl|certificate'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  schema:
+    runs-on: ubuntu-latest
+    env:
+      OVH_ENDPOINT: ${{ vars.OVH_ENDPOINT || 'https://eu.api.ovh.com/1.0' }}
+      IN_API: ${{ inputs.api }}
+      IN_FILTER: ${{ inputs.filter }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Schema
+        run: |
+          args=("$IN_API")
+          [ -n "$IN_FILTER" ] && args+=("$IN_FILTER")
+          node scripts/ovh-schema.mjs "${args[@]}"
