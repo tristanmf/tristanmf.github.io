@@ -1,0 +1,8 @@
+/* Tailwind input for the root page. Compiled to assets/tailwind.css by the
+   CLI (build-frontend workflow, or locally:
+   npx tailwindcss@3 -c tailwind.config.js -i tailwind.css -o assets/tailwind.css --minify).
+   Edit this file, never assets/tailwind.css. */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

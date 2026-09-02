@@ -1,16 +1,17 @@
-// Precompile the Complorama JSX sources to plain JS so the browser no longer
-// has to download @babel/standalone (~3 MB) and transpile on every visit.
+// Precompile the JSX sources to plain JS so the browser no longer has to
+// download @babel/standalone (~3 MB) and transpile on every visit.
 //
+//   app.jsx                        →  app.js                 (tristan.pro)
 //   complorama/episode-visual.jsx  →  complorama/episode-visual.js
 //   complorama/episodes-wall.jsx   →  complorama/episodes-wall.js
 //
 // The sources use React as a UMD global (no imports/exports), so the output
-// is a classic script — index.html loads it with a plain <script src>.
+// is a classic script — each index.html loads it with a plain <script src>.
 //
 // Run locally:   npm install --no-save @babel/core @babel/preset-react
 //                node scripts/build-jsx.mjs
 // CI runs this automatically on every push that touches a .jsx
-// (see .github/workflows/build-complorama.yml). Never edit the .js by hand.
+// (see .github/workflows/build-frontend.yml). Never edit the .js by hand.
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
@@ -21,6 +22,7 @@ const babel = require('@babel/core');
 
 const ROOT = process.cwd();
 const SOURCES = [
+  'app.jsx',
   'complorama/episode-visual.jsx',
   'complorama/episodes-wall.jsx',
 ];

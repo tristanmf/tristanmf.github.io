@@ -1,0 +1,41 @@
+name: Tools · Vendor assets
+
+# Mirrors every third-party front-end asset (Google Fonts woff2 + CSS, React,
+# hls.js, framer-motion) into the repo — see scripts/vendor-assets.mjs.
+# Run it from the Actions tab after bumping a library version or changing
+# the font request. Idempotent: existing files are kept, only missing ones
+# are fetched; the stylesheets are always regenerated.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  vendor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Fetch fonts and libraries
+        run: node scripts/vendor-assets.mjs
+
+      - name: Commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/fonts vendor
+          if git diff --staged --quiet; then
+            echo "Nothing to commit."
+          else
+            git commit -m "chore: vendor fonts and JS libraries [skip ci]"
+            git push
+          fi
