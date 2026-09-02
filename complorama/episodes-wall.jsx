@@ -168,12 +168,18 @@ function SubscribeButton({ platform }) {
   );
 }
 
-function SeasonChip({ active, onClick, title, children }) {
+// `active`  = this season is the click-filter (solid red).
+// `current` = this season is the one currently on screen (scroll-spy):
+//             brighter text; the sliding red bar underneath is drawn by the
+//             parent so it can travel between chips.
+function SeasonChip({ active, current, onClick, title, buttonRef, children }) {
   return (
     <button
+      ref={buttonRef}
       type="button"
       onClick={onClick}
       aria-pressed={active}
+      aria-current={current && !active ? 'location' : undefined}
       title={title}
       style={{
         fontFamily: '"DM Mono", monospace',
@@ -182,12 +188,12 @@ function SeasonChip({ active, onClick, title, children }) {
         textTransform: 'uppercase',
         padding: '6px 10px',
         borderRadius: 999,
-        border: `1px solid ${active ? '#e63946' : 'rgba(255,255,255,0.16)'}`,
+        border: `1px solid ${active ? '#e63946' : current ? 'rgba(255,255,255,0.34)' : 'rgba(255,255,255,0.16)'}`,
         background: active ? '#e63946' : 'transparent',
-        color: active ? '#fff' : 'rgba(243,239,230,0.7)',
+        color: active || current ? '#fff' : 'rgba(243,239,230,0.7)',
         cursor: 'pointer',
         whiteSpace: 'nowrap',
-        transition: 'background 0.15s, border-color 0.15s, color 0.15s',
+        transition: 'background 0.15s, border-color 0.25s, color 0.25s',
         flexShrink: 0,
       }}
     >
@@ -237,6 +243,7 @@ function EpisodeTile({ ep }) {
   return (
     <div
       className="ep-tile"
+      data-season={seasonOf(ep.date) || undefined}
       onClick={openAudio}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
@@ -468,6 +475,15 @@ function EpisodesWall() {
   const [shown, setShown] = React.useState(PAGE_SIZE);
   const sentinelRef = React.useRef(null);
 
+  // Scroll-spy plumbing: which season is on screen, and where the sliding
+  // bar under the chips should sit.
+  const gridRef = React.useRef(null);     // the tile grid
+  const barRef = React.useRef(null);      // the sticky search bar
+  const chipsRef = React.useRef(null);    // the (horizontally scrollable) chip strip
+  const chipEls = React.useRef({});       // season → <button>
+  const [currentSeason, setCurrentSeason] = React.useState(null);
+  const [cursor, setCursor] = React.useState({ x: 0, w: 0, visible: false });
+
   // Seasons present in the catalogue (derived from publication dates), newest
   // first. Empty until the sync bot has back-filled dates — the chip row
   // simply doesn't render in that case.
@@ -552,6 +568,60 @@ function EpisodesWall() {
     obs.observe(el);
     return () => obs.disconnect();
   }, [hasMore, visible.length]);
+
+  // Scroll-spy: the current season is that of the topmost tile still visible
+  // beneath the sticky bar. Measured on scroll/resize, rAF-throttled, and
+  // re-measured whenever the set of rendered tiles changes.
+  React.useEffect(() => {
+    if (seasons.length === 0) return;
+    let raf = 0;
+    const measure = () => {
+      raf = 0;
+      const grid = gridRef.current, bar = barRef.current;
+      if (!grid || !bar) { setCurrentSeason(s => (s == null ? s : null)); return; }
+      const top = bar.getBoundingClientRect().bottom + 4;
+      let found = null;
+      for (const el of grid.children) {
+        if (el.getBoundingClientRect().bottom > top) {
+          found = el.dataset && el.dataset.season ? Number(el.dataset.season) : null;
+          break;
+        }
+      }
+      setCurrentSeason(prev => (prev === found ? prev : found));
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(measure); };
+    measure();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [seasons.length, visible.length, query, season]);
+
+  // Slide the bar under the current chip, and keep that chip in view when the
+  // strip is scrollable (phones). Re-run on resize and once web fonts have
+  // loaded, since both change chip widths.
+  const placeCursor = React.useCallback(() => {
+    const el = currentSeason != null ? chipEls.current[currentSeason] : null;
+    const box = chipsRef.current;
+    if (!el || !box) { setCursor(c => (c.visible ? { ...c, visible: false } : c)); return; }
+    setCursor({ x: el.offsetLeft, w: el.offsetWidth, visible: true });
+    if (box.scrollWidth > box.clientWidth + 1) {
+      const left = Math.max(0, el.offsetLeft - (box.clientWidth - el.offsetWidth) / 2);
+      if (Math.abs(box.scrollLeft - left) > 4 && typeof box.scrollTo === 'function') {
+        box.scrollTo({ left, behavior: 'smooth' });
+      }
+    }
+  }, [currentSeason]);
+
+  React.useEffect(() => {
+    placeCursor();
+    window.addEventListener('resize', placeCursor);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeCursor);
+    return () => window.removeEventListener('resize', placeCursor);
+  }, [placeCursor]);
 
   return (
     <div style={{
@@ -745,7 +815,7 @@ function EpisodesWall() {
       </header>
 
       {/* Sticky search bar */}
-      <div className="search-bar" role="search" style={{
+      <div className="search-bar" role="search" ref={barRef} style={{
         position: 'sticky',
         top: 0,
         zIndex: 10,
@@ -811,14 +881,26 @@ function EpisodesWall() {
         </div>
 
         {seasons.length > 0 && (
-          <div className="season-chips" role="group" aria-label="Filtrer par saison" style={{
+          <div className="season-chips" role="group" aria-label="Filtrer par saison" ref={chipsRef} style={{
+            position: 'relative',
             display: 'flex',
             alignItems: 'center',
             gap: 6,
             overflowX: 'auto',
             flex: '0 1 auto',
             minWidth: 0,
+            paddingBottom: 6,
           }}>
+            {/* Scroll-spy bar: slides under the season currently on screen. */}
+            <span
+              aria-hidden="true"
+              className="season-cursor"
+              style={{
+                transform: `translateX(${cursor.x}px)`,
+                width: cursor.w,
+                opacity: cursor.visible ? 1 : 0,
+              }}
+            />
             <SeasonChip active={season == null} onClick={() => setSeason(null)} title="Toutes les saisons">
               Toutes
             </SeasonChip>
@@ -826,8 +908,10 @@ function EpisodesWall() {
               <SeasonChip
                 key={s}
                 active={season === s}
+                current={currentSeason === s}
                 onClick={() => setSeason(season === s ? null : s)}
                 title={seasonLabel(s)}
+                buttonRef={el => { chipEls.current[s] = el; }}
               >
                 S{String(s).padStart(2, '0')}
               </SeasonChip>
@@ -850,7 +934,7 @@ function EpisodesWall() {
 
       {/* Episode wall — responsive, edge-to-edge, no gap */}
       {filtered.length > 0 ? (
-        <div className="ep-grid">
+        <div className="ep-grid" ref={gridRef}>
           {visible.map(ep => <EpisodeTile key={ep.n} ep={ep} />)}
         </div>
       ) : (
@@ -1031,6 +1115,23 @@ function EpisodesWall() {
         .season-chips::-webkit-scrollbar { display: none; }
         .season-chips button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 
+        /* Scroll-spy bar under the current season's chip. It lives inside the
+           strip (so it scrolls with it on phones) in the 6px bottom padding. */
+        .season-cursor {
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          height: 2px;
+          border-radius: 2px;
+          background: #e63946;
+          box-shadow: 0 0 8px rgba(230,57,70,0.55);
+          pointer-events: none;
+          transition: transform 380ms cubic-bezier(.2,.7,.3,1), width 380ms cubic-bezier(.2,.7,.3,1), opacity 200ms;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .season-cursor { transition: opacity 200ms; }
+        }
+
         /* Tile title: hard cap on line count so the bottom block can never
            outgrow the tile (date + title + action row are bottom-anchored
            and would otherwise climb over the N° badge). Only the handful of
@@ -1045,7 +1146,7 @@ function EpisodesWall() {
         @media (max-width: 600px) {
           .ep-grid { grid-template-columns: repeat(2, 1fr); }
           /* Chips drop to their own full-width line under the input + counter. */
-          .season-chips { flex: 1 0 100% !important; order: 3; padding-bottom: 2px; }
+          .season-chips { flex: 1 0 100% !important; order: 3; }
           .subscribe-bar { gap: 6px !important; margin-top: 16px !important; }
           .subscribe-bar .subscribe-prefix { display: none; }
           .subscribe-bar a { padding: 6px 10px !important; font-size: 10px !important; gap: 6px !important; letter-spacing: 0.08em !important; }
