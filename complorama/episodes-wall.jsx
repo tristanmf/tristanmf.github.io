@@ -591,9 +591,8 @@ function EpisodesWall() {
           onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.32'; e.currentTarget.style.transform = 'scale(1)'; }}
         >
           <img
-            src="https://pbs.twimg.com/profile_images/1773289797198442496/OmD2YCbd_400x400.jpg"
+            src="assets/tmf-avatar.jpg"
             alt=""
-            referrerPolicy="no-referrer"
             style={{
               width: '100%',
               height: '100%',
