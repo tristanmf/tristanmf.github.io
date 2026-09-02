@@ -56,14 +56,36 @@ jobs:
               if ! curl -sS -o /dev/null -D - --max-time 20 --max-redirs 0 "$scheme://$h/" 2>&1 | sed 's/^/    /'; then
                 echo "    (curl failed — see message above)"
               fi
-              # Same request as a phone browser: status + first words of the body
-              # (tells an Apache "Forbidden" page from an OVH "site en construction").
-              body="$(curl -sS --max-time 20 --max-redirs 0 -A "$UA" -w '\n@@%{http_code}' "$scheme://$h/" 2>/dev/null || true)"
-              code="${body##*@@}"; body="${body%@@*}"
-              text="$(printf '%s' "$body" | sed -e 's/<[^>]*>/ /g' | tr -s '[:space:]' ' ' | cut -c1-240)"
-              echo "    as a phone browser: HTTP ${code:-?} · body: ${text:-(empty)}"
+              # Same request as a phone browser: status, Location, first words of
+              # the body (tells an Apache "Forbidden" from an OVH parking page).
+              body="$(curl -sS --max-time 20 --max-redirs 0 -A "$UA" -w '\n@@%{http_code}|%{redirect_url}' "$scheme://$h/" 2>/dev/null || true)"
+              meta="${body##*@@}"; body="${body%@@*}"
+              code="${meta%%|*}"; loc="${meta#*|}"
+              text="$(printf '%s' "$body" | sed -e 's/<[^>]*>/ /g' | tr -s '[:space:]' ' ' | cut -c1-200)"
+              echo "    as a phone browser: HTTP ${code:-?}${loc:+ → $loc} · body: ${text:-(empty)}"
             done
           done
+
+          bar "5 · Same URL, different clients (User-Agent matrix) — https://$host/"
+          printf '    %-22s %-6s %s\n' CLIENT HTTP LOCATION
+          while IFS='|' read -r label ua; do
+            meta="$(curl -sS -o /dev/null --max-time 20 --max-redirs 0 -A "$ua" -w '%{http_code}|%{redirect_url}' "https://$host/" 2>/dev/null || echo 'ERR|')"
+            printf '    %-22s %-6s %s\n' "$label" "${meta%%|*}" "${meta#*|}"
+          done <<'EOF'
+          Safari iPhone|Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1
+          Chrome desktop|Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36
+          Googlebot|Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
+          Bingbot|Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36
+          facebookexternalhit|facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)
+          Twitterbot|Twitterbot/1.0
+          WhatsApp|WhatsApp/2.23.20.0
+          Slackbot|Slackbot-LinkExpanding 1.0 (+https://api.slack.com/robots)
+          Mastodon|http.rb/5.1.1 (Mastodon/4.2.0; +https://mastodon.social/)
+          curl|curl/8.5.0
+          wget|Wget/1.21.4
+          python-requests|python-requests/2.31
+          (empty UA)|
+          EOF
 
           bar "3 · Redirect chain from http://$host/"
           curl -sS -o /dev/null -L --max-redirs 8 --max-time 40 \
