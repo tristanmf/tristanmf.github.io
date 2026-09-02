@@ -1276,7 +1276,7 @@ function Conferencier() {
     className: "bg-white text-black rounded-full px-6 py-3 text-sm font-medium font-body hover:bg-white/90 transition-colors whitespace-nowrap"
   }, "Demander un devis"))), /*#__PURE__*/React.createElement("div", {
     className: "hidden md:grid grid-cols-2 gap-4 lg:w-80 shrink-0"
-  }, [["Entreprises", "Keynotes & comex"], ["Universités", "Cours & séminaires"], ["Médias", "Interventions & tables rondes"], ["Administrations", "Formations & conférences"]].map(([k, v]) => /*#__PURE__*/React.createElement("div", {
+  }, [["Entreprises", "Keynotes & comex"], ["Universités", "Cours & séminaires"], ["Médias", "Interventions & plateaux"], ["Administrations", "Formations & conférences"]].map(([k, v]) => /*#__PURE__*/React.createElement("div", {
     key: k,
     className: "liquid-glass-strong rounded-2xl p-4"
   }, /*#__PURE__*/React.createElement("div", {
