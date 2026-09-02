@@ -704,9 +704,8 @@ function EpisodesWall() {
       e.currentTarget.style.transform = 'scale(1)';
     }
   }, /*#__PURE__*/React.createElement("img", {
-    src: "https://pbs.twimg.com/profile_images/1773289797198442496/OmD2YCbd_400x400.jpg",
+    src: "assets/tmf-avatar.jpg",
     alt: "",
-    referrerPolicy: "no-referrer",
     style: {
       width: '100%',
       height: '100%',
