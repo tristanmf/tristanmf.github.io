@@ -14,18 +14,24 @@ import { createHash } from 'node:crypto';
 // Keys whose values must never reach a (public) Actions log.
 export const SENSITIVE = /^(email|phone|fax|address|line1|line2|city|zip|firstname|lastname|name|legalform|nichandle|vat|birthDay|birthCity|nationalIdentificationNumber|authInfo|password|secret|token|consumerKey|applicationKey|applicationSecret|primaryLogin|login|ftpUser)$/i;
 
+// OVH customer identifiers ("nichandles", e.g. ab12345-ovh) show up under
+// generic keys such as contactBilling.id or ovh:whoisOwner — mask by shape.
+const NICHANDLE = /^[a-z]{2,}\d+-ovh$/i;
+
 export function redact(value) {
   if (Array.isArray(value)) return value.map(redact);
   if (value && typeof value === 'object') {
     const out = {};
     for (const [k, v] of Object.entries(value)) {
-      if (SENSITIVE.test(k) && (typeof v === 'string' || typeof v === 'number')) {
+      const scalar = typeof v === 'string' || typeof v === 'number';
+      if (scalar && (SENSITIVE.test(k) || NICHANDLE.test(String(v)))) {
         if (String(v).length) console.log(`::add-mask::${v}`);
         out[k] = '«masqué»';
       } else out[k] = redact(v);
     }
     return out;
   }
+  if (typeof value === 'string' && NICHANDLE.test(value)) { console.log(`::add-mask::${value}`); return '«masqué»'; }
   return value;
 }
 
