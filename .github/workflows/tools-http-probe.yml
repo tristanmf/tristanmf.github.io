@@ -47,6 +47,7 @@ jobs:
             getent ahosts "$h" | awk '{print "    " $1}' | sort -u || echo "    (no answer)"
           done
 
+          UA='Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1'
           bar "2 · Raw responses (redirects not followed)"
           for h in "${hosts[@]}"; do
             for scheme in http https; do
@@ -55,6 +56,12 @@ jobs:
               if ! curl -sS -o /dev/null -D - --max-time 20 --max-redirs 0 "$scheme://$h/" 2>&1 | sed 's/^/    /'; then
                 echo "    (curl failed — see message above)"
               fi
+              # Same request as a phone browser: status + first words of the body
+              # (tells an Apache "Forbidden" page from an OVH "site en construction").
+              body="$(curl -sS --max-time 20 --max-redirs 0 -A "$UA" -w '\n@@%{http_code}' "$scheme://$h/" 2>/dev/null || true)"
+              code="${body##*@@}"; body="${body%@@*}"
+              text="$(printf '%s' "$body" | sed -e 's/<[^>]*>/ /g' | tr -s '[:space:]' ' ' | cut -c1-240)"
+              echo "    as a phone browser: HTTP ${code:-?} · body: ${text:-(empty)}"
             done
           done
 
@@ -65,15 +72,20 @@ jobs:
           curl -sS -o /dev/null -L --max-redirs 8 --max-time 40 -D - "http://$host/" 2>/dev/null \
             | grep -iE '^(HTTP/|location:)' | sed 's/^/    /' || true
 
-          bar "4 · TLS certificate presented on $host:443"
-          if cert="$(echo | timeout 20 openssl s_client -servername "$host" -connect "$host:443" 2>/dev/null | openssl x509 -noout -subject -issuer -dates -ext subjectAltName 2>/dev/null)"; then
-            echo "$cert" | sed 's/^/    /'
-            if echo "$cert" | grep -qiE "DNS:(\*\.)?${host//./\\.}(,|$| )"; then
-              echo "    ✓ the certificate covers $host"
+          bar "4 · TLS certificate presented on :443"
+          for h in "${hosts[@]}"; do
+            echo
+            echo "▸ $h"
+            if cert="$(echo | timeout 20 openssl s_client -servername "$h" -connect "$h:443" 2>/dev/null | openssl x509 -noout -subject -issuer -dates -ext subjectAltName 2>/dev/null)"; then
+              echo "$cert" | sed 's/^/    /'
+              parent="${h#*.}"
+              if echo "$cert" | grep -qiE "DNS:${h//./\\.}(,|$| )|DNS:\*\.${parent//./\\.}(,|$| )"; then
+                echo "    ✓ the certificate covers $h"
+              else
+                echo "    ✗ the certificate does NOT cover $h → browsers show a security warning on https://$h/"
+              fi
             else
-              echo "    ✗ the certificate does NOT cover $host → browsers show a security warning on https://$host/"
+              echo "    (no TLS handshake — port 443 closed, or the server refused the connection)"
             fi
-          else
-            echo "    (no TLS handshake — port 443 closed, or the server refused the connection)"
-          fi
+          done
           echo
