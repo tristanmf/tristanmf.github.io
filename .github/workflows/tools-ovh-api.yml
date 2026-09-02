@@ -1,0 +1,77 @@
+name: Tools · OVH API
+
+# One signed call to the OVHcloud API, run on the GitHub runner with the
+# repository secrets OVH_APP_KEY / OVH_APP_SECRET / OVH_CONSUMER_KEY.
+# Generic on purpose (any method, any path) so that DNS records, zone
+# refreshes, web redirections, hosting or e-mail settings are all one
+# dispatch away — see scripts/ovh-api.mjs for examples.
+#
+# Reminder: after adding/changing DNS records, dispatch
+#   POST /domain/zone/<zone>/refresh
+# or the change stays pending.
+#
+# This repository is public, so this workflow's logs are public too. The
+# script masks obviously personal fields; use quiet=true for calls whose
+# response you don't want echoed at all (e.g. /me, contact details).
+
+on:
+  workflow_dispatch:
+    inputs:
+      method:
+        description: 'HTTP method'
+        type: choice
+        options: [GET, POST, PUT, DELETE]
+        default: GET
+      path:
+        description: 'API path, e.g. /domain/zone or /domain/zone/complorama.fr/record'
+        required: true
+        default: '/domain/zone'
+      body:
+        description: 'JSON body for POST/PUT (leave empty otherwise)'
+        required: false
+        default: ''
+      quiet:
+        description: 'Print only status + response shape (no data)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  call:
+    runs-on: ubuntu-latest
+    env:
+      OVH_APP_KEY: ${{ secrets.OVH_APP_KEY }}
+      OVH_APP_SECRET: ${{ secrets.OVH_APP_SECRET }}
+      OVH_CONSUMER_KEY: ${{ secrets.OVH_CONSUMER_KEY }}
+      OVH_ENDPOINT: ${{ vars.OVH_ENDPOINT || 'https://eu.api.ovh.com/1.0' }}
+      IN_METHOD: ${{ inputs.method }}
+      IN_PATH: ${{ inputs.path }}
+      IN_BODY: ${{ inputs.body }}
+      IN_QUIET: ${{ inputs.quiet }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Secrets present?
+        run: |
+          for v in OVH_APP_KEY OVH_APP_SECRET OVH_CONSUMER_KEY; do
+            if [ -z "${!v}" ]; then echo "::error::secret $v is not set (Settings → Secrets and variables → Actions)"; missing=1; fi
+          done
+          [ -z "${missing:-}" ] || exit 1
+          echo "✓ the three OVH secrets are set"
+
+      - name: Call OVH API
+        run: |
+          set -o pipefail
+          args=("$IN_METHOD" "$IN_PATH")
+          [ -n "$IN_BODY" ] && args+=("$IN_BODY")
+          [ "$IN_QUIET" = "true" ] && args+=("--quiet")
+          node scripts/ovh-api.mjs "${args[@]}"
