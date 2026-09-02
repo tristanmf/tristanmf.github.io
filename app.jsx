@@ -791,7 +791,7 @@ function Conferencier() {
                 {[
                 ["Entreprises", "Keynotes & comex"],
                 ["Universités", "Cours & séminaires"],
-                ["Médias", "Interventions & tables rondes"],
+                ["Médias", "Interventions & plateaux"],
                 ["Administrations", "Formations & conférences"]].
                 map(([k, v]) =>
                 <div key={k} className="liquid-glass-strong rounded-2xl p-4">
