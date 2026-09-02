@@ -1,0 +1,79 @@
+name: Tools · HTTP probe
+
+# Read-only diagnostic of one hostname, run from the GitHub runner (which,
+# unlike the Claude sandbox, can reach any public site):
+#   • the raw response of http:// and https:// for the apex and www
+#     (status, Location, Server…), redirects NOT followed
+#   • the full redirect chain of the http:// URL (up to 8 hops)
+#   • the TLS certificate presented on :443 (subject, issuer, validity, SANs)
+# Useful to tell "redirect works but only over HTTP" from "no redirect at all".
+
+on:
+  workflow_dispatch:
+    inputs:
+      host:
+        description: 'Hostname to probe, e.g. complorama.fr (no scheme, no path)'
+        required: true
+        default: 'complorama.fr'
+      www:
+        description: 'Also probe the www. variant'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    env:
+      IN_HOST: ${{ inputs.host }}
+      IN_WWW: ${{ inputs.www }}
+    steps:
+      - name: Probe
+        run: |
+          host="$(printf '%s' "$IN_HOST" | tr -d '[:space:]' | sed -E 's#^https?://##; s#/.*$##')"
+          case "$host" in
+            *.*) ;;
+            *) echo "::error::'$IN_HOST' is not a hostname"; exit 1 ;;
+          esac
+          hosts=("$host"); [ "$IN_WWW" = "true" ] && hosts+=("www.$host")
+
+          bar() { printf '\n%s\n%s\n%s\n' "$(printf '═%.0s' {1..70})" "$1" "$(printf '═%.0s' {1..70})"; }
+
+          bar "1 · DNS"
+          for h in "${hosts[@]}"; do
+            echo "  $h"
+            getent ahosts "$h" | awk '{print "    " $1}' | sort -u || echo "    (no answer)"
+          done
+
+          bar "2 · Raw responses (redirects not followed)"
+          for h in "${hosts[@]}"; do
+            for scheme in http https; do
+              echo
+              echo "▸ $scheme://$h/"
+              if ! curl -sS -o /dev/null -D - --max-time 20 --max-redirs 0 "$scheme://$h/" 2>&1 | sed 's/^/    /'; then
+                echo "    (curl failed — see message above)"
+              fi
+            done
+          done
+
+          bar "3 · Redirect chain from http://$host/"
+          curl -sS -o /dev/null -L --max-redirs 8 --max-time 40 \
+            -w '    %{url_effective}  ←  final URL after %{num_redirects} redirect(s), HTTP %{http_code}\n' \
+            "http://$host/" 2>&1 || echo "    (chain broken — see message above)"
+          curl -sS -o /dev/null -L --max-redirs 8 --max-time 40 -D - "http://$host/" 2>/dev/null \
+            | grep -iE '^(HTTP/|location:)' | sed 's/^/    /' || true
+
+          bar "4 · TLS certificate presented on $host:443"
+          if cert="$(echo | timeout 20 openssl s_client -servername "$host" -connect "$host:443" 2>/dev/null | openssl x509 -noout -subject -issuer -dates -ext subjectAltName 2>/dev/null)"; then
+            echo "$cert" | sed 's/^/    /'
+            if echo "$cert" | grep -qiE "DNS:(\*\.)?${host//./\\.}(,|$| )"; then
+              echo "    ✓ the certificate covers $host"
+            else
+              echo "    ✗ the certificate does NOT cover $host → browsers show a security warning on https://$host/"
+            fi
+          else
+            echo "    (no TLS handshake — port 443 closed, or the server refused the connection)"
+          fi
+          echo
