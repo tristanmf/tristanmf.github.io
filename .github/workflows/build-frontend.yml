@@ -1,0 +1,60 @@
+name: Build front-end
+
+# Recompiles the front-end whenever a source changes on main and commits the
+# generated files:
+#   • app.jsx + complorama/*.jsx  →  *.js            (scripts/build-jsx.mjs)
+#   • tailwind.css + tailwind.config.js (+ the files it scans: index.html,
+#     app.jsx)                    →  assets/tailwind.css  (Tailwind CLI)
+#
+# The commit only touches generated files, none of which are in the `paths`
+# filter below, so it cannot retrigger itself; [skip ci] is a second net.
+# The daily episode sync never touches these sources, so it never builds.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app.jsx'
+      - 'index.html'
+      - 'tailwind.css'
+      - 'tailwind.config.js'
+      - 'complorama/**/*.jsx'
+      - 'scripts/build-jsx.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install build tools
+        run: npm install --no-save --no-audit --no-fund @babel/core@^7 @babel/preset-react@^7 tailwindcss@^3
+
+      - name: Compile JSX
+        run: node scripts/build-jsx.mjs
+
+      - name: Compile Tailwind
+        run: npx tailwindcss -c tailwind.config.js -i tailwind.css -o assets/tailwind.css --minify
+
+      - name: Commit generated files
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.js complorama/episode-visual.js complorama/episodes-wall.js assets/tailwind.css
+          if git diff --staged --quiet; then
+            echo "Nothing to commit."
+          else
+            git commit -m "build: recompile front-end [skip ci]"
+            git push
+          fi
