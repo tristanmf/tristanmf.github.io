@@ -1,0 +1,48 @@
+name: Tools · OVH zone report
+
+# Read-only snapshot of one OVH zone in a single run: domain settings, every
+# DNS record expanded, every web redirection, and (optionally) all web
+# hostings of the account with their attached domains + SSL state.
+# See scripts/ovh-zone-report.mjs. Uses the same repository secrets as
+# "Tools · OVH API". Public repo ⇒ public logs: personal fields are masked.
+
+on:
+  workflow_dispatch:
+    inputs:
+      zone:
+        description: 'Zone to inspect, e.g. complorama.fr'
+        required: true
+        default: 'complorama.fr'
+      hosting:
+        description: 'Also list web hostings and attached domains'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    env:
+      OVH_APP_KEY: ${{ secrets.OVH_APP_KEY }}
+      OVH_APP_SECRET: ${{ secrets.OVH_APP_SECRET }}
+      OVH_CONSUMER_KEY: ${{ secrets.OVH_CONSUMER_KEY }}
+      OVH_ENDPOINT: ${{ vars.OVH_ENDPOINT || 'https://eu.api.ovh.com/1.0' }}
+      IN_ZONE: ${{ inputs.zone }}
+      IN_HOSTING: ${{ inputs.hosting }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Zone report
+        run: |
+          args=("$IN_ZONE")
+          [ "$IN_HOSTING" = "true" ] || args+=("--no-hosting")
+          node scripts/ovh-zone-report.mjs "${args[@]}"
