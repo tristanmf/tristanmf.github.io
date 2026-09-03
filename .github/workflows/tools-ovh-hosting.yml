@@ -1,0 +1,41 @@
+name: Tools · OVH hosting report
+
+# Read-only snapshot of one OVH web hosting: offer and disk quota, the PHP
+# engine actually configured, the databases and what can still be created,
+# the runtimes and cron slots, and every attached domain with the folder it
+# serves. See scripts/ovh-hosting-report.mjs. Same repository secrets as
+# "Tools · OVH API". Public repo ⇒ public logs: logins and database names
+# are masked, quotas and versions are not.
+
+on:
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'Hosting service name, e.g. egoblog.net'
+        required: true
+        default: 'egoblog.net'
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    env:
+      OVH_APP_KEY: ${{ secrets.OVH_APP_KEY }}
+      OVH_APP_SECRET: ${{ secrets.OVH_APP_SECRET }}
+      OVH_CONSUMER_KEY: ${{ secrets.OVH_CONSUMER_KEY }}
+      OVH_ENDPOINT: ${{ vars.OVH_ENDPOINT || 'https://eu.api.ovh.com/1.0' }}
+      IN_SERVICE: ${{ inputs.service }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Hosting report
+        run: node scripts/ovh-hosting-report.mjs "$IN_SERVICE"
