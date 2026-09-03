@@ -572,12 +572,14 @@ function TranscriptHit({ hit }) {
   );
 }
 
-function TranscriptResults({ query, season }) {
-  const { status, total, results } = useTranscriptSearch(query, season);
+// L'état vient du parent : le mur en a besoin lui aussi, pour dire combien
+// de passages l'attendent plus bas quand aucune tuile ne correspond.
+function TranscriptResults({ state }) {
+  const { status, total, results } = state;
   if (status === 'idle') return null;
 
   return (
-    <section className="tr-section" aria-live="polite">
+    <section className="tr-section" id="antenne" aria-live="polite">
       <div className="tr-head">
         <h2 className="tr-title">Dans ce qui a été dit à l’antenne</h2>
         <span className="tr-count">
@@ -689,6 +691,12 @@ function EpisodesWall() {
   const filtered = scored.map(s => s.e);
   const visible = filtered.slice(0, shown);
   const hasMore = visible.length < filtered.length;
+
+  // Recherche dans les transcriptions : l'état vit ici parce que deux
+  // endroits en dépendent — la section de résultats, et le message affiché
+  // quand aucune tuile ne correspond mais que des passages existent.
+  const transcripts = useTranscriptSearch(query, season);
+  const hasSpokenHits = transcripts.status === 'ok' && transcripts.total > 0;
 
   const clearFilters = () => { setQuery(''); setSeason(null); };
 
@@ -1084,59 +1092,38 @@ function EpisodesWall() {
           {visible.map(ep => <EpisodeTile key={ep.n} ep={ep} />)}
         </div>
       ) : (
-        <div role="status" style={{
-          padding: '88px 48px 96px',
-          textAlign: 'center',
-        }}>
-          <div style={{
-            fontFamily: '"Fraunces", Georgia, serif',
-            fontStyle: 'italic',
-            fontSize: 22,
-            color: 'rgba(243,239,230,0.7)',
-            marginBottom: 18,
-          }}>
+        // Aucune tuile ne correspond. Ce n'est PAS la même chose que « rien
+        // trouvé » : les mots ont pu être prononcés sans figurer dans un titre
+        // ni un résumé. Quand c'est le cas, ce bloc se resserre et annonce le
+        // nombre de passages, au lieu d'un grand vide qui laisse croire que la
+        // recherche est terminée alors que la réponse est juste en dessous.
+        <div role="status" className={hasSpokenHits ? 'wall-empty wall-empty-tight' : 'wall-empty'}>
+          <div className="wall-empty-title">
             {query && season != null
               ? <>Aucun épisode de la {seasonLabel(season).toLowerCase()} ne correspond à « {query} ».</>
               : query
                 ? <>Aucun titre ni résumé ne correspond à « {query} ».</>
                 : <>Aucun épisode daté pour la {seasonLabel(season).toLowerCase()}.</>}
           </div>
-          {/* Le titre ne dit pas tout : ces mots ont pu être prononcés à
-              l'antenne sans figurer dans le résumé. La recherche dans les
-              transcriptions, juste en dessous, répond peut-être. */}
-          {query && query.trim().length >= SEARCH_MIN_CHARS && (
-            <div style={{
-              fontFamily: '"DM Mono", monospace',
-              fontSize: 12,
-              letterSpacing: '0.06em',
-              color: 'rgba(243,239,230,0.55)',
-              marginBottom: 22,
-            }}>
-              Regardez plus bas : ces mots ont peut-être été prononcés à l’antenne.
-            </div>
+
+          {hasSpokenHits ? (
+            <>
+              <div className="wall-empty-lead">
+                Mais ces mots ont été prononcés à l’antenne :{' '}
+                <strong>{transcripts.total.toLocaleString('fr-FR')} passage{transcripts.total > 1 ? 's' : ''}</strong>.
+              </div>
+              <a href="#antenne" className="wall-empty-cta">Voir les passages ↓</a>
+            </>
+          ) : transcripts.status === 'loading' ? (
+            <div className="wall-empty-lead">Recherche dans ce qui a été dit à l’antenne…</div>
+          ) : (
+            <button onClick={clearFilters} className="wall-empty-cta">Effacer les filtres</button>
           )}
-          <button
-            onClick={clearFilters}
-            style={{
-              padding: '10px 20px',
-              borderRadius: 999,
-              background: 'transparent',
-              border: '1px solid rgba(255,255,255,0.22)',
-              color: '#f3efe6',
-              cursor: 'pointer',
-              fontFamily: '"DM Mono", monospace',
-              fontSize: 11,
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-            }}
-          >
-            Effacer les filtres
-          </button>
         </div>
       )}
 
       {/* Ce qui a été dit à l'antenne — interrogé à distance, jamais au chargement */}
-      <TranscriptResults query={query} season={season} />
+      <TranscriptResults state={transcripts} />
 
       {/* Sentinel for infinite scroll */}
       {hasMore && (
@@ -1293,6 +1280,47 @@ function EpisodesWall() {
         }
         @media (prefers-reduced-motion: reduce) {
           .season-cursor { transition: opacity 200ms; }
+        }
+
+        /* Bloc affiché quand aucune tuile ne correspond. Il se resserre
+           quand des passages attendent plus bas : un grand vide laisserait
+           croire que la recherche est terminée. */
+        .wall-empty { padding: 88px 48px 96px; text-align: center; }
+        .wall-empty-tight { padding: 44px 48px 32px; }
+        .wall-empty-title {
+          font-family: "Fraunces", Georgia, serif;
+          font-style: italic; font-size: 22px;
+          color: rgba(243,239,230,0.7);
+          margin-bottom: 14px;
+        }
+        .wall-empty-lead {
+          font-family: "DM Mono", monospace;
+          font-size: 12.5px; letter-spacing: 0.04em;
+          color: rgba(243,239,230,0.65);
+          margin-bottom: 20px;
+        }
+        .wall-empty-lead strong { color: #f3efe6; }
+        .wall-empty-cta {
+          display: inline-block;
+          padding: 10px 20px;
+          border-radius: 999px;
+          background: transparent;
+          border: 1px solid rgba(255,255,255,0.22);
+          color: #f3efe6;
+          cursor: pointer;
+          text-decoration: none;
+          font-family: "DM Mono", monospace;
+          font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+          transition: background 160ms, border-color 160ms;
+        }
+        .wall-empty-cta:hover, .wall-empty-cta:focus-visible {
+          background: rgba(255,255,255,0.08);
+          border-color: rgba(255,255,255,0.45);
+        }
+        @media (max-width: 600px) {
+          .wall-empty { padding: 56px 20px 64px; }
+          .wall-empty-tight { padding: 32px 20px 24px; }
+          .wall-empty-title { font-size: 19px; }
         }
 
         /* Ce qui a été dit à l'antenne — résultats de la recherche dans les

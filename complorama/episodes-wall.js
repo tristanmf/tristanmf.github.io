@@ -339,7 +339,7 @@ function SubscribeBar() {
       color: 'rgba(243,239,230,0.55)',
       marginRight: 6
     }
-  }, "S'abonner \u2197"), SUBSCRIBE_LINKS.map(p => /*#__PURE__*/React.createElement(SubscribeButton, {
+  }, "S'abonner ↗"), SUBSCRIBE_LINKS.map(p => /*#__PURE__*/React.createElement(SubscribeButton, {
     key: p.name,
     platform: p
   })));
@@ -421,7 +421,7 @@ function EpisodeTile({
       padding: '5px 10px 5px 16px',
       transition: 'background 0.2s'
     }
-  }, "N\xB0", String(ep.n).padStart(3, '0'))), /*#__PURE__*/React.createElement("div", {
+  }, "N°", String(ep.n).padStart(3, '0'))), /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'absolute',
       top: 14,
@@ -453,7 +453,7 @@ function EpisodeTile({
     style: {
       color: '#e63946'
     }
-  }, "\u25CF"), " VID\xC9O")), /*#__PURE__*/React.createElement("div", {
+  }, "●"), " VIDÉO")), /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'absolute',
       left: 16,
@@ -526,7 +526,7 @@ function EpisodeTile({
       textTransform: 'uppercase',
       fontWeight: 500
     },
-    title: "\xC9couter le podcast audio"
+    title: "Écouter le podcast audio"
   }, /*#__PURE__*/React.createElement("svg", {
     width: "9",
     height: "11",
@@ -535,7 +535,7 @@ function EpisodeTile({
   }, /*#__PURE__*/React.createElement("polygon", {
     points: "0,0 9,5.5 0,11",
     fill: "#fff"
-  })), "\xC9couter"), hasVideo && /*#__PURE__*/React.createElement("a", {
+  })), "Écouter"), hasVideo && /*#__PURE__*/React.createElement("a", {
     href: ep.youtube,
     target: "_blank",
     rel: "noopener noreferrer",
@@ -556,7 +556,7 @@ function EpisodeTile({
       textTransform: 'uppercase',
       fontWeight: 500
     },
-    title: "Voir la version vid\xE9o sur YouTube"
+    title: "Voir la version vidéo sur YouTube"
   }, /*#__PURE__*/React.createElement("svg", {
     width: "11",
     height: "8",
@@ -572,7 +572,7 @@ function EpisodeTile({
   }), /*#__PURE__*/React.createElement("polygon", {
     points: "4,2 8,4 4,6",
     fill: "#fff"
-  })), "Vid\xE9o"))));
+  })), "Vidéo"))));
 }
 
 // ---------------------------------------------------------------------------
@@ -685,70 +685,73 @@ function TranscriptHit({
     className: "tr-hit-meta"
   }, /*#__PURE__*/React.createElement("span", {
     className: "tr-hit-num"
-  }, "N\xB0", String(hit.episode).padStart(3, '0')), hit.date && /*#__PURE__*/React.createElement("time", {
+  }, "N°", String(hit.episode).padStart(3, '0')), hit.date && /*#__PURE__*/React.createElement("time", {
     dateTime: hit.date
   }, formatDate(hit.date))), hit.titre && /*#__PURE__*/React.createElement("h3", {
     className: "tr-hit-title"
   }, hit.titre), /*#__PURE__*/React.createElement("p", {
     className: "tr-hit-quote"
-  }, "\xAB ", /*#__PURE__*/React.createElement(Highlighted, {
+  }, "« ", /*#__PURE__*/React.createElement(Highlighted, {
     text: hit.extrait
-  }), " \xBB"), /*#__PURE__*/React.createElement("div", {
+  }), " »"), /*#__PURE__*/React.createElement("div", {
     className: "tr-hit-actions"
   }, /*#__PURE__*/React.createElement("span", {
     className: "tr-hit-time",
     title: "Minutage dans la version audio"
-  }, "\u23F1 ", hit.minutage), hit.url && /*#__PURE__*/React.createElement("a", {
+  }, "⏱ ", hit.minutage), hit.url && /*#__PURE__*/React.createElement("a", {
     href: hit.url,
     target: "_blank",
     rel: "noopener noreferrer",
     className: "tr-hit-btn"
-  }, "\xC9couter l\u2019\xE9pisode"), video && video.minutage && /*#__PURE__*/React.createElement("a", {
+  }, "Écouter l’épisode"), video && video.minutage && /*#__PURE__*/React.createElement("a", {
     href: video.url,
     target: "_blank",
     rel: "noopener noreferrer",
     className: "tr-hit-btn tr-hit-btn-video"
-  }, "\u25B6 Voir dans la vid\xE9o \xB7 ", video.minutage), video && video.coupe_au_montage && /*#__PURE__*/React.createElement("span", {
+  }, "▶ Voir dans la vidéo · ", video.minutage), video && video.coupe_au_montage && /*#__PURE__*/React.createElement("span", {
     className: "tr-hit-note",
-    title: "La vid\xE9o est un montage raccourci de l\u2019audio"
-  }, "passage absent de la vid\xE9o"), video && video.minutage_indisponible && /*#__PURE__*/React.createElement("a", {
+    title: "La vidéo est un montage raccourci de l’audio"
+  }, "passage absent de la vidéo"), video && video.minutage_indisponible && /*#__PURE__*/React.createElement("a", {
     href: video.url,
     target: "_blank",
     rel: "noopener noreferrer",
     className: "tr-hit-btn"
-  }, "Voir la vid\xE9o")));
+  }, "Voir la vidéo")));
 }
+
+// L'état vient du parent : le mur en a besoin lui aussi, pour dire combien
+// de passages l'attendent plus bas quand aucune tuile ne correspond.
 function TranscriptResults({
-  query,
-  season
+  state
 }) {
   const {
     status,
     total,
     results
-  } = useTranscriptSearch(query, season);
+  } = state;
   if (status === 'idle') return null;
   return /*#__PURE__*/React.createElement("section", {
     className: "tr-section",
+    id: "antenne",
     "aria-live": "polite"
   }, /*#__PURE__*/React.createElement("div", {
     className: "tr-head"
   }, /*#__PURE__*/React.createElement("h2", {
     className: "tr-title"
-  }, "Dans ce qui a \xE9t\xE9 dit \xE0 l\u2019antenne"), /*#__PURE__*/React.createElement("span", {
+  }, "Dans ce qui a été dit à l’antenne"), /*#__PURE__*/React.createElement("span", {
     className: "tr-count"
   }, status === 'loading' && 'recherche…', status === 'error' && 'moteur indisponible', status === 'ok' && (total === 0 ? 'aucun passage' : `${total.toLocaleString('fr-FR')} passage${total > 1 ? 's' : ''}`))), status === 'error' && /*#__PURE__*/React.createElement("p", {
     className: "tr-empty"
-  }, "La recherche dans les transcriptions ne r\xE9pond pas pour le moment. Le mur, lui, fonctionne normalement."), status === 'ok' && total === 0 && /*#__PURE__*/React.createElement("p", {
+  }, "La recherche dans les transcriptions ne répond pas pour le moment. Le mur, lui, fonctionne normalement."), status === 'ok' && total === 0 && /*#__PURE__*/React.createElement("p", {
     className: "tr-empty"
-  }, "Ces mots n\u2019ont pas \xE9t\xE9 prononc\xE9s dans les \xE9pisodes transcrits."), results.length > 0 && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("ul", {
+  }, "Ces mots n’ont pas été prononcés dans les épisodes transcrits."), results.length > 0 && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("ul", {
     className: "tr-list"
   }, results.map((hit, i) => /*#__PURE__*/React.createElement(TranscriptHit, {
     key: `${hit.episode}-${hit.seconde}-${i}`,
     hit: hit
   }))), total > results.length && /*#__PURE__*/React.createElement("p", {
     className: "tr-more"
-  }, results.length, " passages les plus pertinents sur ", total.toLocaleString('fr-FR'), " \u2014 affinez la recherche pour resserrer.")));
+  }, results.length, " passages les plus pertinents sur ", total.toLocaleString('fr-FR'), " — affinez la recherche pour resserrer.")));
 }
 function EpisodesWall() {
   const [query, setQuery] = React.useState('');
@@ -829,6 +832,12 @@ function EpisodesWall() {
   const filtered = scored.map(s => s.e);
   const visible = filtered.slice(0, shown);
   const hasMore = visible.length < filtered.length;
+
+  // Recherche dans les transcriptions : l'état vit ici parce que deux
+  // endroits en dépendent — la section de résultats, et le message affiché
+  // quand aucune tuile ne correspond mais que des passages existent.
+  const transcripts = useTranscriptSearch(query, season);
+  const hasSpokenHits = transcripts.status === 'ok' && transcripts.total > 0;
   const clearFilters = () => {
     setQuery('');
     setSeason(null);
@@ -1048,7 +1057,7 @@ function EpisodesWall() {
       color: 'rgba(243,239,230,0.55)',
       marginBottom: 10
     }
-  }, "podcast \xB7 franceinfo"), /*#__PURE__*/React.createElement("h1", {
+  }, "podcast · franceinfo"), /*#__PURE__*/React.createElement("h1", {
     style: {
       margin: 0,
       fontFamily: '"Archivo", "Helvetica Neue", sans-serif',
@@ -1081,7 +1090,7 @@ function EpisodesWall() {
       textDecoration: 'none',
       borderBottom: '1px solid rgba(230,57,70,0.6)'
     }
-  }, "Tristan Mend\xE8s France"), ",", ' ', /*#__PURE__*/React.createElement("em", {
+  }, "Tristan Mendès France"), ",", ' ', /*#__PURE__*/React.createElement("em", {
     style: {
       fontStyle: 'normal',
       color: '#f3efe6'
@@ -1091,11 +1100,11 @@ function EpisodesWall() {
       fontStyle: 'normal',
       color: '#f3efe6'
     }
-  }, "No\xE9 Da Silva"), "."), /*#__PURE__*/React.createElement("div", {
+  }, "Noé Da Silva"), "."), /*#__PURE__*/React.createElement("div", {
     style: {
       marginTop: 10
     }
-  }, "D\xE9cryptage de l'activit\xE9 de la complosph\xE8re, en lien avec l'actualit\xE9."), /*#__PURE__*/React.createElement("div", {
+  }, "Décryptage de l'activité de la complosphère, en lien avec l'actualité."), /*#__PURE__*/React.createElement("div", {
     style: {
       marginTop: 14,
       fontFamily: '"Fraunces", "Georgia", serif',
@@ -1104,7 +1113,7 @@ function EpisodesWall() {
       color: 'rgba(243,239,230,0.55)',
       lineHeight: 1.45
     }
-  }, "Mur des \xE9pisodes \u2014 un index visuel renvoyant vers Radio France.")), /*#__PURE__*/React.createElement(SubscribeBar, null)), /*#__PURE__*/React.createElement("div", {
+  }, "Mur des épisodes — un index visuel renvoyant vers Radio France.")), /*#__PURE__*/React.createElement(SubscribeBar, null)), /*#__PURE__*/React.createElement("div", {
     className: "hero-stats",
     style: {
       fontFamily: '"DM Mono", monospace',
@@ -1137,7 +1146,7 @@ function EpisodesWall() {
       boxShadow: '0 0 10px #e63946',
       display: 'inline-block'
     }
-  }), seasonStarted ? 'EN COURS' : `REPRISE LE ${seasonStartLabel}`), /*#__PURE__*/React.createElement("div", null, window.EPISODES[0] ? window.EPISODES[0].n : window.EPISODES.length, " \xC9PISODES"), /*#__PURE__*/React.createElement("div", null, "SAISON ", String(SEASON).padStart(2, '0'))))), /*#__PURE__*/React.createElement("div", {
+  }), seasonStarted ? 'EN COURS' : `REPRISE LE ${seasonStartLabel}`), /*#__PURE__*/React.createElement("div", null, window.EPISODES[0] ? window.EPISODES[0].n : window.EPISODES.length, " ÉPISODES"), /*#__PURE__*/React.createElement("div", null, "SAISON ", String(SEASON).padStart(2, '0'))))), /*#__PURE__*/React.createElement("div", {
     className: "search-bar",
     role: "search",
     ref: barRef,
@@ -1191,11 +1200,11 @@ function EpisodesWall() {
     strokeLinecap: "round"
   })), /*#__PURE__*/React.createElement("input", {
     type: "text",
-    "aria-label": "Rechercher un \xE9pisode par titre, th\xE8me ou num\xE9ro",
+    "aria-label": "Rechercher un épisode par titre, thème ou numéro",
     autoComplete: "off",
     value: query,
     onChange: e => setQuery(e.target.value),
-    placeholder: "Chercher un \xE9pisode, un th\xE8me, un num\xE9ro\u2026",
+    placeholder: "Chercher un épisode, un thème, un numéro…",
     style: {
       flex: 1,
       background: 'transparent',
@@ -1220,7 +1229,7 @@ function EpisodesWall() {
       padding: 0,
       flexShrink: 0
     }
-  }, "\u2715")), seasons.length > 0 && /*#__PURE__*/React.createElement("div", {
+  }, "✕")), seasons.length > 0 && /*#__PURE__*/React.createElement("div", {
     className: "season-chips",
     role: "group",
     "aria-label": "Filtrer par saison",
@@ -1272,45 +1281,30 @@ function EpisodesWall() {
   }, visible.map(ep => /*#__PURE__*/React.createElement(EpisodeTile, {
     key: ep.n,
     ep: ep
-  }))) : /*#__PURE__*/React.createElement("div", {
+  }))) :
+  /*#__PURE__*/
+  // Aucune tuile ne correspond. Ce n'est PAS la même chose que « rien
+  // trouvé » : les mots ont pu être prononcés sans figurer dans un titre
+  // ni un résumé. Quand c'est le cas, ce bloc se resserre et annonce le
+  // nombre de passages, au lieu d'un grand vide qui laisse croire que la
+  // recherche est terminée alors que la réponse est juste en dessous.
+  React.createElement("div", {
     role: "status",
-    style: {
-      padding: '88px 48px 96px',
-      textAlign: 'center'
-    }
+    className: hasSpokenHits ? 'wall-empty wall-empty-tight' : 'wall-empty'
   }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: '"Fraunces", Georgia, serif',
-      fontStyle: 'italic',
-      fontSize: 22,
-      color: 'rgba(243,239,230,0.7)',
-      marginBottom: 18
-    }
-  }, query && season != null ? /*#__PURE__*/React.createElement(React.Fragment, null, "Aucun \xE9pisode de la ", seasonLabel(season).toLowerCase(), " ne correspond \xE0 \xAB ", query, " \xBB.") : query ? /*#__PURE__*/React.createElement(React.Fragment, null, "Aucun titre ni r\xE9sum\xE9 ne correspond \xE0 \xAB ", query, " \xBB.") : /*#__PURE__*/React.createElement(React.Fragment, null, "Aucun \xE9pisode dat\xE9 pour la ", seasonLabel(season).toLowerCase(), ".")), query && query.trim().length >= SEARCH_MIN_CHARS && /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: '"DM Mono", monospace',
-      fontSize: 12,
-      letterSpacing: '0.06em',
-      color: 'rgba(243,239,230,0.55)',
-      marginBottom: 22
-    }
-  }, "Regardez plus bas : ces mots ont peut-\xEAtre \xE9t\xE9 prononc\xE9s \xE0 l\u2019antenne."), /*#__PURE__*/React.createElement("button", {
+    className: "wall-empty-title"
+  }, query && season != null ? /*#__PURE__*/React.createElement(React.Fragment, null, "Aucun épisode de la ", seasonLabel(season).toLowerCase(), " ne correspond à « ", query, " ».") : query ? /*#__PURE__*/React.createElement(React.Fragment, null, "Aucun titre ni résumé ne correspond à « ", query, " ».") : /*#__PURE__*/React.createElement(React.Fragment, null, "Aucun épisode daté pour la ", seasonLabel(season).toLowerCase(), ".")), hasSpokenHits ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "wall-empty-lead"
+  }, "Mais ces mots ont été prononcés à l’antenne :", ' ', /*#__PURE__*/React.createElement("strong", null, transcripts.total.toLocaleString('fr-FR'), " passage", transcripts.total > 1 ? 's' : ''), "."), /*#__PURE__*/React.createElement("a", {
+    href: "#antenne",
+    className: "wall-empty-cta"
+  }, "Voir les passages ↓")) : transcripts.status === 'loading' ? /*#__PURE__*/React.createElement("div", {
+    className: "wall-empty-lead"
+  }, "Recherche dans ce qui a été dit à l’antenne…") : /*#__PURE__*/React.createElement("button", {
     onClick: clearFilters,
-    style: {
-      padding: '10px 20px',
-      borderRadius: 999,
-      background: 'transparent',
-      border: '1px solid rgba(255,255,255,0.22)',
-      color: '#f3efe6',
-      cursor: 'pointer',
-      fontFamily: '"DM Mono", monospace',
-      fontSize: 11,
-      letterSpacing: '0.2em',
-      textTransform: 'uppercase'
-    }
+    className: "wall-empty-cta"
   }, "Effacer les filtres")), /*#__PURE__*/React.createElement(TranscriptResults, {
-    query: query,
-    season: season
+    state: transcripts
   }), hasMore && /*#__PURE__*/React.createElement("div", {
     ref: sentinelRef,
     style: {
@@ -1322,7 +1316,7 @@ function EpisodesWall() {
       textTransform: 'uppercase',
       color: 'rgba(243,239,230,0.5)'
     }
-  }, "chargement\u2026"), !hasMore && filtered.length > 0 && /*#__PURE__*/React.createElement("footer", {
+  }, "chargement…"), !hasMore && filtered.length > 0 && /*#__PURE__*/React.createElement("footer", {
     style: {
       padding: '56px 48px 64px',
       borderTop: '1px solid rgba(255,255,255,0.08)',
@@ -1336,7 +1330,7 @@ function EpisodesWall() {
       color: 'rgba(243,239,230,0.7)',
       marginBottom: 18
     }
-  }, "Vous \xEAtes arriv\xE9\xB7e au bout du catalogue."), /*#__PURE__*/React.createElement("a", {
+  }, "Vous êtes arrivé·e au bout du catalogue."), /*#__PURE__*/React.createElement("a", {
     href: "https://www.radiofrance.fr/franceinfo/podcasts/complorama",
     target: "_blank",
     rel: "noopener noreferrer",
@@ -1353,7 +1347,7 @@ function EpisodesWall() {
       textTransform: 'uppercase',
       fontWeight: 500
     }
-  }, "Tous les \xE9pisodes sur Radio France \u2197"), /*#__PURE__*/React.createElement("div", {
+  }, "Tous les épisodes sur Radio France ↗"), /*#__PURE__*/React.createElement("div", {
     style: {
       marginTop: 32,
       fontFamily: '"DM Mono", monospace',
@@ -1362,7 +1356,7 @@ function EpisodesWall() {
       textTransform: 'uppercase',
       color: 'rgba(243,239,230,0.42)'
     }
-  }, "complorama \xB7 le mur des \xE9pisodes"), /*#__PURE__*/React.createElement("div", {
+  }, "complorama · le mur des épisodes"), /*#__PURE__*/React.createElement("div", {
     style: {
       marginTop: 16,
       fontFamily: '"DM Mono", monospace',
@@ -1370,7 +1364,7 @@ function EpisodesWall() {
       letterSpacing: '0.15em',
       color: 'rgba(243,239,230,0.4)'
     }
-  }, "vib\xE9cod\xE9 par", ' ', /*#__PURE__*/React.createElement("a", {
+  }, "vibécodé par", ' ', /*#__PURE__*/React.createElement("a", {
     href: "https://tristan.pro",
     target: "_blank",
     rel: "noopener noreferrer",
@@ -1379,7 +1373,7 @@ function EpisodesWall() {
       textDecoration: 'none',
       borderBottom: '1px solid rgba(243,239,230,0.25)'
     }
-  }, "Tristan Mend\xE8s France"))), /*#__PURE__*/React.createElement("style", null, `
+  }, "Tristan Mendès France"))), /*#__PURE__*/React.createElement("style", null, `
         .ep-grid {
           display: grid;
           grid-template-columns: repeat(5, 1fr);
@@ -1454,6 +1448,47 @@ function EpisodesWall() {
         }
         @media (prefers-reduced-motion: reduce) {
           .season-cursor { transition: opacity 200ms; }
+        }
+
+        /* Bloc affiché quand aucune tuile ne correspond. Il se resserre
+           quand des passages attendent plus bas : un grand vide laisserait
+           croire que la recherche est terminée. */
+        .wall-empty { padding: 88px 48px 96px; text-align: center; }
+        .wall-empty-tight { padding: 44px 48px 32px; }
+        .wall-empty-title {
+          font-family: "Fraunces", Georgia, serif;
+          font-style: italic; font-size: 22px;
+          color: rgba(243,239,230,0.7);
+          margin-bottom: 14px;
+        }
+        .wall-empty-lead {
+          font-family: "DM Mono", monospace;
+          font-size: 12.5px; letter-spacing: 0.04em;
+          color: rgba(243,239,230,0.65);
+          margin-bottom: 20px;
+        }
+        .wall-empty-lead strong { color: #f3efe6; }
+        .wall-empty-cta {
+          display: inline-block;
+          padding: 10px 20px;
+          border-radius: 999px;
+          background: transparent;
+          border: 1px solid rgba(255,255,255,0.22);
+          color: #f3efe6;
+          cursor: pointer;
+          text-decoration: none;
+          font-family: "DM Mono", monospace;
+          font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+          transition: background 160ms, border-color 160ms;
+        }
+        .wall-empty-cta:hover, .wall-empty-cta:focus-visible {
+          background: rgba(255,255,255,0.08);
+          border-color: rgba(255,255,255,0.45);
+        }
+        @media (max-width: 600px) {
+          .wall-empty { padding: 56px 20px 64px; }
+          .wall-empty-tight { padding: 32px 20px 24px; }
+          .wall-empty-title { font-size: 19px; }
         }
 
         /* Ce qui a été dit à l'antenne — résultats de la recherche dans les
