@@ -506,11 +506,11 @@ function Highlighted({ text }) {
 
 /** Interroge le moteur, en différé et en annulant les requêtes dépassées. */
 function useTranscriptSearch(query, season) {
-  const [state, setState] = React.useState({ status: 'idle', total: 0, results: [], query: '' });
+  const [state, setState] = React.useState({ status: 'idle', total: 0, results: [], query: '', suggestion: null });
   const term = query.trim();
 
   React.useEffect(() => {
-    if (term.length < SEARCH_MIN_CHARS) { setState({ status: 'idle', total: 0, results: [], query: '' }); return; }
+    if (term.length < SEARCH_MIN_CHARS) { setState({ status: 'idle', total: 0, results: [], query: '', suggestion: null }); return; }
 
     const controller = new AbortController();
     const timer = setTimeout(async () => {
@@ -520,12 +520,12 @@ function useTranscriptSearch(query, season) {
         const res = await fetch(url, { signal: controller.signal });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        setState({ status: 'ok', total: data.total || 0, results: data.resultats || [], query: term });
+        setState({ status: 'ok', total: data.total || 0, results: data.resultats || [], query: term, suggestion: data.suggestion || null });
       } catch (e) {
         if (e.name === 'AbortError') return;
         // Le moteur est un complément : s'il ne répond pas, on le dit
         // discrètement et le mur reste utilisable.
-        setState({ status: 'error', total: 0, results: [], query: term });
+        setState({ status: 'error', total: 0, results: [], query: term, suggestion: null });
       }
     }, SEARCH_DEBOUNCE_MS);
 
@@ -575,7 +575,7 @@ function TranscriptHit({ hit }) {
 // L'état vient du parent : le mur en a besoin lui aussi, pour dire combien
 // de passages l'attendent plus bas quand aucune tuile ne correspond.
 function TranscriptResults({ state }) {
-  const { status, total, results } = state;
+  const { status, total, results, suggestion } = state;
   if (status === 'idle') return null;
 
   return (
@@ -599,6 +599,24 @@ function TranscriptResults({ state }) {
 
       {status === 'ok' && total === 0 && (
         <p className="tr-empty">Ces mots n’ont pas été prononcés dans les épisodes transcrits.</p>
+      )}
+
+      {/* Le mot cherché est absent, mais une graphie voisine existe. Le dire
+          plutôt que d'afficher ces résultats comme s'ils répondaient à la
+          question posée : la transcription automatique écrit les noms propres
+          à l'oreille, et le visiteur a le droit de savoir ce qu'il lit. */}
+      {suggestion && suggestion.remplace && (
+        <p className="tr-suggestion">
+          {suggestion.remplace.map((r, i) => (
+            <React.Fragment key={i}>
+              {i > 0 && ' · '}
+              Aucun passage pour <em>{r.cherche}</em> — voici <strong>{r.trouve}</strong>
+            </React.Fragment>
+          ))}
+          <span className="tr-suggestion-why">
+            {' '}orthographe probable dans la transcription automatique, qui écrit les noms propres à l’oreille.
+          </span>
+        </p>
       )}
 
       {results.length > 0 && (
@@ -1359,6 +1377,19 @@ function EpisodesWall() {
           color: rgba(243,239,230,0.65);
           margin: 0 0 8px;
         }
+        .tr-suggestion {
+          font-family: "DM Mono", monospace;
+          font-size: 12.5px; line-height: 1.65;
+          color: rgba(243,239,230,0.8);
+          background: rgba(230,57,70,0.10);
+          border-left: 2px solid #e63946;
+          padding: 11px 14px;
+          border-radius: 0 6px 6px 0;
+          margin: 0 0 18px;
+        }
+        .tr-suggestion em { font-style: normal; text-decoration: line-through; opacity: 0.65; }
+        .tr-suggestion strong { color: #fff; }
+        .tr-suggestion-why { color: rgba(243,239,230,0.5); }
         .tr-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
         .tr-hit-card {
           border: 1px solid rgba(255,255,255,0.10);

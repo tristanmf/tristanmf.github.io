@@ -24,8 +24,13 @@
 
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, existsSync, unlinkSync, statSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 const PASSAGE_WORDS = 60;
+// Résolu depuis l'emplacement du script, pas depuis le dossier courant : la
+// table doit être trouvée que l'indexeur soit lancé de la racine du dépôt ou
+// d'ailleurs.
+const CORRECTIONS_PATH = fileURLToPath(new URL('../_backend/complorama/corrections.json', import.meta.url));
 
 const [, , inPath, outPath, ...rest] = process.argv;
 const epArg = rest.indexOf('--episodes');
@@ -199,6 +204,22 @@ for (const s of segments) {
 const insPassage = db.prepare('INSERT INTO passages (ep, t, t_end, txt) VALUES (?, ?, ?, ?)');
 const insEpisode = db.prepare('INSERT OR REPLACE INTO episodes (ep, title, url, youtube, date, n_passages, duration) VALUES (?, ?, ?, ?, ?, ?, ?)');
 
+// Noms propres écrits à l'oreille par la transcription : on les rétablit ici,
+// une fois pour toutes, plutôt que de demander au visiteur de deviner la
+// graphie. Corrige la recherche ET la citation affichée.
+const fixes = [];
+if (existsSync(CORRECTIONS_PATH)) {
+  const conf = JSON.parse(readFileSync(CORRECTIONS_PATH, 'utf8')).confirme || {};
+  for (const [wrong, right] of Object.entries(conf)) {
+    fixes.push({ re: new RegExp(`\\b${wrong.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi'), right, wrong, n: 0 });
+  }
+  if (fixes.length) console.log(`${fixes.length} correction(s) de nom propre chargée(s)`);
+}
+const applyFixes = (txt) => {
+  for (const f of fixes) txt = txt.replace(f.re, () => { f.n++; return f.right; });
+  return txt;
+};
+
 let totalPassages = 0, totalWords = 0;
 const unmatched = [], renumbered = [];
 db.exec('BEGIN');
@@ -219,7 +240,7 @@ for (const [ep, segs] of [...byEp.entries()].sort((a, b) => a[0] - b[0])) {
   let buf = [], start = null, end = null, words = 0, n = 0;
   const flush = () => {
     if (!buf.length) return;
-    const txt = buf.join(' ').replace(/\s+/g, ' ').trim();
+    const txt = applyFixes(buf.join(' ').replace(/\s+/g, ' ').trim());
     if (txt) { insPassage.run(num, start, end, txt); n++; totalPassages++; }
     buf = []; start = null; words = 0;
   };
@@ -270,6 +291,21 @@ db.exec("INSERT INTO passages_fts(passages_fts) VALUES('optimize')");
 for (const [k, v] of [['built_at', new Date().toISOString()], ['passages', String(totalPassages)], ['words', String(totalWords)], ['passage_words', String(PASSAGE_WORDS)]]) {
   db.prepare('INSERT OR REPLACE INTO build (key, value) VALUES (?, ?)').run(k, v);
 }
+// Vocabulaire matérialisé : le moteur s'en sert quand une recherche ne donne
+// rien, pour proposer les graphies voisines réellement présentes. fts5vocab
+// est une table virtuelle, qu'on ne peut pas interroger depuis une connexion
+// en lecture seule — d'où cette copie en dur.
+db.exec("CREATE VIRTUAL TABLE temp.v USING fts5vocab('main', 'passages_fts', 'row')");
+db.exec('CREATE TABLE vocab (term TEXT PRIMARY KEY, doc INTEGER NOT NULL, len INTEGER NOT NULL)');
+db.exec('INSERT INTO vocab SELECT term, doc, length(term) FROM temp.v WHERE length(term) >= 4');
+db.exec('CREATE INDEX idx_vocab_len ON vocab(len)');
+const vocabCount = db.prepare('SELECT count(*) c FROM vocab').get().c;
+
+if (fixes.length) {
+  for (const f of fixes) console.log(`  « ${f.wrong} » → « ${f.right} » : ${f.n} remplacement(s)`);
+}
+console.log(`vocabulaire : ${vocabCount.toLocaleString('fr-FR')} mots d'au moins 4 lettres`);
+
 db.exec('VACUUM');
 db.close();
 

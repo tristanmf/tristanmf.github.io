@@ -1,0 +1,35 @@
+{
+  "_lisez_moi": [
+    "Noms propres que la transcription automatique a écrits à l'oreille.",
+    "Appliqués à la construction de l'index : la recherche les trouve, ET la",
+    "citation affichée porte la bonne orthographe — ce qui compte quand on cite",
+    "l'émission de quelqu'un.",
+    "",
+    "Seul « confirme » est appliqué. Pour y promouvoir une entrée, il faut avoir",
+    "LU le passage et vu de qui on parle : substituer un nom sur une simple",
+    "ressemblance phonétique, c'est risquer de mettre dans la bouche de Tristan",
+    "un nom qu'il n'a pas prononcé. Les entrées non confirmées restent trouvables",
+    "malgré tout, par le repli automatique du moteur sur les graphies voisines.",
+    "",
+    "Pour découvrir de nouvelles entrées : workflow « Complorama · Diagnostic de",
+    "recherche », qui liste les mots de l'index ressemblant à un nom cherché."
+  ],
+
+  "confirme": {
+    "messant": "Meyssan",
+    "messand": "Meyssan"
+  },
+
+  "a_confirmer": {
+    "messon": "Meyssan",
+    "perrone": "Perronne",
+    "reynoir": "Reynouard",
+    "racinier": "Rassinier"
+  },
+
+  "_preuve": {
+    "messant": "épisode 52, 19 septembre 2023, à 14:32 — « Rudy, Tristan, vous nous rappelez qui est Thierry Messant ? » ; également épisode 43 à 5:48, « Opinion partagée par Thierry Messant. »",
+    "messand": "même rendu phonétique que Messant, 2 passages",
+    "messon": "voyelle différente (/ɔ̃/ au lieu de /ɑ̃/) — pourrait être autre chose, à lire avant d'appliquer"
+  }
+}
