@@ -261,9 +261,12 @@ progression, parallax hero et fonds vidéo. La dérive parallax des cartes est *
 - **Sonde HTTP du 3 sept. 08:09 UTC** (run 33731822540) : `www` toujours **non couvert**
   (certificat `*.github.io` présenté) ; apex inchangé (`tristan.pro` seul, émis 7 août,
   expire 5 nov.). Deux minutes après la resaisie, c'est trop tôt pour conclure.
-- **À faire : relancer Tools · HTTP probe quelques heures plus tard.** Si `www` est couvert,
-  cocher *Enforce HTTPS*. Sinon, ne pas répéter le remove/re-add — attendre le renouvellement
-  naturel du 6 octobre, puis resonder.
+- **Sonde HTTP du 3 sept. 11:19 UTC** (run 33749009094, ~3h après la resaisie) : `www`
+  toujours **non couvert**, apex inchangé — même résultat qu'à 08:09. La resaisie du
+  Custom domain n'a donc pas suffi à elle seule à déclencher l'émission.
+- **À faire : ne pas répéter le remove/re-add.** Attendre le renouvellement naturel du
+  6 octobre, puis resonder avec Tools · HTTP probe. Si `www` est alors couvert, cocher
+  *Enforce HTTPS*.
 - Ne jamais activer l'hébergement web OVH sur tristan.pro (réécrit A et MX). Ne toucher qu'à
   `www` ; A, MX, NS, TXT et CNAME de service OVH sont à préserver.
 
