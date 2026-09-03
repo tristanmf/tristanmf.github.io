@@ -469,6 +469,152 @@ function EpisodeTile({ ep }) {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Recherche dans les transcriptions
+//
+// Le mur filtre les tuiles localement, instantanément, sur le titre, le chapô
+// et le corps de l'article — environ 25 800 mots. Les transcriptions des
+// épisodes en ajoutent 484 000, dix-neuf fois plus, mais elles sont trop
+// volumineuses pour être téléchargées par le visiteur et n'ont pas vocation à
+// être publiées intégralement : elles vivent sur l'hébergement de Tristan,
+// hors racine web, et seul un court extrait autour des mots trouvés est
+// renvoyé.
+//
+// Cet appel est le seul contact avec un autre domaine de toute la page, il
+// n'a lieu qu'après une frappe du visiteur, jamais au chargement, et son
+// échec est sans conséquence : le mur continue de fonctionner sans lui.
+// ---------------------------------------------------------------------------
+
+const SEARCH_API = 'https://recherche.complorama.fr/search.php';
+const SEARCH_MIN_CHARS = 3;
+const SEARCH_DEBOUNCE_MS = 350;
+
+/**
+ * Rend un extrait dont les mots trouvés sont encadrés par <mark>…</mark>.
+ * La chaîne est découpée puis reconstruite en éléments React : on n'injecte
+ * jamais de HTML, donc une transcription contenant un chevron ne peut pas
+ * devenir du balisage.
+ */
+function Highlighted({ text }) {
+  const parts = String(text || '').split(/<\/?mark>/);
+  return parts.map((part, i) =>
+    i % 2 === 1
+      ? <mark key={i} style={{ background: 'rgba(224,58,58,0.28)', color: '#fff', borderRadius: 2, padding: '0 2px' }}>{part}</mark>
+      : <React.Fragment key={i}>{part}</React.Fragment>
+  );
+}
+
+/** Interroge le moteur, en différé et en annulant les requêtes dépassées. */
+function useTranscriptSearch(query, season) {
+  const [state, setState] = React.useState({ status: 'idle', total: 0, results: [], query: '' });
+  const term = query.trim();
+
+  React.useEffect(() => {
+    if (term.length < SEARCH_MIN_CHARS) { setState({ status: 'idle', total: 0, results: [], query: '' }); return; }
+
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      setState(s => ({ ...s, status: 'loading' }));
+      try {
+        const url = `${SEARCH_API}?q=${encodeURIComponent(term)}${season != null ? `&saison=${season}` : ''}`;
+        const res = await fetch(url, { signal: controller.signal });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        setState({ status: 'ok', total: data.total || 0, results: data.resultats || [], query: term });
+      } catch (e) {
+        if (e.name === 'AbortError') return;
+        // Le moteur est un complément : s'il ne répond pas, on le dit
+        // discrètement et le mur reste utilisable.
+        setState({ status: 'error', total: 0, results: [], query: term });
+      }
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => { clearTimeout(timer); controller.abort(); };
+  }, [term, season]);
+
+  return state;
+}
+
+function TranscriptHit({ hit }) {
+  const video = hit.video;
+  return (
+    <li className="tr-hit-card">
+      <div className="tr-hit-meta">
+        <span className="tr-hit-num">N°{String(hit.episode).padStart(3, '0')}</span>
+        {hit.date && <time dateTime={hit.date}>{formatDate(hit.date)}</time>}
+      </div>
+      {hit.titre && <h3 className="tr-hit-title">{hit.titre}</h3>}
+      <p className="tr-hit-quote">« <Highlighted text={hit.extrait} /> »</p>
+      <div className="tr-hit-actions">
+        <span className="tr-hit-time" title="Minutage dans la version audio">⏱ {hit.minutage}</span>
+        {hit.url && (
+          <a href={hit.url} target="_blank" rel="noopener noreferrer" className="tr-hit-btn">
+            Écouter l’épisode
+          </a>
+        )}
+        {video && video.minutage && (
+          <a href={video.url} target="_blank" rel="noopener noreferrer" className="tr-hit-btn tr-hit-btn-video">
+            ▶ Voir dans la vidéo · {video.minutage}
+          </a>
+        )}
+        {video && video.coupe_au_montage && (
+          <span className="tr-hit-note" title="La vidéo est un montage raccourci de l’audio">
+            passage absent de la vidéo
+          </span>
+        )}
+        {video && video.minutage_indisponible && (
+          <a href={video.url} target="_blank" rel="noopener noreferrer" className="tr-hit-btn">
+            Voir la vidéo
+          </a>
+        )}
+      </div>
+    </li>
+  );
+}
+
+function TranscriptResults({ query, season }) {
+  const { status, total, results } = useTranscriptSearch(query, season);
+  if (status === 'idle') return null;
+
+  return (
+    <section className="tr-section" aria-live="polite">
+      <div className="tr-head">
+        <h2 className="tr-title">Dans ce qui a été dit à l’antenne</h2>
+        <span className="tr-count">
+          {status === 'loading' && 'recherche…'}
+          {status === 'error' && 'moteur indisponible'}
+          {status === 'ok' && (total === 0
+            ? 'aucun passage'
+            : `${total.toLocaleString('fr-FR')} passage${total > 1 ? 's' : ''}`)}
+        </span>
+      </div>
+
+      {status === 'error' && (
+        <p className="tr-empty">
+          La recherche dans les transcriptions ne répond pas pour le moment. Le mur, lui, fonctionne normalement.
+        </p>
+      )}
+
+      {status === 'ok' && total === 0 && (
+        <p className="tr-empty">Ces mots n’ont pas été prononcés dans les épisodes transcrits.</p>
+      )}
+
+      {results.length > 0 && (
+        <>
+          <ul className="tr-list">
+            {results.map((hit, i) => <TranscriptHit key={`${hit.episode}-${hit.seconde}-${i}`} hit={hit} />)}
+          </ul>
+          {total > results.length && (
+            <p className="tr-more">
+              {results.length} passages les plus pertinents sur {total.toLocaleString('fr-FR')} — affinez la recherche pour resserrer.
+            </p>
+          )}
+        </>
+      )}
+    </section>
+  );
+}
+
 function EpisodesWall() {
   const [query, setQuery] = React.useState('');
   const [season, setSeason] = React.useState(null); // null = all seasons
@@ -952,9 +1098,23 @@ function EpisodesWall() {
             {query && season != null
               ? <>Aucun épisode de la {seasonLabel(season).toLowerCase()} ne correspond à « {query} ».</>
               : query
-                ? <>Aucun épisode ne correspond à « {query} ».</>
+                ? <>Aucun titre ni résumé ne correspond à « {query} ».</>
                 : <>Aucun épisode daté pour la {seasonLabel(season).toLowerCase()}.</>}
           </div>
+          {/* Le titre ne dit pas tout : ces mots ont pu être prononcés à
+              l'antenne sans figurer dans le résumé. La recherche dans les
+              transcriptions, juste en dessous, répond peut-être. */}
+          {query && query.trim().length >= SEARCH_MIN_CHARS && (
+            <div style={{
+              fontFamily: '"DM Mono", monospace',
+              fontSize: 12,
+              letterSpacing: '0.06em',
+              color: 'rgba(243,239,230,0.55)',
+              marginBottom: 22,
+            }}>
+              Regardez plus bas : ces mots ont peut-être été prononcés à l’antenne.
+            </div>
+          )}
           <button
             onClick={clearFilters}
             style={{
@@ -974,6 +1134,9 @@ function EpisodesWall() {
           </button>
         </div>
       )}
+
+      {/* Ce qui a été dit à l'antenne — interrogé à distance, jamais au chargement */}
+      <TranscriptResults query={query} season={season} />
 
       {/* Sentinel for infinite scroll */}
       {hasMore && (
@@ -1130,6 +1293,105 @@ function EpisodesWall() {
         }
         @media (prefers-reduced-motion: reduce) {
           .season-cursor { transition: opacity 200ms; }
+        }
+
+        /* Ce qui a été dit à l'antenne — résultats de la recherche dans les
+           transcriptions. Volontairement en liste et non en tuiles : ce sont
+           des citations à lire, pas des vignettes à parcourir, et il ne faut
+           pas concurrencer visuellement le mur au-dessus. */
+        .tr-section {
+          border-top: 1px solid rgba(255,255,255,0.08);
+          padding: 40px 48px 8px;
+        }
+        .tr-head {
+          display: flex;
+          align-items: baseline;
+          gap: 16px;
+          flex-wrap: wrap;
+          margin-bottom: 22px;
+        }
+        .tr-title {
+          font-family: "Fraunces", Georgia, serif;
+          font-size: 21px;
+          font-weight: 600;
+          color: #f3efe6;
+          margin: 0;
+        }
+        .tr-count, .tr-more, .tr-hit-note {
+          font-family: "DM Mono", monospace;
+          font-size: 11px;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: rgba(243,239,230,0.5);
+        }
+        .tr-empty {
+          font-family: "Fraunces", Georgia, serif;
+          font-style: italic;
+          font-size: 17px;
+          color: rgba(243,239,230,0.65);
+          margin: 0 0 8px;
+        }
+        .tr-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+        .tr-hit-card {
+          border: 1px solid rgba(255,255,255,0.10);
+          border-radius: 10px;
+          padding: 16px 18px;
+          background: rgba(255,255,255,0.025);
+        }
+        .tr-hit-meta {
+          display: flex; align-items: center; gap: 12px;
+          font-family: "DM Mono", monospace;
+          font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+          color: rgba(243,239,230,0.5);
+          margin-bottom: 6px;
+        }
+        .tr-hit-num { color: #e63946; }
+        .tr-hit-title {
+          font-family: "Fraunces", Georgia, serif;
+          font-size: 16px; font-weight: 600; color: #f3efe6;
+          margin: 0 0 8px; line-height: 1.3;
+        }
+        .tr-hit-quote {
+          font-family: "Fraunces", Georgia, serif;
+          font-size: 16.5px; line-height: 1.6;
+          color: rgba(243,239,230,0.9);
+          margin: 0 0 12px;
+        }
+        .tr-hit-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .tr-hit-time {
+          font-family: "DM Mono", monospace;
+          font-size: 12px; color: rgba(243,239,230,0.75);
+          white-space: nowrap;
+        }
+        .tr-hit-btn {
+          display: inline-block;
+          padding: 6px 13px;
+          border: 1px solid rgba(255,255,255,0.2);
+          border-radius: 999px;
+          font-family: "DM Mono", monospace;
+          font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+          color: #f3efe6; text-decoration: none;
+          transition: background 160ms, border-color 160ms;
+        }
+        .tr-hit-btn:hover, .tr-hit-btn:focus-visible {
+          background: rgba(255,255,255,0.10);
+          border-color: rgba(255,255,255,0.4);
+        }
+        /* Le lien vidéo ouvre YouTube dans un onglet : aucun lecteur n'est
+           intégré à la page, donc Google n'est jamais chargé sans un clic. */
+        .tr-hit-btn-video {
+          border-color: rgba(255,0,0,0.55);
+          background: rgba(255,0,0,0.14);
+        }
+        .tr-hit-btn-video:hover, .tr-hit-btn-video:focus-visible {
+          background: rgba(255,0,0,0.26);
+          border-color: rgba(255,0,0,0.8);
+        }
+        .tr-more { margin: 16px 0 0; }
+        @media (max-width: 600px) {
+          .tr-section { padding: 32px 18px 8px; }
+          .tr-hit-quote { font-size: 15.5px; }
+          .tr-hit-actions { gap: 8px; }
         }
 
         /* Tile title: hard cap on line count so the bottom block can never
