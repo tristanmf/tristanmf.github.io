@@ -75,13 +75,25 @@ production Radio France n'est pas la même chose qu'en citer trois lignes. Et c'
 - **Les sous-titres YouTube ne sont pas récupérables depuis GitHub Actions** : le runner reçoit
   une page dégradée, sans `captionTracks`. Cette étape doit tourner depuis le Mac.
 
-**Minutages cliquables (étape 2, bonus)** : 37 épisodes sur 112 ont une vidéo YouTube. La vidéo
-est le même enregistrement que le podcast, donc la transcription audio couvre déjà la vidéo — il
-n'y a rien à retranscrire en plus. Seul manque le **décalage** entre les deux montages. On le
-mesure une fois par épisode en comparant le texte de la transcription aux sous-titres
-automatiques de YouTube, ce qui produit un simple fichier `épisode → décalage en secondes`.
-Si les textes ne correspondent pas (cas des vidéos bonus, qui ne sont pas des épisodes), on
-détecte l'anomalie et on met un lien sans minutage.
+**Audio et vidéo ne sont pas le même montage** (précisé par Tristan le 3 septembre) : l'audio est
+la version longue (~30 min et plus), la vidéo YouTube en est un **montage raccourci** (~20 min).
+Des passages dits à l'antenne ne sont donc pas dans la vidéo. L'audio est le sur-ensemble.
+
+Conséquence sur l'indexation, à ne pas réinventer :
+- **On n'indexe que l'audio.** Il contient tout ; indexer aussi la vidéo créerait des doublons
+  (même passage trouvé deux fois) et fausserait le classement par pertinence.
+- **La transcription de la vidéo sert de règle graduée, pas de contenu.** En la comparant à celle
+  de l'audio (alignement de texte à texte, deux transcriptions de même qualité issues de la même
+  chaîne Whisper), on obtient pour chaque épisode la correspondance `moment audio → moment vidéo`.
+  Elle est par morceaux, puisque des passages ont été coupés.
+- Un résultat de recherche affiche donc son minutage audio, plus un bouton « voir dans la vidéo »
+  **seulement si le passage a survécu au montage**. Sinon on peut indiquer qu'il n'y est pas.
+- Cas résiduel : si la vidéo contient de la parole absente de l'audio (adresse caméra, vidéo
+  bonus qui n'est pas un épisode), l'alignement ne trouve pas de correspondance ; ces morceaux-là
+  sont indexés à part, sur la timeline vidéo.
+
+**Les transcriptions se font sur le Mac de Tristan**, jamais dans Actions : le runner n'a pas la
+chaîne Whisper et reçoit de YouTube une page dégradée. GitHub prévient, le Mac exécute.
 
 ## OVH : accès complet depuis GitHub Actions (depuis septembre 2026)
 
