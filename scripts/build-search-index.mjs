@@ -37,6 +37,22 @@ const segments = raw.segments || raw;
 if (!Array.isArray(segments) || !segments.length) die('aucun segment dans le fichier');
 console.log(`${segments.length.toLocaleString('fr-FR')} segments lus (${(statSync(inPath).size / 1048576).toFixed(1)} Mo)`);
 
+// Describe the file's shape without printing a word of the transcripts:
+// these logs are public and the whole point of the private backend is that
+// the text stays off the open web. Long strings are shown as their length.
+const shape = (o) => JSON.stringify(Object.fromEntries(Object.entries(o || {}).map(([k, v]) =>
+  [k, typeof v === 'string' ? (v.length > 24 ? `<texte, ${v.length} car.>` : v) : Array.isArray(v) ? `<${v.length} éléments>` : v])));
+console.log(`  clés du fichier : ${Object.keys(raw).join(', ') || '(tableau nu)'}`);
+console.log(`  un segment      : ${shape(segments[0])}`);
+if (raw.episodes?.length) console.log(`  un épisode      : ${shape(raw.episodes[0])}`);
+{
+  const nums = [...new Set(segments.map((s) => Number(s.ep)).filter(Number.isFinite))].sort((a, b) => a - b);
+  console.log(`  numéros d'épisode : ${nums.length} distincts, de ${nums[0]} à ${nums[nums.length - 1]}`);
+  const holes = [];
+  for (let i = nums[0]; i <= nums[nums.length - 1]; i++) if (!nums.includes(i)) holes.push(i);
+  if (holes.length) console.log(`  manquants dans la série : ${holes.slice(0, 20).join(', ')}${holes.length > 20 ? '…' : ''}`);
+}
+
 // ---------------------------------------------------------------------------
 // Matching a transcript to the episode it belongs to.
 //

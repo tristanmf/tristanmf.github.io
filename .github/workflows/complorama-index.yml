@@ -1,0 +1,70 @@
+name: Complorama · Indexer les transcriptions
+
+# Fetches the transcripts Tristan's Mac deposited on the OVH hosting, builds
+# the SQLite search index, and — unless this is a dry run — deploys it next
+# to the PHP endpoint.
+#
+#   complorama/data/segments-audio.json   ← deposited by the Mac (the source)
+#   complorama/data/index.sqlite          ← built here (what the endpoint reads)
+#   complorama/api/search.php             ← the endpoint itself
+#
+# data/ sits outside every web root, so neither the transcripts nor the index
+# is reachable over HTTP; only api/ will be served, by a dedicated subdomain.
+#
+# Dry run by default: it fetches, builds and reports without touching the
+# hosting, which is how a numbering mismatch gets caught before deployment.
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Déployer sur l’hébergement (sinon simple vérification)'
+        type: boolean
+        default: false
+      source:
+        description: 'Fichier de transcriptions sur l’hébergement'
+        required: true
+        default: 'data/segments-audio.json'
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    env:
+      OVH_APP_KEY: ${{ secrets.OVH_APP_KEY }}
+      OVH_APP_SECRET: ${{ secrets.OVH_APP_SECRET }}
+      OVH_CONSUMER_KEY: ${{ secrets.OVH_CONSUMER_KEY }}
+      OVH_SFTP_PASSWORD: ${{ secrets.OVH_SFTP_PASSWORD }}
+      OVH_ENDPOINT: ${{ vars.OVH_ENDPOINT || 'https://eu.api.ovh.com/1.0' }}
+      IN_DEPLOY: ${{ inputs.deploy }}
+      IN_SOURCE: ${{ inputs.source }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install the SFTP client
+        run: npm install --no-save --no-audit --no-fund ssh2-sftp-client@11
+
+      - name: Fetch the transcripts
+        run: node scripts/ovh-sftp.mjs get "$IN_SOURCE" transcripts.json
+
+      - name: Build the index
+        run: node scripts/build-search-index.mjs transcripts.json index.sqlite --episodes complorama/episodes-data.js
+
+      - name: Deploy the index and the endpoint
+        if: ${{ inputs.deploy }}
+        run: |
+          node scripts/ovh-sftp.mjs put index.sqlite data/index.sqlite
+          node scripts/ovh-sftp.mjs put _backend/complorama/api/search.php api/search.php
+
+      - name: Nothing deployed
+        if: ${{ !inputs.deploy }}
+        run: echo "Vérification seule — relancer avec « Déployer » coché pour publier l'index."
