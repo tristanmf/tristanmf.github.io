@@ -1,0 +1,66 @@
+name: Tools · OVH SFTP user
+
+# Creates (or re-passwords) ONE dedicated SFTP user on the egoblog.net
+# hosting, confined to a single folder, so a deployment job can never reach
+# egoblog.net, Blogtrotters or TMF Lab, which share the same account.
+#
+# The password is read from the OVH_SFTP_PASSWORD repository secret and is
+# masked before use; the login is derived from the hosting's primaryLogin at
+# runtime and never printed. Nothing here echoes a credential — the repo is
+# public and so are these logs.
+#
+# Idempotent: re-running resets the password to the secret's current value.
+# This is the only write this project makes to the hosting account itself.
+
+on:
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'Hosting service name'
+        required: true
+        default: 'egoblog.net'
+      home:
+        description: 'Folder the user is confined to (must not be an existing site)'
+        required: true
+        default: 'complorama'
+      sshState:
+        description: 'SSH/SFTP access level (see Tools · OVH API schema, SshStateEnum)'
+        type: choice
+        options: [sftponly, active, none]
+        default: sftponly
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  user:
+    runs-on: ubuntu-latest
+    env:
+      OVH_APP_KEY: ${{ secrets.OVH_APP_KEY }}
+      OVH_APP_SECRET: ${{ secrets.OVH_APP_SECRET }}
+      OVH_CONSUMER_KEY: ${{ secrets.OVH_CONSUMER_KEY }}
+      OVH_SFTP_PASSWORD: ${{ secrets.OVH_SFTP_PASSWORD }}
+      OVH_ENDPOINT: ${{ vars.OVH_ENDPOINT || 'https://eu.api.ovh.com/1.0' }}
+      IN_SERVICE: ${{ inputs.service }}
+      IN_HOME: ${{ inputs.home }}
+      IN_SSH: ${{ inputs.sshState }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Secret present?
+        run: |
+          if [ -z "$OVH_SFTP_PASSWORD" ]; then
+            echo "::error::secret OVH_SFTP_PASSWORD absent — le créer dans Settings → Secrets and variables → Actions"
+            exit 1
+          fi
+          echo "✓ OVH_SFTP_PASSWORD est défini"
+
+      - name: Create or update the confined SFTP user
+        run: node scripts/ovh-sftp-user.mjs "$IN_SERVICE" "$IN_HOME" "$IN_SSH"

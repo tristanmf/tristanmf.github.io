@@ -39,3 +39,24 @@ for (const a of apis) {
     }
   }
 }
+
+// Models the matched routes mention: enums with their allowed values, and
+// structures with their fields. A body parameter typed "hosting.web.user"
+// tells you nothing until you can see what that contains — and guessing an
+// enum value before a POST is how you get a 400 on a production host.
+const mentioned = new Set();
+for (const a of apis) for (const op of a.operations || []) {
+  for (const p of op.parameters || []) if (p.dataType) mentioned.add(p.dataType.replace(/\[\]$/, ''));
+  if (op.responseType) mentioned.add(op.responseType.replace(/\[\]$/, ''));
+}
+const models = Object.entries(schema.models || {}).filter(([name]) => mentioned.has(name));
+if (models.length) {
+  console.log(`\n${'─'.repeat(70)}\nmodèles cités par ces routes (${models.length})\n${'─'.repeat(70)}`);
+  for (const [name, m] of models) {
+    if (m.enum) { console.log(`\n${name} — valeurs autorisées :\n  ${m.enum.join(' · ')}`); continue; }
+    const props = Object.entries(m.properties || {});
+    if (!props.length) continue;
+    console.log(`\n${name}${m.description ? ` — ${m.description}` : ''}`);
+    for (const [k, p] of props) console.log(`  ${k}: ${p.type}${p.canBeNull ? '?' : ''}${p.readOnly ? ' (lecture seule)' : ''}${p.description ? ` — ${p.description}` : ''}`);
+  }
+}
