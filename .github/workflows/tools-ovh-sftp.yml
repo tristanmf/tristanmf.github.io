@@ -1,0 +1,58 @@
+name: Tools · OVH SFTP
+
+# Read and write files on the OVH hosting from the runner, through the
+# dedicated account confined to the complorama/ folder. Used to fetch the
+# transcripts Tristan's Mac deposits, and to deploy the search index and the
+# PHP endpoint. Neither the login nor the password is ever printed.
+
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: 'Action'
+        type: choice
+        options: [list, get, put, mkdir]
+        default: list
+      arg1:
+        description: 'list: dossier · get: fichier distant · put: fichier local · mkdir: dossier'
+        required: false
+        default: ''
+      arg2:
+        description: 'get: destination locale · put: destination distante'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  sftp:
+    runs-on: ubuntu-latest
+    env:
+      OVH_APP_KEY: ${{ secrets.OVH_APP_KEY }}
+      OVH_APP_SECRET: ${{ secrets.OVH_APP_SECRET }}
+      OVH_CONSUMER_KEY: ${{ secrets.OVH_CONSUMER_KEY }}
+      OVH_SFTP_PASSWORD: ${{ secrets.OVH_SFTP_PASSWORD }}
+      OVH_ENDPOINT: ${{ vars.OVH_ENDPOINT || 'https://eu.api.ovh.com/1.0' }}
+      IN_CMD: ${{ inputs.command }}
+      IN_A: ${{ inputs.arg1 }}
+      IN_B: ${{ inputs.arg2 }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install the SFTP client
+        run: npm install --no-save --no-audit --no-fund ssh2-sftp-client@11
+
+      - name: Run
+        run: |
+          args=("$IN_CMD")
+          [ -n "$IN_A" ] && args+=("$IN_A")
+          [ -n "$IN_B" ] && args+=("$IN_B")
+          node scripts/ovh-sftp.mjs "${args[@]}"
