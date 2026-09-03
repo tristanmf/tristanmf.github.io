@@ -1,0 +1,44 @@
+name: Tools · Page inspect
+
+# Read-only look at a remote page or feed from the GitHub runner, which
+# (unlike the Claude sandbox) can reach radiofrance.fr, youtube.com and the
+# rest of the web. Prints title, social meta, iframes, media URLs, JSON-LD
+# — including any SeekToAction, i.e. the declared way to link to a
+# timestamp — and, for a feed, item count and <enclosure> / transcript tags.
+# Nothing is downloaded into the repo: use "Tools · Fetch asset" for that.
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'Page or feed to inspect'
+        required: true
+      pattern:
+        description: 'Optional regex to locate in the source, with context'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    env:
+      IN_URL: ${{ inputs.url }}
+      IN_PATTERN: ${{ inputs.pattern }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Inspect
+        run: |
+          args=("$IN_URL")
+          [ -n "$IN_PATTERN" ] && args+=("$IN_PATTERN")
+          node scripts/page-inspect.mjs "${args[@]}"
