@@ -118,14 +118,27 @@ if ($match === null) fail(400, 'aucun mot exploitable dans la requête');
 
 $page = max(1, min(MAX_PAGE, (int) ($_GET['page'] ?? 1)));
 $ep   = isset($_GET['ep']) ? (int) $_GET['ep'] : null;
+// Saison n : de septembre (2020+n-1) à août (2020+n) — la saison 1 démarre en
+// janvier 2021, d'où l'année de référence 2020. Même définition que le mur.
+$saison = isset($_GET['saison']) ? (int) $_GET['saison'] : null;
 
 $pdo = db();
 $where = 'passages_fts MATCH :m';
 $args  = [':m' => $match];
 if ($ep !== null) { $where .= ' AND p.ep = :ep'; $args[':ep'] = $ep; }
+if ($saison !== null && $saison >= 1 && $saison <= 40) {
+    $args[':from'] = sprintf('%04d-09-01', 2020 + $saison - 1);
+    $args[':to']   = sprintf('%04d-08-31', 2020 + $saison);
+    $where .= ' AND e.date BETWEEN :from AND :to';
+}
 
 try {
-    $count = $pdo->prepare("SELECT count(*) FROM passages_fts JOIN passages p ON p.id = passages_fts.rowid WHERE $where");
+    // La jointure sur `episodes` est nécessaire au filtre par saison, qui
+    // porte sur la date de diffusion.
+    $count = $pdo->prepare("SELECT count(*) FROM passages_fts
+                            JOIN passages p ON p.id = passages_fts.rowid
+                            JOIN episodes e ON e.ep = p.ep
+                            WHERE $where");
     $count->execute($args);
     $total = (int) $count->fetchColumn();
 
