@@ -95,6 +95,34 @@ Conséquence sur l'indexation, à ne pas réinventer :
 **Les transcriptions se font sur le Mac de Tristan**, jamais dans Actions : le runner n'a pas la
 chaîne Whisper et reçoit de YouTube une page dégradée. GitHub prévient, le Mac exécute.
 
+#### Répartition des rôles entre les deux Claude
+
+Le partage se fait par **tickets GitHub** : la synchronisation ouvre un ticket
+« Épisode NNN à transcrire » quand elle voit un nouvel épisode ou une nouvelle vidéo (GitHub
+envoie l'alerte par mail à Tristan) ; la session Mac le lit, fait le travail, le referme. Aucun
+copier-coller pour Tristan.
+
+*Côté GitHub (cette session, automatisable)* : détecter les nouveautés, ouvrir le ticket,
+indexer, déployer le moteur, brancher le mur.
+
+*Côté Mac (à faire en skill, il a seul les outils)* : télécharger l'audio et, s'il existe, la
+vidéo ; transcrire les deux avec la chaîne Whisper habituelle ; déposer par SFTP dans le dossier
+`complorama/` de l'hébergement (compte cloisonné, voir plus bas) ; mettre à jour le répertoire
+Notion ; refermer le ticket. Format attendu, celui déjà produit :
+`{"episodes":[…],"segments":[{"id","ep","t","t_fin","txt"},…]}`, la transcription audio et celle
+de la vidéo dans deux fichiers distincts et clairement nommés.
+
+**Accès SFTP** : un utilisateur OVH dédié, **cloisonné dans le dossier `complorama/`**, a été créé
+le 3 septembre par le workflow `Tools · OVH SFTP user`. Il ne peut atteindre ni le WordPress
+d'egoblog, ni Blogtrotters, ni TMF Lab. Son mot de passe est le secret GitHub `OVH_SFTP_PASSWORD` ;
+son identifiant n'est écrit nulle part, il se recalcule à l'exécution
+(`primaryLogin` de l'hébergement + `-cplr`) pour ne jamais apparaître dans un journal public.
+Hôte : `ssh.cluster113.hosting.ovh.net`, SFTP uniquement (`sftponly`).
+
+Organisation prévue dans ce dossier : `complorama/data/` pour les transcriptions et la base
+SQLite — **hors racine web, donc non consultable depuis Internet** — et `complorama/api/` pour
+l'unique page PHP de recherche, qui sera la racine d'un sous-domaine dédié.
+
 ## OVH : accès complet depuis GitHub Actions (depuis septembre 2026)
 
 Le compte OVH de Tristan (domaines, zones DNS, hébergement web, e-mail) se pilote **depuis
