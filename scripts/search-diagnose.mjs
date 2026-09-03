@@ -16,9 +16,11 @@
 import { DatabaseSync } from 'node:sqlite';
 import { existsSync } from 'node:fs';
 
-const [, , dbPath, ...terms] = process.argv;
+const [, , dbPath, ...rest] = process.argv;
+const BRIEF = rest.includes('--brief');   // ne montrer que ce qui cloche
+const terms = rest.filter((t) => t !== '--brief');
 const die = (m) => { console.error(`✗ ${m}`); process.exit(1); };
-if (!dbPath || !terms.length) die('usage: search-diagnose.mjs <index.sqlite> <mot> [autre mot…]');
+if (!dbPath || !terms.length) die('usage: search-diagnose.mjs <index.sqlite> <mot> [autre mot…] [--brief]');
 if (!existsSync(dbPath)) die(`introuvable : ${dbPath}`);
 
 const norm = (s) => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -53,13 +55,21 @@ const sampleStmt = db.prepare(`SELECT e.ep, e.title, e.date, p.t
                                JOIN episodes e ON e.ep = p.ep
                                WHERE passages_fts MATCH ? ORDER BY bm25(passages_fts) LIMIT 3`);
 
+const found = [], missing = [];
+
 for (const raw of terms) {
   const term = norm(raw);
-  console.log(`${'─'.repeat(66)}\n« ${raw} »`);
 
   let exact = 0, prefix = 0;
   try { exact = countStmt.get(`"${term}"`).c; } catch { /* terme non exploitable */ }
   try { prefix = countStmt.get(`"${term}"*`).c; } catch { /* idem */ }
+  if (prefix > 0) found.push(`${raw} (${prefix})`); else missing.push(raw);
+
+  // En mode bref on ne détaille que les termes introuvables : c'est là
+  // qu'il y a quelque chose à corriger.
+  if (BRIEF && prefix > 0) continue;
+
+  console.log(`${'─'.repeat(66)}\n« ${raw} »`);
   console.log(`  exact   : ${exact} passage(s)`);
   console.log(`  préfixe : ${prefix} passage(s)   (${term}…)`);
 
@@ -95,5 +105,10 @@ for (const raw of terms) {
   }
   if (!near.length && !parts.length) console.log('  aucun mot ressemblant — le terme est vraisemblablement absent des émissions transcrites.');
 }
+
+console.log(`${'═'.repeat(66)}`);
+console.log(`présents (${found.length}) : ${found.join(' · ') || '—'}`);
+console.log(`\nABSENTS (${missing.length}) : ${missing.join(' · ') || '—'}`);
+console.log('→ pour chacun, la graphie réellement employée est listée ci-dessus.');
 db.close();
 console.log('');
