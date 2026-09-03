@@ -101,3 +101,103 @@ un jeton API à validité illimitée est stocké dans les secrets du dépôt
 - **Tools · Fetch asset** (`url`, `dest`) : miroir d'un fichier distant dans le dépôt.
 - **Tools · Vendor assets** : re-télécharge polices et bibliothèques (`scripts/vendor-assets.mjs`).
 - **Tools · SRI hashes** : historique, plus utilisé depuis l'auto-hébergement complet.
+
+---
+
+# Portfolio (page d'accueil) — état, décisions, reste à faire
+
+Ce site est un **showcase** : sa fonction est d'amener à la prise de contact (conférences,
+interviews). Ne pas le surcharger. Section rédigée le 2 septembre 2026.
+
+## Repères pratiques (page d'accueil)
+
+- On travaille dans **`app.jsx`** ; `index.html` ne porte que le `<head>` (SEO, Open Graph,
+  JSON-LD) et le CSS global. Le build (~15-20 s) recompile aussi Tailwind, qui scanne
+  `index.html` + `app.jsx` : toute nouvelle classe est prise en compte sans rien faire.
+- **Valider `app.jsx` avant tout commit** — une erreur de syntaxe = page blanche :
+  `node -e 'const p=require("/tmp/node_modules/@babel/parser");p.parse(require("fs").readFileSync("app.jsx","utf8"),{sourceType:"script",plugins:["jsx"]});console.log("ok")'`
+  (`npm install @babel/parser` dans `/tmp` si absent.)
+- Toujours `git pull --rebase origin main` avant de pousser : plusieurs conversations
+  (Complorama, TMF Lab, outillage) écrivent sur `main` en parallèle.
+- Les images **collées** dans le chat n'arrivent jamais sur disque. Seul canal fiable :
+  déposer les fichiers dans le dépôt et pousser (Tristan sait faire, ou une session Claude
+  sur son Mac le fait pour lui).
+- Pillow (installable) pour composer les visuels. Formats des cartes : standard 4:3 →
+  **1200 × 900** ; compact (section 02) 3:2 → **1200 × 800**. Style maison : visuel ou icône
+  du projet plutôt que capture d'écran (cf. `clipflow.jpg`).
+- `README.md` est obsolète (parle de `styles.css`/`script.js`). `portfolio-site.zip` traîne à
+  la racine, origine inconnue : demander avant de supprimer.
+- Projets hébergés ailleurs, **absents de ce dépôt**, impossibles à casser d'ici :
+  ComploScore (`tristanmf/carte-complotisme` → `tristan.pro/carte-complotisme/`),
+  Technofascisme (`tristanmf/TECHNOFASCISME-Infographie-interactive`),
+  Happy World (`egoblog.net/happyworld/`), TMF Lab (`tmflab.tech`).
+
+## Structure de la page (ordre réel dans `App`)
+
+1. **Hero** `#top` — vidéo `hero.mp4`, titre, boutons, réseaux, indicateur « Défiler ».
+   `min-height` (pas `height` fixe) pour ne jamais rogner l'indicateur.
+2. **À propos** `#apropos` — sans vidéo (retirée volontairement).
+3. **[01] Télé, radio, podcast** `#projets` — Complorama, Antidote, Les Vérificateurs.
+4. **[02] Recherche, livres & institutionnel** `#institutionnel` — Conspiracy Watch, CHIPIP,
+   *Internet, une infographie*, *Les Faussaires de la nation*.
+5. **Productions** `#productions` — **tuile TMF Lab seule** (`tmflab.mp4`, `tmflab-logo.svg`,
+   accent `#ff5b2e`, fond `#07080a`) + ligne discrète « Voir aussi » vers ComploScore,
+   Technofascisme, Happy World. La grille de cartes est retirée mais son tableau `items`
+   est **conservé dans `app.jsx`** pour réactivation.
+6. **Conférencier** `#conferences` — vidéo `conf.mp4` ; cartes Entreprises / Universités /
+   Médias (« Interventions & plateaux ») / Administrations (« Formations & conférences »).
+7. **Parlons-en** `#contact` — vidéo `bottom.mp4` en crossfade, bouton « Écrivez-moi ».
+
+Transversal : navbar (scroll-spy, menu mobile), aurora blobs bleu/violet, barre de
+progression, parallax hero et fonds vidéo. La dérive parallax des cartes est **désactivée**
+(`speed={0}`) : elle donnait l'impression d'un défaut d'alignement.
+
+## Décisions prises (et pourquoi) — ne pas rouvrir sans raison
+
+**Contact**
+- Adresse : `contact@tristan.pro`, alias OVH (MX Plan) redirigé vers Gmail, **vérifié** avec
+  cinq expéditeurs. Choisi pour être révocable sans exposer l'adresse personnelle.
+- Obfusquée en codes de caractères décalés (`MAIL_A`/`MAIL_B`, offset 7), jamais en clair ni
+  en base64. Pas de formulaire : risque de perte de messages, dépendance tierce.
+- **Piège connu** : un mail envoyé *depuis* `tristanmf@gmail.com` vers `contact@` n'arrive
+  jamais (Gmail déduplique le Message-ID). Ce n'est pas une panne, ne pas rediagnostiquer.
+- Le SPF de tristan.pro contient encore `include:icloud.com` : inoffensif, **ne pas toucher**.
+
+**Contenu**
+- LCI non reconduit → carte au passé (« de 2025 à 2026 »), en dernière position.
+- Livre CNRS monté en section 02 avec le nouveau collectif (Philippe Rey, 1er oct. 2026).
+- TMF Lab : charte **orange sur fond sombre**, pas jaune. Titre = accroche réelle du labo :
+  « Je ne code pas. J'expérimente. » Le logo est blanc : jamais sur fond clair.
+- ClipFlow et Blogtrotters ne sont plus sur le site : ils vivent dans TMF Lab.
+- Refusé : replier une section derrière un bouton (contenu caché = contenu non vu) ;
+  pastille TMF Lab dans le hero (dilue le message « disponible pour confs »).
+- Médias : Tristan **intervient**, il n'**anime** pas. Éviter « tables rondes » en libellé.
+- Positionnement : « cultures numériques » en tête des descriptions SEO ; « transforme la
+  société » (pas « l'information ») dans le hero.
+
+**Technique**
+- Mode économie d'énergie iOS bloque l'autoplay vidéo → bouton play natif. Accepté, aucun
+  contournement fiable (CSS testé, inefficace).
+
+## DNS / certificat www.tristan.pro
+
+- `www CNAME tristanmf.github.io.` corrigé chez OVH le 14/08/2026, propagé.
+- Le certificat GitHub ne couvrait pas `www` (cassé depuis juin 2025 — le CNAME pointait sur
+  l'apex). Renouvellement naturel attendu vers le **6 octobre 2026**.
+- Le 2 septembre, `CNAME` a été supprimé puis recréé dans le dépôt (commits `f22bb57` /
+  `d410181`) — c'est l'empreinte d'un vidage/resaisie du *Custom domain* dans Settings › Pages,
+  qui redéclenche la demande de certificat. **À vérifier avec Tools · HTTP probe** : si le
+  certificat couvre désormais `www`, cocher *Enforce HTTPS* ; sinon, attendre le 6 octobre.
+- Ne jamais activer l'hébergement web OVH sur tristan.pro (réécrit A et MX). Ne toucher qu'à
+  `www` ; A, MX, NS, TXT et CNAME de service OVH sont à préserver.
+
+## Reste à faire / à surveiller
+
+- [ ] **Certificat www** : lancer HTTP probe ; recocher *Enforce HTTPS* une fois émis.
+- [ ] **1er octobre 2026** : sortie des *Faussaires de la nation* → lien vers la page éditeur,
+      retirer « Parution le 1er octobre » de la carte.
+- [ ] Vérifications visuelles impossibles depuis le bac à sable (Tristan) : rendu de la tuile
+      TMF Lab et de la ligne « Voir aussi ».
+- [ ] Réécrire `README.md` ; décider du sort de `portfolio-site.zip`.
+- [ ] Option ouverte : variante sombre du logo TMF Lab (inutile tant que la tuile est sombre).
+- [ ] Option ouverte : réactiver la grille de cartes sous la tuile (données en place).
