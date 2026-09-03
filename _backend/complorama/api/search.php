@@ -21,7 +21,7 @@ declare(strict_types=1);
 const DB_PATH      = __DIR__ . '/../data/index.sqlite';
 const PER_PAGE     = 20;
 const MAX_PAGE     = 25;      // 500 résultats au maximum, au-delà on affine
-const SNIPPET_WORDS = 14;
+const SNIPPET_WORDS = 64;   // maximum autorisé par FTS5 — on montre tout le passage
 const ALLOWED_ORIGINS = ['https://tristan.pro', 'https://www.tristan.pro', 'https://complorama.fr', 'https://www.complorama.fr'];
 
 // ---------------------------------------------------------------- en-têtes

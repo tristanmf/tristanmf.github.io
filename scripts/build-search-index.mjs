@@ -11,9 +11,11 @@
 // 1. WE GROUP SEGMENTS INTO PASSAGES. Whisper emits ~5-word segments; a
 //    search for "théorie du complot" would straddle two of them and match
 //    neither. Consecutive segments of one episode are therefore concatenated
-//    into passages of about PASSAGE_WORDS words, which also gives a snippet
-//    long enough to read. A passage keeps the start time of its first
-//    segment, so the timecode still points at the right moment.
+//    into passages of about PASSAGE_WORDS words — long enough to read as a
+//    quotation with its context, which is what Tristan asked for after
+//    seeing the first results. A passage keeps the start time of its first
+//    segment: the timecode therefore points slightly BEFORE the words that
+//    matched, which is the right way round for someone about to listen.
 //
 // 2. WE INDEX THE AUDIO ONLY. The audio is the long version; the YouTube
 //    video is a shortened edit of it. Indexing both would return the same
@@ -23,7 +25,7 @@
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, existsSync, unlinkSync, statSync } from 'node:fs';
 
-const PASSAGE_WORDS = 45;
+const PASSAGE_WORDS = 60;
 
 const [, , inPath, outPath, ...rest] = process.argv;
 const epArg = rest.indexOf('--episodes');
