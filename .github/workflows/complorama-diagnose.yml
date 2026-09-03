@@ -1,0 +1,49 @@
+name: Complorama · Diagnostic de recherche
+
+# « Pourquoi tel mot ne remonte rien ? » — récupère l'index déployé et, pour
+# chaque terme donné, dit combien de passages le contiennent et, s'il n'y en a
+# aucun, quels mots de l'index lui ressemblent.
+#
+# Utile surtout pour les noms propres : une transcription automatique les écrit
+# à l'oreille, et le nom cherché peut être présent sous une autre graphie.
+# Lecture seule — rien n'est modifié sur l'hébergement.
+
+on:
+  workflow_dispatch:
+    inputs:
+      terms:
+        description: 'Mots à diagnostiquer, séparés par des espaces'
+        required: true
+        default: 'meyssan'
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    env:
+      OVH_APP_KEY: ${{ secrets.OVH_APP_KEY }}
+      OVH_APP_SECRET: ${{ secrets.OVH_APP_SECRET }}
+      OVH_CONSUMER_KEY: ${{ secrets.OVH_CONSUMER_KEY }}
+      OVH_SFTP_PASSWORD: ${{ secrets.OVH_SFTP_PASSWORD }}
+      OVH_ENDPOINT: ${{ vars.OVH_ENDPOINT || 'https://eu.api.ovh.com/1.0' }}
+      IN_TERMS: ${{ inputs.terms }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install the SFTP client
+        run: npm install --no-save --no-audit --no-fund ssh2-sftp-client@11
+
+      - name: Fetch the deployed index
+        run: node scripts/ovh-sftp.mjs get data/index.sqlite index.sqlite
+
+      - name: Diagnose
+        run: node scripts/search-diagnose.mjs index.sqlite $IN_TERMS
