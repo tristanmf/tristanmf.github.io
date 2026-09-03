@@ -1,0 +1,59 @@
+name: Tools · OVH subdomain
+
+# Publishes one subdomain on the web hosting: DNS records + zone refresh,
+# attachment to a folder, and the free Let's Encrypt certificate.
+# Simulation by default — tick "Appliquer" to actually write.
+#
+# Only ever touches records belonging to the subdomain given; the zone also
+# carries the live complorama.fr redirection and the MX records.
+
+on:
+  workflow_dispatch:
+    inputs:
+      zone:
+        description: 'Zone DNS'
+        required: true
+        default: 'complorama.fr'
+      subdomain:
+        description: 'Sous-domaine (sans le domaine)'
+        required: true
+        default: 'recherche'
+      folder:
+        description: 'Dossier servi, relatif à la racine du compte'
+        required: true
+        default: 'complorama/api'
+      apply:
+        description: 'Appliquer (sinon simulation)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  subdomain:
+    runs-on: ubuntu-latest
+    env:
+      OVH_APP_KEY: ${{ secrets.OVH_APP_KEY }}
+      OVH_APP_SECRET: ${{ secrets.OVH_APP_SECRET }}
+      OVH_CONSUMER_KEY: ${{ secrets.OVH_CONSUMER_KEY }}
+      OVH_ENDPOINT: ${{ vars.OVH_ENDPOINT || 'https://eu.api.ovh.com/1.0' }}
+      IN_ZONE: ${{ inputs.zone }}
+      IN_SUB: ${{ inputs.subdomain }}
+      IN_FOLDER: ${{ inputs.folder }}
+      IN_APPLY: ${{ inputs.apply }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Subdomain
+        run: |
+          args=("$IN_ZONE" "$IN_SUB" "$IN_FOLDER")
+          [ "$IN_APPLY" = "true" ] && args+=("--apply")
+          node scripts/ovh-subdomain.mjs "${args[@]}"
