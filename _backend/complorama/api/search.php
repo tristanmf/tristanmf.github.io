@@ -64,6 +64,13 @@ function db(): PDO {
  * « complot » trouve alors complotisme et complotiste, ce qui compte en
  * français où le pluriel et les dérivés sont partout.
  */
+/** Les mots isolés d'une saisie, hors expressions entre guillemets. */
+function queryWords(string $raw): array {
+    $raw = preg_replace('/"[^"]{2,80}"/u', ' ', $raw);
+    $words = preg_split('/[^\p{L}\p{N}\']+/u', (string) $raw, -1, PREG_SPLIT_NO_EMPTY);
+    return array_slice(array_values(array_filter($words, fn($w) => mb_strlen($w) >= 2)), 0, 12);
+}
+
 function buildMatch(string $raw): ?string {
     $parts = [];
     // 1. expressions exactes entre guillemets
@@ -163,6 +170,67 @@ try {
     fail(500, 'la recherche a échoué');
 }
 
+// ---------------------------------------------------------------------------
+// Aucun résultat ? Peut-être que le mot EST dans les émissions, mais écrit
+// autrement.
+//
+// La transcription automatique écrit les noms propres à l'oreille : « Meyssan »
+// est devenu « Messant ». Plutôt que de renvoyer un vide trompeur, on cherche
+// dans le vocabulaire de l'index les graphies voisines réellement présentes, et
+// on relance la recherche avec elles — en le disant clairement, car ce n'est
+// pas ce que le visiteur a tapé.
+//
+// Les corrections connues et vérifiées sont, elles, appliquées en amont à
+// l'indexation ; ce repli n'est que le filet pour les cas non anticipés.
+// ---------------------------------------------------------------------------
+$suggestion = null;
+if ($total === 0) {
+    $replacements = [];
+    foreach (queryWords($q) as $w) {
+        $needle = mb_strtolower($w);
+        if (mb_strlen($needle) < 5) continue;          // trop court : trop de voisins fortuits
+        $max = mb_strlen($needle) >= 8 ? 2 : 1;
+        // Pas de seuil de fréquence : un nom propre prononcé une seule fois en
+        // six ans est justement ce qu'on veut pouvoir retrouver. C'est la
+        // distance d'édition qui tient le bruit à distance.
+        $near = $pdo->prepare('SELECT term, doc FROM vocab WHERE len BETWEEN ? AND ?');
+        $near->execute([mb_strlen($needle) - $max, mb_strlen($needle) + $max]);
+        $best = null;
+        foreach ($near as $cand) {
+            $d = levenshtein($needle, $cand['term']);
+            if ($d > $max) continue;
+            if ($best === null || $d < $best['d'] || ($d === $best['d'] && $cand['doc'] > $best['doc'])) {
+                $best = ['term' => $cand['term'], 'doc' => (int) $cand['doc'], 'd' => $d];
+            }
+        }
+        if ($best) $replacements[] = ['cherche' => $w, 'trouve' => $best['term'], 'passages' => $best['doc']];
+    }
+
+    if ($replacements) {
+        $alt = implode(' AND ', array_map(fn($r) => '"' . $r['trouve'] . '"', $replacements));
+        try {
+            $stmt2 = $pdo->prepare(str_replace(':m', ':m2', $sql));
+            foreach ($args as $k => $v) $stmt2->bindValue($k === ':m' ? ':m2' : $k, $k === ':m' ? $alt : $v);
+            $stmt2->bindValue(':lim', PER_PAGE, PDO::PARAM_INT);
+            $stmt2->bindValue(':off', 0, PDO::PARAM_INT);
+            $stmt2->execute();
+            $rows = $stmt2->fetchAll();
+            if ($rows) {
+                $c2 = $pdo->prepare("SELECT count(*) FROM passages_fts
+                                     JOIN passages p ON p.id = passages_fts.rowid
+                                     JOIN episodes e ON e.ep = p.ep
+                                     WHERE " . str_replace(':m', ':m2', $where));
+                foreach ($args as $k => $v) $c2->bindValue($k === ':m' ? ':m2' : $k, $k === ':m' ? $alt : $v);
+                $c2->execute();
+                $total = (int) $c2->fetchColumn();
+                $suggestion = ['remplace' => $replacements];
+            }
+        } catch (PDOException $e) {
+            error_log('complorama-search (repli): ' . $e->getMessage());
+        }
+    }
+}
+
 // Le passage a-t-il survécu au montage vidéo ? La correspondance est par
 // morceaux : hors de tout intervalle connu, le passage a été coupé.
 //
@@ -216,7 +284,8 @@ foreach ($rows as $r) {
 }
 
 echo json_encode([
-    'requete'   => $q,
+    'requete'    => $q,
+    'suggestion' => $suggestion,
     'total'     => $total,
     'page'      => $page,
     'par_page'  => PER_PAGE,
