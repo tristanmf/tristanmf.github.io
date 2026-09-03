@@ -86,6 +86,33 @@ sur le n°100 — l'ancre se contrôle donc elle-même.
 **Manque l'épisode n°26** (« Présidentielle 2022 : l'élection qui serait truquée », 31 mars 2022),
 absent du lot transcrit. Il suffit de le transcrire et de redéposer le fichier.
 
+#### Noms propres mal transcrits — deux mécanismes
+
+Whisper écrit les noms propres à l'oreille : « Meyssan » était devenu « Messant ».
+Un relevé de 59 noms contre l'index a mesuré l'ampleur réelle : **53 corrects, 6 fautifs**.
+La qualité des transcriptions est donc bonne, le problème est ciblé.
+
+1. **`_backend/complorama/corrections.json`**, appliqué à la construction de l'index.
+   Répare la recherche **et la citation affichée** — citer l'émission de quelqu'un avec un nom
+   mal orthographié n'est pas acceptable. N'y entrent que les graphies dont on a **lu le
+   passage** : substituer sur une simple ressemblance phonétique reviendrait à faire dire à
+   Tristan un nom qu'il n'a pas prononcé. Section `a_confirmer` pour les cas en attente.
+   Confirmés au 3 septembre : Meyssan (messant, messand), Perronne (perrone),
+   Reynouard (reynoir), Rassinier (racinier).
+2. **Repli automatique du moteur**, pour tout ce qu'on n'a pas anticipé : une recherche sans
+   résultat déclenche une recherche des graphies voisines réellement présentes dans le
+   vocabulaire de l'index (distance d'édition, sans seuil de fréquence — un nom prononcé une
+   seule fois en six ans est justement ce qu'on veut retrouver), et le mur l'annonce en clair.
+
+**Workflow `Complorama · Diagnostic de recherche`** : donne, pour une liste de mots, ceux que
+l'index ne contient pas et les graphies voisines qu'il contient. C'est l'outil qui alimente la
+table de corrections. Option `--brief` pour passer une longue liste d'un coup.
+
+**Pour les futurs épisodes**, la session Mac passe à Whisper un `initial_prompt` contenant les
+noms du champ (Meyssan, Soral, Chouard, Raoult, Casasnovas, Perronne, Faurisson, Rassinier,
+Reynouard, Daillet, Azalbert, QAnon, Bilderberg, adrénochrome…). Plafonné à ~220 jetons ;
+n'agit que sur les nouvelles transcriptions. Cela évite que le problème se reproduise.
+
 #### Ce qui reste à faire
 
 - **`segments-video.json`** (côté Mac) : transcriptions des vidéos YouTube. Elles ne servent pas
