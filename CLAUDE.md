@@ -47,53 +47,70 @@ automatiser, vérifier soi-même, livrer, expliquer en clair.
   l'émission (UUID `39bbb292-…`), formats d'image pikapi / cruiser, entités HTML nommées.
 - **Sync episode images** (manuel) : re-miroir des images seules.
 
-### Projet en cours : recherche dans les transcriptions (septembre 2026)
+### Recherche dans les transcriptions — EN LIGNE depuis le 3 septembre 2026
 
-Tristan a fait transcrire les 111 épisodes audio (94 407 segments horodatés, ~484 000 mots,
-`segments.json` de 9,1 Mo). Objectif : les rendre interrogeables depuis le mur. Pour comparaison,
-la recherche actuelle ne porte que sur ~25 800 mots (les chapôs) — soit 19 fois moins.
+Les 111 épisodes audio transcrits (94 416 segments, **483 739 mots**) sont interrogeables depuis
+le mur. Pour comparaison, la recherche sur les titres et chapôs ne portait que sur ~25 800 mots :
+**dix-neuf fois moins**.
 
-**Les transcriptions ne sont PAS dans ce dépôt** : elles vivent sur le Mac de Tristan
-(`/Users/tmfmini/repertoire/`). Seule sa session Claude locale peut les déposer quelque part.
+**Architecture** — backend privé, décidé pour ne jamais publier le texte intégral d'une
+production Radio France, et parce que c'est plus rapide :
 
-**Approche retenue** (validée par Tristan le 3 septembre) : backend privé plutôt que fichiers
-publics. Un endpoint PHP + SQLite FTS5 sur l'hébergement `egoblog.net`, appelé par le mur ;
-seuls de courts extraits autour des mots trouvés sont exposés, jamais le texte intégral.
-Raison : l'émission est publique, mais republier l'intégralité des transcriptions d'une
-production Radio France n'est pas la même chose qu'en citer trois lignes. Et c'est plus rapide.
+```
+recherche.complorama.fr  →  dossier complorama/api  (hébergement egoblog.net, PHP 8.4)
+complorama/api/search.php     l'unique point d'entrée · réponse en ~10 ms
+complorama/api/.htaccess      pas de listing, refus des fichiers de données
+complorama/data/              HORS RACINE WEB — rien n'y est joignable par HTTP
+  segments-audio.json         déposé par le Mac (9,1 Mo)
+  index.sqlite                construit par Actions (5,2 Mo, FTS5)
+```
 
-**Vérifications faites le 3 septembre (`Tools · Page inspect`), à ne pas refaire :**
-- **Radio France ne permet pas de lien vers un minutage.** La page d'épisode ne contient ni
-  `SeekToAction` schema.org, ni aucun marqueur de saut ; son JSON-LD est vide et l'URL du MP3
-  n'est pas dans le HTML servi (le lecteur la charge en JavaScript). Donc pas de « cliquer pour
-  écouter le passage » côté Radio France.
-- **Pas de transcription officielle** : le flux RSS n'a aucune balise `<podcast:transcript>`.
-  Les transcriptions de Tristan sont la seule source.
-- **Le flux RSS ne contient que 7 épisodes** (fenêtre glissante d'environ trois mois). Il sert
-  à détecter les nouveautés, pas à reconstituer le catalogue ; les MP3 des anciens épisodes ne
-  sont pas récupérables par là (URL `proxycast.radiofrance.fr` opaques et non devinables).
+- Le mur appelle ce point d'entrée **après une frappe, jamais au chargement** : c'est le seul
+  contact avec un autre domaine de toute la page, et son échec est sans effet (le mur continue).
+- Aucun lecteur YouTube n'est intégré : le bouton vidéo est un lien, Google n'est chargé qu'au clic.
+- Seuls de courts extraits sortent, jamais le texte complet.
+
+**Workflow `Complorama · Indexer les transcriptions`** — récupère le fichier par SFTP, construit
+l'index, déploie. **Vérification seule par défaut**, cocher « Déployer » pour publier. À relancer
+après chaque nouveau dépôt de transcriptions par le Mac.
+
+**Rattachement des transcriptions aux épisodes : par DATE d'abord, puis titre, le numéro en
+dernier recours** — et jamais de repli sur le numéro si le fichier annonce une date ou un titre
+qui ne correspond à rien (l'épisode est écarté et signalé). Un test avec des titres reformulés
+avait montré qu'un repli sur le numéro rattachait silencieusement un passage au mauvais épisode.
+Résultat sur les vraies données : 111/111 rattachés par la date.
+
+**Numérotation du mur, vérifiée** : 1 à 112 sans trou, et « La 100e de Complorama » tombe bien
+sur le n°100 — l'ancre se contrôle donc elle-même.
+
+**Manque l'épisode n°26** (« Présidentielle 2022 : l'élection qui serait truquée », 31 mars 2022),
+absent du lot transcrit. Il suffit de le transcrire et de redéposer le fichier.
+
+#### Ce qui reste à faire
+
+- **`segments-video.json`** (côté Mac) : transcriptions des vidéos YouTube. Elles ne servent pas
+  de contenu indexé mais de **règle graduée** pour calculer la correspondance `moment audio →
+  moment vidéo`, stockée dans la table `video_map`. Tant qu'elle est vide, un résultat d'épisode
+  filmé affiche « voir la vidéo » sans minutage — et surtout **ne prétend pas** que le passage a
+  été coupé au montage, ce qui serait faux.
+- Le script d'alignement audio/vidéo lui-même (à écrire, côté GitHub, une fois le fichier là).
+- L'alerte par ticket GitHub quand un nouvel épisode ou une nouvelle vidéo paraît.
+
+#### Vérifications faites le 3 septembre, à ne pas refaire
+
+- **Radio France ne permet pas de lien vers un minutage.** Ni `SeekToAction` schema.org, ni aucun
+  marqueur de saut ; JSON-LD vide, et l'URL du MP3 absente du HTML servi (chargée en JavaScript).
+- **Pas de transcription officielle** : aucune balise `<podcast:transcript>` dans le flux RSS.
+- **Le flux RSS ne contient que 7 épisodes** (fenêtre glissante). Il sert à détecter les
+  nouveautés, pas à reconstituer le catalogue ; les MP3 anciens ne sont pas récupérables par là.
 - **Les sous-titres YouTube ne sont pas récupérables depuis GitHub Actions** : le runner reçoit
-  une page dégradée, sans `captionTracks`. Cette étape doit tourner depuis le Mac.
-
-**Audio et vidéo ne sont pas le même montage** (précisé par Tristan le 3 septembre) : l'audio est
-la version longue (~30 min et plus), la vidéo YouTube en est un **montage raccourci** (~20 min).
-Des passages dits à l'antenne ne sont donc pas dans la vidéo. L'audio est le sur-ensemble.
-
-Conséquence sur l'indexation, à ne pas réinventer :
-- **On n'indexe que l'audio.** Il contient tout ; indexer aussi la vidéo créerait des doublons
-  (même passage trouvé deux fois) et fausserait le classement par pertinence.
-- **La transcription de la vidéo sert de règle graduée, pas de contenu.** En la comparant à celle
-  de l'audio (alignement de texte à texte, deux transcriptions de même qualité issues de la même
-  chaîne Whisper), on obtient pour chaque épisode la correspondance `moment audio → moment vidéo`.
-  Elle est par morceaux, puisque des passages ont été coupés.
-- Un résultat de recherche affiche donc son minutage audio, plus un bouton « voir dans la vidéo »
-  **seulement si le passage a survécu au montage**. Sinon on peut indiquer qu'il n'y est pas.
-- Cas résiduel : si la vidéo contient de la parole absente de l'audio (adresse caméra, vidéo
-  bonus qui n'est pas un épisode), l'alignement ne trouve pas de correspondance ; ces morceaux-là
-  sont indexés à part, sur la timeline vidéo.
-
-**Les transcriptions se font sur le Mac de Tristan**, jamais dans Actions : le runner n'a pas la
-chaîne Whisper et reçoit de YouTube une page dégradée. GitHub prévient, le Mac exécute.
+  une page dégradée, sans `captionTracks`. D'où l'alignement calculé depuis le Mac.
+- **Audio et vidéo ne sont pas le même montage** : l'audio est la version longue (~30 min et
+  plus), la vidéo un montage raccourci (~20 min). L'audio est le sur-ensemble, donc **on n'indexe
+  que l'audio** — indexer les deux créerait des doublons et fausserait le classement.
+- **Une tâche OVH `hostedssl/multisite/create` est bloquée en statut *doing* depuis le 31 août.**
+  Elle n'a empêché ni le rattachement ni l'émission du certificat du sous-domaine. Anomalie à
+  garder en tête, sans conséquence connue à ce jour.
 
 #### Répartition des rôles entre les deux Claude
 
@@ -102,26 +119,22 @@ Le partage se fait par **tickets GitHub** : la synchronisation ouvre un ticket
 envoie l'alerte par mail à Tristan) ; la session Mac le lit, fait le travail, le referme. Aucun
 copier-coller pour Tristan.
 
-*Côté GitHub (cette session, automatisable)* : détecter les nouveautés, ouvrir le ticket,
-indexer, déployer le moteur, brancher le mur.
+*Côté GitHub (cette session)* : détecter les nouveautés, ouvrir le ticket, indexer, déployer.
 
-*Côté Mac (à faire en skill, il a seul les outils)* : télécharger l'audio et, s'il existe, la
-vidéo ; transcrire les deux avec la chaîne Whisper habituelle ; déposer par SFTP dans le dossier
-`complorama/` de l'hébergement (compte cloisonné, voir plus bas) ; mettre à jour le répertoire
-Notion ; refermer le ticket. Format attendu, celui déjà produit :
-`{"episodes":[…],"segments":[{"id","ep","t","t_fin","txt"},…]}`, la transcription audio et celle
-de la vidéo dans deux fichiers distincts et clairement nommés.
+*Côté Mac (en skill, il a seul les outils)* : télécharger l'audio et, s'il existe, la vidéo ;
+transcrire les deux avec la chaîne Whisper habituelle ; déposer par SFTP dans
+`complorama/data/` ; mettre à jour le répertoire Notion ; refermer le ticket. Format attendu :
+`{"episodes":[…],"segments":[{"id","ep","t","t_fin","txt"},…]}`, audio et vidéo dans deux
+fichiers distincts (`segments-audio.json`, `segments-video.json`).
 
-**Accès SFTP** : un utilisateur OVH dédié, **cloisonné dans le dossier `complorama/`**, a été créé
-le 3 septembre par le workflow `Tools · OVH SFTP user`. Il ne peut atteindre ni le WordPress
-d'egoblog, ni Blogtrotters, ni TMF Lab. Son mot de passe est le secret GitHub `OVH_SFTP_PASSWORD` ;
-son identifiant n'est écrit nulle part, il se recalcule à l'exécution
-(`primaryLogin` de l'hébergement + `-cplr`) pour ne jamais apparaître dans un journal public.
-Hôte : `ssh.cluster113.hosting.ovh.net`, SFTP uniquement (`sftponly`).
-
-Organisation prévue dans ce dossier : `complorama/data/` pour les transcriptions et la base
-SQLite — **hors racine web, donc non consultable depuis Internet** — et `complorama/api/` pour
-l'unique page PHP de recherche, qui sera la racine d'un sous-domaine dédié.
+**Accès SFTP** : un utilisateur OVH dédié, **cloisonné dans le dossier `complorama/`**, créé le
+3 septembre par le workflow `Tools · OVH SFTP user`. Vérifié : il reçoit « permission denied »
+sur tout le reste — il ne peut atteindre ni le WordPress d'egoblog, ni Blogtrotters, ni TMF Lab.
+Son mot de passe est le secret GitHub `OVH_SFTP_PASSWORD` ; son identifiant n'est écrit nulle
+part, il se recalcule à l'exécution (`primaryLogin` + `-cplr`) pour ne jamais apparaître dans un
+journal public. Hôte : `ssh.cluster113.hosting.ovh.net`, SFTP uniquement.
+Le Mac, lui, utilise son propre accès `ovhftp` sur le compte principal : aucun secret à faire
+circuler entre les deux sessions.
 
 ## OVH : accès complet depuis GitHub Actions (depuis septembre 2026)
 
