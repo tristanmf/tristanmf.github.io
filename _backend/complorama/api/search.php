@@ -152,7 +152,22 @@ try {
 
 // Le passage a-t-il survécu au montage vidéo ? La correspondance est par
 // morceaux : hors de tout intervalle connu, le passage a été coupé.
+//
+// Attention à ne pas confondre deux situations très différentes : « ce
+// passage a été coupé au montage » est une affirmation sur le contenu, et
+// on ne peut la faire que si l'alignement audio/vidéo de cet épisode a bien
+// été calculé. Tant qu'il ne l'est pas, on l'ignore — et on le dit ainsi,
+// plutôt que d'annoncer une coupe qu'on n'a pas constatée.
 $mapStmt = $pdo->prepare('SELECT v_offset FROM video_map WHERE ep = ? AND a0 <= ? AND a1 > ? LIMIT 1');
+$mappedStmt = $pdo->prepare('SELECT count(*) FROM video_map WHERE ep = ?');
+$mapped = [];
+$isMapped = function (int $ep) use ($mappedStmt, &$mapped): bool {
+    if (!array_key_exists($ep, $mapped)) {
+        $mappedStmt->execute([$ep]);
+        $mapped[$ep] = ((int) $mappedStmt->fetchColumn()) > 0;
+    }
+    return $mapped[$ep];
+};
 
 $results = [];
 foreach ($rows as $r) {
@@ -168,14 +183,20 @@ foreach ($rows as $r) {
     ];
     $vid = youtubeId($r['youtube']);
     if ($vid) {
-        $mapStmt->execute([$r['ep'], $t, $t]);
-        $offset = $mapStmt->fetchColumn();
-        if ($offset !== false) {
-            $vt = max(0, (int) round($t + (float) $offset));
-            $item['video'] = ['url' => "https://www.youtube.com/watch?v=$vid&t={$vt}s", 'minutage' => timecode((float) $vt)];
+        if (!$isMapped((int) $r['ep'])) {
+            // Alignement audio/vidéo pas encore calculé pour cet épisode :
+            // la vidéo existe, on y renvoie, mais sans prétendre savoir où.
+            $item['video'] = ['url' => "https://www.youtube.com/watch?v=$vid", 'minutage_indisponible' => true];
         } else {
-            // Vidéo existante, passage absent du montage : on le dit.
-            $item['video'] = ['url' => null, 'coupe_au_montage' => true];
+            $mapStmt->execute([$r['ep'], $t, $t]);
+            $offset = $mapStmt->fetchColumn();
+            if ($offset !== false) {
+                $vt = max(0, (int) round($t + (float) $offset));
+                $item['video'] = ['url' => "https://www.youtube.com/watch?v=$vid&t={$vt}s", 'minutage' => timecode((float) $vt)];
+            } else {
+                // Alignement connu, et ce passage n'y figure pas : coupé.
+                $item['video'] = ['url' => "https://www.youtube.com/watch?v=$vid", 'coupe_au_montage' => true];
+            }
         }
     }
     $results[] = $item;

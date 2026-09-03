@@ -64,6 +64,7 @@ jobs:
         run: |
           node scripts/ovh-sftp.mjs put index.sqlite data/index.sqlite
           node scripts/ovh-sftp.mjs put _backend/complorama/api/search.php api/search.php
+          node scripts/ovh-sftp.mjs put _backend/complorama/api/.htaccess api/.htaccess
 
       - name: Nothing deployed
         if: ${{ !inputs.deploy }}
