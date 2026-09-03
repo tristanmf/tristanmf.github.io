@@ -47,6 +47,42 @@ automatiser, vérifier soi-même, livrer, expliquer en clair.
   l'émission (UUID `39bbb292-…`), formats d'image pikapi / cruiser, entités HTML nommées.
 - **Sync episode images** (manuel) : re-miroir des images seules.
 
+### Projet en cours : recherche dans les transcriptions (septembre 2026)
+
+Tristan a fait transcrire les 111 épisodes audio (94 407 segments horodatés, ~484 000 mots,
+`segments.json` de 9,1 Mo). Objectif : les rendre interrogeables depuis le mur. Pour comparaison,
+la recherche actuelle ne porte que sur ~25 800 mots (les chapôs) — soit 19 fois moins.
+
+**Les transcriptions ne sont PAS dans ce dépôt** : elles vivent sur le Mac de Tristan
+(`/Users/tmfmini/repertoire/`). Seule sa session Claude locale peut les déposer quelque part.
+
+**Approche retenue** (validée par Tristan le 3 septembre) : backend privé plutôt que fichiers
+publics. Un endpoint PHP + SQLite FTS5 sur l'hébergement `egoblog.net`, appelé par le mur ;
+seuls de courts extraits autour des mots trouvés sont exposés, jamais le texte intégral.
+Raison : l'émission est publique, mais republier l'intégralité des transcriptions d'une
+production Radio France n'est pas la même chose qu'en citer trois lignes. Et c'est plus rapide.
+
+**Vérifications faites le 3 septembre (`Tools · Page inspect`), à ne pas refaire :**
+- **Radio France ne permet pas de lien vers un minutage.** La page d'épisode ne contient ni
+  `SeekToAction` schema.org, ni aucun marqueur de saut ; son JSON-LD est vide et l'URL du MP3
+  n'est pas dans le HTML servi (le lecteur la charge en JavaScript). Donc pas de « cliquer pour
+  écouter le passage » côté Radio France.
+- **Pas de transcription officielle** : le flux RSS n'a aucune balise `<podcast:transcript>`.
+  Les transcriptions de Tristan sont la seule source.
+- **Le flux RSS ne contient que 7 épisodes** (fenêtre glissante d'environ trois mois). Il sert
+  à détecter les nouveautés, pas à reconstituer le catalogue ; les MP3 des anciens épisodes ne
+  sont pas récupérables par là (URL `proxycast.radiofrance.fr` opaques et non devinables).
+- **Les sous-titres YouTube ne sont pas récupérables depuis GitHub Actions** : le runner reçoit
+  une page dégradée, sans `captionTracks`. Cette étape doit tourner depuis le Mac.
+
+**Minutages cliquables (étape 2, bonus)** : 37 épisodes sur 112 ont une vidéo YouTube. La vidéo
+est le même enregistrement que le podcast, donc la transcription audio couvre déjà la vidéo — il
+n'y a rien à retranscrire en plus. Seul manque le **décalage** entre les deux montages. On le
+mesure une fois par épisode en comparant le texte de la transcription aux sous-titres
+automatiques de YouTube, ce qui produit un simple fichier `épisode → décalage en secondes`.
+Si les textes ne correspondent pas (cas des vidéos bonus, qui ne sont pas des épisodes), on
+détecte l'anomalie et on met un lien sans minutage.
+
 ## OVH : accès complet depuis GitHub Actions (depuis septembre 2026)
 
 Le compte OVH de Tristan (domaines, zones DNS, hébergement web, e-mail) se pilote **depuis
