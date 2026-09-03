@@ -25,8 +25,21 @@ if (!url || !/^https?:\/\//.test(url)) { console.error('✗ usage: page-inspect.
 const h = (t) => console.log(`\n${'═'.repeat(70)}\n${t}\n${'═'.repeat(70)}`);
 const clip = (s, n = 200) => { const t = String(s).replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n) + '…' : t; };
 
-const res = await fetch(url, { headers: { 'User-Agent': UA, 'Accept-Language': 'fr-FR,fr;q=0.9' }, redirect: 'follow' });
-const body = await res.text();
+let res, body;
+try {
+  res = await fetch(url, { headers: { 'User-Agent': UA, 'Accept-Language': 'fr-FR,fr;q=0.9' }, redirect: 'follow' });
+  body = await res.text();
+} catch (e) {
+  // A freshly created subdomain has no certificate for a few minutes, and a
+  // raw Node fetch failure dumps the whole certificate chain. Say what
+  // happened in one line instead.
+  const cause = String(e?.cause?.code || e?.cause?.message || e?.message || e);
+  console.log(`\n✗ impossible de charger ${url}\n  ${cause}`);
+  if (/CERT|ALT_NAME|SELF_SIGNED|UNABLE_TO_VERIFY/i.test(cause)) console.log('  → certificat absent ou ne couvrant pas ce nom : normal juste après la création d\'un sous-domaine, réessayer dans quelques minutes.');
+  if (/ENOTFOUND|EAI_AGAIN/i.test(cause)) console.log('  → nom inconnu du DNS : propagation en cours, ou enregistrement manquant.');
+  if (/ECONNREFUSED|ETIMEDOUT/i.test(cause)) console.log('  → rien n\'écoute sur ce port.');
+  process.exit(0);
+}
 const type = res.headers.get('content-type') || '';
 
 h(`1 · Réponse`);
