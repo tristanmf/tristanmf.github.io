@@ -255,10 +255,15 @@ progression, parallax hero et fonds vidéo. La dérive parallax des cartes est *
 - `www CNAME tristanmf.github.io.` corrigé chez OVH le 14/08/2026, propagé.
 - Le certificat GitHub ne couvrait pas `www` (cassé depuis juin 2025 — le CNAME pointait sur
   l'apex). Renouvellement naturel attendu vers le **6 octobre 2026**.
-- Le 2 septembre, `CNAME` a été supprimé puis recréé dans le dépôt (commits `f22bb57` /
-  `d410181`) — empreinte d'un vidage/resaisie du *Custom domain* dans Settings › Pages.
-  Sondé le 3 septembre : le certificat couvre toujours l'apex seul → attendre le 6 octobre,
-  resonder avec Tools · HTTP probe, puis cocher *Enforce HTTPS*.
+- Tristan a supprimé puis recréé le `CNAME` (commits `f22bb57` / `d410181`, 3 septembre
+  ~08:07 UTC, contenu inchangé) — empreinte d'un vidage/resaisie du *Custom domain* dans
+  Settings › Pages, qui redéclenche la demande de certificat.
+- **Sonde HTTP du 3 sept. 08:09 UTC** (run 33731822540) : `www` toujours **non couvert**
+  (certificat `*.github.io` présenté) ; apex inchangé (`tristan.pro` seul, émis 7 août,
+  expire 5 nov.). Deux minutes après la resaisie, c'est trop tôt pour conclure.
+- **À faire : relancer Tools · HTTP probe quelques heures plus tard.** Si `www` est couvert,
+  cocher *Enforce HTTPS*. Sinon, ne pas répéter le remove/re-add — attendre le renouvellement
+  naturel du 6 octobre, puis resonder.
 - Ne jamais activer l'hébergement web OVH sur tristan.pro (réécrit A et MX). Ne toucher qu'à
   `www` ; A, MX, NS, TXT et CNAME de service OVH sont à préserver.
 
