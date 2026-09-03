@@ -67,11 +67,15 @@ un jeton API à validité illimitée est stocké dans les secrets du dépôt
     run : domaine, enregistrements, redirections, hébergement rattaché et état SSL.
   - **Tools · OVH API schema** (`tools-ovh-schema.yml`) : routes et paramètres d'une section de
     l'API (schéma public, sans secret) ; à consulter avant un appel inhabituel.
+  - **Tools · OVH hosting report** (`tools-ovh-hosting.yml`) : lecture seule, tout d'un
+    hébergement web en un run : offre et quota disque, moteur PHP configuré, bases et bases
+    encore créables, cron, domaines attachés avec le dossier servi.
   - **Tools · HTTP probe** (`tools-http-probe.yml`) : comportement réel d'un nom de domaine
     vu de l'extérieur : réponses http/https, cible de redirection vue par un téléphone, matrice
     navigateurs/robots, certificats. Vérification systématique après un changement DNS/SSL.
-  - Code : `scripts/ovh-api.mjs`, `scripts/ovh-zone-report.mjs`, `scripts/ovh-schema.mjs`,
-    client partagé `scripts/lib/ovh.mjs` (`ovhClient()`, `redact()`) pour écrire de nouveaux scripts.
+  - Code : `scripts/ovh-api.mjs`, `scripts/ovh-zone-report.mjs`, `scripts/ovh-hosting-report.mjs`,
+    `scripts/ovh-schema.mjs`, client partagé `scripts/lib/ovh.mjs` (`ovhClient()`, `redact()`)
+    pour écrire de nouveaux scripts.
 - Hygiène des journaux : `redact()` masque les champs personnels et les identifiants client OVH ;
   utiliser `quiet=true` pour `/me`, contacts, utilisateurs FTP, etc.
 - **Jeton en place** (vérifié le 3 septembre 2026 via `GET /auth/currentCredential`) : créé le
@@ -100,6 +104,15 @@ un jeton API à validité illimitée est stocké dans les secrets du dépôt
   Une règle anti-robots renvoie 403 à curl/wget/agent vide : normal, sonder avec une identité de
   navigateur. Restes inertes en zone : TXT `1|https://tristan.pro/complorama/` (@) et `4|…` (www)
   de l'ancienne redirection OVH.
+- **Capacités de l'hébergement `egoblog.net`** (relevé du 3 septembre 2026, `Tools · OVH hosting
+  report`) : offre `hosting-perso` mutualisée, **100 Go d'espace dont 8,2 Go utilisés** ;
+  **PHP 8.4 disponible** (aussi 8.2, 8.0, 7.3, 5.6, 5.5 — la version appliquée à un dossier se
+  choisit par son fichier `.ovhconfig`) ; **SSH** (`ssh.cluster113.hosting.ovh.net`) et FTP
+  (`ftp.cluster113.hosting.ovh.net`) ; **2 bases MySQL 8.0** (une de 1 Go quasi vide, une de
+  256 Mo utilisée à 20 Mo) et **4 bases `sqlPerso` encore créables** ; **aucun cron configuré** ;
+  aucun module OVH installé. Dossiers servis : `www` (egoblog.net), `blogtrotters`,
+  `www/tmflab` (tmflab.tech + tmfab.fr), `www/complorama-redir`.
+  De quoi héberger un petit backend (PHP + SQLite ou MySQL) si un projet en a besoin.
 - `tristan.pro` → GitHub Pages (ce dépôt). Vérifié le 3 septembre : https OK (Let's Encrypt
   jusqu'au 5 novembre 2026, renouvelé par GitHub), http → https, www → apex en http. Le 2 septembre
   au soir Tristan a supprimé puis recréé le fichier `CNAME` (contenu inchangé) : sans effet.
