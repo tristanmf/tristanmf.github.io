@@ -1,0 +1,18 @@
+# recherche.complorama.fr — racine du moteur de recherche Complorama.
+#
+# Ce dossier ne contient qu'un point d'entrée, search.php. Tout le reste —
+# transcriptions, base SQLite — vit dans ../data/, hors racine web.
+
+# La sonde du 3 septembre a montré que l'adresse racine listait le contenu
+# du dossier. Sans conséquence ici (un seul fichier, et rien de sensible),
+# mais un serveur n'a aucune raison d'annoncer ce qu'il contient.
+Options -Indexes
+
+# Une visite sur la racine tombe sur le moteur plutôt que sur une erreur.
+DirectoryIndex search.php
+
+# Ceinture et bretelles : même si un fichier de données atterrissait ici par
+# erreur, il ne serait pas téléchargeable.
+<FilesMatch "\.(sqlite|json|db|srt|vtt)$">
+  Require all denied
+</FilesMatch>
