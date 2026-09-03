@@ -14,22 +14,22 @@
     "Pour découvrir de nouvelles entrées : workflow « Complorama · Diagnostic de",
     "recherche », qui liste les mots de l'index ressemblant à un nom cherché."
   ],
-
   "confirme": {
     "messant": "Meyssan",
-    "messand": "Meyssan"
-  },
-
-  "a_confirmer": {
-    "messon": "Meyssan",
+    "messand": "Meyssan",
     "perrone": "Perronne",
     "reynoir": "Reynouard",
     "racinier": "Rassinier"
   },
-
+  "a_confirmer": {
+    "messon": "Meyssan"
+  },
   "_preuve": {
     "messant": "épisode 52, 19 septembre 2023, à 14:32 — « Rudy, Tristan, vous nous rappelez qui est Thierry Messant ? » ; également épisode 43 à 5:48, « Opinion partagée par Thierry Messant. »",
     "messand": "même rendu phonétique que Messant, 2 passages",
-    "messon": "voyelle différente (/ɔ̃/ au lieu de /ɑ̃/) — pourrait être autre chose, à lire avant d'appliquer"
+    "messon": "voyelle différente (/ɔ̃/ au lieu de /ɑ̃/) — pourrait être autre chose, à lire avant d'appliquer",
+    "perrone": "graphie relevée par le diagnostic, identification confirmée par Tristan le 3 septembre 2026",
+    "reynoir": "graphie relevée par le diagnostic, identification confirmée par Tristan le 3 septembre 2026",
+    "racinier": "graphie relevée par le diagnostic, identification confirmée par Tristan le 3 septembre 2026"
   }
 }
