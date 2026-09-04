@@ -136,13 +136,27 @@ if (NOMS) {
       caps.set(m[2], (caps.get(m[2]) || 0) + 1);
     }
   }
-  // Un mot fréquent en minuscules est un mot ordinaire capitalisé en début de
-  // phrase — « Sortir », « Colère », « Nouveau ». Les apparier ne dit rien.
-  // Ce filtre existait dans la première version et s'était perdu en chemin.
+  // Écarter les mots ordinaires capitalisés en début de phrase — « Sortir »,
+  // « Colère », « Nouveau » — sans écarter les noms propres fréquents.
+  //
+  // La première version filtrait sur la fréquence seule : tout mot présent
+  // plus de trois fois était réputé ordinaire. C'était faux, et coûteux :
+  // « Rechtat », le nom de Rudy écorché dans TRENTE-CINQ passages, passait
+  // ainsi pour un mot courant et n'était jamais signalé. La graphie fautive la
+  // plus répandue de tout le corpus était donc la seule que l'outil ne voyait
+  // pas.
+  //
+  // Le bon critère n'est pas la fréquence mais la CASSE : un nom propre est
+  // presque toujours écrit avec une majuscule, un mot ordinaire ne l'est qu'en
+  // début de phrase. On compare donc les occurrences capitalisées au total.
   const docByTerm = new Map(vocab.map((v) => [v.term, v.doc]));
   const words = [...caps.entries()]
     .map(([w, n]) => ({ w, n, k: norm(w) }))
-    .filter((x) => (docByTerm.get(x.k) || 0) <= 3);
+    .filter((x) => {
+      const total = docByTerm.get(x.k) || 0;
+      if (total <= 3) return true;              // rare : on garde, comme avant
+      return x.n / total >= 0.8;                // presque toujours capitalisé
+    });
   console.log(`${words.length.toLocaleString('fr-FR')} mots capitalisés relevés. Regroupement des graphies voisines…\n`);
 
   // Union-find sur les mots dont les formes normalisées sont à distance 1
