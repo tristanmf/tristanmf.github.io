@@ -135,7 +135,17 @@
     "reistat": "Reichstadt",
     "reishtat": "Reichstadt",
     "rechstadt": "Reichstadt",
-    "rechstat": "Reichstadt"
+    "rechstat": "Reichstadt",
+    "christian perron": "Christian Perronne",
+    "talchaleur": "Tal Schaller",
+    "tal chalaire": "Tal Schaller",
+    "tal chaleur": "Tal Schaller",
+    "christian girondeau": "Christian Gerondeau",
+    "christian gerondo": "Christian Gerondeau",
+    "christian andersen": "Christine Anderson",
+    "christine andersen": "Christine Anderson",
+    "refcoeur": "Crèvecoeur",
+    "christian ?": "Tristan ?"
   },
   "a_confirmer": {
     "messon": "Meyssan",
@@ -206,6 +216,12 @@
     "gezekiel": "« C'était Morgane Gézekiel, journaliste freelance au Brésil depuis 2013 » (ép. 34, lu) — Morgann Jézéquel, correspondante française à Rio depuis 2013 (AFP, Courrier international, Ouest-France). Identification confirmée par Tristan le 4 septembre 2026 et vérifiée en ligne. Seul le patronyme est corrigé : les sources écrivent « Morgann », la transcription « Morgane », et on ne tranche pas un prénom sur une page LinkedIn.",
     "maud mariant": "« une autre avocate, Maud Mariant, qu'on a vue quelques jours plus tôt interviewer sur le média complotiste Nexus » (ép. 96, « La complosphère mondiale et Brigitte Macron », lu le 4 septembre 2026) — Maud Marian, avocate parisienne, intervenante de Nexus sur l'affaire Brigitte Macron. Vérifié en ligne. Tristan avait d'abord identifié « Mariant » comme Thierry Mariani : c'est bien une autre personne, et la clé composée a évité la faute. « Mariani » figure par ailleurs correctement dans l'index. Clé composée obligatoire de toute façon : « mariant » seul est le participe présent de « marier ».",
     "rechtat": "35 passages — la graphie fautive la PLUS fréquente du nom de Rudy, et elle avait échappé au relevé « --noms » : le filtre qui écarte les mots courants se fondait sur la fréquence seule, et un nom écorché trente-cinq fois passait pour un mot ordinaire. Lue à de nombreuses reprises dans le générique (« merci Rudi Rechtat », épisodes 53, 57, 86, 87). Trouvée en resondant l'index déployé, ce qui montre l'intérêt de vérifier ce qui est SERVI et pas seulement ce qui a été construit. « reistadt », « reistat » et « reishtat » sont du même groupe et ne sont des mots d'aucune langue.",
-    "rechstadt": "40 passages, la deuxième graphie fautive la plus fréquente, invisible au relevé pour la même raison que « rechtat ». Distance 1 de la bonne graphie, et mot d'aucune langue. « rechstat » (4 passages) a été lu : « Merci Rudy Rechstat » (ép. 50) et « Rudi Rechstat » (ép. 41)."
+    "rechstadt": "40 passages, la deuxième graphie fautive la plus fréquente, invisible au relevé pour la même raison que « rechtat ». Distance 1 de la bonne graphie, et mot d'aucune langue. « rechstat » (4 passages) a été lu : « Merci Rudy Rechstat » (ép. 50) et « Rudi Rechstat » (ép. 41).",
+    "christian perron": "« Éric Loridan, Christian Perron, qui, je rappelle, pense que la pandémie a été planifiée » (ép. 97, lu) — Christian Perronne. Relevé par la session Mac en croisant les locuteurs et les interpellations, épisodes 22, 49, 51, 70, 80, 85, 91, 97. Clé composée : « Perron » seul est un patronyme courant, et « perron » un mot français.",
+    "talchaleur": "« Christian Talchaleur qui est un urinothérapeute chamaniste » (ép. 42, lu) et « Christian Talchaleur autre naturopathe chaman » (ép. 2, lu) — Christian Tal Schaller. « Tal Chalaire » est la même personne : « Christian Tal Chalaire, c'est un tenant de l'urinothérapie » (ép. 4, lu). Relevé par la session Mac.",
+    "christian girondeau": "« L'animateur Pascal Praud recevait l'essayiste climato-sceptique Christian Girondeau » et « il fait partie d'une association qui est l'association des climato-réalistes » (ép. 44, lus) — Christian Gerondeau. « Christian Gérondo » au même épisode. Clés composées : « Girondeau » seul est un patronyme plausible.",
+    "christian andersen": "ATTENTION, ce n'est PAS le virologue Kristian Andersen, comme on pouvait le supposer d'un épisode sur le Covid. Le passage le dit : « La députée de l'extrême droite allemande, Christine Andersen, qui parle du gigantesque mensonge, dit-elle, du covid. C'était le 19 octobre 2022 au Parlement européen à Strasbourg » (ép. 80, lu) — Christine Anderson, eurodéputée AfD. Vérifié en ligne : conférence de presse à Strasbourg le 19 octobre 2022, propos sur la vaccination. La transcription hésite entre « Christian » et « Christine », et écrit « Andersen » pour « Anderson ». C'est exactement le cas où la ressemblance phonétique menait à la mauvaise personne, et où la lecture du passage a tranché.",
+    "refcoeur": "« Jean-Jacques Réfcoeur qui est là aussi une figure » (ép. 2, lu) — Jean-Jacques Crèvecœur. La graphie correcte figure dans le corpus lui-même : « Jacques Crèvecoeur » à l'épisode 4. Trouvé en lisant le passage de Tal Schaller, pas cherché.",
+    "christian ?": "« Christian ? » en fin de question, quand c'est Tristan qui répond juste après — épisodes 53, 76, 86 et 94, relevés par la session Mac en croisant speakers-audio.json avec les interpellations. La clé inclut le point d'interrogation, ce qui la restreint à l'appel : les « Christian + nom » sont de vraies personnes (Cotten, Combaz, Rioux, Perronne, Tal Schaller, Gerondeau) et ne doivent surtout pas être touchés. Le nombre de remplacements est la vérification : on en attend quatre."
   }
 }
