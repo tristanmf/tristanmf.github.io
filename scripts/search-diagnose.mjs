@@ -49,7 +49,23 @@ const db = new DatabaseSync(dbPath);
 // le schéma `main` : l'index téléchargé n'est pas modifié.
 db.exec("CREATE VIRTUAL TABLE IF NOT EXISTS temp.vocab USING fts5vocab('main', 'passages_fts', 'row')");
 const vocab = db.prepare('SELECT term, doc FROM temp.vocab').all();
-console.log(`index : ${db.prepare('SELECT count(*) c FROM passages').get().c.toLocaleString('fr-FR')} passages · ${vocab.length.toLocaleString('fr-FR')} mots distincts\n`);
+const nPassages = db.prepare('SELECT count(*) c FROM passages').get().c;
+console.log(`index : ${nPassages.toLocaleString('fr-FR')} passages · ${vocab.length.toLocaleString('fr-FR')} mots distincts`);
+
+// État de santé de l'index tel qu'il est SERVI — c'est le seul endroit où on
+// vérifie ce que le public voit vraiment, plutôt que ce que la construction a
+// annoncé. Les deux tables sont facultatives : vides, elles ne sont pas une
+// panne, elles veulent dire que le mur n'affichera ni nom ni minutage vidéo.
+try {
+  const named = db.prepare('SELECT count(*) c FROM passages WHERE qui IS NOT NULL').get().c;
+  const pct = nPassages ? Math.round((named / nPassages) * 100) : 0;
+  console.log(`qui parle : ${named.toLocaleString('fr-FR')} passages nommés (${pct} %) — le reste est volontairement vide`);
+} catch { console.log('qui parle : colonne absente — index construit sans les locuteurs'); }
+try {
+  const v = db.prepare('SELECT count(*) c, count(DISTINCT ep) e FROM video_map').get();
+  console.log(v.c ? `audio → vidéo : ${v.c} plages sur ${v.e} épisodes filmés` : 'audio → vidéo : table vide — « voir la vidéo » sans minutage');
+} catch { /* table absente sur un vieil index */ }
+console.log('');
 
 const countStmt = db.prepare('SELECT count(*) c FROM passages_fts WHERE passages_fts MATCH ?');
 const sampleStmt = db.prepare(`SELECT e.ep, e.title, e.date, p.t
