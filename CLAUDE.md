@@ -163,6 +163,32 @@ journal public. Hôte : `ssh.cluster113.hosting.ovh.net`, SFTP uniquement.
 Le Mac, lui, utilise son propre accès `ovhftp` sur le compte principal : aucun secret à faire
 circuler entre les deux sessions.
 
+**Qui écrit quoi — aucun fichier n'a deux auteurs.** Le Mac dépose, GitHub lit ; GitHub construit
+et dépose ailleurs.
+
+| Fichier | GitHub | Mac |
+|---|---|---|
+| `complorama/data/segments-audio.json` | lecture seule | **écriture** |
+| `complorama/data/segments-video.json` | lecture seule | **écriture** |
+| `complorama/data/index.sqlite` | **écriture** | — |
+| `complorama/api/search.php`, `.htaccess` | **écriture** | — |
+| dépôt : `_backend/`, `scripts/`, workflows, `complorama/*.jsx` | **écriture** | — |
+| dépôt : `app.jsx` / `app.js` (portfolio) | — | autre session |
+
+Trois croisements restent possibles, et un seul est réellement dangereux :
+
+1. *Dépôt pendant une indexation* — le fichier à moitié téléversé ne se lit pas, le workflow
+   s'arrête, rien n'est déployé. Sans gravité : on relance.
+2. *Deux poussées Git simultanées sur `main`* — Git refuse, on rebase. D'où la règle de toujours
+   repartir de `main` à jour.
+3. *La session Mac « Zone egoblog avec APIs OVH/WordPress »* a elle aussi les clés OVH. Aucun
+   garde-fou technique de ce côté : une modification de la zone `complorama.fr` ou du multisite
+   couperait `recherche.complorama.fr`. À annoncer avant, dans les deux sens.
+
+**La vidéo appartient au Mac.** Côté GitHub, rien n'est commencé : la table `video_map` de l'index
+est vide et le mur affiche « voir la vidéo » sans minutage. Le script d'alignement audio→vidéo ne
+sera écrit qu'une fois `segments-video.json` déposé, et sur demande explicite de Tristan.
+
 ## OVH : accès complet depuis GitHub Actions (depuis septembre 2026)
 
 Le compte OVH de Tristan (domaines, zones DNS, hébergement web, e-mail) se pilote **depuis
