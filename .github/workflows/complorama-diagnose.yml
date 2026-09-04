@@ -12,9 +12,9 @@ on:
   workflow_dispatch:
     inputs:
       terms:
-        description: 'Mots à diagnostiquer, séparés par des espaces'
+        description: 'Mots à diagnostiquer, séparés par des espaces — ou « --noms » pour relever les noms propres rares'
         required: true
-        default: 'meyssan'
+        default: '--noms'
 
 permissions:
   contents: read
