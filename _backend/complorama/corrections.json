@@ -104,7 +104,6 @@
     "duvin-brunet": "Juving-Brunet",
     "juvin-brunet": "Juving-Brunet",
     "barjoles": "Barjols",
-    "thierry mariant": "Thierry Mariani",
     "oduro": "Audureau",
     "ouduro": "Audureau",
     "delanceyre": "De Lancer",
@@ -129,7 +128,8 @@
     "bitelmaji": "Bitelmadji",
     "complorame": "Complorama",
     "komplorama": "Complorama",
-    "gezekiel": "Jézéquel"
+    "gezekiel": "Jézéquel",
+    "maud mariant": "Maud Marian"
   },
   "a_confirmer": {
     "messon": "Meyssan",
@@ -172,7 +172,6 @@
     "pedanec": "Même personne : « Pauline Pédanec de France Info » (ép. 59, lu le 4 septembre 2026), « Merci Pauline Pédanec » aux épisodes 53 et 86.",
     "duvin-brunet": "Alexandre Juving-Brunet, identifié par Tristan.",
     "barjoles": "« Les Barjols », groupuscule, identifié par Tristan. « Barjol » au singulier reste en attente : trop court pour être sûr.",
-    "thierry mariant": "Thierry Mariani, identifié par Tristan. Clé composée obligatoire : « mariant » seul est le participe présent de « marier ».",
     "oduro": "« William Oduro journaliste au Monde auteur du livre dans la tête des complotistes aux éditions Alary » (ép. 57, lu le 4 septembre 2026) — c'est William Audureau, journaliste au Monde, Les Décodeurs, auteur de « Dans la tête des complotistes » chez Allary. Vérifié en ligne.",
     "delanceyre": "« Alexis Delanceyre est animateur des Décrypteurs sur Radio-Canada » (ép. 87, lu) — c'est Alexis De Lancer, animateur des Décrypteurs à Radio-Canada. Vérifié en ligne. « Delcey » reste en attente : ce pourrait être un vrai patronyme.",
     "ghasoltan": "« Neda Ghasoltan, une jeune iranienne tuée en 2009 par un sniper » (ép. 39, lu) — Neda Agha-Soltan.",
@@ -198,6 +197,7 @@
       "  « David Diboublac » (ép. 71) — technicien au générique.",
       "Elles restent trouvables par le repli du moteur sur les graphies voisines."
     ],
-    "gezekiel": "« C'était Morgane Gézekiel, journaliste freelance au Brésil depuis 2013 » (ép. 34, lu) — Morgann Jézéquel, correspondante française à Rio depuis 2013 (AFP, Courrier international, Ouest-France). Identification confirmée par Tristan le 4 septembre 2026 et vérifiée en ligne. Seul le patronyme est corrigé : les sources écrivent « Morgann », la transcription « Morgane », et on ne tranche pas un prénom sur une page LinkedIn."
+    "gezekiel": "« C'était Morgane Gézekiel, journaliste freelance au Brésil depuis 2013 » (ép. 34, lu) — Morgann Jézéquel, correspondante française à Rio depuis 2013 (AFP, Courrier international, Ouest-France). Identification confirmée par Tristan le 4 septembre 2026 et vérifiée en ligne. Seul le patronyme est corrigé : les sources écrivent « Morgann », la transcription « Morgane », et on ne tranche pas un prénom sur une page LinkedIn.",
+    "maud mariant": "« une autre avocate, Maud Mariant, qu'on a vue quelques jours plus tôt interviewer sur le média complotiste Nexus » (ép. 96, « La complosphère mondiale et Brigitte Macron », lu le 4 septembre 2026) — Maud Marian, avocate parisienne, intervenante de Nexus sur l'affaire Brigitte Macron. Vérifié en ligne. Tristan avait d'abord identifié « Mariant » comme Thierry Mariani : c'est bien une autre personne, et la clé composée a évité la faute. « Mariani » figure par ailleurs correctement dans l'index. Clé composée obligatoire de toute façon : « mariant » seul est le participe présent de « marier »."
   }
 }
