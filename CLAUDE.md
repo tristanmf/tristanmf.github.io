@@ -121,7 +121,12 @@ n'agit que sur les nouvelles transcriptions. Cela évite que le problème se rep
   filmé affiche « voir la vidéo » sans minutage — et surtout **ne prétend pas** que le passage a
   été coupé au montage, ce qui serait faux.
 - Le script d'alignement audio/vidéo lui-même (à écrire, côté GitHub, une fois le fichier là).
-- L'alerte par ticket GitHub quand un nouvel épisode ou une nouvelle vidéo paraît.
+- ~~L'alerte par ticket GitHub quand un nouvel épisode ou une nouvelle vidéo paraît.~~ **Fait le
+  4 septembre 2026** : la synchronisation ouvre un ticket « Épisode NNN à transcrire »
+  (`scripts/open-transcription-issues.mjs`, label `transcription`), GitHub envoie le mail à
+  Tristan, la session Mac lit le ticket et le referme. Le corps du ticket se suffit à lui-même :
+  liens, numéro, date, format attendu, où déposer. Idempotent — la clé est l'URL Radio France,
+  inscrite en commentaire HTML dans le corps, et on ne rouvre jamais un ticket déjà fermé.
 
 #### Vérifications faites le 3 septembre, à ne pas refaire
 

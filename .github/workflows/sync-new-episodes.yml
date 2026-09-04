@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: write
+  issues: write   # un ticket « à transcrire » par nouvel épisode
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -50,3 +51,12 @@ jobs:
             git commit -m "chore(complorama): auto-sync new episodes + YouTube links"
             git push
           fi
+
+      # Le maillon qui rend la chaîne autonome : sans ticket, un épisode arrive
+      # sur le mur et personne n'apprend qu'il reste à le transcrire. GitHub
+      # envoie le mail à Tristan, la session Mac lit le ticket et le referme.
+      # Idempotent : on ne rouvre jamais un ticket déjà ouvert ou déjà fermé.
+      - name: Signaler les épisodes à transcrire
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/open-transcription-issues.mjs

@@ -205,6 +205,7 @@ function backfillYoutube(src, ytIndex) {
   // — anchoring on `}` would silently miss every entry that has a
   // description (i.e. all of them once the description backfill ran).
   let count = 0;
+  const videos = [];
   const updated = src.replace(
     /(\{[^}]*?\btitle:\s*"((?:[^"\\]|\\.)*)"[^}]*?\byoutube:\s*)null/g,
     (full, prefix, title) => {
@@ -212,10 +213,11 @@ function backfillYoutube(src, ytIndex) {
       const match = findYoutubeMatch(decoded, ytIndex);
       if (!match) return full;
       count++;
+      videos.push({ title: decoded, youtube: match });
       return `${prefix}${JSON.stringify(match)}`;
     }
   );
-  return { src: updated, backfilled: count };
+  return { src: updated, backfilled: count, videos };
 }
 
 // --- Main ----------------------------------------------------------------
@@ -274,16 +276,37 @@ async function main() {
   }
 
   let next = insertNewEpisodes(src, newEps);
-  const { src: afterBackfill, backfilled } = backfillYoutube(next, ytIndex);
+  const { src: afterBackfill, backfilled, videos } = backfillYoutube(next, ytIndex);
   next = afterBackfill;
 
   if (next === src) {
     console.log('No changes — episodes-data.js is already up to date.');
+    await writeReport({ episodes: [], videos: [] });
     return;
   }
 
   await writeFile(DATA_FILE, next);
   console.log(`Wrote episodes-data.js: +${newEps.length} new episodes, +${backfilled} YouTube back-fills.`);
+
+  // Numbering: the wall counts from the oldest episode, 1..N with no gap, and
+  // new entries are inserted at the top of the array. So the total count is
+  // the number of the newest one, and each subsequent insert is one below.
+  // This is a convenience for the ticket's title — the transcripts are
+  // attached to episodes by DATE first, never by this number.
+  const total = existingUrls(next).size;
+  await writeReport({
+    episodes: newEps.map((e, i) => ({ ...e, n: total - i })),
+    videos,
+  });
+}
+
+// A machine-readable summary of what this run changed, so the workflow can
+// open a ticket per new episode. Written even when nothing changed (empty
+// lists), so the next step never has to guess whether the file exists.
+async function writeReport(report) {
+  const path = process.env.SYNC_REPORT || 'sync-report.json';
+  await writeFile(path, JSON.stringify(report, null, 2));
+  console.log(`Report: ${report.episodes.length} new episode(s), ${report.videos.length} new video(s) → ${path}`);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });
