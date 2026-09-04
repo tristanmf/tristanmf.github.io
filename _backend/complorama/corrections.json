@@ -129,7 +129,11 @@
     "complorame": "Complorama",
     "komplorama": "Complorama",
     "gezekiel": "Jézéquel",
-    "maud mariant": "Maud Marian"
+    "maud mariant": "Maud Marian",
+    "rechtat": "Reichstadt",
+    "reistadt": "Reichstadt",
+    "reistat": "Reichstadt",
+    "reishtat": "Reichstadt"
   },
   "a_confirmer": {
     "messon": "Meyssan",
@@ -198,6 +202,7 @@
       "Elles restent trouvables par le repli du moteur sur les graphies voisines."
     ],
     "gezekiel": "« C'était Morgane Gézekiel, journaliste freelance au Brésil depuis 2013 » (ép. 34, lu) — Morgann Jézéquel, correspondante française à Rio depuis 2013 (AFP, Courrier international, Ouest-France). Identification confirmée par Tristan le 4 septembre 2026 et vérifiée en ligne. Seul le patronyme est corrigé : les sources écrivent « Morgann », la transcription « Morgane », et on ne tranche pas un prénom sur une page LinkedIn.",
-    "maud mariant": "« une autre avocate, Maud Mariant, qu'on a vue quelques jours plus tôt interviewer sur le média complotiste Nexus » (ép. 96, « La complosphère mondiale et Brigitte Macron », lu le 4 septembre 2026) — Maud Marian, avocate parisienne, intervenante de Nexus sur l'affaire Brigitte Macron. Vérifié en ligne. Tristan avait d'abord identifié « Mariant » comme Thierry Mariani : c'est bien une autre personne, et la clé composée a évité la faute. « Mariani » figure par ailleurs correctement dans l'index. Clé composée obligatoire de toute façon : « mariant » seul est le participe présent de « marier »."
+    "maud mariant": "« une autre avocate, Maud Mariant, qu'on a vue quelques jours plus tôt interviewer sur le média complotiste Nexus » (ép. 96, « La complosphère mondiale et Brigitte Macron », lu le 4 septembre 2026) — Maud Marian, avocate parisienne, intervenante de Nexus sur l'affaire Brigitte Macron. Vérifié en ligne. Tristan avait d'abord identifié « Mariant » comme Thierry Mariani : c'est bien une autre personne, et la clé composée a évité la faute. « Mariani » figure par ailleurs correctement dans l'index. Clé composée obligatoire de toute façon : « mariant » seul est le participe présent de « marier ».",
+    "rechtat": "35 passages — la graphie fautive la PLUS fréquente du nom de Rudy, et elle avait échappé au relevé « --noms » : le filtre qui écarte les mots courants se fondait sur la fréquence seule, et un nom écorché trente-cinq fois passait pour un mot ordinaire. Lue à de nombreuses reprises dans le générique (« merci Rudi Rechtat », épisodes 53, 57, 86, 87). Trouvée en resondant l'index déployé, ce qui montre l'intérêt de vérifier ce qui est SERVI et pas seulement ce qui a été construit. « reistadt », « reistat » et « reishtat » sont du même groupe et ne sont des mots d'aucune langue."
   }
 }
