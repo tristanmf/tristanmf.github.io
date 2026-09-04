@@ -170,6 +170,7 @@ et dépose ailleurs.
 |---|---|---|
 | `complorama/data/segments-audio.json` | lecture seule | **écriture** |
 | `complorama/data/segments-video.json` | lecture seule | **écriture** |
+| `complorama/data/speakers-audio.json` | lecture seule | **écriture** (attendu) |
 | `complorama/data/index.sqlite` | **écriture** | — |
 | `complorama/api/search.php`, `.htaccess` | **écriture** | — |
 | dépôt : `_backend/`, `scripts/`, workflows, `complorama/*.jsx` | **écriture** | — |
@@ -188,6 +189,36 @@ Trois croisements restent possibles, et un seul est réellement dangereux :
 **La vidéo appartient au Mac.** Côté GitHub, rien n'est commencé : la table `video_map` de l'index
 est vide et le mur affiche « voir la vidéo » sans minutage. Le script d'alignement audio→vidéo ne
 sera écrit qu'une fois `segments-video.json` déposé, et sur demande explicite de Tristan.
+
+#### Qui parle — format demandé au Mac (4 septembre 2026)
+
+La session Mac a produit une diarisation et proposait deux formes : `attributions`
+(65 868 lignes `id de passage → qui`) ou `tours` (2 574 plages `épisode, début, fin, qui`).
+**Réponse : `tours`**, le croisement se refait à l'indexation. Trois raisons :
+
+1. Les passages sont une découpe **calculée ici** (`PASSAGE_WORDS = 60` dans
+   `build-search-index.mjs`) et recalculée à chaque indexation : des attributions par identifiant
+   de passage seraient périmées au premier changement de constante. Les plages horaires, non.
+2. 2 574 lignes contre 65 868 — vingt-cinq fois plus léger.
+3. Un passage de 60 mots chevauche souvent deux locuteurs. Avec les plages on peut dire
+   « Tristan puis Rudy » ; avec une seule étiquette par passage, l'information est déjà perdue.
+
+Format attendu, déposé en `complorama/data/speakers-audio.json` :
+
+```json
+{"tours":[{"ep":57,"t0":124.5,"t1":186.2,"qui":"Rudy Reichstadt"}, …]}
+```
+
+- `ep` : le même numéro d'épisode que dans `segments-audio.json` ;
+- `t0` / `t1` : secondes, **la même horloge que les segments audio** — c'est la seule condition
+  qui rend le croisement possible ;
+- `qui` : le nom **en clair et correctement orthographié**, tel qu'il sera affiché. Jamais une
+  étiquette technique (`SPEAKER_01`). Si le locuteur est inconnu : champ absent ou `null`.
+
+**Environ 30 % des passages n'ont volontairement aucun nom** (animateur de franceinfo, invités,
+archives, cas ambigus) — signalé par la session Mac, et c'est la bonne décision. L'index stockera
+`NULL` et le mur n'affichera rien : jamais de remplissage par défaut avec « Rudy » ou « Tristan ».
+C'est la même règle que pour le rattachement des transcriptions aux épisodes — ne jamais deviner.
 
 ## OVH : accès complet depuis GitHub Actions (depuis septembre 2026)
 
