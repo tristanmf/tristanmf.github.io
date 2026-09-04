@@ -56,8 +56,35 @@ jobs:
       - name: Fetch the transcripts
         run: node scripts/ovh-sftp.mjs get "$IN_SOURCE" transcripts.json
 
+      # Les deux fichiers déposés par le Mac en complément de l'audio. Aucun
+      # n'est indispensable : sans eux l'index se construit comme avant, sans
+      # les noms de locuteurs et sans minutage vidéo. On ne fait donc pas
+      # échouer le run s'ils manquent — un dépôt en cours ne doit pas bloquer
+      # une réindexation.
+      - name: Fetch the speaker turns (optional)
+        continue-on-error: true
+        run: node scripts/ovh-sftp.mjs get data/speakers-audio.json speakers.json
+
+      - name: Fetch the video transcripts (optional)
+        continue-on-error: true
+        run: node scripts/ovh-sftp.mjs get data/segments-video.json video.json
+
+      - name: Align audio to video
+        run: |
+          if [ -f video.json ]; then
+            node scripts/align-video.mjs transcripts.json video.json video-map.json
+          else
+            echo "Pas de transcription vidéo — le mur dira « voir la vidéo » sans minutage."
+          fi
+
       - name: Build the index
-        run: node scripts/build-search-index.mjs transcripts.json index.sqlite --episodes complorama/episodes-data.js
+        run: |
+          args=""
+          [ -f speakers.json ]  && args="$args --speakers speakers.json"
+          [ -f video-map.json ] && args="$args --video-map video-map.json"
+          echo "options : ${args:-aucune}"
+          node scripts/build-search-index.mjs transcripts.json index.sqlite \
+            --episodes complorama/episodes-data.js $args
 
       - name: Deploy the index and the endpoint
         if: ${{ inputs.deploy }}

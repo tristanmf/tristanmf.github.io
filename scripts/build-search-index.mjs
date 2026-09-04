@@ -35,6 +35,10 @@ const CORRECTIONS_PATH = fileURLToPath(new URL('../_backend/complorama/correctio
 const [, , inPath, outPath, ...rest] = process.argv;
 const epArg = rest.indexOf('--episodes');
 const episodesPath = epArg !== -1 ? rest[epArg + 1] : null;
+const spArg = rest.indexOf('--speakers');
+const speakersPath = spArg !== -1 ? rest[spArg + 1] : null;
+const vmArg = rest.indexOf('--video-map');
+const videoMapPath = vmArg !== -1 ? rest[vmArg + 1] : null;
 const die = (m) => { console.error(`✗ ${m}`); process.exit(1); };
 if (!inPath || !outPath) die('usage: build-search-index.mjs <segments.json> <out.sqlite> [--episodes episodes-data.js]');
 if (!existsSync(inPath)) die(`introuvable : ${inPath}`);
@@ -174,7 +178,12 @@ db.exec(`
   );
   CREATE TABLE passages (
     id INTEGER PRIMARY KEY, ep INTEGER NOT NULL,
-    t REAL NOT NULL, t_end REAL NOT NULL, txt TEXT NOT NULL
+    t REAL NOT NULL, t_end REAL NOT NULL, txt TEXT NOT NULL,
+    -- Qui parle, croisé ici depuis les plages de speakers-audio.json.
+    -- NULL quand on ne sait pas — et on ne devine jamais : environ un tiers
+    -- des passages restent sans nom (animateur de franceinfo, invités,
+    -- archives), et c'est voulu.
+    qui TEXT
   );
   CREATE INDEX idx_passages_ep ON passages(ep, t);
   -- external-content FTS5: the text is stored once, in the passages table
@@ -201,8 +210,64 @@ for (const s of segments) {
   byEp.get(ep).push(s);
 }
 
-const insPassage = db.prepare('INSERT INTO passages (ep, t, t_end, txt) VALUES (?, ?, ?, ?)');
+const insPassage = db.prepare('INSERT INTO passages (ep, t, t_end, txt, qui) VALUES (?, ?, ?, ?, ?)');
 const insEpisode = db.prepare('INSERT OR REPLACE INTO episodes (ep, title, url, youtube, date, n_passages, duration) VALUES (?, ?, ?, ?, ?, ?, ?)');
+
+// --- Qui parle -------------------------------------------------------------
+//
+// speakers-audio.json donne des PLAGES — { ep, t0, t1, qui } — et non une
+// étiquette par passage. C'est délibéré : le découpage en passages est calculé
+// ici (PASSAGE_WORDS) et refait à chaque indexation ; des attributions figées
+// sur des identifiants de passage seraient périmées au premier changement.
+// Les plages, elles, sont dans l'horloge des segments audio et ne bougent pas.
+//
+// Le croisement se fait donc ici, à chaque construction.
+const MIN_OVERLAP = 2;      // secondes : en deçà, le locuteur ne « tient » pas le passage
+const MAX_NAMES = 3;        // au-delà, la mention devient illisible
+const toursByEp = new Map();
+let toursTotal = 0, toursNamed = 0;
+if (speakersPath && existsSync(speakersPath)) {
+  const sp = JSON.parse(readFileSync(speakersPath, 'utf8'));
+  for (const t of (sp.tours || sp)) {
+    const ep = Number(t.ep);
+    const t0 = Number(t.t0), t1 = Number(t.t1);
+    if (!Number.isFinite(ep) || !Number.isFinite(t0) || !Number.isFinite(t1)) continue;
+    toursTotal++;
+    const qui = t.qui == null ? null : String(t.qui).trim() || null;
+    if (qui) toursNamed++;
+    if (!toursByEp.has(ep)) toursByEp.set(ep, []);
+    toursByEp.get(ep).push({ t0, t1, qui });
+  }
+  for (const list of toursByEp.values()) list.sort((a, b) => a.t0 - b.t0);
+  console.log(`qui parle : ${toursTotal.toLocaleString('fr-FR')} tours sur ${toursByEp.size} épisodes, dont ${toursNamed.toLocaleString('fr-FR')} nommés`);
+} else if (speakersPath) {
+  console.log(`qui parle : ${speakersPath} absent — les passages resteront sans nom (c'est sans gravité).`);
+}
+
+/**
+ * Qui parle pendant [start, end] ? Renvoie « Tristan puis Rudy », ou null.
+ * Jamais de remplissage par défaut : sans nom, on n'affiche rien.
+ */
+function whoSpeaks(tours, start, end) {
+  if (!tours || !tours.length) return null;
+  const hits = [];
+  for (const t of tours) {
+    if (t.t0 >= end) break;
+    if (!t.qui || t.t1 <= start) continue;
+    const overlap = Math.min(t.t1, end) - Math.max(t.t0, start);
+    if (overlap > 0) hits.push({ qui: t.qui, overlap, t0: t.t0 });
+  }
+  if (!hits.length) return null;
+  // On garde ceux qui tiennent vraiment le passage. Si aucun n'atteint le
+  // seuil, on garde le plus présent plutôt que de renoncer : mieux vaut un
+  // nom certain qu'un blanc, tant qu'il ne s'agit pas d'une interjection.
+  let kept = hits.filter((h) => h.overlap >= MIN_OVERLAP);
+  if (!kept.length) kept = [hits.reduce((a, b) => (b.overlap > a.overlap ? b : a))];
+  kept.sort((a, b) => a.t0 - b.t0);
+  const names = [];
+  for (const h of kept) if (names[names.length - 1] !== h.qui) names.push(h.qui);
+  return names.slice(0, MAX_NAMES).join(' puis ');
+}
 
 // Une clé écrite sans accent doit attraper le texte accenté : « kemy » doit
 // trouver « Kémy ». JavaScript ne compare pas les lettres accentuées à leur
@@ -229,8 +294,9 @@ const applyFixes = (txt) => {
   return txt;
 };
 
-let totalPassages = 0, totalWords = 0;
+let totalPassages = 0, totalWords = 0, namedPassages = 0;
 const unmatched = [], renumbered = [];
+const resolved = new Map();   // numéro des transcriptions → épisode du mur
 db.exec('BEGIN');
 for (const [ep, segs] of [...byEp.entries()].sort((a, b) => a[0] - b[0])) {
   // Resolve first: everything below is stored under the wall's number, so the
@@ -242,15 +308,24 @@ for (const [ep, segs] of [...byEp.entries()].sort((a, b) => a[0] - b[0])) {
     unmatched.push(ep);
     continue;
   }
+  resolved.set(ep, e);
   const num = e.n;
   if (num !== ep) renumbered.push(`${ep}→${num}`);
 
   segs.sort((a, b) => Number(a.t) - Number(b.t));
+  // Les plages de locuteurs portent le numéro d'épisode de segments-audio.json,
+  // c'est-à-dire `ep` — pas `num`, qui est la numérotation du mur.
+  const tours = toursByEp.get(ep) || null;
   let buf = [], start = null, end = null, words = 0, n = 0;
   const flush = () => {
     if (!buf.length) return;
     const txt = applyFixes(buf.join(' ').replace(/\s+/g, ' ').trim());
-    if (txt) { insPassage.run(num, start, end, txt); n++; totalPassages++; }
+    if (txt) {
+      const qui = whoSpeaks(tours, start, end);
+      if (qui) namedPassages++;
+      insPassage.run(num, start, end, txt, qui);
+      n++; totalPassages++;
+    }
     buf = []; start = null; words = 0;
   };
   for (const s of segs) {
@@ -267,6 +342,36 @@ for (const [ep, segs] of [...byEp.entries()].sort((a, b) => a[0] - b[0])) {
   insEpisode.run(num, e?.title ?? null, e?.url ?? null, e?.youtube ?? null, e?.date ?? null, n, end || 0);
 }
 db.exec('COMMIT');
+
+// La correspondance audio → vidéo, calculée par align-video.mjs. Les plages
+// portent le numéro d'épisode des transcriptions ; on les réécrit sous celui
+// du mur, comme tout le reste, pour que site et recherche désignent le même
+// épisode. Une plage dont l'épisode n'a pas de jumeau est ignorée.
+if (videoMapPath && existsSync(videoMapPath)) {
+  const vm = JSON.parse(readFileSync(videoMapPath, 'utf8'));
+  const insMap = db.prepare('INSERT INTO video_map (ep, a0, a1, v_offset) VALUES (?, ?, ?, ?)');
+  let rows = 0, eps = new Set();
+  db.exec('BEGIN');
+  for (const r of (vm.map || vm)) {
+    // On réutilise les correspondances déjà établies pour l'audio plutôt que
+    // de rappeler resolve() : d'une part cela fausserait le compte affiché
+    // au-dessus, d'autre part un épisode filmé qui n'aurait pas d'audio
+    // indexé n'a de toute façon aucun passage où poser un minutage.
+    const e = resolved.get(Number(r.ep));
+    if (!e) continue;
+    insMap.run(e.n, Number(r.a0), Number(r.a1), Number(r.v_offset));
+    eps.add(e.n); rows++;
+  }
+  db.exec('COMMIT');
+  console.log(`audio → vidéo : ${rows} plages sur ${eps.size} épisodes filmés`);
+} else if (videoMapPath) {
+  console.log(`audio → vidéo : ${videoMapPath} absent — le mur dira « voir la vidéo » sans minutage.`);
+}
+
+if (toursTotal) {
+  const pct = totalPassages ? Math.round((namedPassages / totalPassages) * 100) : 0;
+  console.log(`qui parle : ${namedPassages.toLocaleString('fr-FR')} passages nommés sur ${totalPassages.toLocaleString('fr-FR')} (${pct} %) — le reste reste volontairement vide`);
+}
 
 console.log(`correspondance épisodes : ${how.date} par date · ${how.titre} par titre · ${how.numero} par numéro · ${how.aucun} sans correspondance`);
 if (renumbered.length) console.log(`  renumérotés pour coller au mur : ${renumbered.slice(0, 15).join(', ')}${renumbered.length > 15 ? '…' : ''}`);

@@ -149,7 +149,7 @@ try {
     $count->execute($args);
     $total = (int) $count->fetchColumn();
 
-    $sql = "SELECT p.ep, p.t, p.t_end, e.title, e.url, e.youtube, e.date,
+    $sql = "SELECT p.ep, p.t, p.t_end, p.qui, e.title, e.url, e.youtube, e.date,
                    snippet(passages_fts, 0, '<mark>', '</mark>', '…', " . SNIPPET_WORDS . ") AS extrait,
                    bm25(passages_fts) AS score
             FROM passages_fts
@@ -262,6 +262,11 @@ foreach ($rows as $r) {
         'minutage' => timecode($t),
         'extrait'  => $r['extrait'],
     ];
+    // Qui parle — seulement quand on le sait. Environ un tiers des passages
+    // n'ont volontairement aucun nom (animateur de franceinfo, invités,
+    // archives) : le champ est alors absent, et le mur n'affiche rien. Jamais
+    // de remplissage par défaut, ce serait attribuer des propos à quelqu'un.
+    if (!empty($r['qui'])) $item['qui'] = $r['qui'];
     $vid = youtubeId($r['youtube']);
     if ($vid) {
         if (!$isMapped((int) $r['ep'])) {

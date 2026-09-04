@@ -542,6 +542,11 @@ function TranscriptHit({ hit }) {
       <div className="tr-hit-meta">
         <span className="tr-hit-num">N°{String(hit.episode).padStart(3, '0')}</span>
         {hit.date && <time dateTime={hit.date}>{formatDate(hit.date)}</time>}
+        {/* Qui parle, quand on le sait. Le champ est absent pour environ un
+            passage sur trois — animateur de franceinfo, invités, archives — et
+            on n'affiche alors rien : mieux vaut un blanc qu'une citation
+            attribuée à la mauvaise personne. */}
+        {hit.qui && <span className="tr-hit-qui">{hit.qui}</span>}
       </div>
       {hit.titre && <h3 className="tr-hit-title">{hit.titre}</h3>}
       <p className="tr-hit-quote">« <Highlighted text={hit.extrait} /> »</p>
@@ -1399,12 +1404,22 @@ function EpisodesWall() {
         }
         .tr-hit-meta {
           display: flex; align-items: center; gap: 12px;
+          flex-wrap: wrap;
           font-family: "DM Mono", monospace;
           font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
           color: rgba(243,239,230,0.5);
           margin-bottom: 6px;
         }
         .tr-hit-num { color: #e63946; }
+        /* Qui parle : présent seulement quand on le sait, donc discret — il ne
+           doit pas concurrencer le numéro d'épisode ni faire de trou quand il
+           manque. Le nom garde sa casse, c'est un nom propre. */
+        .tr-hit-qui {
+          text-transform: none; letter-spacing: 0.04em;
+          color: rgba(243,239,230,0.72);
+          border-left: 1px solid rgba(255,255,255,0.16);
+          padding-left: 12px;
+        }
         .tr-hit-title {
           font-family: "Fraunces", Georgia, serif;
           font-size: 16px; font-weight: 600; color: #f3efe6;
