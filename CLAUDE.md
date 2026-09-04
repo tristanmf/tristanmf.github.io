@@ -107,6 +107,39 @@ corrigeant par des clés composées. Même précaution pour « mariant » (parti
 
 Restent non identifiés : « Christophe Bourloton » (ép. 36) et « David Diboublac » (ép. 71).
 
+**Deux pièges de méthode, découverts en vérifiant l'index SERVI et non celui qu'on venait de
+construire** — la leçon à retenir de la journée :
+
+1. *Une correction sur un nom accentué ne s'appliquait jamais.* En JavaScript, `\b` ne connaît que
+   `[A-Za-z0-9_]` : « Rochatoudé » finit par une lettre accentuée, donc aucune frontière, et la
+   substitution était silencieusement sans effet. On délimite désormais par `\p{L}\p{N}`.
+2. *Le relevé `--noms` était aveugle aux fautes fréquentes.* Il écartait tout mot vu plus de trois
+   fois, jugé « ordinaire ». Or « Rechtat » (35 passages) et « Rechstadt » (40) — les deux graphies
+   fautives les plus répandues du corpus, le nom de Rudy dans le générique — passaient au travers.
+   Le bon critère n'est pas la fréquence mais **la casse** : un nom propre est presque toujours
+   capitalisé, un mot ordinaire seulement en début de phrase.
+
+Et un rappel utile : « Mariant » n'était pas Thierry Mariani mais **Maud Marian**, avocate vue sur
+Nexus (ép. 96). La clé composée a évité la faute — elle ne trouvait rien, ce qui était le bon
+comportement.
+
+### Qui parle, et le minutage vidéo (4 septembre 2026)
+
+Les deux fichiers du Mac sont arrivés et exploités.
+
+- **`speakers-audio.json`** : 6 565 plages, dont 2 574 nommées. Le croisement avec les passages se
+  fait à l'indexation (`whoSpeaks` dans `build-search-index.mjs`). Un passage à cheval sur deux
+  locuteurs affiche « Tristan puis Rudy ». **Règle qui a demandé une correction** : se contenter du
+  moindre chevauchement nommait 83 % des passages — c'était le remplissage par défaut qu'on
+  s'interdit. On exige maintenant que les locuteurs nommés portent **la moitié** du passage.
+- **`segments-video.json`** : 37 épisodes. `scripts/align-video.mjs` aligne audio et vidéo **par le
+  texte** — n-grammes de six mots uniques des deux côtés, ancres filtrées par plus longue
+  sous-suite croissante (le montage coupe, il ne réordonne pas), regroupement des ancres de même
+  décalage en plages. Résultat : **982 plages sur 37 épisodes**, 77 à 98 % de l'audio retrouvé.
+  Un épisode mal aligné est écarté : mieux vaut « voir la vidéo » sans minutage qu'un minutage faux.
+  Ce que ne couvre aucune plage a donc bien été coupé au montage — c'est désormais une
+  constatation, plus une supposition.
+
 #### Noms propres mal transcrits — deux mécanismes
 
 Whisper écrit les noms propres à l'oreille : « Meyssan » était devenu « Messant ».
