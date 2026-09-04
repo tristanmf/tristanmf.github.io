@@ -19,7 +19,10 @@
     "messand": "Meyssan",
     "perrone": "Perronne",
     "reynoir": "Reynouard",
-    "racinier": "Rassinier"
+    "racinier": "Rassinier",
+    "forisson": "Faurisson",
+    "kemy": "Kemi",
+    "garodi": "Garaudy"
   },
   "a_confirmer": {
     "messon": "Meyssan"
@@ -30,6 +33,9 @@
     "messon": "voyelle différente (/ɔ̃/ au lieu de /ɑ̃/) — pourrait être autre chose, à lire avant d'appliquer",
     "perrone": "graphie relevée par le diagnostic, identification confirmée par Tristan le 3 septembre 2026",
     "reynoir": "graphie relevée par le diagnostic, identification confirmée par Tristan le 3 septembre 2026",
-    "racinier": "graphie relevée par le diagnostic, identification confirmée par Tristan le 3 septembre 2026"
+    "racinier": "graphie relevée par le diagnostic, identification confirmée par Tristan le 3 septembre 2026",
+    "forisson": "passage cité par Tristan : « Forisson en son temps travailler avec Dieudonné » — Robert Faurisson. « Faurisson » existe par ailleurs dans l'index : la transcription hésite d'une occurrence à l'autre.",
+    "kemy": "même passage : « avec Kémy Séba également » — Kemi Seba. Seul le prénom est fautif.",
+    "garodi": "même passage : « on voit Garodi qui est proche des thèses de Thierry Meyssan » — Roger Garaudy. Absent de l'index sous sa graphie correcte."
   }
 }

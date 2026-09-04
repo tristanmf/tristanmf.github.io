@@ -204,6 +204,15 @@ for (const s of segments) {
 const insPassage = db.prepare('INSERT INTO passages (ep, t, t_end, txt) VALUES (?, ?, ?, ?)');
 const insEpisode = db.prepare('INSERT OR REPLACE INTO episodes (ep, title, url, youtube, date, n_passages, duration) VALUES (?, ?, ?, ?, ?, ?, ?)');
 
+// Une clé écrite sans accent doit attraper le texte accenté : « kemy » doit
+// trouver « Kémy ». JavaScript ne compare pas les lettres accentuées à leur
+// équivalent nu, donc chaque voyelle devient une classe de caractères. Sans
+// cela une correction peut sembler posée et ne rien faire.
+const ACCENTS = { a: 'aàâä', c: 'cç', e: 'eéèêë', i: 'iîï', o: 'oôö', u: 'uùûü', y: 'yÿ' };
+const accentClass = (word) => [...word.toLowerCase()]
+  .map((ch) => ACCENTS[ch] ? `[${ACCENTS[ch]}]` : ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+  .join('');
+
 // Noms propres écrits à l'oreille par la transcription : on les rétablit ici,
 // une fois pour toutes, plutôt que de demander au visiteur de deviner la
 // graphie. Corrige la recherche ET la citation affichée.
@@ -211,7 +220,7 @@ const fixes = [];
 if (existsSync(CORRECTIONS_PATH)) {
   const conf = JSON.parse(readFileSync(CORRECTIONS_PATH, 'utf8')).confirme || {};
   for (const [wrong, right] of Object.entries(conf)) {
-    fixes.push({ re: new RegExp(`\\b${wrong.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi'), right, wrong, n: 0 });
+    fixes.push({ re: new RegExp(`\\b${accentClass(wrong)}\\b`, 'gi'), right, wrong, n: 0 });
   }
   if (fixes.length) console.log(`${fixes.length} correction(s) de nom propre chargée(s)`);
 }
