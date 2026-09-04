@@ -22,7 +22,9 @@
     "racinier": "Rassinier",
     "forisson": "Faurisson",
     "kemy": "Kemi",
-    "garodi": "Garaudy"
+    "garodi": "Garaudy",
+    "armaid nejad": "Ahmadinejad",
+    "blett": "Blet"
   },
   "a_confirmer": {
     "messon": "Meyssan"
@@ -36,6 +38,8 @@
     "racinier": "graphie relevée par le diagnostic, identification confirmée par Tristan le 3 septembre 2026",
     "forisson": "passage cité par Tristan : « Forisson en son temps travailler avec Dieudonné » — Robert Faurisson. « Faurisson » existe par ailleurs dans l'index : la transcription hésite d'une occurrence à l'autre.",
     "kemy": "même passage : « avec Kémy Séba également » — Kemi Seba. Seul le prénom est fautif.",
-    "garodi": "même passage : « on voit Garodi qui est proche des thèses de Thierry Meyssan » — Roger Garaudy. Absent de l'index sous sa graphie correcte."
+    "garodi": "même passage : « on voit Garodi qui est proche des thèses de Thierry Meyssan » — Roger Garaudy. Absent de l'index sous sa graphie correcte.",
+    "armaid nejad": "passage cité par Tristan : « pour remettre Armaïd Nejad qui sera à ce moment là plus déjà président une quenelle d'or » — Mahmoud Ahmadinejad. La transcription a coupé le patronyme en deux mots ; la clé en contient donc deux.",
+    "blett": "passage cité par Tristan : « du complotisme antisémite qui est Stéphane Blett » — le pianiste Stéphane Blet, un seul t."
   }
 }

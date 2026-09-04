@@ -18,9 +18,10 @@ import { existsSync } from 'node:fs';
 
 const [, , dbPath, ...rest] = process.argv;
 const BRIEF = rest.includes('--brief');   // ne montrer que ce qui cloche
-const terms = rest.filter((t) => t !== '--brief');
+const NOMS = rest.includes('--noms');     // relever les noms propres suspects
+const terms = rest.filter((t) => !t.startsWith('--'));
 const die = (m) => { console.error(`✗ ${m}`); process.exit(1); };
-if (!dbPath || !terms.length) die('usage: search-diagnose.mjs <index.sqlite> <mot> [autre mot…] [--brief]');
+if (!dbPath || (!terms.length && !NOMS)) die('usage: search-diagnose.mjs <index.sqlite> <mot>… [--brief] | <index.sqlite> --noms');
 if (!existsSync(dbPath)) die(`introuvable : ${dbPath}`);
 
 const norm = (s) => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -54,6 +55,49 @@ const sampleStmt = db.prepare(`SELECT e.ep, e.title, e.date, p.t
                                FROM passages_fts JOIN passages p ON p.id = passages_fts.rowid
                                JOIN episodes e ON e.ep = p.ep
                                WHERE passages_fts MATCH ? ORDER BY bm25(passages_fts) LIMIT 3`);
+
+// ---------------------------------------------------------------------------
+// Relevé des noms propres rares — pour ne plus avoir à lire les transcriptions
+// pour trouver ceux que Whisper a écorchés.
+//
+// Un nom propre écorché est presque toujours un mot capitalisé, rare, et qui
+// n'existe pas comme mot courant. On liste donc les mots capitalisés du texte
+// dont la forme minuscule est absente ou quasi absente du vocabulaire ordinaire.
+// La liste contient forcément des noms parfaitement transcrits ; elle sert à
+// être PARCOURUE, pas à être appliquée. Tristan reconnaît en une seconde ce
+// qu'aucune distance d'édition ne peut deviner.
+// ---------------------------------------------------------------------------
+if (NOMS) {
+  const docByTerm = new Map(vocab.map((v) => [v.term, v.doc]));
+  const caps = new Map();
+  for (const { txt } of db.prepare('SELECT txt FROM passages').iterate()) {
+    for (const m of String(txt).matchAll(/(^|[^\p{L}'’-])(\p{Lu}[\p{L}'’-]{3,})/gu)) {
+      const word = m[2];
+      caps.set(word, (caps.get(word) || 0) + 1);
+    }
+  }
+  const suspects = [...caps.entries()]
+    .map(([word, n]) => ({ word, n, common: docByTerm.get(norm(word)) || 0 }))
+    // Fréquent en minuscules = mot ordinaire capitalisé en début de phrase.
+    .filter((c) => c.common <= 3 && c.n <= 6)
+    .sort((a, b) => a.word.localeCompare(b.word, 'fr'));
+
+  console.log(`${suspects.length} noms propres rares relevés dans les transcriptions.`);
+  console.log('Parcourez-les : ceux qui sont écorchés sautent aux yeux. Envoyez-les');
+  console.log('avec la bonne orthographe, ils rejoindront la table de corrections.\n');
+  const cols = 3, rows = Math.ceil(suspects.length / cols);
+  for (let r = 0; r < rows; r++) {
+    const line = [];
+    for (let c = 0; c < cols; c++) {
+      const it = suspects[c * rows + r];
+      if (it) line.push(`${it.word} (${it.n})`.padEnd(30));
+    }
+    console.log('  ' + line.join('').trimEnd());
+  }
+  db.close();
+  console.log('');
+  process.exit(0);
+}
 
 const found = [], missing = [];
 
