@@ -24,10 +24,12 @@
     "kemy": "Kemi",
     "garodi": "Garaudy",
     "armaid nejad": "Ahmadinejad",
-    "blett": "Blet"
+    "blett": "Blet",
+    "poirson-atlant": "Poirson-Atlan"
   },
   "a_confirmer": {
-    "messon": "Meyssan"
+    "messon": "Meyssan",
+    "atlant": "Atlan"
   },
   "_preuve": {
     "messant": "épisode 52, 19 septembre 2023, à 14:32 — « Rudy, Tristan, vous nous rappelez qui est Thierry Messant ? » ; également épisode 43 à 5:48, « Opinion partagée par Thierry Messant. »",
@@ -40,6 +42,8 @@
     "kemy": "même passage : « avec Kémy Séba également » — Kemi Seba. Seul le prénom est fautif.",
     "garodi": "même passage : « on voit Garodi qui est proche des thèses de Thierry Meyssan » — Roger Garaudy. Absent de l'index sous sa graphie correcte.",
     "armaid nejad": "passage cité par Tristan : « pour remettre Armaïd Nejad qui sera à ce moment là plus déjà président une quenelle d'or » — Mahmoud Ahmadinejad. La transcription a coupé le patronyme en deux mots ; la clé en contient donc deux.",
-    "blett": "passage cité par Tristan : « du complotisme antisémite qui est Stéphane Blett » — le pianiste Stéphane Blet, un seul t."
+    "blett": "passage cité par Tristan : « du complotisme antisémite qui est Stéphane Blett » — le pianiste Stéphane Blet, un seul t.",
+    "poirson-atlant": "passage cité par Tristan : « je pense que ça ne marchera pas non plus pour Poirson-Atlant » — Atlan sans t. Clé volontairement composée : « atlant » seul apparaît 5 fois dans l'index et « atlan… » 31, dont Atlantide et atlantiste — une substitution large aurait touché autre chose. Le patronyme se corrige donc uniquement là où il est certain.",
+    "atlant": "5 occurrences isolées non lues : peuvent être le patronyme seul, ou un reste d'« Atlantide ». Le repli du moteur les retrouve sans qu'on ait à trancher."
   }
 }
