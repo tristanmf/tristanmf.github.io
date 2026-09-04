@@ -68,32 +68,51 @@ const sampleStmt = db.prepare(`SELECT e.ep, e.title, e.date, p.t
 // qu'aucune distance d'édition ne peut deviner.
 // ---------------------------------------------------------------------------
 if (NOMS) {
-  const docByTerm = new Map(vocab.map((v) => [v.term, v.doc]));
+  // Le premier jet listait tous les mots capitalisés rares : plus de deux
+  // mille lignes, illisible. Le signal utile n'est pas un nom isolé — c'est
+  // une PAIRE. « Garaudy » et « Garaudi », « Faurisson » et « Fourrisson »
+  // côte à côte : deux graphies du même nom, dont une est fausse. On regroupe
+  // donc les graphies voisines et on ne montre que les groupes, du plus
+  // fréquent au plus rare. La forme la plus courante est presque toujours la
+  // bonne, mais c'est à l'oeil humain de trancher.
   const caps = new Map();
   for (const { txt } of db.prepare('SELECT txt FROM passages').iterate()) {
-    for (const m of String(txt).matchAll(/(^|[^\p{L}'’-])(\p{Lu}[\p{L}'’-]{3,})/gu)) {
-      const word = m[2];
-      caps.set(word, (caps.get(word) || 0) + 1);
+    for (const m of String(txt).matchAll(/(^|[^\p{L}'\u2019-])(\p{Lu}[\p{L}'\u2019-]{3,})/gu)) {
+      caps.set(m[2], (caps.get(m[2]) || 0) + 1);
     }
   }
-  const suspects = [...caps.entries()]
-    .map(([word, n]) => ({ word, n, common: docByTerm.get(norm(word)) || 0 }))
-    // Fréquent en minuscules = mot ordinaire capitalisé en début de phrase.
-    .filter((c) => c.common <= 3 && c.n <= 6)
-    .sort((a, b) => a.word.localeCompare(b.word, 'fr'));
+  const words = [...caps.entries()].map(([w, n]) => ({ w, n, k: norm(w) }));
+  console.log(`${words.length.toLocaleString('fr-FR')} mots capitalisés relevés. Regroupement des graphies voisines…\n`);
 
-  console.log(`${suspects.length} noms propres rares relevés dans les transcriptions.`);
-  console.log('Parcourez-les : ceux qui sont écorchés sautent aux yeux. Envoyez-les');
-  console.log('avec la bonne orthographe, ils rejoindront la table de corrections.\n');
-  const cols = 3, rows = Math.ceil(suspects.length / cols);
-  for (let r = 0; r < rows; r++) {
-    const line = [];
-    for (let c = 0; c < cols; c++) {
-      const it = suspects[c * rows + r];
-      if (it) line.push(`${it.word} (${it.n})`.padEnd(30));
+  // Union-find sur les mots dont les formes normalisées sont à distance 1
+  // (ou 2 au-delà de huit lettres).
+  const parent = words.map((_, i) => i);
+  const find = (i) => { while (parent[i] !== i) { parent[i] = parent[parent[i]]; i = parent[i]; } return i; };
+  const union = (a, b) => { a = find(a); b = find(b); if (a !== b) parent[b] = a; };
+  const byLen = new Map();
+  words.forEach((x, i) => { for (const L of [x.k.length - 1, x.k.length, x.k.length + 1, x.k.length + 2]) { if (!byLen.has(L)) byLen.set(L, []); byLen.get(L).push(i); } });
+  words.forEach((x, i) => {
+    const max = x.k.length >= 8 ? 2 : 1;
+    for (const j of byLen.get(x.k.length) || []) {
+      if (j <= i) continue;
+      const y = words[j];
+      if (x.k === y.k) { union(i, j); continue; }
+      if (Math.abs(x.k.length - y.k.length) > max) continue;
+      if (distance(x.k, y.k, max) <= max) union(i, j);
     }
-    console.log('  ' + line.join('').trimEnd());
-  }
+  });
+
+  const groups = new Map();
+  words.forEach((x, i) => { const r = find(i); if (!groups.has(r)) groups.set(r, []); groups.get(r).push(x); });
+  const clusters = [...groups.values()]
+    .filter((g) => new Set(g.map((x) => x.k)).size >= 2)          // au moins deux graphies distinctes
+    .map((g) => g.sort((a, b) => b.n - a.n))
+    .sort((a, b) => b.reduce((s, x) => s + x.n, 0) - a.reduce((s, x) => s + x.n, 0));
+
+  console.log(`${clusters.length} groupes de graphies voisines.\n`);
+  console.log('La forme la plus fréquente vient en premier — c\'est le plus souvent');
+  console.log('la bonne. Signalez celles qui sont fausses avec l\'orthographe exacte.\n');
+  for (const g of clusters) console.log('  ' + g.map((x) => `${x.w} (${x.n})`).join('  ·  '));
   db.close();
   console.log('');
   process.exit(0);
