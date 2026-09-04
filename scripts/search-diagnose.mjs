@@ -81,7 +81,13 @@ if (NOMS) {
       caps.set(m[2], (caps.get(m[2]) || 0) + 1);
     }
   }
-  const words = [...caps.entries()].map(([w, n]) => ({ w, n, k: norm(w) }));
+  // Un mot fréquent en minuscules est un mot ordinaire capitalisé en début de
+  // phrase — « Sortir », « Colère », « Nouveau ». Les apparier ne dit rien.
+  // Ce filtre existait dans la première version et s'était perdu en chemin.
+  const docByTerm = new Map(vocab.map((v) => [v.term, v.doc]));
+  const words = [...caps.entries()]
+    .map(([w, n]) => ({ w, n, k: norm(w) }))
+    .filter((x) => (docByTerm.get(x.k) || 0) <= 3);
   console.log(`${words.length.toLocaleString('fr-FR')} mots capitalisés relevés. Regroupement des graphies voisines…\n`);
 
   // Union-find sur les mots dont les formes normalisées sont à distance 1
@@ -104,8 +110,14 @@ if (NOMS) {
 
   const groups = new Map();
   words.forEach((x, i) => { const r = find(i); if (!groups.has(r)) groups.set(r, []); groups.get(r).push(x); });
+  // Singulier/pluriel du même mot : ce n'est pas une faute de transcription.
+  const samePlural = (g) => {
+    const ks = [...new Set(g.map((x) => x.k))].sort((a, b) => a.length - b.length);
+    return ks.length === 2 && ks[1] === ks[0] + 's';
+  };
   const clusters = [...groups.values()]
     .filter((g) => new Set(g.map((x) => x.k)).size >= 2)          // au moins deux graphies distinctes
+    .filter((g) => !samePlural(g))
     .map((g) => g.sort((a, b) => b.n - a.n))
     .sort((a, b) => b.reduce((s, x) => s + x.n, 0) - a.reduce((s, x) => s + x.n, 0));
 
