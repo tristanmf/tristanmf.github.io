@@ -223,6 +223,7 @@ const insEpisode = db.prepare('INSERT OR REPLACE INTO episodes (ep, title, url, 
 //
 // Le croisement se fait donc ici, à chaque construction.
 const MIN_OVERLAP = 2;      // secondes : en deçà, le locuteur ne « tient » pas le passage
+const MIN_COVERAGE = 0.5;   // il faut que les locuteurs nommés portent la MOITIÉ du passage
 const MAX_NAMES = 3;        // au-delà, la mention devient illisible
 const toursByEp = new Map();
 let toursTotal = 0, toursNamed = 0;
@@ -258,9 +259,17 @@ function whoSpeaks(tours, start, end) {
     if (overlap > 0) hits.push({ qui: t.qui, overlap, t0: t.t0 });
   }
   if (!hits.length) return null;
-  // On garde ceux qui tiennent vraiment le passage. Si aucun n'atteint le
-  // seuil, on garde le plus présent plutôt que de renoncer : mieux vaut un
-  // nom certain qu'un blanc, tant qu'il ne s'agit pas d'une interjection.
+
+  // Le passage cité doit VRAIMENT être de ceux qu'on nomme. Un extrait de
+  // soixante mots recouvre presque toujours un bout de plage nommée ; s'en
+  // contenter reviendrait à mettre un nom sous une citation qui, pour
+  // l'essentiel, est de quelqu'un d'autre — exactement le remplissage par
+  // défaut qu'on s'interdit. On exige donc que les locuteurs nommés portent
+  // au moins la moitié du passage, faute de quoi on n'affiche rien.
+  const span = Math.max(0.001, end - start);
+  const covered = hits.reduce((s, h) => s + h.overlap, 0);
+  if (covered / span < MIN_COVERAGE) return null;
+
   let kept = hits.filter((h) => h.overlap >= MIN_OVERLAP);
   if (!kept.length) kept = [hits.reduce((a, b) => (b.overlap > a.overlap ? b : a))];
   kept.sort((a, b) => a.t0 - b.t0);
@@ -285,7 +294,15 @@ const fixes = [];
 if (existsSync(CORRECTIONS_PATH)) {
   const conf = JSON.parse(readFileSync(CORRECTIONS_PATH, 'utf8')).confirme || {};
   for (const [wrong, right] of Object.entries(conf)) {
-    fixes.push({ re: new RegExp(`\\b${accentClass(wrong)}\\b`, 'gi'), right, wrong, n: 0 });
+    // Pas de \b : en JavaScript, une frontière de mot ne connaît que
+    // [A-Za-z0-9_]. « Rochatoudé » finit par une lettre accentuée, donc \b
+    // n'y voit aucune frontière et la correction ne s'appliquait jamais —
+    // silencieusement. On délimite donc par « pas une lettre, pas un
+    // chiffre », ce qui accepte les accents des deux côtés.
+    fixes.push({
+      re: new RegExp(`(?<![\\p{L}\\p{N}_])${accentClass(wrong)}(?![\\p{L}\\p{N}_])`, 'giu'),
+      right, wrong, n: 0,
+    });
   }
   if (fixes.length) console.log(`${fixes.length} correction(s) de nom propre chargée(s)`);
 }
