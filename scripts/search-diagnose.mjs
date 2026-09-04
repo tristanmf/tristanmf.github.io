@@ -17,11 +17,12 @@ import { DatabaseSync } from 'node:sqlite';
 import { existsSync } from 'node:fs';
 
 const [, , dbPath, ...rest] = process.argv;
-const BRIEF = rest.includes('--brief');   // ne montrer que ce qui cloche
-const NOMS = rest.includes('--noms');     // relever les noms propres suspects
+const BRIEF = rest.includes('--brief');       // ne montrer que ce qui cloche
+const NOMS = rest.includes('--noms');         // relever les noms propres suspects
+const CONTEXTE = rest.includes('--contexte'); // montrer la phrase autour du mot
 const terms = rest.filter((t) => !t.startsWith('--'));
 const die = (m) => { console.error(`✗ ${m}`); process.exit(1); };
-if (!dbPath || (!terms.length && !NOMS)) die('usage: search-diagnose.mjs <index.sqlite> <mot>… [--brief] | <index.sqlite> --noms');
+if (!dbPath || (!terms.length && !NOMS)) die('usage: search-diagnose.mjs <index.sqlite> <mot>… [--brief|--contexte] | <index.sqlite> --noms');
 if (!existsSync(dbPath)) die(`introuvable : ${dbPath}`);
 
 const norm = (s) => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -55,6 +56,44 @@ const sampleStmt = db.prepare(`SELECT e.ep, e.title, e.date, p.t
                                FROM passages_fts JOIN passages p ON p.id = passages_fts.rowid
                                JOIN episodes e ON e.ep = p.ep
                                WHERE passages_fts MATCH ? ORDER BY bm25(passages_fts) LIMIT 3`);
+
+// ---------------------------------------------------------------------------
+// Le passage autour du mot — pour identifier un nom qu'on ne reconnaît pas.
+//
+// Une graphie inconnue seule ne dit rien : « Ghasoltan » peut être n'importe
+// qui. Avec le titre de l'émission, sa date et la phrase où le mot tombe, on
+// sait de quoi on parle, et une recherche en ligne fait le reste.
+//
+// La fenêtre est courte à dessein — une vingtaine de mots de part et d'autre.
+// Ces journaux sont publics : on ne verse pas le texte intégral d'une
+// production Radio France dedans. C'est l'ordre de grandeur de ce que le
+// moteur de recherche renvoie déjà publiquement dans ses extraits.
+// ---------------------------------------------------------------------------
+if (CONTEXTE) {
+  const WINDOW = 20;
+  const ctxStmt = db.prepare(`SELECT e.ep, e.title, e.date, p.t, p.txt
+                              FROM passages_fts JOIN passages p ON p.id = passages_fts.rowid
+                              JOIN episodes e ON e.ep = p.ep
+                              WHERE passages_fts MATCH ? ORDER BY bm25(passages_fts) LIMIT 3`);
+  for (const raw of terms) {
+    const term = norm(raw);
+    console.log(`${'─'.repeat(66)}\n« ${raw} »`);
+    let rows = [];
+    try { rows = ctxStmt.all(`"${term}"`); } catch { /* terme non exploitable */ }
+    if (!rows.length) { console.log('  absent de l\'index.'); continue; }
+    for (const r of rows) {
+      const at = `${Math.floor(r.t / 60)}:${String(Math.round(r.t % 60)).padStart(2, '0')}`;
+      console.log(`  n°${String(r.ep).padStart(3, '0')} · ${r.date} · ${r.title}  (à ${at})`);
+      const words = String(r.txt).split(/\s+/);
+      const i = words.findIndex((w) => norm(w).replace(/[^\p{L}'’-]/gu, '').includes(term));
+      const from = Math.max(0, (i < 0 ? 0 : i) - WINDOW);
+      const slice = words.slice(from, from + WINDOW * 2 + 1);
+      console.log(`     …${slice.join(' ')}…\n`);
+    }
+  }
+  db.close();
+  process.exit(0);
+}
 
 // ---------------------------------------------------------------------------
 // Relevé des noms propres rares — pour ne plus avoir à lire les transcriptions
