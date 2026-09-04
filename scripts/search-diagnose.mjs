@@ -65,10 +65,28 @@ for (const raw of terms) {
   try { prefix = countStmt.get(`"${term}"*`).c; } catch { /* idem */ }
   if (prefix > 0) found.push(`${raw} (${prefix})`); else missing.push(raw);
 
-  // En mode bref on ne détaille que les termes introuvables : c'est là
-  // qu'il y a quelque chose à corriger.
-  if (BRIEF && prefix > 0) continue;
+  // En mode bref on saute les termes trouvés ET sans voisin suspect : il n'y
+  // a rien à y corriger. On calcule donc les voisins avant de décider.
+  const skip = BRIEF && prefix > 0;
 
+
+  // Les graphies voisines, qu'on ait trouvé le mot ou non.
+  //
+  // Chercher les variantes seulement quand le nom est introuvable était une
+  // erreur : « Faurisson » est bien dans l'index, et pourtant la
+  // transcription écrit AUSSI « Forisson » ailleurs. Une orthographe
+  // correcte quelque part ne garantit pas qu'elle l'est partout.
+  const max = term.length <= 5 ? 1 : term.length <= 8 ? 2 : 3;
+  const near = [];
+  for (const { term: t, doc } of vocab) {
+    if (t === term) continue;
+    if (Math.abs(t.length - term.length) > max) continue;
+    const d = distance(term, t, max);
+    if (d <= max) near.push({ t, doc, d });
+  }
+  near.sort((a, b) => a.d - b.d || b.doc - a.doc);
+
+  if (skip && !near.length) continue;
   console.log(`${'─'.repeat(66)}\n« ${raw} »`);
   console.log(`  exact   : ${exact} passage(s)`);
   console.log(`  préfixe : ${prefix} passage(s)   (${term}…)`);
@@ -77,18 +95,12 @@ for (const raw of terms) {
     for (const r of sampleStmt.all(`"${term}"*`)) {
       console.log(`    n°${String(r.ep).padStart(3, '0')} · ${r.date} · ${String(r.title).slice(0, 46)} · à ${Math.floor(r.t / 60)}:${String(Math.round(r.t % 60)).padStart(2, '0')}`);
     }
+    if (near.length) {
+      console.log(`  ⚠ graphies voisines aussi présentes — possibles variantes du même nom :`);
+      for (const n of near.slice(0, 8)) console.log(`    ${n.t.padEnd(24)} ${String(n.doc).padStart(5)} passage(s)   (distance ${n.d})`);
+    }
     continue;
   }
-
-  // Rien trouvé : quels mots de l'index ressemblent à celui-ci ?
-  const max = term.length <= 5 ? 1 : term.length <= 8 ? 2 : 3;
-  const near = [];
-  for (const { term: t, doc } of vocab) {
-    if (Math.abs(t.length - term.length) > max) continue;
-    const d = distance(term, t, max);
-    if (d <= max) near.push({ t, doc, d });
-  }
-  near.sort((a, b) => a.d - b.d || b.doc - a.doc);
 
   // Et quels mots le contiennent, ou sont contenus dedans ?
   const parts = vocab
