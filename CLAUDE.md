@@ -84,7 +84,28 @@ Résultat sur les vraies données : 111/111 rattachés par la date.
 sur le n°100 — l'ancre se contrôle donc elle-même.
 
 **Manque l'épisode n°26** (« Présidentielle 2022 : l'élection qui serait truquée », 31 mars 2022),
-absent du lot transcrit. Il suffit de le transcrire et de redéposer le fichier.
+absent du lot transcrit. **Ticket #82 ouvert le 4 septembre 2026** pour la session Mac : il suffit
+de le transcrire et d'ajouter ses segments au fichier existant, puis de relancer l'indexation.
+
+### Les noms propres, deuxième passe (4 septembre 2026)
+
+Le relevé par groupes de graphies voisines a montré l'ampleur réelle, bien au-delà des six noms
+trouvés à la lecture : **103 graphies rétablies**, dont les deux noms les plus prononcés de
+l'émission. « Mendès-France » était écorché dans 37 mentions sur 92 ; « Reichstadt » l'était de
+25 façons, presque toujours dans le générique de fin.
+
+Méthode qui a fonctionné, à réutiliser : `--noms` donne les groupes, `--contexte <mot>` montre le
+passage (épisode, date, phrase), et une recherche en ligne suffit alors à identifier la personne.
+C'est ainsi qu'ont été retrouvés Audureau, De Lancer, Agha-Soltan, Sungenis, Boulianne, Didulo,
+van Hemelryck, Gillery, Silvano Trotta, Cordonier, Jézéquel, Tokaimura.
+
+**Trois pièges que seule la lecture du contexte a évités**, et qui auraient été des fautes :
+« Reichstag » est parfois le Parlement allemand, « Richter » l'échelle sismique, « Leuchter » le
+rapport négationniste de Fred Leuchter. Tous laissés intacts, les remerciements à Rudy se
+corrigeant par des clés composées. Même précaution pour « mariant » (participe de *marier*) et
+« cordonnier » (le métier). **Ne jamais corriger un mot qui est aussi un mot.**
+
+Restent non identifiés : « Christophe Bourloton » (ép. 36) et « David Diboublac » (ép. 71).
 
 #### Noms propres mal transcrits — deux mécanismes
 
