@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Robot majordome carré à deux antennes et moustache">
+  <rect width="512" height="512" fill="#0B0F0D"/>
+
+  <g fill="none" stroke="#D6A860" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M164 142L154 76M348 142L358 76" stroke-width="10"/>
+    <circle cx="153" cy="64" r="15" stroke-width="9"/>
+    <circle cx="359" cy="64" r="15" stroke-width="9"/>
+
+    <rect x="116" y="140" width="280" height="260" rx="30" stroke-width="13"/>
+    <path d="M116 198H94V302H116M396 198H418V302H396" stroke-width="12"/>
+    <path d="M132 166H380" stroke-width="7" opacity=".72"/>
+
+    <circle cx="194" cy="234" r="32" stroke-width="11"/>
+    <path d="M292 234C307 207 338 207 354 234C338 261 307 261 292 234Z" stroke-width="11"/>
+    <circle cx="194" cy="234" r="7" fill="#D6A860" stroke="none"/>
+    <circle cx="323" cy="234" r="7" fill="#D6A860" stroke="none"/>
+  </g>
+
+  <g fill="#D6A860">
+    <path d="M256 296C229 269 199 270 180 290C163 307 143 302 128 284C136 329 179 348 219 329C238 320 250 306 256 296Z"/>
+    <path d="M256 296C283 269 313 270 332 290C349 307 369 302 384 284C376 329 333 348 293 329C274 320 262 306 256 296Z"/>
+  </g>
+
+  <path d="M224 356H288" fill="none" stroke="#D6A860" stroke-width="8" stroke-linecap="round"/>
+</svg>
