@@ -397,10 +397,27 @@ Tenir cette section à jour à la fin de chaque chantier (état, décisions, res
 
 ### Reste à faire / à surveiller
 
-- **Rentrée du 11 septembre 2026** : vérifier ce vendredi soir (sync 18:00 UTC) et samedi matin
-  (08:00 UTC) que le premier épisode de la saison 7 remonte, que la pastille passe de
-  « REPRISE LE 11 SEPT » à « EN COURS » et que la puce « Saison 07 » apparaît. Rentrée 2027 :
-  passer `SEASON` à 8 et `SEASON_START` à la date annoncée.
+- ~~**Rentrée du 11 septembre 2026**~~ **Passée sans encombre.** L'épisode 113 (« 11 septembre
+  2001, 25 ans après ») est remonté seul le 11 au soir, et **le ticket #91 s'est ouvert tout
+  seul** à 20:07 sous le compte `github-actions` — c'était le seul maillon de la chaîne qui
+  n'avait jamais été éprouvé en conditions réelles. Rentrée 2027 : passer `SEASON` à 8 et
+  `SEASON_START` à la date annoncée.
+- **Deux domaines pour les liens d'épisode** — constaté le 12 septembre 2026, laissé en l'état,
+  **rien n'est cassé** : les deux formes fonctionnent et servent le même MP3
+  (`media.radiofrance-podcast.net`). À reprendre si l'envie vient, sans refaire l'enquête.
+  - 109 épisodes sur 113 : `radiofrance.fr/franceinfo/podcasts/complorama/…` — « franceinfo » y
+    est le nom de l'antenne, pas le domaine.
+  - Les 4 plus récents (n°110 du 5 juin, 111, 112, 113) : `franceinfo.fr/replay-radio/complorama/…`
+    Radio France a changé l'URL qu'elle publie dans son flux RSS vers juin 2026, et cela continuera.
+  - *Pour* préférer radiofrance.fr : la page franceinfo.fr tourne sur l'infrastructure de France
+    Télévisions (`_sf_async_config.domain = "francetvinfo.fr"` dans son HTML), alors que
+    Complorama est une production Radio France. Plus cohérent, et sans doute plus pérenne.
+  - *Contre* : cette page **se déclare elle-même canonique** (`<link rel="canonical">` sur
+    elle-même) — c'est l'éditeur qui désigne l'adresse qui fait foi. Et l'équivalent Radio France
+    existe mais sous un slug générique (`…/complorama/complorama-4980605`, relevé sur la page du
+    podcast), pas sous un titre lisible.
+  - Si on le fait : un résolveur dans la synchronisation qui retrouve l'URL Radio France à partir
+    du titre, en lisant `https://www.radiofrance.fr/franceinfo/podcasts/complorama`.
 - **complorama.fr comme adresse principale** (si Tristan le décide) : il crée un dépôt GitHub
   (par ex. `tristanmf/complorama`) et y autorise l'application GitHub de Claude ; ensuite, côté
   Claude : y publier le mur (ou une simple page de renvoi), configurer le domaine personnalisé
