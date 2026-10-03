@@ -74,8 +74,9 @@ function parseYoutubePlaylist(xml) {
     const block = m[0];
     const title = extractTag(block, 'title');
     const videoId = extractTag(block, 'yt:videoId');
+    const published = (extractTag(block, 'published') || '').slice(0, 10);
     if (title && videoId) {
-      videos.push({ title, url: `https://www.youtube.com/watch?v=${videoId}` });
+      videos.push({ title, published, url: `https://www.youtube.com/watch?v=${videoId}` });
     }
   }
   return videos;
@@ -94,7 +95,7 @@ function normalizeTitle(s) {
     .trim();
 }
 
-function findYoutubeMatch(episodeTitle, ytIndex) {
+function findYoutubeMatch(episodeTitle, ytIndex, episodeDate) {
   const epNorm = normalizeTitle(episodeTitle);
   if (epNorm.length < 8) return null; // too short to match safely
 
@@ -111,6 +112,20 @@ function findYoutubeMatch(episodeTitle, ytIndex) {
       const minLen = Math.min(epNorm.length, ytNorm.length);
       const maxLen = Math.max(epNorm.length, ytNorm.length);
       if (minLen / maxLen >= 0.7) return v.url;
+    }
+  }
+
+  // Pass 3: the YouTube title is often a short version of the podcast title
+  // ("La tentation putschiste" for "De la théorie du complot à la tentation
+  // putschiste : comment…"). Accept a contained title of 3+ words only if the
+  // video went up between the episode date and two weeks after it.
+  if (episodeDate) {
+    const epDay = Date.parse(episodeDate);
+    for (const v of ytIndex) {
+      const ytNorm = normalizeTitle(v.title);
+      if (ytNorm.split(' ').length < 3 || !` ${epNorm} `.includes(` ${ytNorm} `)) continue;
+      const lag = (Date.parse(v.published) - epDay) / 86400000;
+      if (lag >= 0 && lag <= 14) return v.url;
     }
   }
 
@@ -208,9 +223,11 @@ function backfillYoutube(src, ytIndex) {
   const videos = [];
   const updated = src.replace(
     /(\{[^}]*?\btitle:\s*"((?:[^"\\]|\\.)*)"[^}]*?\byoutube:\s*)null/g,
-    (full, prefix, title) => {
+    (full, prefix, title, offset) => {
       const decoded = JSON.parse(`"${title}"`);
-      const match = findYoutubeMatch(decoded, ytIndex);
+      const line = src.slice(offset, src.indexOf('\n', offset));
+      const date = (line.match(/\bdate:\s*"(\d{4}-\d{2}-\d{2})"/) || [])[1];
+      const match = findYoutubeMatch(decoded, ytIndex, date);
       if (!match) return full;
       count++;
       videos.push({ title: decoded, youtube: match });
@@ -264,7 +281,7 @@ async function main() {
       console.log(`Skipping (image UUID already known): ${item.title}`);
       continue;
     }
-    const youtube = findYoutubeMatch(item.title, ytIndex);
+    const youtube = findYoutubeMatch(item.title, ytIndex, toIsoDate(item.pubDate));
     newEps.push({
       title: item.title,
       url: item.link,
