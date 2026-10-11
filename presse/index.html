@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Revue de presse — Tristan Mendès France</title>
+<meta name="description" content="Relevé des articles citant Tristan Mendès France depuis 1997 — presse nationale, régionale, étrangère, agences et web — ainsi que ses rendez-vous radio, télé et podcast. Chaque entrée est datée et sourcée." />
+<meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0f1218" media="(prefers-color-scheme: dark)" />
+<link rel="canonical" href="https://tristan.pro/presse/" />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://tristan.pro/presse/" />
+<meta property="og:title" content="Revue de presse — Tristan Mendès France" />
+<meta property="og:description" content="1 808 articles depuis 1997 et 324 passages radio, télé et podcast. Relevé daté et sourcé." />
+<meta property="og:image" content="https://tristan.pro/og-image.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="595" />
+<meta property="og:locale" content="fr_FR" />
+<meta property="og:site_name" content="Tristan Mendès France" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@tristanmf" />
+<meta name="twitter:title" content="Revue de presse — Tristan Mendès France" />
+<meta name="twitter:description" content="1 808 articles depuis 1997 et 324 passages radio, télé et podcast." />
+<meta name="twitter:image" content="https://tristan.pro/og-image.jpg" />
+
+<link rel="icon" type="image/png" href="../favicon.png">
+<!-- Polices auto-hébergées (assets/fonts/, générées par scripts/vendor-assets.mjs).
+     Rien sur cette page ne charge depuis un domaine tiers. -->
+<link rel="stylesheet" href="/assets/fonts/presse.css" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="wrap">
+<header class="hero">
+  <div class="eyebrow">Revue de presse · 1997 – octobre 2026</div>
+  <h1>Tristan Mendès France <span>dans les médias</span></h1>
+  <p class="lede">Ce relevé recense les articles qui citent Tristan Mendès France, en presse nationale, régionale et étrangère, en agence et sur le web, ainsi que ses rendez-vous à la radio, à la télévision et en podcast. Chaque entrée est datée et sourcée.</p>
+  <div class="stats" id="stats"></div>
+</header>
+
+<section aria-labelledby="mur">
+  <div class="eyebrow">Le mur</div>
+  <h2 id="mur">Quelques centaines de titres, dans l'ordre où ils sont parus</h2>
+  <div class="wall" id="wall"></div>
+  <p class="note">Le défilement s'arrête au survol. Les médias sont identifiés par leur favicon, reprise de leur site ; à défaut, par leurs initiales.</p>
+</section>
+
+<section aria-labelledby="annees">
+  <div class="grid2">
+    <div>
+      <div class="eyebrow">Volume</div>
+      <h2 id="annees">Articles par année et par famille de médias</h2>
+      <div class="card" style="margin-top:14px"><div class="chart" id="chart"></div><div class="legend" id="legend"></div></div>
+      <p class="note" id="chartnote"></p>
+    </div>
+    <div>
+      <div class="eyebrow">Familles de médias</div>
+      <h2>Où il est cité</h2>
+      <div class="card" style="margin-top:14px" id="cats"></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="titres">
+  <div class="grid2">
+    <div>
+      <div class="eyebrow">Les titres</div>
+      <h2 id="titres">Les médias qui le citent le plus</h2>
+      <ul class="tops card" style="margin-top:14px" id="tops"></ul>
+    </div>
+    <div>
+      <div class="eyebrow">À quel titre</div>
+      <h2>Comment la presse le présente</h2>
+      <div class="card" style="margin-top:14px" id="quals"></div>
+      <p class="note">Ces chiffres sont des indicateurs. Ils viennent des extraits de quelques lignes qu'Europresse affiche autour de son nom ; un même article peut le présenter de plusieurs façons. La qualité n'apparaît pas dans l'extrait de <span id="noq"></span> articles.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="av">
+  <div class="eyebrow">Radio, télévision, podcast</div>
+  <h2 id="av">Les rendez-vous audiovisuels</h2>
+  <p class="lede" id="avlede"></p>
+  <div class="av" id="avgrid" style="margin-top:16px"></div>
+</section>
+
+<section aria-labelledby="index">
+  <div class="eyebrow">Index</div>
+  <h2 id="index">Toutes les références</h2>
+  <div class="tools">
+    <input id="q" type="search" placeholder="Chercher un titre, un média…" aria-label="Chercher">
+    <select id="fy" aria-label="Année"></select>
+    <select id="fc" aria-label="Famille de médias"></select>
+  </div>
+  <div class="count" id="cnt"></div>
+  <div class="list" id="list" style="margin-top:8px"></div>
+</section>
+
+<section aria-labelledby="methode">
+  <div class="eyebrow">Méthode</div>
+  <h2 id="methode">Sources et limites</h2>
+  <ul class="note" style="font-size:13.5px;max-width:78ch;padding-left:18px;display:grid;gap:6px">
+    <li><b>Europresse</b>, consulté par l'accès Université Paris Cité le 10/10/2026 : requête « Tristan Mendès France » sur toutes les archives, collectée année par année. Les dates, sources, titres et extraits viennent de la liste de résultats. Europresse regroupe les reprises d'un même article. Son compteur global (2 163) inclut ces reprises et les réseaux sociaux, que ce relevé écarte.</li>
+    <li><b>Google Actualités</b>, en complément, recherche « Tristan Mendès France » année par année de 2014 à 2026, relevée les 10 et 11/10/2026. On n'a gardé que les articles absents d'Europresse, datés de l'année recherchée et publiés par un média. Les réseaux sociaux, les plateformes et les pages hors presse ont été écartés. Ces entrées n'ont pas été relues une par une : quelques-unes peuvent ne citer son nom qu'en passant. Les années 2005 à 2013 n'ont pas été couvertes, Google ayant bloqué la collecte.</li>
+    <li><b>Audiovisuel</b> : Europresse n'indexe aucune émission de radio ou de télévision à son nom. Les entrées de cette rubrique viennent de pages web vérifiées (sites des chaînes, Radio France, YouTube, presse spécialisée).</li>
+    <li>Les familles de médias et les qualités (« à quel titre ») sont classées automatiquement à partir du nom de la source et de l'extrait ; quelques erreurs de classement restent possibles.</li>
+    <li>Les <b>favicons</b> sont les icônes publiques des sites concernés, copiées une fois sur ce serveur et servies depuis tristan.pro : aucune requête n'est adressée aux médias cités lors de la consultation. Elles identifient la source et ne valent pas affiliation. Les médias sans favicon connue sont représentés par leurs initiales.</li>
+  </ul>
+</section>
+
+<footer><span>Relevé arrêté au 10 octobre 2026.</span><span>Prompté par <a href="https://tristan.pro">Tristan Mendès France</a></span></footer>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
