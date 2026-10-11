@@ -1,6 +1,5 @@
 // GENERATED FILE — do not edit. Source: app.jsx
 // Rebuild with: node scripts/build-jsx.mjs  (CI does this on push)
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 const {
   useEffect,
   useRef,
@@ -552,6 +551,9 @@ function Navbar() {
     l: "Médias",
     h: "#projets"
   }, {
+    l: "Presse",
+    h: "/presse/"
+  }, {
     l: "Productions",
     h: "#productions"
   }, {
@@ -699,7 +701,7 @@ function Hero() {
     className: "liquid-glass-strong rounded-full p-1"
   }, /*#__PURE__*/React.createElement("img", {
     src: "./profile.jpg",
-    alt: "Tristan Mend\xE8s France",
+    alt: "Tristan Mendès France",
     className: "w-24 h-24 md:w-28 md:h-28 rounded-full object-cover",
     referrerPolicy: "no-referrer",
     onError: e => {
@@ -720,15 +722,28 @@ function Hero() {
   })), /*#__PURE__*/React.createElement(FadeIn, {
     delay: 0.25
   }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap items-center justify-center gap-2"
+  }, /*#__PURE__*/React.createElement("div", {
     className: "liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-4 whitespace-nowrap"
   }, /*#__PURE__*/React.createElement("span", {
     className: "bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body"
   }, "2026"), /*#__PURE__*/React.createElement("span", {
     className: "text-sm text-white/90 font-body"
-  }, "Disponible pour confs & interviews"))), /*#__PURE__*/React.createElement("div", {
+  }, "Disponible pour confs & interviews")), /*#__PURE__*/React.createElement("a", {
+    href: "/presse/",
+    className: "group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body"
+  }, "Presse"), /*#__PURE__*/React.createElement("span", {
+    className: "text-sm text-white/90 font-body"
+  }, "1 700+ articles depuis 1997"), /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 14,
+    strokeWidth: 2,
+    className: "text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+  })))), /*#__PURE__*/React.createElement("div", {
     className: "mt-6 text-center w-full px-4"
   }, /*#__PURE__*/React.createElement(BlurText, {
-    text: "Tristan Mend\xE8s France",
+    text: "Tristan Mendès France",
     as: "h1",
     delay: 100,
     className: "font-heading italic text-white leading-[0.9] whitespace-nowrap text-[clamp(2.25rem,8.5vw,5.5rem)]",
@@ -752,9 +767,9 @@ function Hero() {
     className: "mt-6 text-sm md:text-base text-white/75 font-body uppercase tracking-[0.18em] text-center max-w-5xl md:whitespace-nowrap leading-relaxed"
   }, "Journalisme ", /*#__PURE__*/React.createElement("span", {
     className: "mx-2 text-white/35"
-  }, "\xB7"), " cultures num\xE9riques ", /*#__PURE__*/React.createElement("span", {
+  }, "·"), " cultures numériques ", /*#__PURE__*/React.createElement("span", {
     className: "mx-2 text-white/35"
-  }, "\xB7"), " complotisme & radicalit\xE9s en ligne"), /*#__PURE__*/React.createElement(mot.p, {
+  }, "·"), " complotisme & radicalités en ligne"), /*#__PURE__*/React.createElement(mot.p, {
     initial: {
       filter: 'blur(10px)',
       opacity: 0,
@@ -771,7 +786,7 @@ function Hero() {
       ease: [0.2, 0.7, 0.2, 1]
     },
     className: "mt-6 text-lg md:text-xl text-white/85 font-body font-light leading-relaxed text-center max-w-2xl"
-  }, "Je travaille sur la fa\xE7on dont le num\xE9rique transforme la soci\xE9t\xE9, la d\xE9mocratie et les formes contemporaines de radicalit\xE9."), /*#__PURE__*/React.createElement(mot.div, {
+  }, "Je travaille sur la façon dont le numérique transforme la société, la démocratie et les formes contemporaines de radicalité."), /*#__PURE__*/React.createElement(mot.div, {
     initial: {
       filter: 'blur(10px)',
       opacity: 0,
@@ -926,10 +941,10 @@ function Hero() {
       ease: [0.2, 0.7, 0.2, 1]
     },
     className: "mt-8 md:mt-auto pt-2 md:pt-12 flex flex-col items-center gap-2 group",
-    "aria-label": "D\xE9filer vers \xC0 propos"
+    "aria-label": "Défiler vers À propos"
   }, /*#__PURE__*/React.createElement("span", {
     className: "text-[11px] uppercase tracking-[0.18em] text-white/50 font-body group-hover:text-white/80 transition-colors"
-  }, "D\xE9filer"), /*#__PURE__*/React.createElement(mot.div, {
+  }, "Défiler"), /*#__PURE__*/React.createElement(mot.div, {
     animate: {
       y: [0, 6, 0]
     },
@@ -962,7 +977,7 @@ function StartSection() {
     className: "relative z-10 flex flex-col items-center justify-center text-center px-6 py-16 md:py-28 min-h-[360px] md:min-h-[480px]"
   }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("div", {
     className: "liquid-glass rounded-full px-5 py-2 text-sm font-medium text-white font-body whitespace-nowrap"
-  }, "\xC0 propos")), /*#__PURE__*/React.createElement("div", {
+  }, "À propos")), /*#__PURE__*/React.createElement("div", {
     className: "mt-6 max-w-3xl"
   }, /*#__PURE__*/React.createElement(BlurText, {
     text: "Comprendre ce qui se joue en ligne.",
@@ -974,13 +989,13 @@ function StartSection() {
     delay: 0.3
   }, /*#__PURE__*/React.createElement("p", {
     className: "mt-6 max-w-2xl text-white/85 font-body font-light text-lg md:text-xl leading-relaxed"
-  }, "Ma\xEEtre de conf\xE9rences associ\xE9 en cultures num\xE9riques \xE0 l'Universit\xE9 Paris Cit\xE9 et enseignant au CELSA, je suis sp\xE9cialiste des cultures num\xE9riques et des radicalit\xE9s en ligne.", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("br", null), "Je coanime le podcast ", /*#__PURE__*/React.createElement("span", {
+  }, "Maître de conférences associé en cultures numériques à l'Université Paris Cité et enseignant au CELSA, je suis spécialiste des cultures numériques et des radicalités en ligne.", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("br", null), "Je coanime le podcast ", /*#__PURE__*/React.createElement("span", {
     className: "italic text-white"
-  }, "\xAB\xA0Complorama\xA0\xBB"), " (France Info), collabore \xE0 ", /*#__PURE__*/React.createElement("span", {
+  }, "«\xA0Complorama\xA0»"), " (France Info), collabore à ", /*#__PURE__*/React.createElement("span", {
     className: "italic text-white"
-  }, "Conspiracy Watch"), " et participe \xE0 l'\xE9mission ", /*#__PURE__*/React.createElement("span", {
+  }, "Conspiracy Watch"), " et participe à l'émission ", /*#__PURE__*/React.createElement("span", {
     className: "italic text-white"
-  }, "\xAB\xA0Les V\xE9rificateurs\xA0\xBB"), " (LCI)."))));
+  }, "«\xA0Les Vérificateurs\xA0»"), " (LCI)."))));
 }
 
 // ---------- Features Chess ----------
@@ -1123,7 +1138,7 @@ function FeaturesChess() {
     className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/60"
   }, "[\u200901\u2009]"), /*#__PURE__*/React.createElement("span", {
     className: "text-white font-body text-base md:text-lg tracking-tight"
-  }, "T\xE9l\xE9, radio, podcast")))), /*#__PURE__*/React.createElement("div", {
+  }, "Télé, radio, podcast")))), /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-1 md:grid-cols-3 gap-6"
   }, /*#__PURE__*/React.createElement(Parallax, {
     speed: 0,
@@ -1138,7 +1153,7 @@ function FeaturesChess() {
     kicker: "France Info",
     title: "Complorama",
     body: "Co-producteur et coanimateur de ce podcast France Info qui explore les dynamiques du complotisme contemporain.",
-    cta: "Voir tous les \xE9pisodes"
+    cta: "Voir tous les épisodes"
   }))), /*#__PURE__*/React.createElement(Parallax, {
     speed: 0,
     className: "h-full"
@@ -1151,8 +1166,8 @@ function FeaturesChess() {
     badge: "Radio",
     kicker: "France Inter",
     title: "Antidote",
-    body: "Chroniqueur de la matinale de France Inter de 2020 \xE0 2022 \u2014 un an et demi \xE0 d\xE9crypter, chaque semaine, les soubresauts de la complosph\xE8re.",
-    cta: "D\xE9couvrir"
+    body: "Chroniqueur de la matinale de France Inter de 2020 à 2022 — un an et demi à décrypter, chaque semaine, les soubresauts de la complosphère.",
+    cta: "Découvrir"
   }))), /*#__PURE__*/React.createElement(Parallax, {
     speed: 0,
     className: "h-full"
@@ -1164,9 +1179,9 @@ function FeaturesChess() {
     img: "./lci.jpg",
     badge: "TV",
     kicker: "LCI",
-    title: "Les V\xE9rificateurs",
-    body: "Consultant hebdomadaire de l'\xE9mission de 2025 \xE0 2026 \u2014 v\xE9rifier l'info en direct et d\xE9construire la d\xE9sinformation.",
-    cta: "Voir l'\xE9mission"
+    title: "Les Vérificateurs",
+    body: "Consultant hebdomadaire de l'émission de 2025 à 2026 — vérifier l'info en direct et déconstruire la désinformation.",
+    cta: "Voir l'émission"
   })))));
 }
 
@@ -1221,9 +1236,10 @@ function FeaturesGrid() {
   }, /*#__PURE__*/React.createElement(FadeIn, {
     delay: i * 0.1,
     className: "h-full"
-  }, /*#__PURE__*/React.createElement(MediaCard, _extends({}, it, {
+  }, /*#__PURE__*/React.createElement(MediaCard, {
+    ...it,
     compact: true
-  })))))));
+  }))))));
 }
 
 // ---------- Conferencier (replaces Stats) ----------
@@ -1257,18 +1273,18 @@ function Conferencier() {
     className: "max-w-2xl"
   }, /*#__PURE__*/React.createElement("div", {
     className: "inline-block liquid-glass rounded-full px-3.5 py-1 text-xs font-medium text-white font-body"
-  }, "Conf\xE9rencier"), /*#__PURE__*/React.createElement("h2", {
+  }, "Conférencier"), /*#__PURE__*/React.createElement("h2", {
     className: "mt-6 text-5xl md:text-6xl lg:text-7xl font-heading italic text-white leading-[0.85] tracking-tight"
   }, "Inviter quelqu'un qui comprend ", /*#__PURE__*/React.createElement("em", {
     className: "not-italic text-white/70"
   }, "vraiment"), " ce qui se joue en ligne."), /*#__PURE__*/React.createElement("p", {
     className: "mt-7 text-white/75 font-body font-light text-base md:text-lg leading-relaxed max-w-xl"
-  }, "Conf\xE9rences, keynotes, tables rondes, masterclass : j'interviens aupr\xE8s des entreprises, des universit\xE9s, des administrations et des m\xE9dias sur les radicalit\xE9s en ligne, la d\xE9sinformation, les IA g\xE9n\xE9ratives, les mutations d\xE9mocratiques du num\xE9rique et, plus largement, les cultures num\xE9riques."), /*#__PURE__*/React.createElement("div", {
+  }, "Conférences, keynotes, tables rondes, masterclass : j'interviens auprès des entreprises, des universités, des administrations et des médias sur les radicalités en ligne, la désinformation, les IA génératives, les mutations démocratiques du numérique et, plus largement, les cultures numériques."), /*#__PURE__*/React.createElement("div", {
     className: "mt-8 flex flex-wrap gap-4"
   }, /*#__PURE__*/React.createElement(MailLink, {
-    subject: "Demande de conf\xE9rence",
+    subject: "Demande de conférence",
     className: "liquid-glass-strong rounded-full px-6 py-3 text-sm font-medium text-white flex items-center gap-2 font-body whitespace-nowrap"
-  }, "R\xE9server une intervention ", /*#__PURE__*/React.createElement(ArrowUpRight, {
+  }, "Réserver une intervention ", /*#__PURE__*/React.createElement(ArrowUpRight, {
     size: 14,
     strokeWidth: 2
   })), /*#__PURE__*/React.createElement("a", {
@@ -1352,9 +1368,9 @@ function LabTile({
     }
   }, "tmflab.tech"), /*#__PURE__*/React.createElement("h3", {
     className: "mt-7 font-heading italic text-4xl md:text-6xl leading-[0.95] tracking-tight text-white"
-  }, "Je ne code pas.", /*#__PURE__*/React.createElement("br", null), "J'exp\xE9rimente."), /*#__PURE__*/React.createElement("p", {
+  }, "Je ne code pas.", /*#__PURE__*/React.createElement("br", null), "J'expérimente."), /*#__PURE__*/React.createElement("p", {
     className: "mt-5 text-white/75 font-body font-light text-base md:text-lg leading-relaxed"
-  }, "Toutes mes exp\xE9rimentations et explorations num\xE9riques, r\xE9unies dans mon laboratoire."), /*#__PURE__*/React.createElement("div", {
+  }, "Toutes mes expérimentations et explorations numériques, réunies dans mon laboratoire."), /*#__PURE__*/React.createElement("div", {
     className: "mt-8 inline-flex w-fit items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium font-body text-black transition-transform duration-300 group-hover:translate-x-0.5",
     style: {
       background: LAB_ACCENT
@@ -1405,7 +1421,7 @@ function Testimonials() {
   }, /*#__PURE__*/React.createElement("span", {
     "aria-hidden": "true",
     className: "text-white/25"
-  }, "\xB7"), /*#__PURE__*/React.createElement("a", {
+  }, "·"), /*#__PURE__*/React.createElement("a", {
     href: t.href,
     target: t.href.startsWith('http') ? '_blank' : undefined,
     rel: "noopener",
@@ -1528,13 +1544,13 @@ function CtaFooter() {
     }
   }, /*#__PURE__*/React.createElement("span", {
     className: "md:whitespace-nowrap"
-  }, "Conf\xE9rences, interviews, consultations, collaborations \xE9ditoriales\xA0: \xE9crivez-moi."), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("br", null), "Je r\xE9ponds personnellement \xE0 chaque message.")), /*#__PURE__*/React.createElement(FadeIn, {
+  }, "Conférences, interviews, consultations, collaborations éditoriales\xA0: écrivez-moi."), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("br", null), "Je réponds personnellement à chaque message.")), /*#__PURE__*/React.createElement(FadeIn, {
     delay: 0.6
   }, /*#__PURE__*/React.createElement("div", {
     className: "mt-10 flex justify-center"
   }, /*#__PURE__*/React.createElement(MailLink, {
     className: "liquid-glass-strong rounded-full px-10 py-5 text-lg md:text-xl font-medium text-white font-body hover:bg-white/15 transition-colors whitespace-nowrap shadow-[0_10px_40px_-10px_rgba(0,0,0,0.7)]"
-  }, "\xC9crivez-moi")))), /*#__PURE__*/React.createElement("div", {
+  }, "Écrivez-moi")))), /*#__PURE__*/React.createElement("div", {
     className: "mt-20 flex justify-center"
   }, /*#__PURE__*/React.createElement("a", {
     href: "#top",
@@ -1566,7 +1582,7 @@ function CtaFooter() {
     className: "mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4"
   }, /*#__PURE__*/React.createElement("div", {
     className: "text-white/40 text-xs font-body"
-  }, "\xA9 2026 Tristan Mend\xE8s France \u2014 vib\xE9cod\xE9 avec d\xE9contraction."), /*#__PURE__*/React.createElement("div", {
+  }, "© 2026 Tristan Mendès France — vibécodé avec décontraction."), /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-6"
   }, /*#__PURE__*/React.createElement("a", {
     href: "#projets",
@@ -1574,7 +1590,7 @@ function CtaFooter() {
   }, "Projets"), /*#__PURE__*/React.createElement("a", {
     href: "#apropos",
     className: "text-white/40 text-xs font-body hover:text-white/70"
-  }, "\xC0 propos"), /*#__PURE__*/React.createElement(MailLink, {
+  }, "À propos"), /*#__PURE__*/React.createElement(MailLink, {
     className: "text-white/40 text-xs font-body hover:text-white/70"
   }, "Contact")))));
 }

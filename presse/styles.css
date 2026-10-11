@@ -32,17 +32,6 @@ header.hero{display:grid;gap:18px;padding-block:8px 28px}
 .stat{background:var(--sheet);padding:16px 18px;display:grid;gap:4px;min-width:0}
 .stat b{font:600 2rem/1 var(--display);font-variant-numeric:tabular-nums}
 .stat small{color:var(--muted);font-size:12.5px;line-height:1.35}
-/* Mur de titres */
-.wall{display:grid;gap:12px;margin-top:18px;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);overflow:hidden}
-.lane{display:flex;gap:12px;width:max-content;animation:slide var(--dur,120s) linear infinite}
-.lane:nth-child(2){animation-direction:reverse}
-.wall:hover .lane{animation-play-state:paused}
-@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@media (prefers-reduced-motion:reduce){.lane{animation:none}.wall{overflow-x:auto}}
-.chip{flex:0 0 auto;width:280px;background:var(--sheet);border:1px solid var(--rule);border-radius:8px;padding:12px 14px;display:grid;gap:6px;align-content:start}
-.chip .src{font:700 15px/1.1 var(--display);letter-spacing:.01em}
-.chip .tt{font-size:13px;line-height:1.35;color:var(--ink);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.chip .dt{font:12px var(--mono);color:var(--muted)}
 .srcrow{display:flex;align-items:center;gap:8px;min-width:0}
 .bdg{position:relative;flex:0 0 auto;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:5px;color:var(--sheet);font:600 9.5px/1 var(--body);letter-spacing:.02em;overflow:hidden}
 /* La favicon se superpose aux initiales. Si elle ne charge pas, le script la

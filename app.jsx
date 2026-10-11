@@ -322,7 +322,7 @@ function FadeIn({ children, delay = 0, y = 20, className = "" }) {
 
 // ---------- Navbar ----------
 function Navbar() {
-  const links = [{ l: "Accueil", h: "#top" }, { l: "À propos", h: "#apropos" }, { l: "Médias", h: "#projets" }, { l: "Productions", h: "#productions" }, { l: "Conférences", h: "#conferences" }];
+  const links = [{ l: "Accueil", h: "#top" }, { l: "À propos", h: "#apropos" }, { l: "Médias", h: "#projets" }, { l: "Presse", h: "/presse/" }, { l: "Productions", h: "#productions" }, { l: "Conférences", h: "#conferences" }];
   const [active, setActive] = React.useState("#top");
   const [menuOpen, setMenuOpen] = React.useState(false);
   React.useEffect(() => {
@@ -433,9 +433,18 @@ function Hero() {
         </mot.div>
 
         <FadeIn delay={0.25}>
-          <div className="liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-4 whitespace-nowrap">
-            <span className="bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body">2026</span>
-            <span className="text-sm text-white/90 font-body">Disponible pour confs & interviews</span>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <div className="liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-4 whitespace-nowrap">
+              <span className="bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body">2026</span>
+              <span className="text-sm text-white/90 font-body">Disponible pour confs & interviews</span>
+            </div>
+            {/* Revue de presse : la preuve à côté de la disponibilité. Chiffre
+                arrondi volontairement, pour rester vrai quand le relevé grossit. */}
+            <a href="/presse/" className="group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors">
+              <span className="bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body">Presse</span>
+              <span className="text-sm text-white/90 font-body">1 700+ articles depuis 1997</span>
+              <ArrowUpRight size={14} strokeWidth={2} className="text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
           </div>
         </FadeIn>
 

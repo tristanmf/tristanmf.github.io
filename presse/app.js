@@ -50,15 +50,6 @@ function init(data) {
   ];
   document.getElementById("stats").innerHTML = st.map(([b, s]) => `<div class="stat"><b>${b}</b><small>${s}</small></div>`).join("");
 
-  // Mur défilant
-  (function () {
-    const picks = P.filter(p => p.c !== "Agences & lettres pro" && p.t.length > 12).slice(0, 240);
-    const lanes = [[], [], []];
-    picks.forEach((p, i) => lanes[i % 3].push(p));
-    const chip = p => `<div class="chip"><span class="srcrow">${badge(p)}<span class="src">${esc(p.s)}</span></span><span class="tt">${esc(p.t)}</span><span class="dt">${p.d.split("-").reverse().join("/")}</span></div>`;
-    document.getElementById("wall").innerHTML = lanes.map((l, i) => `<div class="lane" style="--dur:${150 + i * 30}s">${l.map(chip).join("")}${l.map(chip).join("")}</div>`).join("");
-  })();
-
   // Graphique par année
   function drawChart() {
     const ys = years.filter(y => +y >= 2005);
