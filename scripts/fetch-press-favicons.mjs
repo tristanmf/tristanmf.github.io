@@ -19,7 +19,10 @@ import path from 'node:path';
 
 const ROOT  = process.cwd();
 const OUT   = 'presse/favicons';
-const SRC   = 'presse/sources.json';
+// Deux origines de domaines : la table nom de média → domaine, et les liens
+// « Source » des cartes audiovisuelles, dont la page tire aussi une favicon.
+const SRC  = 'presse/sources.json';
+const DATA = 'presse/data.json';
 const SIZE  = 64;            // affichée en 20 px — 64 couvre les écrans Retina
 const FORCE = process.argv.includes('--force');
 const UA    = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
@@ -56,7 +59,12 @@ async function grab(domain) {
   throw new Error(errs.join(' / '));
 }
 
-const domains = [...new Set(Object.values(JSON.parse(await readFile(path.join(ROOT, SRC), 'utf8'))))].sort();
+const read = async rel => JSON.parse(await readFile(path.join(ROOT, rel), 'utf8'));
+const hostOf = u => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } };
+
+const fromSources = Object.values(await read(SRC));
+const fromAv = (await read(DATA)).av.items.map(i => hostOf(i.u || '')).filter(Boolean);
+const domains = [...new Set([...fromSources, ...fromAv])].sort();
 await mkdir(path.join(ROOT, OUT), { recursive: true });
 
 let written = 0, kept = 0;
