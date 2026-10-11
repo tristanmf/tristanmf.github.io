@@ -1,0 +1,45 @@
+name: Tools · Press favicons
+
+# Copie les favicons des médias de la revue de presse dans presse/favicons/,
+# pour que tristan.pro/presse/ ne contacte aucun domaine tiers à l'affichage.
+# À relancer après avoir ajouté des entrées dans presse/sources.json.
+# Idempotent : les fichiers déjà présents sont conservés, sauf si force = true.
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Re-télécharger même les favicons déjà présentes'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  favicons:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Fetch favicons
+        run: node scripts/fetch-press-favicons.mjs ${{ inputs.force && '--force' || '' }}
+
+      - name: Commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add presse/favicons
+          if git diff --staged --quiet; then
+            echo "Nothing to commit."
+          else
+            git commit -m "chore(presse): mirror media favicons [skip ci]"
+            git push
+          fi
