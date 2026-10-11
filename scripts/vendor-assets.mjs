@@ -21,7 +21,6 @@ const ROOT = process.cwd();
 const FONT_SHEETS = {
   site:       'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Barlow:wght@300;400;500;600&display=swap',
   complorama: 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,400;1,400;1,700&display=swap',
-  presse:     'https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600;6..72,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap',
 };
 // Only these Unicode subsets are kept — the site is French; cyrillic,
 // greek and vietnamese blocks would be dead bytes.

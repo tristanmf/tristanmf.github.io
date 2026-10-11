@@ -485,6 +485,56 @@ Transversal : navbar (scroll-spy, menu mobile), aurora blobs bleu/violet, barre 
 progression, parallax hero et fonds vidéo. La dérive parallax des cartes est **désactivée**
 (`speed={0}`) : elle donnait l'impression d'un défaut d'alignement.
 
+## Revue de presse — `tristan.pro/presse/` (en ligne le 11 octobre 2026, PR #96)
+
+**C'est une vue de l'application, pas une page à part.** `App` choisit entre l'accueil et
+`PressReview` selon `location.pathname` ; navbar, aurora, barre de progression et pied
+« Parlons-en » (`CtaFooter`) sont communs. Tristan l'a demandé explicitement : rester dans
+le site, seul le milieu change.
+
+- **Navigation** : `navigate(href)` (pushState + événement `tmf:navigate`) et le composant
+  `NavLink`. Clic simple = sans rechargement ; Cmd/Ctrl-clic et clic du milieu restent
+  natifs. `popstate` gère le retour. Les liens du menu sont en `/#ancre`, pour qu'ils
+  ramènent à l'accueil depuis la presse. Toute nouvelle entrée de menu doit passer par
+  `NavLink`, sinon elle rechargera la page.
+- **Chemins absolus obligatoires** dans `app.jsx` (`/hero.mp4`, pas `./hero.mp4`) : la même
+  application tourne aussi sous `/presse/`, où un chemin relatif casse.
+- **`presse/index.html` est GÉNÉRÉ** depuis `index.html` par `scripts/build-jsx.mjs` (seuls
+  titre, description, canonical et balises de partage changent) ; le workflow Build
+  front-end le régénère et le commite. Ne jamais l'éditer à la main.
+- **Données** : `presse/data.json` = `{articles:[{d,s,t,c,q,o}], av:{n,lede,items:[{k,m,e,u}]}}`.
+  Instantané arrêté au **10 octobre 2026** (1 783 articles, 360 médias, 327 passages
+  audiovisuels, 46 cartes). Mettre à jour = remplacer ce fichier, rien d'autre à toucher.
+  Les articles n'ont pas d'URL : titres non cliquables.
+- **Favicons** : `presse/sources.json` (nom de média → domaine, 112 entrées, ~83 % des
+  articles) ; icônes copiées une fois dans `presse/favicons/` par **Tools · Press favicons**
+  (`scripts/fetch-press-favicons.mjs` : Google, puis DuckDuckGo, puis `/favicon.ico`). Le
+  domaine des cartes audiovisuelles est pris automatiquement dans leur lien. Aucun domaine
+  tiers à l'affichage — le chargement direct depuis `google.com/s2/favicons`, demandé au
+  départ, a été écarté pour cette raison. Repli : pastille aux initiales.
+- Un lien d'entrée dans le menu (« Revue de presse ») et une pastille dans le hero
+  (« Revue de presse · 1 700+ articles », chiffre arrondi exprès pour rester vrai).
+
+**Décisions de contenu, prises par Tristan — ne pas rouvrir sans lui :**
+- Texte à la première personne, comme le reste du site ; titre « Revue de presse ».
+- **Pas de section méthode** (ni Europresse, ni Google Actualités, ni « Sources et
+  limites »), pas de signature « Prompté par ». Les articles trouvés par Google sont rangés
+  dans leur famille de médias.
+- **Sources exclues** (25 articles) : France Soir, Boulevard Voltaire, Observatoire du
+  journalisme, Réseau Voltaire, Égalité et Réconciliation — choisies sur leurs titres, pas
+  sur leur nom. CNews, JDD, Europe 1, Marianne restent (articles factuels). Valeurs Actuelles
+  et Causeur restent, faute de décision. L'exclusion n'est plus mentionnée sur la page
+  depuis la suppression de la méthode.
+- **Pas de mur défilant** : il alourdissait, et Booba y occupait 77 titres sur 240 (170
+  articles au total, 2025-2026). L'index les garde tous.
+- Section **« À l'international »** : pays (`PRESS_COUNTRY`), un article par média dans
+  l'ordre `PRESS_INTL_ORDER` (titres de référence d'abord), faits divers Booba / Gims et
+  extraits tronqués `[…]` écartés ; RTS, TV5MONDE, France 24 côté antenne.
+- Audiovisuel : une carte « La fabrique du mensonge » (France 5, quatre documentaires
+  2022-2024) ; tous les passages LCI 2025-2026 regroupés dans « LCI / Les Vérificateurs » ;
+  RTL 2015 identifiée comme *L'heure du crime* (Jacques Pradel). Pas de carte « émission
+  non identifiée ».
+
 ## Décisions prises (et pourquoi) — ne pas rouvrir sans raison
 
 **Contact**
@@ -544,3 +594,12 @@ progression, parallax hero et fonds vidéo. La dérive parallax des cartes est *
 - [ ] Réécrire `README.md` ; décider du sort de `portfolio-site.zip`.
 - [ ] Option ouverte : variante sombre du logo TMF Lab (inutile tant que la tuile est sombre).
 - [ ] Option ouverte : réactiver la grille de cartes sous la tuile (données en place).
+- [ ] **Revue de presse** — favicons manquantes pour *20 Minutes*, l'AFP et Bourse Direct
+      (requêtes automatisées bloquées) ; ~250 médias peu cités sans correspondance dans
+      `presse/sources.json`. Pour en ajouter : compléter le fichier, lancer
+      **Tools · Press favicons**.
+- [ ] **Revue de presse** — Tristan pense être intervenu plus de quatre fois dans *La
+      fabrique du mensonge* ; seuls quatre épisodes sont confirmés. Compléter s'il donne
+      les titres.
+- [ ] **Revue de presse** — instantané au 10 octobre 2026 : prévoir une mise à jour
+      (remplacer `presse/data.json`). Si le total dépasse 2 000, ajuster la pastille du hero.

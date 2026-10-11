@@ -19,7 +19,10 @@ import path from 'node:path';
 
 const ROOT  = process.cwd();
 const OUT   = 'presse/favicons';
-const SRC   = 'presse/sources.json';
+// Deux origines de domaines : la table nom de média → domaine, et les liens
+// « Source » des cartes audiovisuelles, dont la page tire aussi une favicon.
+const SRC  = 'presse/sources.json';
+const DATA = 'presse/data.json';
 const SIZE  = 64;            // affichée en 20 px — 64 couvre les écrans Retina
 const FORCE = process.argv.includes('--force');
 const UA    = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
@@ -31,16 +34,37 @@ const sleep  = ms => new Promise(r => setTimeout(r, ms));
 // Google renvoie quand il ne trouve rien : autant ne pas l'enregistrer.
 const MIN_BYTES = 120;
 
+// Trois sources essayées dans l'ordre. Google résout le mieux les sites qui
+// déclarent leur icône dans le HTML ; DuckDuckGo et le /favicon.ico du site
+// rattrapent ceux qu'il ne connaît pas. Le fichier garde l'extension .png par
+// convention de nommage même quand l'octet reçu est un ICO : les navigateurs
+// reconnaissent le format au contenu, pas au nom.
+const SOURCES = [
+  d => `https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=${SIZE}`,
+  d => `https://icons.duckduckgo.com/ip3/${encodeURIComponent(d)}.ico`,
+  d => `https://${d}/favicon.ico`,
+];
+
 async function grab(domain) {
-  const url = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=${SIZE}`;
-  const res = await fetch(url, { headers: { 'User-Agent': UA }, redirect: 'follow' });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const buf = Buffer.from(await res.arrayBuffer());
-  if (buf.length < MIN_BYTES) throw new Error(`icône générique (${buf.length} o)`);
-  return buf;
+  const errs = [];
+  for (const make of SOURCES) {
+    try {
+      const res = await fetch(make(domain), { headers: { 'User-Agent': UA }, redirect: 'follow', signal: AbortSignal.timeout(15000) });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const buf = Buffer.from(await res.arrayBuffer());
+      if (buf.length < MIN_BYTES) throw new Error(`icône générique (${buf.length} o)`);
+      return buf;
+    } catch (e) { errs.push(e.message); }
+  }
+  throw new Error(errs.join(' / '));
 }
 
-const domains = [...new Set(Object.values(JSON.parse(await readFile(path.join(ROOT, SRC), 'utf8'))))].sort();
+const read = async rel => JSON.parse(await readFile(path.join(ROOT, rel), 'utf8'));
+const hostOf = u => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } };
+
+const fromSources = Object.values(await read(SRC));
+const fromAv = (await read(DATA)).av.items.map(i => hostOf(i.u || '')).filter(Boolean);
+const domains = [...new Set([...fromSources, ...fromAv])].sort();
 await mkdir(path.join(ROOT, OUT), { recursive: true });
 
 let written = 0, kept = 0;
