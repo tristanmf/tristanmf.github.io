@@ -1,5 +1,6 @@
 // GENERATED FILE — do not edit. Source: app.jsx
 // Rebuild with: node scripts/build-jsx.mjs  (CI does this on push)
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 const {
   useEffect,
   useRef,
@@ -540,48 +541,97 @@ function FadeIn({
 }
 
 // ---------- Navbar ----------
-function Navbar() {
+// ---------- Navigation interne ----------
+// tristan.pro est une seule application : la revue de presse est une « vue »,
+// pas une autre page. La barre de navigation et le pied de page restent, seul
+// le contenu du milieu change, sans rechargement. /presse/ reste une vraie
+// adresse (partageable, indexable) : presse/index.html — généré depuis
+// index.html par scripts/build-jsx.mjs — charge la même application, qui lit
+// l'adresse au démarrage.
+const PRESS_PATH = "/presse/";
+const HOME_TITLE = "Tristan Mendès France — Cultures numériques & radicalités en ligne";
+const PRESS_TITLE = "Revue de presse — Tristan Mendès France";
+const viewFromPath = () => location.pathname.startsWith("/presse") ? "presse" : "home";
+function navigate(href) {
+  const url = new URL(href, location.origin);
+  if (url.pathname + url.hash !== location.pathname + location.hash) {
+    history.pushState({}, "", url.pathname + url.hash);
+  }
+  window.dispatchEvent(new CustomEvent("tmf:navigate", {
+    detail: {
+      hash: url.hash
+    }
+  }));
+}
+
+// Lien interne. Clic simple : navigation sans rechargement. Cmd/Ctrl-clic ou
+// clic du milieu : comportement normal du navigateur (nouvel onglet).
+function NavLink({
+  href,
+  onClick,
+  children,
+  ...rest
+}) {
+  const go = e => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    if (onClick) onClick(e);
+    navigate(href);
+  };
+  return /*#__PURE__*/React.createElement("a", _extends({
+    href: href,
+    onClick: go
+  }, rest), children);
+}
+function Navbar({
+  view
+}) {
   const links = [{
     l: "Accueil",
-    h: "#top"
+    h: "/#top"
   }, {
     l: "À propos",
-    h: "#apropos"
+    h: "/#apropos"
   }, {
     l: "Médias",
-    h: "#projets"
+    h: "/#projets"
   }, {
-    l: "Presse",
-    h: "/presse/"
+    l: "Revue de presse",
+    h: PRESS_PATH
   }, {
     l: "Productions",
-    h: "#productions"
+    h: "/#productions"
   }, {
     l: "Conférences",
-    h: "#conferences"
+    h: "/#conferences"
   }];
-  const [active, setActive] = React.useState("#top");
+  const [active, setActive] = React.useState(view === "presse" ? PRESS_PATH : "/#top");
   const [menuOpen, setMenuOpen] = React.useState(false);
   React.useEffect(() => {
+    if (view === "presse") {
+      setActive(PRESS_PATH);
+      return;
+    }
+    setActive("/#top");
     const ids = ["top", "projets", "productions", "conferences", "apropos", "contact"];
     const sections = ids.map(id => document.getElementById(id)).filter(Boolean);
     if (!sections.length) return;
     const io = new IntersectionObserver(entries => {
       const visible = entries.filter(e => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-      if (visible[0]) setActive("#" + visible[0].target.id);
+      if (visible[0]) setActive("/#" + visible[0].target.id);
     }, {
       rootMargin: "-40% 0px -50% 0px",
       threshold: [0, 0.1, 0.25, 0.5]
     });
     sections.forEach(s => io.observe(s));
     return () => io.disconnect();
-  }, []);
+  }, [view]);
   return /*#__PURE__*/React.createElement("nav", {
     className: "fixed top-4 left-0 right-0 z-50 px-4 md:px-8 lg:px-16 py-3"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center justify-between"
-  }, /*#__PURE__*/React.createElement("a", {
-    href: "#top",
+  }, /*#__PURE__*/React.createElement(NavLink, {
+    href: "/#top",
     className: "flex items-center gap-2"
   }, /*#__PURE__*/React.createElement("div", {
     className: "h-10 w-10 rounded-full liquid-glass-strong flex items-center justify-center"
@@ -604,7 +654,7 @@ function Navbar() {
     h
   }) => {
     const isActive = active === h;
-    return /*#__PURE__*/React.createElement("a", {
+    return /*#__PURE__*/React.createElement(NavLink, {
       key: l,
       href: h,
       className: "relative px-3 py-2 text-sm font-medium font-body transition-colors whitespace-nowrap " + (isActive ? "text-white" : "text-white/70 hover:text-white")
@@ -641,11 +691,11 @@ function Navbar() {
   }, links.map(({
     l,
     h
-  }) => /*#__PURE__*/React.createElement("a", {
+  }) => /*#__PURE__*/React.createElement(NavLink, {
     key: l,
     href: h,
     onClick: () => setMenuOpen(false),
-    className: "block px-4 py-2.5 rounded-2xl text-white/90 hover:bg-white/10 font-body text-base whitespace-nowrap"
+    className: "block px-4 py-2.5 rounded-2xl hover:bg-white/10 font-body text-base whitespace-nowrap " + (active === h ? "text-white bg-white/10" : "text-white/90")
   }, l)), /*#__PURE__*/React.createElement(MailLink, {
     className: "block mt-1 px-4 py-2.5 rounded-2xl bg-white text-black font-medium font-body text-base text-center"
   }, "Me contacter")));
@@ -653,7 +703,7 @@ function Navbar() {
 
 // ---------- Hero ----------
 function Hero() {
-  const videoRef = useHls("./hero.mp4");
+  const videoRef = useHls("/hero.mp4");
   return /*#__PURE__*/React.createElement("section", {
     id: "top",
     className: "relative overflow-hidden flex flex-col min-h-[100svh]"
@@ -700,8 +750,8 @@ function Hero() {
   }, /*#__PURE__*/React.createElement("div", {
     className: "liquid-glass-strong rounded-full p-1"
   }, /*#__PURE__*/React.createElement("img", {
-    src: "./profile.jpg",
-    alt: "Tristan Mendès France",
+    src: "/profile.jpg",
+    alt: "Tristan Mend\xE8s France",
     className: "w-24 h-24 md:w-28 md:h-28 rounded-full object-cover",
     referrerPolicy: "no-referrer",
     onError: e => {
@@ -729,21 +779,21 @@ function Hero() {
     className: "bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body"
   }, "2026"), /*#__PURE__*/React.createElement("span", {
     className: "text-sm text-white/90 font-body"
-  }, "Disponible pour confs & interviews")), /*#__PURE__*/React.createElement("a", {
-    href: "/presse/",
+  }, "Disponible pour confs & interviews")), /*#__PURE__*/React.createElement(NavLink, {
+    href: PRESS_PATH,
     className: "group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors"
   }, /*#__PURE__*/React.createElement("span", {
     className: "bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body"
-  }, "Presse"), /*#__PURE__*/React.createElement("span", {
+  }, "Revue de presse"), /*#__PURE__*/React.createElement("span", {
     className: "text-sm text-white/90 font-body"
-  }, "1 700+ articles depuis 1997"), /*#__PURE__*/React.createElement(ArrowUpRight, {
+  }, "1 700+ articles"), /*#__PURE__*/React.createElement(ArrowUpRight, {
     size: 14,
     strokeWidth: 2,
     className: "text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
   })))), /*#__PURE__*/React.createElement("div", {
     className: "mt-6 text-center w-full px-4"
   }, /*#__PURE__*/React.createElement(BlurText, {
-    text: "Tristan Mendès France",
+    text: "Tristan Mend\xE8s France",
     as: "h1",
     delay: 100,
     className: "font-heading italic text-white leading-[0.9] whitespace-nowrap text-[clamp(2.25rem,8.5vw,5.5rem)]",
@@ -767,9 +817,9 @@ function Hero() {
     className: "mt-6 text-sm md:text-base text-white/75 font-body uppercase tracking-[0.18em] text-center max-w-5xl md:whitespace-nowrap leading-relaxed"
   }, "Journalisme ", /*#__PURE__*/React.createElement("span", {
     className: "mx-2 text-white/35"
-  }, "·"), " cultures numériques ", /*#__PURE__*/React.createElement("span", {
+  }, "\xB7"), " cultures num\xE9riques ", /*#__PURE__*/React.createElement("span", {
     className: "mx-2 text-white/35"
-  }, "·"), " complotisme & radicalités en ligne"), /*#__PURE__*/React.createElement(mot.p, {
+  }, "\xB7"), " complotisme & radicalit\xE9s en ligne"), /*#__PURE__*/React.createElement(mot.p, {
     initial: {
       filter: 'blur(10px)',
       opacity: 0,
@@ -786,7 +836,7 @@ function Hero() {
       ease: [0.2, 0.7, 0.2, 1]
     },
     className: "mt-6 text-lg md:text-xl text-white/85 font-body font-light leading-relaxed text-center max-w-2xl"
-  }, "Je travaille sur la façon dont le numérique transforme la société, la démocratie et les formes contemporaines de radicalité."), /*#__PURE__*/React.createElement(mot.div, {
+  }, "Je travaille sur la fa\xE7on dont le num\xE9rique transforme la soci\xE9t\xE9, la d\xE9mocratie et les formes contemporaines de radicalit\xE9."), /*#__PURE__*/React.createElement(mot.div, {
     initial: {
       filter: 'blur(10px)',
       opacity: 0,
@@ -941,10 +991,10 @@ function Hero() {
       ease: [0.2, 0.7, 0.2, 1]
     },
     className: "mt-8 md:mt-auto pt-2 md:pt-12 flex flex-col items-center gap-2 group",
-    "aria-label": "Défiler vers À propos"
+    "aria-label": "D\xE9filer vers \xC0 propos"
   }, /*#__PURE__*/React.createElement("span", {
     className: "text-[11px] uppercase tracking-[0.18em] text-white/50 font-body group-hover:text-white/80 transition-colors"
-  }, "Défiler"), /*#__PURE__*/React.createElement(mot.div, {
+  }, "D\xE9filer"), /*#__PURE__*/React.createElement(mot.div, {
     animate: {
       y: [0, 6, 0]
     },
@@ -977,7 +1027,7 @@ function StartSection() {
     className: "relative z-10 flex flex-col items-center justify-center text-center px-6 py-16 md:py-28 min-h-[360px] md:min-h-[480px]"
   }, /*#__PURE__*/React.createElement(FadeIn, null, /*#__PURE__*/React.createElement("div", {
     className: "liquid-glass rounded-full px-5 py-2 text-sm font-medium text-white font-body whitespace-nowrap"
-  }, "À propos")), /*#__PURE__*/React.createElement("div", {
+  }, "\xC0 propos")), /*#__PURE__*/React.createElement("div", {
     className: "mt-6 max-w-3xl"
   }, /*#__PURE__*/React.createElement(BlurText, {
     text: "Comprendre ce qui se joue en ligne.",
@@ -989,13 +1039,13 @@ function StartSection() {
     delay: 0.3
   }, /*#__PURE__*/React.createElement("p", {
     className: "mt-6 max-w-2xl text-white/85 font-body font-light text-lg md:text-xl leading-relaxed"
-  }, "Maître de conférences associé en cultures numériques à l'Université Paris Cité et enseignant au CELSA, je suis spécialiste des cultures numériques et des radicalités en ligne.", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("br", null), "Je coanime le podcast ", /*#__PURE__*/React.createElement("span", {
+  }, "Ma\xEEtre de conf\xE9rences associ\xE9 en cultures num\xE9riques \xE0 l'Universit\xE9 Paris Cit\xE9 et enseignant au CELSA, je suis sp\xE9cialiste des cultures num\xE9riques et des radicalit\xE9s en ligne.", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("br", null), "Je coanime le podcast ", /*#__PURE__*/React.createElement("span", {
     className: "italic text-white"
-  }, "«\xA0Complorama\xA0»"), " (France Info), collabore à ", /*#__PURE__*/React.createElement("span", {
+  }, "\xAB\xA0Complorama\xA0\xBB"), " (France Info), collabore \xE0 ", /*#__PURE__*/React.createElement("span", {
     className: "italic text-white"
-  }, "Conspiracy Watch"), " et participe à l'émission ", /*#__PURE__*/React.createElement("span", {
+  }, "Conspiracy Watch"), " et participe \xE0 l'\xE9mission ", /*#__PURE__*/React.createElement("span", {
     className: "italic text-white"
-  }, "«\xA0Les Vérificateurs\xA0»"), " (LCI)."))));
+  }, "\xAB\xA0Les V\xE9rificateurs\xA0\xBB"), " (LCI)."))));
 }
 
 // ---------- Features Chess ----------
@@ -1138,7 +1188,7 @@ function FeaturesChess() {
     className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/60"
   }, "[\u200901\u2009]"), /*#__PURE__*/React.createElement("span", {
     className: "text-white font-body text-base md:text-lg tracking-tight"
-  }, "Télé, radio, podcast")))), /*#__PURE__*/React.createElement("div", {
+  }, "T\xE9l\xE9, radio, podcast")))), /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-1 md:grid-cols-3 gap-6"
   }, /*#__PURE__*/React.createElement(Parallax, {
     speed: 0,
@@ -1147,13 +1197,13 @@ function FeaturesChess() {
     delay: 0,
     className: "h-full"
   }, /*#__PURE__*/React.createElement(MediaCard, {
-    href: "./complorama/",
-    img: "./complorama.jpg",
+    href: "/complorama/",
+    img: "/complorama.jpg",
     badge: "Podcast",
     kicker: "France Info",
     title: "Complorama",
     body: "Co-producteur et coanimateur de ce podcast France Info qui explore les dynamiques du complotisme contemporain.",
-    cta: "Voir tous les épisodes"
+    cta: "Voir tous les \xE9pisodes"
   }))), /*#__PURE__*/React.createElement(Parallax, {
     speed: 0,
     className: "h-full"
@@ -1162,12 +1212,12 @@ function FeaturesChess() {
     className: "h-full"
   }, /*#__PURE__*/React.createElement(MediaCard, {
     href: "https://www.radiofrance.fr/franceinter/podcasts/antidote",
-    img: "./antidote.jpg",
+    img: "/antidote.jpg",
     badge: "Radio",
     kicker: "France Inter",
     title: "Antidote",
-    body: "Chroniqueur de la matinale de France Inter de 2020 à 2022 — un an et demi à décrypter, chaque semaine, les soubresauts de la complosphère.",
-    cta: "Découvrir"
+    body: "Chroniqueur de la matinale de France Inter de 2020 \xE0 2022 \u2014 un an et demi \xE0 d\xE9crypter, chaque semaine, les soubresauts de la complosph\xE8re.",
+    cta: "D\xE9couvrir"
   }))), /*#__PURE__*/React.createElement(Parallax, {
     speed: 0,
     className: "h-full"
@@ -1176,40 +1226,40 @@ function FeaturesChess() {
     className: "h-full"
   }, /*#__PURE__*/React.createElement(MediaCard, {
     href: "https://www.tf1info.fr/emissions/lci/verificateurs-14293/",
-    img: "./lci.jpg",
+    img: "/lci.jpg",
     badge: "TV",
     kicker: "LCI",
-    title: "Les Vérificateurs",
-    body: "Consultant hebdomadaire de l'émission de 2025 à 2026 — vérifier l'info en direct et déconstruire la désinformation.",
-    cta: "Voir l'émission"
+    title: "Les V\xE9rificateurs",
+    body: "Consultant hebdomadaire de l'\xE9mission de 2025 \xE0 2026 \u2014 v\xE9rifier l'info en direct et d\xE9construire la d\xE9sinformation.",
+    cta: "Voir l'\xE9mission"
   })))));
 }
 
 // ---------- Features Grid (Institutionnel) ----------
 function FeaturesGrid() {
   const items = [{
-    img: "./conspiracywatch.jpg",
+    img: "/conspiracywatch.jpg",
     kicker: "Observatoire",
     title: "Conspiracy Watch",
     body: "Collaborateur de l'Observatoire du conspirationnisme, qui documente et analyse les théories du complot depuis 2007.",
     href: "https://www.conspiracywatch.info",
     cta: "Explorer"
   }, {
-    img: "./france-medias-monde.jpg",
+    img: "/france-medias-monde.jpg",
     kicker: "Gouvernance",
     title: "CHIPIP — France Médias Monde",
     body: "Membre du Comité d'indépendance et d'intégrité du groupe audiovisuel public à destination internationale.",
     href: "https://www.francemediasmonde.com/fr/nos-engagements/deontologie/",
     cta: "En savoir plus"
   }, {
-    img: "./infographie.jpg",
+    img: "/infographie.jpg",
     kicker: "Livre · Éditions CNRS",
     title: "Internet, une infographie",
     body: "Un ouvrage grand public qui décrypte, visuellement, l'impact du numérique sur nos sociétés — réseaux, plateformes, nouveaux pouvoirs.",
     href: "https://www.cnrseditions.fr/catalogue/societe/internet/",
     cta: "Voir le livre"
   }, {
-    img: "./faussaires.jpg",
+    img: "/faussaires.jpg",
     kicker: "Livre collectif · Philippe Rey",
     title: "Les Faussaires de la nation",
     body: "Comment l'extrême droite défigure l'histoire, et comment lui résister : cinquante historiens réunis sous la direction de Vincent Duclert et Maria Malagardis. Parution le 1er octobre.",
@@ -1236,15 +1286,14 @@ function FeaturesGrid() {
   }, /*#__PURE__*/React.createElement(FadeIn, {
     delay: i * 0.1,
     className: "h-full"
-  }, /*#__PURE__*/React.createElement(MediaCard, {
-    ...it,
+  }, /*#__PURE__*/React.createElement(MediaCard, _extends({}, it, {
     compact: true
-  }))))));
+  })))))));
 }
 
 // ---------- Conferencier (replaces Stats) ----------
 function Conferencier() {
-  const ref = useHls("./conf.mp4");
+  const ref = useHls("/conf.mp4");
   return /*#__PURE__*/React.createElement("section", {
     id: "conferences",
     className: "relative overflow-hidden py-14 md:py-24"
@@ -1273,18 +1322,18 @@ function Conferencier() {
     className: "max-w-2xl"
   }, /*#__PURE__*/React.createElement("div", {
     className: "inline-block liquid-glass rounded-full px-3.5 py-1 text-xs font-medium text-white font-body"
-  }, "Conférencier"), /*#__PURE__*/React.createElement("h2", {
+  }, "Conf\xE9rencier"), /*#__PURE__*/React.createElement("h2", {
     className: "mt-6 text-5xl md:text-6xl lg:text-7xl font-heading italic text-white leading-[0.85] tracking-tight"
   }, "Inviter quelqu'un qui comprend ", /*#__PURE__*/React.createElement("em", {
     className: "not-italic text-white/70"
   }, "vraiment"), " ce qui se joue en ligne."), /*#__PURE__*/React.createElement("p", {
     className: "mt-7 text-white/75 font-body font-light text-base md:text-lg leading-relaxed max-w-xl"
-  }, "Conférences, keynotes, tables rondes, masterclass : j'interviens auprès des entreprises, des universités, des administrations et des médias sur les radicalités en ligne, la désinformation, les IA génératives, les mutations démocratiques du numérique et, plus largement, les cultures numériques."), /*#__PURE__*/React.createElement("div", {
+  }, "Conf\xE9rences, keynotes, tables rondes, masterclass : j'interviens aupr\xE8s des entreprises, des universit\xE9s, des administrations et des m\xE9dias sur les radicalit\xE9s en ligne, la d\xE9sinformation, les IA g\xE9n\xE9ratives, les mutations d\xE9mocratiques du num\xE9rique et, plus largement, les cultures num\xE9riques."), /*#__PURE__*/React.createElement("div", {
     className: "mt-8 flex flex-wrap gap-4"
   }, /*#__PURE__*/React.createElement(MailLink, {
-    subject: "Demande de conférence",
+    subject: "Demande de conf\xE9rence",
     className: "liquid-glass-strong rounded-full px-6 py-3 text-sm font-medium text-white flex items-center gap-2 font-body whitespace-nowrap"
-  }, "Réserver une intervention ", /*#__PURE__*/React.createElement(ArrowUpRight, {
+  }, "R\xE9server une intervention ", /*#__PURE__*/React.createElement(ArrowUpRight, {
     size: 14,
     strokeWidth: 2
   })), /*#__PURE__*/React.createElement("a", {
@@ -1368,9 +1417,9 @@ function LabTile({
     }
   }, "tmflab.tech"), /*#__PURE__*/React.createElement("h3", {
     className: "mt-7 font-heading italic text-4xl md:text-6xl leading-[0.95] tracking-tight text-white"
-  }, "Je ne code pas.", /*#__PURE__*/React.createElement("br", null), "J'expérimente."), /*#__PURE__*/React.createElement("p", {
+  }, "Je ne code pas.", /*#__PURE__*/React.createElement("br", null), "J'exp\xE9rimente."), /*#__PURE__*/React.createElement("p", {
     className: "mt-5 text-white/75 font-body font-light text-base md:text-lg leading-relaxed"
-  }, "Toutes mes expérimentations et explorations numériques, réunies dans mon laboratoire."), /*#__PURE__*/React.createElement("div", {
+  }, "Toutes mes exp\xE9rimentations et explorations num\xE9riques, r\xE9unies dans mon laboratoire."), /*#__PURE__*/React.createElement("div", {
     className: "mt-8 inline-flex w-fit items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium font-body text-black transition-transform duration-300 group-hover:translate-x-0.5",
     style: {
       background: LAB_ACCENT
@@ -1382,16 +1431,16 @@ function LabTile({
 }
 function Testimonials() {
   const items = [{
-    href: "./carte-complotisme/",
-    img: "./comploscore.jpg",
+    href: "/carte-complotisme/",
+    img: "/comploscore.jpg",
     badge: "Data viz",
     kicker: "Cartographie interactive",
     title: "ComploScore",
     body: "Un nutri-score du complotisme : carte interactive pour visualiser et comparer les niveaux de conspirationnisme par pays.",
     cta: "Explorer la carte"
   }, {
-    href: "./TECHNOFASCISME-Infographie-interactive/",
-    img: "./technofascisme-preview.svg",
+    href: "/TECHNOFASCISME-Infographie-interactive/",
+    img: "/technofascisme-preview.svg",
     badge: "Infographie",
     kicker: "Exploration interactive",
     title: "Technofascisme",
@@ -1399,7 +1448,7 @@ function Testimonials() {
     cta: "Explorer"
   }, {
     href: "https://www.egoblog.net/happyworld/",
-    img: "./happyworld.jpg",
+    img: "/happyworld.jpg",
     badge: "Documentaire",
     kicker: "Birmanie · 2011",
     title: "Happy World",
@@ -1410,8 +1459,8 @@ function Testimonials() {
     id: "productions",
     className: "px-6 md:px-12 lg:px-24 py-16 md:py-28"
   }, /*#__PURE__*/React.createElement(LabTile, {
-    video: "./tmflab.mp4",
-    logo: "./tmflab-logo.svg"
+    video: "/tmflab.mp4",
+    logo: "/tmflab-logo.svg"
   }), /*#__PURE__*/React.createElement(FadeIn, {
     delay: 0.2
   }, /*#__PURE__*/React.createElement("div", {
@@ -1421,7 +1470,7 @@ function Testimonials() {
   }, /*#__PURE__*/React.createElement("span", {
     "aria-hidden": "true",
     className: "text-white/25"
-  }, "·"), /*#__PURE__*/React.createElement("a", {
+  }, "\xB7"), /*#__PURE__*/React.createElement("a", {
     href: t.href,
     target: t.href.startsWith('http') ? '_blank' : undefined,
     rel: "noopener",
@@ -1521,7 +1570,7 @@ function CtaFooter() {
     mobileFactor: 0.6,
     className: "absolute inset-0 z-0 overflow-hidden"
   }, /*#__PURE__*/React.createElement(CrossfadeVideo, {
-    src: "./bottom.mp4",
+    src: "/bottom.mp4",
     className: "absolute inset-0 w-full h-full object-cover edge-fade-top",
     crossfade: 1.2
   }), /*#__PURE__*/React.createElement("div", {
@@ -1544,13 +1593,13 @@ function CtaFooter() {
     }
   }, /*#__PURE__*/React.createElement("span", {
     className: "md:whitespace-nowrap"
-  }, "Conférences, interviews, consultations, collaborations éditoriales\xA0: écrivez-moi."), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("br", null), "Je réponds personnellement à chaque message.")), /*#__PURE__*/React.createElement(FadeIn, {
+  }, "Conf\xE9rences, interviews, consultations, collaborations \xE9ditoriales\xA0: \xE9crivez-moi."), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("br", null), "Je r\xE9ponds personnellement \xE0 chaque message.")), /*#__PURE__*/React.createElement(FadeIn, {
     delay: 0.6
   }, /*#__PURE__*/React.createElement("div", {
     className: "mt-10 flex justify-center"
   }, /*#__PURE__*/React.createElement(MailLink, {
     className: "liquid-glass-strong rounded-full px-10 py-5 text-lg md:text-xl font-medium text-white font-body hover:bg-white/15 transition-colors whitespace-nowrap shadow-[0_10px_40px_-10px_rgba(0,0,0,0.7)]"
-  }, "Écrivez-moi")))), /*#__PURE__*/React.createElement("div", {
+  }, "\xC9crivez-moi")))), /*#__PURE__*/React.createElement("div", {
     className: "mt-20 flex justify-center"
   }, /*#__PURE__*/React.createElement("a", {
     href: "#top",
@@ -1582,21 +1631,566 @@ function CtaFooter() {
     className: "mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4"
   }, /*#__PURE__*/React.createElement("div", {
     className: "text-white/40 text-xs font-body"
-  }, "© 2026 Tristan Mendès France — vibécodé avec décontraction."), /*#__PURE__*/React.createElement("div", {
+  }, "\xA9 2026 Tristan Mend\xE8s France \u2014 vib\xE9cod\xE9 avec d\xE9contraction."), /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-6"
-  }, /*#__PURE__*/React.createElement("a", {
-    href: "#projets",
+  }, /*#__PURE__*/React.createElement(NavLink, {
+    href: "/#projets",
     className: "text-white/40 text-xs font-body hover:text-white/70"
-  }, "Projets"), /*#__PURE__*/React.createElement("a", {
-    href: "#apropos",
+  }, "Projets"), /*#__PURE__*/React.createElement(NavLink, {
+    href: PRESS_PATH,
     className: "text-white/40 text-xs font-body hover:text-white/70"
-  }, "À propos"), /*#__PURE__*/React.createElement(MailLink, {
+  }, "Revue de presse"), /*#__PURE__*/React.createElement(NavLink, {
+    href: "/#apropos",
+    className: "text-white/40 text-xs font-body hover:text-white/70"
+  }, "\xC0 propos"), /*#__PURE__*/React.createElement(MailLink, {
     className: "text-white/40 text-xs font-body hover:text-white/70"
   }, "Contact")))));
 }
 
+// ---------- Revue de presse (vue /presse/) ----------
+// Données : /presse/data.json (articles + audiovisuel), /presse/sources.json
+// (nom de média → domaine). Favicons copiées dans /presse/favicons/ par
+// scripts/fetch-press-favicons.mjs : aucun domaine tiers n'est contacté.
+const PRESS_CATS = ["Presse nationale", "Magazines", "Presse régionale", "Radio & télé (sites)", "Agences & lettres pro", "Web & pure players", "Presse étrangère"];
+const PRESS_COL = {
+  "Presse nationale": "#7aa2ff",
+  "Magazines": "#b49bff",
+  "Presse régionale": "#34d3c2",
+  "Radio & télé (sites)": "#f0a453",
+  "Agences & lettres pro": "#a3b0c2",
+  "Web & pure players": "#5cc4f5",
+  "Presse étrangère": "#fb7193"
+};
+// Pays des médias étrangers, pour la section « À l'international ».
+const PRESS_COUNTRY = {
+  "Le Soir": "Belgique",
+  "La Libre Belgique": "Belgique",
+  "La Libre.be": "Belgique",
+  "DH": "Belgique",
+  "L'Avenir": "Belgique",
+  "Sudinfo.be": "Belgique",
+  "HLN": "Belgique",
+  "RTBF": "Belgique",
+  "Le Temps": "Suisse",
+  "Tribune de Genève": "Suisse",
+  "Le Matin Dimanche": "Suisse",
+  "Le Matin": "Suisse",
+  "24 Heures": "Suisse",
+  "rts.ch": "Suisse",
+  "Le Journal de Montréal": "Québec",
+  "Le Journal de Québec": "Québec",
+  "La Presse+": "Québec",
+  "Le Soleil": "Québec",
+  "Le Devoir": "Québec",
+  "ICI Radio-Canada": "Québec",
+  "The Times of Israël": "Israël",
+  "Financial Times": "Royaume-Uni",
+  "La Nouvelle Tribune": "Bénin",
+  "Mali Actu": "Mali"
+};
+// Ordre de la sélection « Dans la presse étrangère » : les titres de référence
+// d'abord. Un seul article par média, pour la diversité.
+const PRESS_INTL_ORDER = ["Financial Times", "Le Temps", "Le Soir", "La Libre Belgique", "Le Devoir", "La Presse+", "The Times of Israël", "RTBF", "Tribune de Genève", "Le Journal de Montréal", "Le Soleil", "24 Heures"];
+const pFmt = n => n.toLocaleString("fr-FR");
+const pDate = d => d.split("-").reverse().join("/");
+const pIni = s => {
+  const w = s.replace(/^(Le|La|Les|L'|L’)\s*/i, "").replace(/[^\p{L}\p{N} ]/gu, " ").trim().split(/\s+/).filter(Boolean);
+  return ((w[0] || "?")[0] + (w[1] ? w[1][0] : (w[0] || "")[1] || "")).toUpperCase();
+};
+const pHost = u => {
+  try {
+    return new URL(u).hostname.replace(/^www\./, "");
+  } catch (e) {
+    return "";
+  }
+};
+
+// Pastille du média : favicon sur fond blanc, initiales en couleur de famille
+// si l'icône manque ou ne charge pas — jamais de carré vide.
+function PressBadge({
+  name,
+  cat,
+  domain
+}) {
+  const [ok, setOk] = React.useState(true);
+  return /*#__PURE__*/React.createElement("span", {
+    className: "relative inline-grid place-items-center h-5 w-5 shrink-0 overflow-hidden rounded-[5px] font-body text-[9.5px] font-semibold leading-none text-black/80",
+    style: {
+      background: PRESS_COL[cat] || "#a3b0c2"
+    },
+    "aria-hidden": "true"
+  }, pIni(name), domain && ok && /*#__PURE__*/React.createElement("img", {
+    src: `/presse/favicons/${domain}.png`,
+    alt: "",
+    loading: "lazy",
+    decoding: "async",
+    onError: () => setOk(false),
+    className: "absolute inset-0 h-full w-full bg-white object-contain p-px"
+  }));
+}
+function PressHeading({
+  eyebrow,
+  children
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "mb-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/50"
+  }, eyebrow), /*#__PURE__*/React.createElement("h2", {
+    className: "mt-2 font-heading italic text-3xl md:text-5xl text-white tracking-tight leading-[1.05]"
+  }, children));
+}
+function PressBar({
+  label,
+  n,
+  max,
+  color
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-[minmax(0,11rem)_minmax(0,1fr)_3rem] items-center gap-3 py-1.5 text-sm"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-white/80 leading-tight"
+  }, label), /*#__PURE__*/React.createElement("span", {
+    className: "h-2.5 rounded-full bg-white/10 overflow-hidden"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "block h-full rounded-full",
+    style: {
+      width: `${n / max * 100}%`,
+      background: color
+    }
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "text-right font-mono text-white/70 tabular-nums"
+  }, pFmt(n)));
+}
+
+// Le graphique se dessine à la largeur réelle de son conteneur : plus aucune
+// colonne ne déborde ni ne se cache derrière un défilement horizontal. Sur
+// écran étroit, il n'affiche qu'une année sur cinq et retire les totaux.
+function PressChart({
+  byY,
+  years
+}) {
+  const ref = React.useRef(null);
+  const [w, setW] = React.useState(0);
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([e]) => setW(Math.floor(e.contentRect.width)));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const ys = years.filter(y => +y >= 2005);
+  const tot = y => Object.values(byY[y] || {}).reduce((a, b) => a + b, 0);
+  const H = w < 480 ? 230 : 280,
+    pl = 32,
+    pr = 4,
+    pb = 24,
+    pt = 20;
+  const max = Math.max(1, ...ys.map(tot));
+  const step = max > 200 ? 50 : 25,
+    top = Math.ceil(max / step) * step;
+  const bw = w ? (w - pl - pr) / ys.length : 0;
+  const sy = v => H - pb - v / top * (H - pb - pt);
+  const grid = [];
+  for (let v = 0; v <= top; v += step) grid.push(v);
+  return /*#__PURE__*/React.createElement("div", {
+    ref: ref,
+    className: "w-full"
+  }, w > 0 && /*#__PURE__*/React.createElement("svg", {
+    width: w,
+    height: H,
+    role: "img",
+    "aria-label": "Articles par ann\xE9e et par famille de m\xE9dias",
+    className: "block"
+  }, grid.map(v => /*#__PURE__*/React.createElement("g", {
+    key: v
+  }, /*#__PURE__*/React.createElement("line", {
+    x1: pl,
+    x2: w - pr,
+    y1: sy(v),
+    y2: sy(v),
+    stroke: "rgba(255,255,255,0.08)"
+  }), /*#__PURE__*/React.createElement("text", {
+    x: pl - 6,
+    y: sy(v) + 4,
+    textAnchor: "end",
+    fontSize: "11",
+    fill: "rgba(255,255,255,0.45)",
+    className: "font-mono"
+  }, v))), ys.map((y, i) => {
+    const x = pl + i * bw + bw * 0.15,
+      bwid = bw * 0.7;
+    let acc = 0;
+    const rects = PRESS_CATS.map(c => {
+      const v = (byY[y] || {})[c] || 0;
+      if (!v) return null;
+      const y1 = sy(acc + v),
+        y0 = sy(acc);
+      acc += v;
+      return /*#__PURE__*/React.createElement("rect", {
+        key: c,
+        x: x,
+        y: y1,
+        width: bwid,
+        height: Math.max(0, y0 - y1),
+        fill: PRESS_COL[c]
+      }, /*#__PURE__*/React.createElement("title", null, `${y} · ${c} : ${v}`));
+    });
+    const showYear = bw >= 26 || +y % 5 === 0;
+    return /*#__PURE__*/React.createElement("g", {
+      key: y
+    }, rects, showYear && /*#__PURE__*/React.createElement("text", {
+      x: x + bwid / 2,
+      y: H - 7,
+      textAnchor: "middle",
+      fontSize: "10.5",
+      fill: "rgba(255,255,255,0.5)",
+      className: "font-mono"
+    }, "’" + y.slice(2)), bw >= 24 && +y >= 2019 && /*#__PURE__*/React.createElement("text", {
+      x: x + bwid / 2,
+      y: sy(acc) - 5,
+      textAnchor: "middle",
+      fontSize: "10.5",
+      fill: "rgba(255,255,255,0.85)",
+      className: "font-mono"
+    }, acc));
+  })));
+}
+function PressReview() {
+  const [data, setData] = React.useState(null);
+  const [domains, setDomains] = React.useState({});
+  const [err, setErr] = React.useState(null);
+  const [q, setQ] = React.useState("");
+  const [fy, setFy] = React.useState("");
+  const [fc, setFc] = React.useState("");
+  React.useEffect(() => {
+    fetch("/presse/data.json").then(r => {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    }).then(setData).catch(e => setErr(e.message));
+    fetch("/presse/sources.json").then(r => r.ok ? r.json() : {}).then(setDomains).catch(() => {});
+  }, []);
+  const S = React.useMemo(() => {
+    if (!data) return null;
+    const P = data.articles;
+    const years = [...new Set(P.map(p => p.d.slice(0, 4)))].sort();
+    const byY = {};
+    P.forEach(p => {
+      const y = p.d.slice(0, 4);
+      byY[y] = byY[y] || {};
+      byY[y][p.c] = (byY[y][p.c] || 0) + 1;
+    });
+    const tot = y => Object.values(byY[y] || {}).reduce((a, b) => a + b, 0);
+    const cats = {};
+    P.forEach(p => {
+      cats[p.c] = (cats[p.c] || 0) + 1;
+    });
+    const bySrc = {},
+      srcCat = {};
+    P.forEach(p => {
+      bySrc[p.s] = (bySrc[p.s] || 0) + 1;
+      srcCat[p.s] = p.c;
+    });
+    const quals = {};
+    P.forEach(p => p.q.forEach(k => {
+      quals[k] = (quals[k] || 0) + 1;
+    }));
+    const intl = P.filter(p => PRESS_COUNTRY[p.s]);
+    const countries = {};
+    intl.forEach(p => {
+      const k = PRESS_COUNTRY[p.s];
+      countries[k] = (countries[k] || 0) + 1;
+    });
+    return {
+      P,
+      years,
+      byY,
+      cats,
+      srcCat,
+      avg: Math.round(["2020", "2021", "2022", "2023", "2024", "2025"].reduce((a, y) => a + tot(y), 0) / 6),
+      nSources: Object.keys(bySrc).length,
+      pre2005: years.filter(y => +y < 2005).reduce((a, y) => a + tot(y), 0),
+      tops: Object.entries(bySrc).sort((a, b) => b[1] - a[1]).slice(0, 30),
+      quals: Object.entries(quals).sort((a, b) => b[1] - a[1]),
+      intlCount: intl.length,
+      countries: Object.entries(countries).sort((a, b) => b[1] - a[1]),
+      // Sélection : un article par média, titres de référence d'abord. On écarte
+      // les faits divers (procès de Booba, propos de Gims) et les extraits
+      // tronqués entre crochets, pour ne garder que les articles de fond.
+      intlPicks: PRESS_INTL_ORDER.map(s => intl.filter(p => p.s === s && !/booba|gims/i.test(p.t) && !/^\s*\[/.test(p.t)).sort((a, b) => b.d.localeCompare(a.d))[0]).filter(Boolean).slice(0, 8),
+      avIntl: data.av.items.filter(i => /RTS|TV5|France 24/i.test(i.k))
+    };
+  }, [data]);
+  const rows = React.useMemo(() => {
+    if (!S) return [];
+    const t = q.trim().toLowerCase();
+    return S.P.filter(p => (!fy || p.d.startsWith(fy)) && (!fc || p.c === fc) && (!t || (p.t + " " + p.s).toLowerCase().includes(t)));
+  }, [S, q, fy, fc]);
+
+  // Fonction de rendu, pas un composant : défini dans le rendu, un composant
+  // serait recréé à chaque frappe et ferait recharger toutes les favicons.
+  const src = p => /*#__PURE__*/React.createElement("span", {
+    className: "flex items-center gap-2 min-w-0"
+  }, /*#__PURE__*/React.createElement(PressBadge, {
+    name: p.s,
+    cat: p.c,
+    domain: domains[p.s]
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "truncate"
+  }, p.s));
+  return /*#__PURE__*/React.createElement("main", {
+    className: "relative z-10 px-6 md:px-12 lg:px-24 pt-32 md:pt-40 pb-8"
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "max-w-4xl"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/60"
+  }, "1997 \u2013 2026"), /*#__PURE__*/React.createElement("span", {
+    className: "text-white font-body text-base md:text-lg tracking-tight"
+  }, "Tristan Mend\xE8s France")), /*#__PURE__*/React.createElement("h1", {
+    className: "mt-6 font-heading italic text-6xl md:text-8xl text-white tracking-tight leading-[0.9]"
+  }, "Revue de presse"), /*#__PURE__*/React.createElement("p", {
+    className: "mt-6 text-white/75 font-body font-light text-lg md:text-xl leading-relaxed max-w-3xl"
+  }, "Ce relev\xE9 recense les articles qui me citent \u2014 presse nationale, r\xE9gionale et \xE9trang\xE8re, agences, web \u2014 ainsi que mes interventions \xE0 la radio, \xE0 la t\xE9l\xE9vision et en podcast. Je le publie par souci de transparence : qui me cite, dans quels m\xE9dias, et \xE0 quel titre on me pr\xE9sente.")), err && /*#__PURE__*/React.createElement("p", {
+    className: "mt-10 font-mono text-sm text-white/60"
+  }, "Les donn\xE9es n'ont pas pu \xEAtre charg\xE9es (", err, ")."), !S && !err && /*#__PURE__*/React.createElement("p", {
+    className: "mt-10 font-mono text-sm text-white/50"
+  }, "Chargement\u2026"), S && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "mt-10 grid grid-cols-2 lg:grid-cols-5 gap-3"
+  }, [[pFmt(S.P.length), "articles depuis 1997"], [pFmt(S.nSources), "titres de presse et sites"], ["≈ " + S.avg, "articles par an, de 2020 à 2025"], [pFmt(S.intlCount), "articles à l'étranger, dans " + S.countries.length + " pays"], [pFmt(data.av.n), "passages radio, télé et podcast"]].map(([b, s]) => /*#__PURE__*/React.createElement("div", {
+    key: s,
+    className: "liquid-glass rounded-2xl p-5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "font-heading italic text-4xl text-white tabular-nums"
+  }, b), /*#__PURE__*/React.createElement("div", {
+    className: "mt-1 text-white/60 text-sm font-body font-light leading-snug"
+  }, s)))), /*#__PURE__*/React.createElement("section", {
+    className: "mt-24 grid lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] gap-10"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "min-w-0"
+  }, /*#__PURE__*/React.createElement(PressHeading, {
+    eyebrow: "Volume"
+  }, "Articles par ann\xE9e"), /*#__PURE__*/React.createElement("div", {
+    className: "liquid-glass rounded-3xl p-5 md:p-7"
+  }, /*#__PURE__*/React.createElement(PressChart, {
+    byY: S.byY,
+    years: S.years
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-white/60 font-body"
+  }, PRESS_CATS.map(c => /*#__PURE__*/React.createElement("span", {
+    key: c,
+    className: "inline-flex items-center gap-1.5"
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "inline-block h-2.5 w-2.5 rounded-sm",
+    style: {
+      background: PRESS_COL[c]
+    }
+  }), c)))), /*#__PURE__*/React.createElement("p", {
+    className: "mt-3 text-xs text-white/45 font-body"
+  }, "Avant 2005 : ", S.pre2005, " articles (1997-2004). 2026 s'arr\xEAte au 10 octobre.")), /*#__PURE__*/React.createElement("div", {
+    className: "min-w-0"
+  }, /*#__PURE__*/React.createElement(PressHeading, {
+    eyebrow: "Familles de m\xE9dias"
+  }, "O\xF9 je suis cit\xE9"), /*#__PURE__*/React.createElement("div", {
+    className: "liquid-glass rounded-3xl p-5 md:p-7"
+  }, PRESS_CATS.map(k => /*#__PURE__*/React.createElement(PressBar, {
+    key: k,
+    label: k,
+    n: S.cats[k] || 0,
+    max: Math.max(...Object.values(S.cats)),
+    color: PRESS_COL[k]
+  })), /*#__PURE__*/React.createElement("p", {
+    className: "mt-3 text-xs text-white/50 font-body"
+  }, Math.round(((S.cats["Presse nationale"] || 0) + (S.cats["Magazines"] || 0)) / S.P.length * 100), " % des articles paraissent dans la presse nationale ou les magazines.")))), /*#__PURE__*/React.createElement("section", {
+    className: "mt-24 grid lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] gap-10"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "min-w-0"
+  }, /*#__PURE__*/React.createElement(PressHeading, {
+    eyebrow: "Les titres"
+  }, "Les m\xE9dias qui me citent le plus"), /*#__PURE__*/React.createElement("ul", {
+    className: "liquid-glass rounded-3xl p-5 md:p-7 md:columns-2 gap-8 text-sm font-body"
+  }, S.tops.map(([s, n]) => /*#__PURE__*/React.createElement("li", {
+    key: s,
+    className: "break-inside-avoid flex items-center justify-between gap-3 py-2 border-b border-dashed border-white/10 text-white/85"
+  }, src({
+    s,
+    c: S.srcCat[s]
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "font-mono text-white/50 tabular-nums"
+  }, n))))), /*#__PURE__*/React.createElement("div", {
+    className: "min-w-0"
+  }, /*#__PURE__*/React.createElement(PressHeading, {
+    eyebrow: "\xC0 quel titre"
+  }, "Comment la presse me pr\xE9sente"), /*#__PURE__*/React.createElement("div", {
+    className: "liquid-glass rounded-3xl p-5 md:p-7"
+  }, S.quals.map(([k, n]) => /*#__PURE__*/React.createElement(PressBar, {
+    key: k,
+    label: k,
+    n: n,
+    max: S.quals[0][1],
+    color: "#ffffff"
+  })), /*#__PURE__*/React.createElement("p", {
+    className: "mt-3 text-xs text-white/50 font-body"
+  }, "Un m\xEAme article peut me pr\xE9senter de plusieurs fa\xE7ons.")))), /*#__PURE__*/React.createElement("section", {
+    className: "mt-24"
+  }, /*#__PURE__*/React.createElement(PressHeading, {
+    eyebrow: "Hors de France"
+  }, "\xC0 l'international"), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap gap-2"
+  }, S.countries.map(([k, n]) => /*#__PURE__*/React.createElement("span", {
+    key: k,
+    className: "liquid-glass rounded-full px-4 py-2 text-sm text-white font-body"
+  }, k, " ", /*#__PURE__*/React.createElement("span", {
+    className: "ml-1 font-mono text-white/50"
+  }, n)))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-6 grid md:grid-cols-2 gap-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "liquid-glass rounded-3xl p-5 md:p-7"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/50 mb-3"
+  }, "Dans la presse \xE9trang\xE8re"), S.intlPicks.map((p, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "py-3 border-b border-white/10 last:border-0"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between gap-3 text-sm text-white/85"
+  }, src(p), /*#__PURE__*/React.createElement("span", {
+    className: "font-mono text-xs text-white/45 shrink-0"
+  }, pDate(p.d))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-1 text-white/65 text-sm font-body font-light leading-snug"
+  }, p.t)))), /*#__PURE__*/React.createElement("div", {
+    className: "liquid-glass rounded-3xl p-5 md:p-7"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/50 mb-3"
+  }, "\xC0 l'antenne, hors de France"), S.avIntl.map((a, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "py-3 border-b border-white/10 last:border-0"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "font-mono text-[11px] uppercase tracking-[0.12em] text-white/45"
+  }, a.k), /*#__PURE__*/React.createElement("div", {
+    className: "mt-1 text-white font-heading italic text-xl"
+  }, a.m), /*#__PURE__*/React.createElement("div", {
+    className: "text-white/65 text-sm font-body font-light"
+  }, a.e), a.u && /*#__PURE__*/React.createElement("a", {
+    href: a.u,
+    target: "_blank",
+    rel: "noopener",
+    className: "mt-1 inline-flex items-center gap-1 text-xs text-white/60 hover:text-white"
+  }, "\xC9couter / voir ", /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 12,
+    strokeWidth: 2
+  }))))))), /*#__PURE__*/React.createElement("section", {
+    className: "mt-24"
+  }, /*#__PURE__*/React.createElement(PressHeading, {
+    eyebrow: "Radio, t\xE9l\xE9vision, podcast"
+  }, "Les rendez-vous audiovisuels"), /*#__PURE__*/React.createElement("p", {
+    className: "-mt-2 mb-6 text-white/70 font-body font-light text-base md:text-lg leading-relaxed max-w-3xl"
+  }, data.av.lede), /*#__PURE__*/React.createElement("div", {
+    className: "grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+  }, data.av.items.map((a, i) => {
+    const h = pHost(a.u);
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      className: "liquid-glass rounded-2xl p-5 flex flex-col gap-1.5"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "font-mono text-[11px] uppercase tracking-[0.12em] text-white/45 leading-snug"
+    }, a.k), /*#__PURE__*/React.createElement("span", {
+      className: "flex items-center gap-2 font-heading italic text-xl text-white leading-tight"
+    }, h && /*#__PURE__*/React.createElement(PressBadge, {
+      name: a.m,
+      cat: "Radio & t\xE9l\xE9 (sites)",
+      domain: h
+    }), a.m), /*#__PURE__*/React.createElement("span", {
+      className: "text-white/60 text-sm font-body font-light leading-snug"
+    }, a.e), a.u && /*#__PURE__*/React.createElement("a", {
+      href: a.u,
+      target: "_blank",
+      rel: "noopener",
+      className: "mt-auto pt-1 inline-flex items-center gap-1 text-xs text-white/60 hover:text-white"
+    }, "Source ", /*#__PURE__*/React.createElement(ArrowUpRight, {
+      size: 12,
+      strokeWidth: 2
+    })));
+  }))), /*#__PURE__*/React.createElement("section", {
+    className: "mt-24"
+  }, /*#__PURE__*/React.createElement(PressHeading, {
+    eyebrow: "Index"
+  }, "Toutes les r\xE9f\xE9rences"), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap gap-3"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "search",
+    value: q,
+    onChange: e => setQ(e.target.value),
+    placeholder: "Chercher un titre, un m\xE9dia\u2026",
+    "aria-label": "Chercher",
+    className: "flex-1 min-w-[14rem] rounded-full bg-white/5 border border-white/10 px-5 py-2.5 text-sm text-white font-body placeholder:text-white/40 focus:outline-none focus:border-white/30"
+  }), /*#__PURE__*/React.createElement("select", {
+    value: fy,
+    onChange: e => setFy(e.target.value),
+    "aria-label": "Ann\xE9e",
+    className: "rounded-full bg-[#0b0d12] border border-white/10 px-4 py-2.5 text-sm text-white font-body focus:outline-none focus:border-white/30"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: ""
+  }, "Toutes les ann\xE9es"), S.years.slice().reverse().map(y => /*#__PURE__*/React.createElement("option", {
+    key: y
+  }, y))), /*#__PURE__*/React.createElement("select", {
+    value: fc,
+    onChange: e => setFc(e.target.value),
+    "aria-label": "Famille de m\xE9dias",
+    className: "rounded-full bg-[#0b0d12] border border-white/10 px-4 py-2.5 text-sm text-white font-body focus:outline-none focus:border-white/30"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: ""
+  }, "Tous les m\xE9dias"), PRESS_CATS.map(c => /*#__PURE__*/React.createElement("option", {
+    key: c
+  }, c)))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-3 font-mono text-xs text-white/50"
+  }, pFmt(rows.length), " r\xE9f\xE9rences"), /*#__PURE__*/React.createElement("div", {
+    className: "mt-3 liquid-glass rounded-3xl"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "max-h-[380px] overflow-y-auto"
+  }, rows.slice(0, 600).map((p, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "grid grid-cols-1 sm:grid-cols-[6rem_minmax(0,13rem)_minmax(0,1fr)] gap-x-4 gap-y-0.5 px-5 py-3 border-b border-white/5 text-sm font-body"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-mono text-xs text-white/45 tabular-nums sm:pt-0.5"
+  }, pDate(p.d)), /*#__PURE__*/React.createElement("span", {
+    className: "text-white/90 font-medium min-w-0"
+  }, src(p)), /*#__PURE__*/React.createElement("span", {
+    className: "text-white/65 font-light leading-snug"
+  }, p.t))), rows.length > 600 && /*#__PURE__*/React.createElement("div", {
+    className: "px-5 py-3 font-mono text-xs text-white/45"
+  }, "\u2026 affinez la recherche pour voir les ", pFmt(rows.length - 600), " autres."))))));
+}
+
 // ---------- App ----------
 function App() {
+  const [view, setView] = React.useState(viewFromPath);
+  React.useEffect(() => {
+    // Après chaque navigation : on affiche la bonne vue, puis on place la page
+    // à l'ancre demandée (#apropos…) ou tout en haut.
+    const apply = hash => {
+      const v = viewFromPath();
+      setView(v);
+      document.title = v === "presse" ? PRESS_TITLE : HOME_TITLE;
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        const el = hash && document.getElementById(hash.slice(1));
+        if (el) el.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });else window.scrollTo({
+          top: 0
+        });
+      }));
+    };
+    const onNav = e => apply(e.detail && e.detail.hash);
+    const onPop = () => apply(location.hash);
+    window.addEventListener("tmf:navigate", onNav);
+    window.addEventListener("popstate", onPop);
+    return () => {
+      window.removeEventListener("tmf:navigate", onNav);
+      window.removeEventListener("popstate", onPop);
+    };
+  }, []);
   return /*#__PURE__*/React.createElement("div", {
     className: "bg-black min-h-screen relative"
   }, /*#__PURE__*/React.createElement("div", {
@@ -1605,8 +2199,12 @@ function App() {
   }), /*#__PURE__*/React.createElement("div", {
     className: "aurora-blob blob-2",
     "aria-hidden": "true"
-  }), /*#__PURE__*/React.createElement(ScrollProgress, null), /*#__PURE__*/React.createElement(Navbar, null), /*#__PURE__*/React.createElement(Hero, null), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement(ScrollProgress, null), /*#__PURE__*/React.createElement(Navbar, {
+    view: view
+  }), view === "presse" ? /*#__PURE__*/React.createElement("div", {
     className: "bg-black"
-  }, /*#__PURE__*/React.createElement(StartSection, null), /*#__PURE__*/React.createElement(FeaturesChess, null), /*#__PURE__*/React.createElement(FeaturesGrid, null), /*#__PURE__*/React.createElement(Testimonials, null), /*#__PURE__*/React.createElement(Conferencier, null), /*#__PURE__*/React.createElement(CtaFooter, null)));
+  }, /*#__PURE__*/React.createElement(PressReview, null), /*#__PURE__*/React.createElement(CtaFooter, null)) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Hero, null), /*#__PURE__*/React.createElement("div", {
+    className: "bg-black"
+  }, /*#__PURE__*/React.createElement(StartSection, null), /*#__PURE__*/React.createElement(FeaturesChess, null), /*#__PURE__*/React.createElement(FeaturesGrid, null), /*#__PURE__*/React.createElement(Testimonials, null), /*#__PURE__*/React.createElement(Conferencier, null), /*#__PURE__*/React.createElement(CtaFooter, null))));
 }
 ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));

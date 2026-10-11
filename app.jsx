@@ -321,36 +321,70 @@ function FadeIn({ children, delay = 0, y = 20, className = "" }) {
 }
 
 // ---------- Navbar ----------
-function Navbar() {
-  const links = [{ l: "Accueil", h: "#top" }, { l: "À propos", h: "#apropos" }, { l: "Médias", h: "#projets" }, { l: "Presse", h: "/presse/" }, { l: "Productions", h: "#productions" }, { l: "Conférences", h: "#conferences" }];
-  const [active, setActive] = React.useState("#top");
+// ---------- Navigation interne ----------
+// tristan.pro est une seule application : la revue de presse est une « vue »,
+// pas une autre page. La barre de navigation et le pied de page restent, seul
+// le contenu du milieu change, sans rechargement. /presse/ reste une vraie
+// adresse (partageable, indexable) : presse/index.html — généré depuis
+// index.html par scripts/build-jsx.mjs — charge la même application, qui lit
+// l'adresse au démarrage.
+const PRESS_PATH = "/presse/";
+const HOME_TITLE = "Tristan Mendès France — Cultures numériques & radicalités en ligne";
+const PRESS_TITLE = "Revue de presse — Tristan Mendès France";
+const viewFromPath = () => (location.pathname.startsWith("/presse") ? "presse" : "home");
+
+function navigate(href) {
+  const url = new URL(href, location.origin);
+  if (url.pathname + url.hash !== location.pathname + location.hash) {
+    history.pushState({}, "", url.pathname + url.hash);
+  }
+  window.dispatchEvent(new CustomEvent("tmf:navigate", { detail: { hash: url.hash } }));
+}
+
+// Lien interne. Clic simple : navigation sans rechargement. Cmd/Ctrl-clic ou
+// clic du milieu : comportement normal du navigateur (nouvel onglet).
+function NavLink({ href, onClick, children, ...rest }) {
+  const go = (e) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    if (onClick) onClick(e);
+    navigate(href);
+  };
+  return <a href={href} onClick={go} {...rest}>{children}</a>;
+}
+
+function Navbar({ view }) {
+  const links = [{ l: "Accueil", h: "/#top" }, { l: "À propos", h: "/#apropos" }, { l: "Médias", h: "/#projets" }, { l: "Revue de presse", h: PRESS_PATH }, { l: "Productions", h: "/#productions" }, { l: "Conférences", h: "/#conferences" }];
+  const [active, setActive] = React.useState(view === "presse" ? PRESS_PATH : "/#top");
   const [menuOpen, setMenuOpen] = React.useState(false);
   React.useEffect(() => {
+    if (view === "presse") { setActive(PRESS_PATH); return; }
+    setActive("/#top");
     const ids = ["top", "projets", "productions", "conferences", "apropos", "contact"];
     const sections = ids.map(id => document.getElementById(id)).filter(Boolean);
     if (!sections.length) return;
     const io = new IntersectionObserver((entries) => {
       const visible = entries.filter(e => e.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio);
-      if (visible[0]) setActive("#" + visible[0].target.id);
+      if (visible[0]) setActive("/#" + visible[0].target.id);
     }, { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.1, 0.25, 0.5] });
     sections.forEach(s => io.observe(s));
     return () => io.disconnect();
-  }, []);
+  }, [view]);
   return (
     <nav className="fixed top-4 left-0 right-0 z-50 px-4 md:px-8 lg:px-16 py-3">
       <div className="flex items-center justify-between">
-        <a href="#top" className="flex items-center gap-2">
+        <NavLink href="/#top" className="flex items-center gap-2">
           <div className="h-10 w-10 rounded-full liquid-glass-strong flex items-center justify-center">
             <ArrowUp size={18} strokeWidth={2.2} className="text-white" />
           </div>
           <span className="hidden sm:inline font-heading italic text-xl text-white tracking-tight whitespace-nowrap">tristan.pro</span>
-        </a>
+        </NavLink>
 
         <div className="hidden md:flex items-center rounded-full px-1.5 py-1 border border-white/10" style={{ background: 'rgba(8,10,18,0.55)', backdropFilter: 'blur(18px) saturate(140%)', WebkitBackdropFilter: 'blur(18px) saturate(140%)', boxShadow: '0 8px 24px -12px rgba(0,0,0,0.5)' }}>
           {links.map(({ l, h }) => {
             const isActive = active === h;
             return (
-              <a key={l} href={h} className={"relative px-3 py-2 text-sm font-medium font-body transition-colors whitespace-nowrap " + (isActive ? "text-white" : "text-white/70 hover:text-white")}>
+              <NavLink key={l} href={h} className={"relative px-3 py-2 text-sm font-medium font-body transition-colors whitespace-nowrap " + (isActive ? "text-white" : "text-white/70 hover:text-white")}>
                 {l}
                 {isActive && (
                   <mot.span
@@ -359,7 +393,7 @@ function Navbar() {
                     transition={{ type: "spring", stiffness: 380, damping: 32 }}
                   />
                 )}
-              </a>
+              </NavLink>
             );
           })}
           <MailLink className="ml-1 bg-white text-black rounded-full px-3.5 py-1.5 text-sm font-medium font-body flex items-center gap-1 hover:bg-white/90 transition-colors whitespace-nowrap">
@@ -375,7 +409,7 @@ function Navbar() {
       {menuOpen && (
         <div className="md:hidden mt-3 ml-auto w-64 max-w-[calc(100vw-2rem)] rounded-3xl p-2 border border-white/10" style={{ background: 'rgba(12,14,24,0.55)', backdropFilter: 'blur(32px) saturate(160%)', WebkitBackdropFilter: 'blur(32px) saturate(160%)', boxShadow: '0 20px 60px -20px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.08)' }}>
           {links.map(({ l, h }) => (
-            <a key={l} href={h} onClick={() => setMenuOpen(false)} className="block px-4 py-2.5 rounded-2xl text-white/90 hover:bg-white/10 font-body text-base whitespace-nowrap">{l}</a>
+            <NavLink key={l} href={h} onClick={() => setMenuOpen(false)} className={"block px-4 py-2.5 rounded-2xl hover:bg-white/10 font-body text-base whitespace-nowrap " + (active === h ? "text-white bg-white/10" : "text-white/90")}>{l}</NavLink>
           ))}
           <MailLink className="block mt-1 px-4 py-2.5 rounded-2xl bg-white text-black font-medium font-body text-base text-center">Me contacter</MailLink>
         </div>
@@ -386,7 +420,7 @@ function Navbar() {
 
 // ---------- Hero ----------
 function Hero() {
-  const videoRef = useHls("./hero.mp4");
+  const videoRef = useHls("/hero.mp4");
   return (
     <section id="top" className="relative overflow-hidden flex flex-col min-h-[100svh]">
       <ParallaxLayer speed={0.14} scale={1.22} mobileFactor={0.55} className="absolute inset-0 z-0 overflow-hidden">
@@ -411,7 +445,7 @@ function Hero() {
           
           <div className="liquid-glass-strong rounded-full p-1">
             <img
-              src="./profile.jpg"
+              src="/profile.jpg"
               alt="Tristan Mendès France"
               className="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover"
               referrerPolicy="no-referrer"
@@ -440,11 +474,11 @@ function Hero() {
             </div>
             {/* Revue de presse : la preuve à côté de la disponibilité. Chiffre
                 arrondi volontairement, pour rester vrai quand le relevé grossit. */}
-            <a href="/presse/" className="group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors">
-              <span className="bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body">Presse</span>
-              <span className="text-sm text-white/90 font-body">1 700+ articles depuis 1997</span>
+            <NavLink href={PRESS_PATH} className="group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors">
+              <span className="bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body">Revue de presse</span>
+              <span className="text-sm text-white/90 font-body">1 700+ articles</span>
               <ArrowUpRight size={14} strokeWidth={2} className="text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </a>
+            </NavLink>
           </div>
         </FadeIn>
 
@@ -665,8 +699,8 @@ function FeaturesChess() {
         <Parallax speed={0} className="h-full">
         <FadeIn delay={0} className="h-full">
           <MediaCard
-            href="./complorama/"
-            img="./complorama.jpg"
+            href="/complorama/"
+            img="/complorama.jpg"
             badge="Podcast"
             kicker="France Info"
             title="Complorama"
@@ -679,7 +713,7 @@ function FeaturesChess() {
         <FadeIn delay={0.1} className="h-full">
           <MediaCard
             href="https://www.radiofrance.fr/franceinter/podcasts/antidote"
-            img="./antidote.jpg"
+            img="/antidote.jpg"
             badge="Radio"
             kicker="France Inter"
             title="Antidote"
@@ -692,7 +726,7 @@ function FeaturesChess() {
         <FadeIn delay={0.2} className="h-full">
           <MediaCard
             href="https://www.tf1info.fr/emissions/lci/verificateurs-14293/"
-            img="./lci.jpg"
+            img="/lci.jpg"
             badge="TV"
             kicker="LCI"
             title="Les Vérificateurs"
@@ -710,7 +744,7 @@ function FeaturesChess() {
 function FeaturesGrid() {
   const items = [
   {
-    img: "./conspiracywatch.jpg",
+    img: "/conspiracywatch.jpg",
     kicker: "Observatoire",
     title: "Conspiracy Watch",
     body: "Collaborateur de l'Observatoire du conspirationnisme, qui documente et analyse les théories du complot depuis 2007.",
@@ -718,7 +752,7 @@ function FeaturesGrid() {
     cta: "Explorer"
   },
   {
-    img: "./france-medias-monde.jpg",
+    img: "/france-medias-monde.jpg",
     kicker: "Gouvernance",
     title: "CHIPIP — France Médias Monde",
     body: "Membre du Comité d'indépendance et d'intégrité du groupe audiovisuel public à destination internationale.",
@@ -726,7 +760,7 @@ function FeaturesGrid() {
     cta: "En savoir plus"
   },
   {
-    img: "./infographie.jpg",
+    img: "/infographie.jpg",
     kicker: "Livre · Éditions CNRS",
     title: "Internet, une infographie",
     body: "Un ouvrage grand public qui décrypte, visuellement, l'impact du numérique sur nos sociétés — réseaux, plateformes, nouveaux pouvoirs.",
@@ -734,7 +768,7 @@ function FeaturesGrid() {
     cta: "Voir le livre"
   },
   {
-    img: "./faussaires.jpg",
+    img: "/faussaires.jpg",
     kicker: "Livre collectif · Philippe Rey",
     title: "Les Faussaires de la nation",
     body: "Comment l'extrême droite défigure l'histoire, et comment lui résister : cinquante historiens réunis sous la direction de Vincent Duclert et Maria Malagardis. Parution le 1er octobre.",
@@ -767,7 +801,7 @@ function FeaturesGrid() {
 
 // ---------- Conferencier (replaces Stats) ----------
 function Conferencier() {
-  const ref = useHls("./conf.mp4");
+  const ref = useHls("/conf.mp4");
   return (
     <section id="conferences" className="relative overflow-hidden py-14 md:py-24">
       <ParallaxLayer speed={0.1} scale={1.2} mobileFactor={0.6} className="absolute inset-0 z-0 overflow-hidden">
@@ -865,8 +899,8 @@ function LabTile({ video, logo }) {
 function Testimonials() {
   const items = [
   {
-    href: "./carte-complotisme/",
-    img: "./comploscore.jpg",
+    href: "/carte-complotisme/",
+    img: "/comploscore.jpg",
     badge: "Data viz",
     kicker: "Cartographie interactive",
     title: "ComploScore",
@@ -874,8 +908,8 @@ function Testimonials() {
     cta: "Explorer la carte"
   },
   {
-    href: "./TECHNOFASCISME-Infographie-interactive/",
-    img: "./technofascisme-preview.svg",
+    href: "/TECHNOFASCISME-Infographie-interactive/",
+    img: "/technofascisme-preview.svg",
     badge: "Infographie",
     kicker: "Exploration interactive",
     title: "Technofascisme",
@@ -884,7 +918,7 @@ function Testimonials() {
   },
   {
     href: "https://www.egoblog.net/happyworld/",
-    img: "./happyworld.jpg",
+    img: "/happyworld.jpg",
     badge: "Documentaire",
     kicker: "Birmanie · 2011",
     title: "Happy World",
@@ -894,7 +928,7 @@ function Testimonials() {
 
   return (
     <section id="productions" className="px-6 md:px-12 lg:px-24 py-16 md:py-28">
-      <LabTile video="./tmflab.mp4" logo="./tmflab-logo.svg" />
+      <LabTile video="/tmflab.mp4" logo="/tmflab-logo.svg" />
       {/* La grille de cartes a été retirée au profit de la tuile. `items` est
           conservé intact : pour la réactiver, remettre ici le bloc
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">…</div>
@@ -978,7 +1012,7 @@ function CtaFooter() {
   return (
     <section id="contact" className="relative overflow-hidden">
       <ParallaxLayer speed={0.1} scale={1.2} mobileFactor={0.6} className="absolute inset-0 z-0 overflow-hidden">
-        <CrossfadeVideo src="./bottom.mp4" className="absolute inset-0 w-full h-full object-cover edge-fade-top" crossfade={1.2} />
+        <CrossfadeVideo src="/bottom.mp4" className="absolute inset-0 w-full h-full object-cover edge-fade-top" crossfade={1.2} />
         <div className="absolute inset-0 bg-black/35 edge-fade-top" />
       </ParallaxLayer>
 
@@ -1025,8 +1059,9 @@ function CtaFooter() {
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-white/40 text-xs font-body">© 2026 Tristan Mendès France — vibécodé avec décontraction.</div>
           <div className="flex items-center gap-6">
-            <a href="#projets" className="text-white/40 text-xs font-body hover:text-white/70">Projets</a>
-            <a href="#apropos" className="text-white/40 text-xs font-body hover:text-white/70">À propos</a>
+            <NavLink href="/#projets" className="text-white/40 text-xs font-body hover:text-white/70">Projets</NavLink>
+            <NavLink href={PRESS_PATH} className="text-white/40 text-xs font-body hover:text-white/70">Revue de presse</NavLink>
+            <NavLink href="/#apropos" className="text-white/40 text-xs font-body hover:text-white/70">À propos</NavLink>
             <MailLink className="text-white/40 text-xs font-body hover:text-white/70">Contact</MailLink>
           </div>
         </div>
@@ -1035,23 +1070,366 @@ function CtaFooter() {
 
 }
 
+// ---------- Revue de presse (vue /presse/) ----------
+// Données : /presse/data.json (articles + audiovisuel), /presse/sources.json
+// (nom de média → domaine). Favicons copiées dans /presse/favicons/ par
+// scripts/fetch-press-favicons.mjs : aucun domaine tiers n'est contacté.
+const PRESS_CATS = ["Presse nationale", "Magazines", "Presse régionale", "Radio & télé (sites)", "Agences & lettres pro", "Web & pure players", "Presse étrangère"];
+const PRESS_COL = { "Presse nationale": "#7aa2ff", "Magazines": "#b49bff", "Presse régionale": "#34d3c2", "Radio & télé (sites)": "#f0a453", "Agences & lettres pro": "#a3b0c2", "Web & pure players": "#5cc4f5", "Presse étrangère": "#fb7193" };
+// Pays des médias étrangers, pour la section « À l'international ».
+const PRESS_COUNTRY = {
+  "Le Soir": "Belgique", "La Libre Belgique": "Belgique", "La Libre.be": "Belgique", "DH": "Belgique", "L'Avenir": "Belgique", "Sudinfo.be": "Belgique", "HLN": "Belgique", "RTBF": "Belgique",
+  "Le Temps": "Suisse", "Tribune de Genève": "Suisse", "Le Matin Dimanche": "Suisse", "Le Matin": "Suisse", "24 Heures": "Suisse", "rts.ch": "Suisse",
+  "Le Journal de Montréal": "Québec", "Le Journal de Québec": "Québec", "La Presse+": "Québec", "Le Soleil": "Québec", "Le Devoir": "Québec", "ICI Radio-Canada": "Québec",
+  "The Times of Israël": "Israël", "Financial Times": "Royaume-Uni",
+  "La Nouvelle Tribune": "Bénin", "Mali Actu": "Mali",
+};
+// Ordre de la sélection « Dans la presse étrangère » : les titres de référence
+// d'abord. Un seul article par média, pour la diversité.
+const PRESS_INTL_ORDER = ["Financial Times", "Le Temps", "Le Soir", "La Libre Belgique", "Le Devoir", "La Presse+", "The Times of Israël", "RTBF", "Tribune de Genève", "Le Journal de Montréal", "Le Soleil", "24 Heures"];
+const pFmt = n => n.toLocaleString("fr-FR");
+const pDate = d => d.split("-").reverse().join("/");
+const pIni = s => {
+  const w = s.replace(/^(Le|La|Les|L'|L’)\s*/i, "").replace(/[^\p{L}\p{N} ]/gu, " ").trim().split(/\s+/).filter(Boolean);
+  return ((w[0] || "?")[0] + (w[1] ? w[1][0] : (w[0] || "")[1] || "")).toUpperCase();
+};
+const pHost = u => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e) { return ""; } };
+
+// Pastille du média : favicon sur fond blanc, initiales en couleur de famille
+// si l'icône manque ou ne charge pas — jamais de carré vide.
+function PressBadge({ name, cat, domain }) {
+  const [ok, setOk] = React.useState(true);
+  return (
+    <span className="relative inline-grid place-items-center h-5 w-5 shrink-0 overflow-hidden rounded-[5px] font-body text-[9.5px] font-semibold leading-none text-black/80" style={{ background: PRESS_COL[cat] || "#a3b0c2" }} aria-hidden="true">
+      {pIni(name)}
+      {domain && ok && <img src={`/presse/favicons/${domain}.png`} alt="" loading="lazy" decoding="async" onError={() => setOk(false)} className="absolute inset-0 h-full w-full bg-white object-contain p-px" />}
+    </span>
+  );
+}
+
+function PressHeading({ eyebrow, children }) {
+  return (
+    <div className="mb-6">
+      <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">{eyebrow}</div>
+      <h2 className="mt-2 font-heading italic text-3xl md:text-5xl text-white tracking-tight leading-[1.05]">{children}</h2>
+    </div>
+  );
+}
+
+function PressBar({ label, n, max, color }) {
+  return (
+    <div className="grid grid-cols-[minmax(0,11rem)_minmax(0,1fr)_3rem] items-center gap-3 py-1.5 text-sm">
+      <span className="text-white/80 leading-tight">{label}</span>
+      <span className="h-2.5 rounded-full bg-white/10 overflow-hidden"><span className="block h-full rounded-full" style={{ width: `${(n / max) * 100}%`, background: color }} /></span>
+      <span className="text-right font-mono text-white/70 tabular-nums">{pFmt(n)}</span>
+    </div>
+  );
+}
+
+// Le graphique se dessine à la largeur réelle de son conteneur : plus aucune
+// colonne ne déborde ni ne se cache derrière un défilement horizontal. Sur
+// écran étroit, il n'affiche qu'une année sur cinq et retire les totaux.
+function PressChart({ byY, years }) {
+  const ref = React.useRef(null);
+  const [w, setW] = React.useState(0);
+  React.useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const ro = new ResizeObserver(([e]) => setW(Math.floor(e.contentRect.width)));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const ys = years.filter(y => +y >= 2005);
+  const tot = y => Object.values(byY[y] || {}).reduce((a, b) => a + b, 0);
+  const H = w < 480 ? 230 : 280, pl = 32, pr = 4, pb = 24, pt = 20;
+  const max = Math.max(1, ...ys.map(tot));
+  const step = max > 200 ? 50 : 25, top = Math.ceil(max / step) * step;
+  const bw = w ? (w - pl - pr) / ys.length : 0;
+  const sy = v => H - pb - (v / top) * (H - pb - pt);
+  const grid = [];
+  for (let v = 0; v <= top; v += step) grid.push(v);
+  return (
+    <div ref={ref} className="w-full">
+      {w > 0 && (
+        <svg width={w} height={H} role="img" aria-label="Articles par année et par famille de médias" className="block">
+          {grid.map(v => (
+            <g key={v}>
+              <line x1={pl} x2={w - pr} y1={sy(v)} y2={sy(v)} stroke="rgba(255,255,255,0.08)" />
+              <text x={pl - 6} y={sy(v) + 4} textAnchor="end" fontSize="11" fill="rgba(255,255,255,0.45)" className="font-mono">{v}</text>
+            </g>
+          ))}
+          {ys.map((y, i) => {
+            const x = pl + i * bw + bw * 0.15, bwid = bw * 0.7;
+            let acc = 0;
+            const rects = PRESS_CATS.map(c => {
+              const v = (byY[y] || {})[c] || 0; if (!v) return null;
+              const y1 = sy(acc + v), y0 = sy(acc); acc += v;
+              return <rect key={c} x={x} y={y1} width={bwid} height={Math.max(0, y0 - y1)} fill={PRESS_COL[c]}><title>{`${y} · ${c} : ${v}`}</title></rect>;
+            });
+            const showYear = bw >= 26 || +y % 5 === 0;
+            return (
+              <g key={y}>
+                {rects}
+                {showYear && <text x={x + bwid / 2} y={H - 7} textAnchor="middle" fontSize="10.5" fill="rgba(255,255,255,0.5)" className="font-mono">{"’" + y.slice(2)}</text>}
+                {bw >= 24 && +y >= 2019 && <text x={x + bwid / 2} y={sy(acc) - 5} textAnchor="middle" fontSize="10.5" fill="rgba(255,255,255,0.85)" className="font-mono">{acc}</text>}
+              </g>
+            );
+          })}
+        </svg>
+      )}
+    </div>
+  );
+}
+
+function PressReview() {
+  const [data, setData] = React.useState(null);
+  const [domains, setDomains] = React.useState({});
+  const [err, setErr] = React.useState(null);
+  const [q, setQ] = React.useState("");
+  const [fy, setFy] = React.useState("");
+  const [fc, setFc] = React.useState("");
+  React.useEffect(() => {
+    fetch("/presse/data.json").then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }).then(setData).catch(e => setErr(e.message));
+    fetch("/presse/sources.json").then(r => (r.ok ? r.json() : {})).then(setDomains).catch(() => {});
+  }, []);
+
+  const S = React.useMemo(() => {
+    if (!data) return null;
+    const P = data.articles;
+    const years = [...new Set(P.map(p => p.d.slice(0, 4)))].sort();
+    const byY = {};
+    P.forEach(p => { const y = p.d.slice(0, 4); byY[y] = byY[y] || {}; byY[y][p.c] = (byY[y][p.c] || 0) + 1; });
+    const tot = y => Object.values(byY[y] || {}).reduce((a, b) => a + b, 0);
+    const cats = {}; P.forEach(p => { cats[p.c] = (cats[p.c] || 0) + 1; });
+    const bySrc = {}, srcCat = {};
+    P.forEach(p => { bySrc[p.s] = (bySrc[p.s] || 0) + 1; srcCat[p.s] = p.c; });
+    const quals = {}; P.forEach(p => p.q.forEach(k => { quals[k] = (quals[k] || 0) + 1; }));
+    const intl = P.filter(p => PRESS_COUNTRY[p.s]);
+    const countries = {}; intl.forEach(p => { const k = PRESS_COUNTRY[p.s]; countries[k] = (countries[k] || 0) + 1; });
+    return {
+      P, years, byY, cats, srcCat,
+      avg: Math.round(["2020", "2021", "2022", "2023", "2024", "2025"].reduce((a, y) => a + tot(y), 0) / 6),
+      nSources: Object.keys(bySrc).length,
+      pre2005: years.filter(y => +y < 2005).reduce((a, y) => a + tot(y), 0),
+      tops: Object.entries(bySrc).sort((a, b) => b[1] - a[1]).slice(0, 30),
+      quals: Object.entries(quals).sort((a, b) => b[1] - a[1]),
+      intlCount: intl.length,
+      countries: Object.entries(countries).sort((a, b) => b[1] - a[1]),
+      // Sélection : un article par média, titres de référence d'abord. On écarte
+      // les faits divers (procès de Booba, propos de Gims) et les extraits
+      // tronqués entre crochets, pour ne garder que les articles de fond.
+      intlPicks: PRESS_INTL_ORDER.map(s => intl.filter(p => p.s === s && !/booba|gims/i.test(p.t) && !/^\s*\[/.test(p.t)).sort((a, b) => b.d.localeCompare(a.d))[0]).filter(Boolean).slice(0, 8),
+      avIntl: data.av.items.filter(i => /RTS|TV5|France 24/i.test(i.k)),
+    };
+  }, [data]);
+
+  const rows = React.useMemo(() => {
+    if (!S) return [];
+    const t = q.trim().toLowerCase();
+    return S.P.filter(p => (!fy || p.d.startsWith(fy)) && (!fc || p.c === fc) && (!t || (p.t + " " + p.s).toLowerCase().includes(t)));
+  }, [S, q, fy, fc]);
+
+  // Fonction de rendu, pas un composant : défini dans le rendu, un composant
+  // serait recréé à chaque frappe et ferait recharger toutes les favicons.
+  const src = (p) => (
+    <span className="flex items-center gap-2 min-w-0">
+      <PressBadge name={p.s} cat={p.c} domain={domains[p.s]} />
+      <span className="truncate">{p.s}</span>
+    </span>
+  );
+
+  return (
+    <main className="relative z-10 px-6 md:px-12 lg:px-24 pt-32 md:pt-40 pb-8">
+      <header className="max-w-4xl">
+        <div className="inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap">
+          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/60">1997 – 2026</span>
+          <span className="text-white font-body text-base md:text-lg tracking-tight">Tristan Mendès France</span>
+        </div>
+        <h1 className="mt-6 font-heading italic text-6xl md:text-8xl text-white tracking-tight leading-[0.9]">Revue de presse</h1>
+        <p className="mt-6 text-white/75 font-body font-light text-lg md:text-xl leading-relaxed max-w-3xl">
+          Ce relevé recense les articles qui me citent — presse nationale, régionale et étrangère, agences, web — ainsi que mes interventions à la radio, à la télévision et en podcast. Je le publie par souci de transparence : qui me cite, dans quels médias, et à quel titre on me présente.
+        </p>
+      </header>
+
+      {err && <p className="mt-10 font-mono text-sm text-white/60">Les données n'ont pas pu être chargées ({err}).</p>}
+      {!S && !err && <p className="mt-10 font-mono text-sm text-white/50">Chargement…</p>}
+
+      {S && (<>
+        <div className="mt-10 grid grid-cols-2 lg:grid-cols-5 gap-3">
+          {[[pFmt(S.P.length), "articles depuis 1997"], [pFmt(S.nSources), "titres de presse et sites"], ["≈ " + S.avg, "articles par an, de 2020 à 2025"], [pFmt(S.intlCount), "articles à l'étranger, dans " + S.countries.length + " pays"], [pFmt(data.av.n), "passages radio, télé et podcast"]].map(([b, s]) => (
+            <div key={s} className="liquid-glass rounded-2xl p-5">
+              <div className="font-heading italic text-4xl text-white tabular-nums">{b}</div>
+              <div className="mt-1 text-white/60 text-sm font-body font-light leading-snug">{s}</div>
+            </div>
+          ))}
+        </div>
+
+        <section className="mt-24 grid lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] gap-10">
+          <div className="min-w-0">
+            <PressHeading eyebrow="Volume">Articles par année</PressHeading>
+            <div className="liquid-glass rounded-3xl p-5 md:p-7">
+              <PressChart byY={S.byY} years={S.years} />
+              <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-white/60 font-body">
+                {PRESS_CATS.map(c => <span key={c} className="inline-flex items-center gap-1.5"><i className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: PRESS_COL[c] }} />{c}</span>)}
+              </div>
+            </div>
+            <p className="mt-3 text-xs text-white/45 font-body">Avant 2005 : {S.pre2005} articles (1997-2004). 2026 s'arrête au 10 octobre.</p>
+          </div>
+          <div className="min-w-0">
+            <PressHeading eyebrow="Familles de médias">Où je suis cité</PressHeading>
+            <div className="liquid-glass rounded-3xl p-5 md:p-7">
+              {PRESS_CATS.map(k => <PressBar key={k} label={k} n={S.cats[k] || 0} max={Math.max(...Object.values(S.cats))} color={PRESS_COL[k]} />)}
+              <p className="mt-3 text-xs text-white/50 font-body">{Math.round(((S.cats["Presse nationale"] || 0) + (S.cats["Magazines"] || 0)) / S.P.length * 100)} % des articles paraissent dans la presse nationale ou les magazines.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-24 grid lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] gap-10">
+          <div className="min-w-0">
+            <PressHeading eyebrow="Les titres">Les médias qui me citent le plus</PressHeading>
+            <ul className="liquid-glass rounded-3xl p-5 md:p-7 md:columns-2 gap-8 text-sm font-body">
+              {S.tops.map(([s, n]) => (
+                <li key={s} className="break-inside-avoid flex items-center justify-between gap-3 py-2 border-b border-dashed border-white/10 text-white/85">
+                  {src({ s, c: S.srcCat[s] })}
+                  <span className="font-mono text-white/50 tabular-nums">{n}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="min-w-0">
+            <PressHeading eyebrow="À quel titre">Comment la presse me présente</PressHeading>
+            <div className="liquid-glass rounded-3xl p-5 md:p-7">
+              {S.quals.map(([k, n]) => <PressBar key={k} label={k} n={n} max={S.quals[0][1]} color="#ffffff" />)}
+              <p className="mt-3 text-xs text-white/50 font-body">Un même article peut me présenter de plusieurs façons.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-24">
+          <PressHeading eyebrow="Hors de France">À l'international</PressHeading>
+          <div className="flex flex-wrap gap-2">
+            {S.countries.map(([k, n]) => (
+              <span key={k} className="liquid-glass rounded-full px-4 py-2 text-sm text-white font-body">{k} <span className="ml-1 font-mono text-white/50">{n}</span></span>
+            ))}
+          </div>
+          <div className="mt-6 grid md:grid-cols-2 gap-6">
+            <div className="liquid-glass rounded-3xl p-5 md:p-7">
+              <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50 mb-3">Dans la presse étrangère</div>
+              {S.intlPicks.map((p, i) => (
+                <div key={i} className="py-3 border-b border-white/10 last:border-0">
+                  <div className="flex items-center justify-between gap-3 text-sm text-white/85">{src(p)}<span className="font-mono text-xs text-white/45 shrink-0">{pDate(p.d)}</span></div>
+                  <div className="mt-1 text-white/65 text-sm font-body font-light leading-snug">{p.t}</div>
+                </div>
+              ))}
+            </div>
+            <div className="liquid-glass rounded-3xl p-5 md:p-7">
+              <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50 mb-3">À l'antenne, hors de France</div>
+              {S.avIntl.map((a, i) => (
+                <div key={i} className="py-3 border-b border-white/10 last:border-0">
+                  <div className="font-mono text-[11px] uppercase tracking-[0.12em] text-white/45">{a.k}</div>
+                  <div className="mt-1 text-white font-heading italic text-xl">{a.m}</div>
+                  <div className="text-white/65 text-sm font-body font-light">{a.e}</div>
+                  {a.u && <a href={a.u} target="_blank" rel="noopener" className="mt-1 inline-flex items-center gap-1 text-xs text-white/60 hover:text-white">Écouter / voir <ArrowUpRight size={12} strokeWidth={2} /></a>}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-24">
+          <PressHeading eyebrow="Radio, télévision, podcast">Les rendez-vous audiovisuels</PressHeading>
+          <p className="-mt-2 mb-6 text-white/70 font-body font-light text-base md:text-lg leading-relaxed max-w-3xl">{data.av.lede}</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {data.av.items.map((a, i) => {
+              const h = pHost(a.u);
+              return (
+                <div key={i} className="liquid-glass rounded-2xl p-5 flex flex-col gap-1.5">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-white/45 leading-snug">{a.k}</span>
+                  <span className="flex items-center gap-2 font-heading italic text-xl text-white leading-tight">{h && <PressBadge name={a.m} cat="Radio & télé (sites)" domain={h} />}{a.m}</span>
+                  <span className="text-white/60 text-sm font-body font-light leading-snug">{a.e}</span>
+                  {a.u && <a href={a.u} target="_blank" rel="noopener" className="mt-auto pt-1 inline-flex items-center gap-1 text-xs text-white/60 hover:text-white">Source <ArrowUpRight size={12} strokeWidth={2} /></a>}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="mt-24">
+          <PressHeading eyebrow="Index">Toutes les références</PressHeading>
+          <div className="flex flex-wrap gap-3">
+            <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Chercher un titre, un média…" aria-label="Chercher" className="flex-1 min-w-[14rem] rounded-full bg-white/5 border border-white/10 px-5 py-2.5 text-sm text-white font-body placeholder:text-white/40 focus:outline-none focus:border-white/30" />
+            <select value={fy} onChange={e => setFy(e.target.value)} aria-label="Année" className="rounded-full bg-[#0b0d12] border border-white/10 px-4 py-2.5 text-sm text-white font-body focus:outline-none focus:border-white/30">
+              <option value="">Toutes les années</option>
+              {S.years.slice().reverse().map(y => <option key={y}>{y}</option>)}
+            </select>
+            <select value={fc} onChange={e => setFc(e.target.value)} aria-label="Famille de médias" className="rounded-full bg-[#0b0d12] border border-white/10 px-4 py-2.5 text-sm text-white font-body focus:outline-none focus:border-white/30">
+              <option value="">Tous les médias</option>
+              {PRESS_CATS.map(c => <option key={c}>{c}</option>)}
+            </select>
+          </div>
+          <div className="mt-3 font-mono text-xs text-white/50">{pFmt(rows.length)} références</div>
+          {/* Fenêtre volontairement basse : on y défile, et on la dépasse facilement. */}
+          <div className="mt-3 liquid-glass rounded-3xl">
+            <div className="max-h-[380px] overflow-y-auto">
+              {rows.slice(0, 600).map((p, i) => (
+                <div key={i} className="grid grid-cols-1 sm:grid-cols-[6rem_minmax(0,13rem)_minmax(0,1fr)] gap-x-4 gap-y-0.5 px-5 py-3 border-b border-white/5 text-sm font-body">
+                  <span className="font-mono text-xs text-white/45 tabular-nums sm:pt-0.5">{pDate(p.d)}</span>
+                  <span className="text-white/90 font-medium min-w-0">{src(p)}</span>
+                  <span className="text-white/65 font-light leading-snug">{p.t}</span>
+                </div>
+              ))}
+              {rows.length > 600 && <div className="px-5 py-3 font-mono text-xs text-white/45">… affinez la recherche pour voir les {pFmt(rows.length - 600)} autres.</div>}
+            </div>
+          </div>
+        </section>
+      </>)}
+    </main>
+  );
+}
+
 // ---------- App ----------
 function App() {
+  const [view, setView] = React.useState(viewFromPath);
+  React.useEffect(() => {
+    // Après chaque navigation : on affiche la bonne vue, puis on place la page
+    // à l'ancre demandée (#apropos…) ou tout en haut.
+    const apply = (hash) => {
+      const v = viewFromPath();
+      setView(v);
+      document.title = v === "presse" ? PRESS_TITLE : HOME_TITLE;
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        const el = hash && document.getElementById(hash.slice(1));
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+        else window.scrollTo({ top: 0 });
+      }));
+    };
+    const onNav = (e) => apply(e.detail && e.detail.hash);
+    const onPop = () => apply(location.hash);
+    window.addEventListener("tmf:navigate", onNav);
+    window.addEventListener("popstate", onPop);
+    return () => { window.removeEventListener("tmf:navigate", onNav); window.removeEventListener("popstate", onPop); };
+  }, []);
   return (
     <div className="bg-black min-h-screen relative">
       <div className="aurora-blob blob-1" aria-hidden="true"></div>
       <div className="aurora-blob blob-2" aria-hidden="true"></div>
       <ScrollProgress />
-      <Navbar />
-      <Hero />
-      <div className="bg-black">
-        <StartSection />
-        <FeaturesChess />
-        <FeaturesGrid />
-        <Testimonials />
-        <Conferencier />
-        <CtaFooter />
-      </div>
+      <Navbar view={view} />
+      {view === "presse" ? (
+        <div className="bg-black">
+          <PressReview />
+          <CtaFooter />
+        </div>
+      ) : (<>
+        <Hero />
+        <div className="bg-black">
+          <StartSection />
+          <FeaturesChess />
+          <FeaturesGrid />
+          <Testimonials />
+          <Conferencier />
+          <CtaFooter />
+        </div>
+      </>)}
     </div>);
 
 }
