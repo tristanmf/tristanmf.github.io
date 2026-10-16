@@ -535,6 +535,27 @@ le site, seul le milieu change.
   RTL 2015 identifiée comme *L'heure du crime* (Jacques Pradel). Pas de carte « émission
   non identifiée ».
 
+## Articles — `tristan.pro/ia/…` (premier : 17 octobre 2026)
+
+**Même principe que la revue de presse : une vue de l'application.** `viewFromPath()` renvoie
+`"pravda"` pour `/ia/pravda-perplexity/`, `App` affiche `PravdaArticle` entre la navbar et
+`CtaFooter`. Le titre d'onglet vient de `VIEW_TITLES`. La coquille
+`ia/pravda-perplexity/index.html` est **générée** par `scripts/build-jsx.mjs` (tableau `PAGES`,
+qui produit aussi `presse/index.html`) et commitée par le workflow Build front-end.
+Ajouter un article = une vue dans `app.jsx`, une entrée dans `PAGES`, le chemin dans le
+`git add` du workflow, et une ligne dans `sitemap.xml`.
+
+**Pravda / Perplexity** (« Présidentielle : des IA puisent dans la propagande russe… »).
+- Texte : `contenu.md` de Tristan (Drive, « 05 - Recherche et veille/enquete-ia-sources/
+  tristan.pro - article Pravda/ »), repris tel quel. **Le volet Claude / RT a été retiré** par
+  Tristan : phrase du chapeau, paragraphe, graphique, capture et source RT ne sont pas publiés,
+  et l'onglet « Claude-RT » a été ôté de la copie publiée du `.xlsx`.
+- Données dans `ia/pravda-perplexity/` : `graphique.json` (barres), les deux CSV (lus par la
+  page pour les tableaux dépliables **et** proposés au téléchargement — une seule source), le
+  `.xlsx`, la capture. Liens Pravda en `rel="nofollow noopener"`.
+- Visuels en HTML/SVG natif, aucune bibliothèque. Schéma horizontal à partir de `lg`, vertical
+  en dessous. Espaces insécables françaises via `pvNb()`.
+
 ## Décisions prises (et pourquoi) — ne pas rouvrir sans raison
 
 **Contact**
