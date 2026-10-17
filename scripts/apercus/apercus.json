@@ -87,12 +87,12 @@
       "position": "390px 46%",
       "taille": "auto 125%",
       "voile": "linear-gradient(90deg,rgba(7,8,10,.97) 0%,rgba(7,8,10,.85) 40%,rgba(7,8,10,0) 68%)",
-      "rubrique": "TMF Lab · visualisation 3D",
+      "rubrique": "Visualisation 3D · désinformation",
       "titre": "La puissance des super‑propagateurs",
       "accroche": "Une poignée de comptes fait circuler l'essentiel des fausses informations. Une visualisation 3D calibrée sur trois études parues dans Science.",
       "pied": "Tristan Mendès France",
-      "site": "tmflab.tech",
-      "_cible": "tmflab.tech/super-propagateurs/ (www/tmflab/super-propagateurs/index.html, OVH)"
+      "site": "tristan.pro",
+      "_cible": "tristan.pro/productions/super-propagateurs/ (copie de tmflab.tech/super-propagateurs/)"
     },
     {
       "sortie": "ia/pravda-perplexity/illustration.jpg",
