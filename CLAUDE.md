@@ -556,6 +556,26 @@ sympa, raccord et propre », y compris pour les projets hébergés ailleurs.
 - **Icône d'onglet** : `favicon.png` (96 px, rond) et `apple-touch-icon.png` (180 px), tirés
   de `profile.jpg`, le portrait affiché sur le site. `og-image.jpg` n'est plus utilisée.
 
+## Productions, bouton « Nouveau », dernier Complorama (17 octobre 2026)
+
+- **`PRODUCTIONS`** (tableau en tête de `app.jsx`, la plus récente en premier) alimente la page
+  **`/productions/`** (vue `productions`, coquille générée par `PAGES`) et le **bouton
+  « Nouveau »** sous le portrait (étiquette `court`, 25 caractères au plus : il doit tenir sur une
+  ligne sur iPhone). Publier une production = une ligne en tête du tableau (+ son aperçu de
+  partage). Le lien « Productions » du menu mène à `/productions/` ; la section `#productions`
+  de l'accueil garde la tuile TMF Lab et un lien « Toutes mes productions ».
+  Décision de Tristan : le bouton montre la **dernière production seule**, pas « Productions »
+  (sinon doublon avec le menu). Pas de section « À la une » sur l'accueil (repousserait tout).
+- **Carte Complorama de l'accueil = dernier épisode**, lu dans `complorama/dernier.json`
+  (écrit par `scripts/complorama-dernier.mjs`, étape du workflow « Sync new episodes »). L'accueil
+  ne charge que ce fichier, pas le catalogue. Image : miroir local uniquement ; repli sur la carte
+  habituelle si le fichier manque.
+- **Piège réglé le même jour** : Radio France publie ses visuels dans un nouveau seau
+  `s3/rf-cruiser-embed-production/` que `download-episode-images.mjs` ne reconnaissait pas → les
+  épisodes 113 à 115 avaient leur image chargée depuis radiofrance.fr (domaine tiers). Expression
+  élargie, images recopiées et réduites à 600 px. Reste une image `franceinfo.fr/pictures/…`
+  (épisode du 5 juin) non prise en charge.
+
 ## Articles — `tristan.pro/ia/…` (premier : 17 octobre 2026)
 
 **Même principe que la revue de presse : une vue de l'application.** `viewFromPath()` renvoie

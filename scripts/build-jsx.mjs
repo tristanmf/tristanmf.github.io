@@ -72,6 +72,16 @@ const PAGES = [
     imageAlt: 'Revue de presse de Tristan Mendès France : 1 700+ articles depuis 1997',
   },
   {
+    out: 'productions/index.html',
+    label: 'page Productions',
+    title: 'Productions — Tristan Mendès France',
+    description: 'Les dernières enquêtes et réalisations numériques de Tristan Mendès France : IA et désinformation, visualisations, cartes interactives, et le laboratoire TMF Lab.',
+    social: 'Enquêtes, essais et expérimentations numériques de Tristan Mendès France.',
+    url: 'https://tristan.pro/productions/',
+    image: 'https://tristan.pro/apercus/productions.jpg',
+    imageAlt: 'Productions de Tristan Mendès France : enquêtes, essais et expérimentations',
+  },
+  {
     out: 'ia/pravda-perplexity/index.html',
     label: 'article Pravda / Perplexity',
     title: 'Présidentielle : quand Perplexity puise dans la propagande russe pour présenter les candidats — Tristan Mendès France',

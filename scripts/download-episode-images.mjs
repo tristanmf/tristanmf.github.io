@@ -24,7 +24,8 @@ const PUBLIC_PREFIX = 'assets/episodes/'; // relative to /complorama/index.html
 // 1200x680, etc) depending on which page exposes the image.
 const REMOTE_RES = [
   /https:\/\/www\.radiofrance\.fr\/pikapi\/images\/([a-f0-9-]{36})\/\d+x\d+/g,
-  /https:\/\/www\.radiofrance\.fr\/s3\/cruiser-production[^/]*\/\d{4}\/\d{2}\/([a-f0-9-]{36})\/[^"'\s)]+/g,
+  // Sept. 2026 : nouveau seau « rf-cruiser-embed-production », même clé UUID.
+  /https:\/\/www\.radiofrance\.fr\/s3\/(?:rf-)?cruiser-(?:[a-z]+-)?production[^/]*\/\d{4}\/\d{2}\/([a-f0-9-]{36})\/[^"'\s)]+/g,
 ];
 
 async function fileNonEmpty(p) {
