@@ -8,5 +8,8 @@
     ,
     { "sortie": "apercus/sites/tmflab.jpg", "modele": "tmflab", "pied": "Cartes interactives · applications · webdocumentaire · archives du web", "_cible": "tmflab.tech (www/tmflab/index.html, hébergement OVH egoblog)" },
     { "sortie": "apercus/sites/egoblog.jpg", "modele": "egoblog", "sous_titre": "Le blog hyper subjectif et hyper media de Tristan Mendès France", "chiffres": [["1 149", "billets"], ["1997–2015", "en ligne"], ["11 298", "commentaires"]], "_cible": "www.egoblog.net (www/accueil/index.html, hébergement OVH egoblog)" }
+    ,
+    { "sortie": "apercus/sites/comploscore.jpg", "modele": "projet", "accent": "#e63946", "fond": "fonds/comploscore-carte.jpg", "position": "60% center", "filtre": "saturate(1.15)", "rubrique": "Carte interactive · 70 pays", "titre": "ComploScore", "accroche": "La carte mondiale des théories complotistes, notées de A à E comme un Nutri-Score", "pied": "Tristan Mendès France", "site": "tristan.pro", "_cible": "tristan.pro/carte-complotisme/ (dépôt tristanmf/carte-complotisme)" },
+    { "sortie": "apercus/sites/super-propagateurs.jpg", "modele": "projet", "police": "grotesk", "accent": "#ff5b2e", "fond": "fonds/super-propagateurs.jpg", "position": "390px 46%", "taille": "auto 125%", "voile": "linear-gradient(90deg,rgba(7,8,10,.97) 0%,rgba(7,8,10,.85) 40%,rgba(7,8,10,0) 68%)", "rubrique": "TMF Lab · visualisation 3D", "titre": "La puissance des super‑propagateurs", "accroche": "Une poignée de comptes fait circuler l'essentiel des fausses informations. Une visualisation 3D calibrée sur trois études parues dans Science.", "pied": "Tristan Mendès France", "site": "tmflab.tech", "_cible": "tmflab.tech/super-propagateurs/ (www/tmflab/super-propagateurs/index.html, OVH)" }
   ]
 }

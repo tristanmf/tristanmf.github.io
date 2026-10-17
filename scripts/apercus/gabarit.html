@@ -76,6 +76,15 @@
   .eg-chiffres { margin-top: auto; width: 100%; display: flex; justify-content: center; gap: 90px; border-top: 1px solid #2a2724; padding-top: 26px; }
   .eg-chiffres div { font-size: 40px; }
   .eg-chiffres small { display: block; margin-top: 6px; font-family: -apple-system, 'Helvetica Neue', sans-serif; font-size: 14px; letter-spacing: .24em; text-transform: uppercase; color: #8d867a; }
+  /* Projet avec visuel de fond (modèle « projet ») */
+  .fond { position: absolute; inset: 0; background-size: cover; background-position: center; }
+  .voile { position: absolute; inset: 0; }
+  body.projet h1 { font-size: 96px; line-height: .98; margin-top: 30px; max-width: 760px; }
+  body.projet .accroche { margin-top: 24px; font-size: 27px; font-weight: 300; line-height: 1.32; color: rgba(255,255,255,.86); max-width: 640px; }
+  body.projet.grotesk h1 { font-family: 'Space Grotesk', sans-serif; font-style: normal; font-weight: 700; letter-spacing: -0.035em; font-size: 76px; max-width: 700px; }
+  body.projet.grotesk .accroche { font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 26px; }
+  body.projet.grotesk .mono, body.projet.grotesk .foot { font-family: 'JetBrains Mono', monospace; }
+  body.projet.grotesk .foot .site { font-family: 'Space Grotesk', sans-serif; font-style: normal; font-weight: 700; font-size: 30px; }
 </style>
 </head>
 <body>
@@ -108,6 +117,16 @@
       <h1 class="serif">${nb(p.titre)}</h1>
       ${foot(p.pied)}`;
     if (p.chiffre) document.body.insertAdjacentHTML("beforeend", `<div class="stat"><div class="n">${nb(p.chiffre)}</div><div class="l">${nb(p.legende)}</div></div>`);
+  } else if (p.modele === "projet") {
+    document.body.classList.add("autre", "projet");
+    if (p.police === "grotesk") document.body.classList.add("grotesk");
+    if (p.accent) document.body.style.setProperty("--accent", p.accent);
+    document.body.insertAdjacentHTML("afterbegin", `<div class="fond" style="background-image:url('${p.fond}');background-position:${p.position || "center"};${p.taille ? "background-size:" + p.taille + ";" : ""}${p.filtre ? "filter:" + p.filtre : ""}"></div><div class="voile" style="background:${p.voile || "linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.78) 45%,rgba(0,0,0,.15) 100%)"}"></div>`);
+    f.className = "frame";
+    f.innerHTML = `<span class="pill mono" style="font-size:15px"><b></b>${esc(p.rubrique)}</span>
+      <h1 class="${p.police === "grotesk" ? "" : "serif"}">${nb(p.titre)}</h1>
+      <div class="accroche">${nb(p.accroche)}</div>
+      <div class="bas"><div class="rule"></div><div class="foot"><span>${nb(p.pied || "Tristan Mendès France")}</span><span class="site">${esc(p.site || "tristan.pro")}</span></div></div>`;
   } else if (p.modele === "tmflab") {
     document.body.classList.add("autre", "tmflab");
     document.body.insertAdjacentHTML("afterbegin", `<div class="tl-glow tl-g1"></div><div class="tl-glow tl-g2"></div>`);
