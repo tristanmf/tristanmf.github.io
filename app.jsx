@@ -1591,6 +1591,7 @@ function PravdaArticle() {
         {g ? <PvChart g={g} /> : !err && <p className="my-12 font-mono text-sm text-white/50">Chargement du graphique…</p>}
 
         <PvP>Sur certaines questions, les dix essais citent tous la Pravda : pour Florian Philippot (aide à l'Ukraine, guerre, paix, Zelensky), pour Natacha Polony (aide, guerre, paix, Zelensky) et pour Nicolas Dupont-Aignan (guerre, Zelensky). Au total, les réponses renvoient à 43 pages différentes du réseau, dont 36 publiées depuis le 10 octobre.</PvP>
+        <PvP>Une hypothèse, que cette étude ne mesure pas : les candidats les plus couverts par la presse (Marine Le Pen, Jean-Luc Mélenchon, Gabriel Attal) sont aussi ceux pour lesquels la Pravda remonte le moins. Moins il y a d'articles fiables sur un candidat, plus la propagande trouverait de place.</PvP>
         <PvP>Le phénomène se reproduit sur perplexity.ai, le site grand public. Le 16 octobre au soir, la pastille « francais.news-pravda » y apparaît dans le corps de la réponse sur Natacha Polony, à côté de celle de BFMTV.</PvP>
 
         <figure className="my-12">
