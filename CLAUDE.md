@@ -617,6 +617,17 @@ Ajouter un article = une vue dans `app.jsx`, une entrée dans `PAGES`, le chemin
 - Visuels en HTML/SVG natif, aucune bibliothèque. Schéma horizontal à partir de `lg`, vertical
   en dessous. Espaces insécables françaises via `pvNb()`.
 
+**Google / santé** (« Santé : l'aperçu IA de Google recommande des auteurs hors du consensus scientifique », `/ia/google-sante/`, vue `sante`).
+- Préparé le 17 octobre 2026 sur la branche `claude/article-sante-google`. Texte court (~1 600 signes)
+  validé sur le fond par Tristan ; chiffres de la consolidation du 17/10 (Drive, enquete-ia-sources,
+  « [DATA] Santé aperçus IA »), gardés tels quels même si un contrôle du soir n'a pas reproduit les
+  deux cas Chaillot. Captures dans `ia/google-sante/` (navigateur sans compte ; Chaillot : capture
+  Google du même jour, 14 h 49). Signé « Prompté par Tristan Mendès France ».
+- **Volontairement absent de `PRODUCTIONS`, du bouton « Nouveau » et de `sitemap.xml`** : Tristan le
+  publie sans le mettre en avant ni l'annoncer sur Substack. Ne pas l'y ajouter sans sa demande.
+- DataForSEO (outil de collecte des aperçus IA) est nommé, avec un lien, dans la section « Méthode et
+  données » : décision de Tristan du 17/10/2026 pour cet article, contre la règle habituelle de l'enquête.
+
 ## Décisions prises (et pourquoi) — ne pas rouvrir sans raison
 
 **Contact**

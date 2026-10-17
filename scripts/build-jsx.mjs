@@ -92,6 +92,17 @@ const PAGES = [
     image: 'https://tristan.pro/ia/pravda-perplexity/apercu.jpg',
     imageAlt: 'Présidentielle : quand Perplexity puise dans la propagande russe pour présenter les candidats. 43 % des 420 réponses citent le réseau Pravda.',
   },
+  {
+    out: 'ia/google-sante/index.html',
+    label: 'article Google / santé',
+    title: "Santé : l'aperçu IA de Google recommande des auteurs hors du consensus scientifique — Tristan Mendès France",
+    description: "Depuis le 22 juillet 2026, Google affiche en France des aperçus IA. Demandez-lui un livre sur Lyme, les statistiques du covid ou les effets des vaccins : il met en avant Christian Perronne, Pierre Chaillot ou Jean-Marc Sabatier, sans aucune mise en garde.",
+    social: "Livre sur Lyme : Perronne, 24 aperçus sur 24, sans aucune réserve. L'aperçu IA de Google recommande les figures de la contestation vaccinale sans les qualifier.",
+    url: 'https://tristan.pro/ia/google-sante/',
+    ogType: 'article',
+    image: 'https://tristan.pro/ia/google-sante/apercu.jpg',
+    imageAlt: "Santé : l'aperçu IA de Google recommande des auteurs hors du consensus scientifique. Lyme, covid, vaccins : Perronne, Chaillot ou Sabatier mis en avant sans mise en garde.",
+  },
 ];
 const esc = s => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 // assets/site-inline.css : le <style> de index.html (liquid-glass, aurora…), pour
