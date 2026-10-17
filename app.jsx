@@ -1594,7 +1594,7 @@ function PravdaArticle() {
 
         {/* Invitation à s'abonner : simple lien vers Substack, aucun widget tiers chargé. */}
         <a href={PV_SUBSTACK} target="_blank" rel="noopener" className="group mt-10 flex flex-wrap items-center justify-between gap-4 liquid-glass rounded-3xl p-5 md:p-6">
-          <span className="font-body text-white/85 leading-snug">{pvNb("Pour ne pas rater les prochaines enquêtes, abonnez-vous à ma newsletter.")}</span>
+          <span className="font-body text-white/85 leading-snug">{pvNb("Ne ratez pas mes prochaines enquêtes et publications importantes : abonnez-vous à ma newsletter, c'est gratuit.")}</span>
           <span className="inline-flex items-center gap-2 rounded-full bg-white text-black px-4 py-2.5 font-body text-sm font-medium whitespace-nowrap group-hover:bg-white/85 transition-colors">S'abonner sur Substack <ArrowUpRight size={14} strokeWidth={2} /></span>
         </a>
 
