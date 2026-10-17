@@ -40,11 +40,14 @@ jobs:
       - name: Mirror episode images locally
         run: node scripts/download-episode-images.mjs
 
+      - name: Dernier épisode pour l'accueil de tristan.pro
+        run: node scripts/complorama-dernier.mjs
+
       - name: Commit changes
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add complorama/assets/episodes complorama/episodes-data.js
+          git add complorama/assets/episodes complorama/episodes-data.js complorama/dernier.json
           if git diff --staged --quiet; then
             echo "Nothing to commit."
           else

@@ -555,15 +555,56 @@ const PRESS_TITLE = "Revue de presse — Tristan Mendès France";
 // est lui aussi généré par scripts/build-jsx.mjs).
 const PRAVDA_PATH = "/ia/pravda-perplexity/";
 const PRAVDA_TITLE = "Présidentielle : quand Perplexity puise dans la propagande russe pour présenter les candidats — Tristan Mendès France";
+const PRODUCTIONS_PATH = "/productions/";
+const PRODUCTIONS_TITLE = "Productions — Tristan Mendès France";
 const VIEW_TITLES = {
   home: HOME_TITLE,
   presse: PRESS_TITLE,
-  pravda: PRAVDA_TITLE
+  pravda: PRAVDA_TITLE,
+  productions: PRODUCTIONS_TITLE
 };
+// Lien de menu actif pour chaque vue autre que l'accueil.
+const VIEW_NAV = {
+  presse: PRESS_PATH,
+  productions: PRODUCTIONS_PATH
+};
+
+// Mes productions, la plus récente en premier. La première alimente le bouton
+// « Nouveau » sous le portrait (étiquette `court`, 25 caractères au plus pour
+// tenir sur une ligne sur iPhone) ; toutes s'affichent sur /productions/.
+// `img` : l'aperçu de partage de la page (1200 × 630, scripts/apercus/).
+const PRODUCTIONS = [{
+  court: "Perplexity & Pravda",
+  titre: "Présidentielle : quand Perplexity puise dans la propagande russe",
+  quand: "17 octobre 2026",
+  kicker: "Enquête · IA et désinformation",
+  href: "/ia/pravda-perplexity/",
+  img: "/ia/pravda-perplexity/apercu.jpg",
+  desc: "Sur 420 réponses de Perplexity, 182 citent le réseau de propagande russe Pravda comme une source parmi d'autres."
+}, {
+  court: "Super-propagateurs",
+  titre: "La puissance des super-propagateurs",
+  quand: "Septembre 2026",
+  kicker: "TMF Lab · visualisation 3D",
+  href: "https://tmflab.tech/super-propagateurs/",
+  img: "/apercus/sites/super-propagateurs.jpg",
+  desc: "Une poignée de comptes fait circuler l'essentiel des fausses informations. Une simulation calibrée sur trois études parues dans Science."
+}, {
+  court: "ComploScore",
+  titre: "ComploScore",
+  quand: "Mars 2026",
+  kicker: "Carte interactive · 70 pays",
+  href: "/carte-complotisme/",
+  img: "/apercus/sites/comploscore.jpg",
+  desc: "La carte mondiale des théories complotistes, notées de A à E comme un Nutri-Score."
+}];
+// Vue de l'application → NavLink ; autre site ou autre dépôt → lien normal.
+const isAppView = h => h === PRESS_PATH || h === PRODUCTIONS_PATH || h === PRAVDA_PATH;
 const viewFromPath = () => {
   const p = location.pathname;
   if (p.startsWith("/presse")) return "presse";
   if (p.startsWith("/ia/pravda-perplexity")) return "pravda";
+  if (p.startsWith("/productions")) return "productions";
   return "home";
 };
 function navigate(href) {
@@ -614,16 +655,16 @@ function Navbar({
     h: PRESS_PATH
   }, {
     l: "Productions",
-    h: "/#productions"
+    h: PRODUCTIONS_PATH
   }, {
     l: "Conférences",
     h: "/#conferences"
   }];
-  const [active, setActive] = React.useState(view === "presse" ? PRESS_PATH : view === "home" ? "/#top" : "");
+  const [active, setActive] = React.useState(view === "home" ? "/#top" : VIEW_NAV[view] || "");
   const [menuOpen, setMenuOpen] = React.useState(false);
   React.useEffect(() => {
     if (view !== "home") {
-      setActive(view === "presse" ? PRESS_PATH : "");
+      setActive(VIEW_NAV[view] || "");
       return;
     }
     setActive("/#top");
@@ -632,7 +673,7 @@ function Navbar({
     if (!sections.length) return;
     const io = new IntersectionObserver(entries => {
       const visible = entries.filter(e => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-      if (visible[0]) setActive("/#" + visible[0].target.id);
+      if (visible[0]) setActive(visible[0].target.id === "productions" ? PRODUCTIONS_PATH : "/#" + visible[0].target.id);
     }, {
       rootMargin: "-40% 0px -50% 0px",
       threshold: [0, 0.1, 0.25, 0.5]
@@ -804,7 +845,7 @@ function Hero() {
     size: 14,
     strokeWidth: 2,
     className: "text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-  })))), /*#__PURE__*/React.createElement("div", {
+  })), /*#__PURE__*/React.createElement(NouveauPill, null))), /*#__PURE__*/React.createElement("div", {
     className: "mt-6 text-center w-full px-4"
   }, /*#__PURE__*/React.createElement(BlurText, {
     text: "Tristan Mend\xE8s France",
@@ -1210,15 +1251,7 @@ function FeaturesChess() {
   }, /*#__PURE__*/React.createElement(FadeIn, {
     delay: 0,
     className: "h-full"
-  }, /*#__PURE__*/React.createElement(MediaCard, {
-    href: "/complorama/",
-    img: "/complorama.jpg",
-    badge: "Podcast",
-    kicker: "France Info",
-    title: "Complorama",
-    body: "Co-producteur et coanimateur de ce podcast France Info qui explore les dynamiques du complotisme contemporain.",
-    cta: "Voir tous les \xE9pisodes"
-  }))), /*#__PURE__*/React.createElement(Parallax, {
+  }, /*#__PURE__*/React.createElement(ComploramaDernier, null))), /*#__PURE__*/React.createElement(Parallax, {
     speed: 0,
     className: "h-full"
   }, /*#__PURE__*/React.createElement(FadeIn, {
@@ -1472,7 +1505,22 @@ function Testimonials() {
   return /*#__PURE__*/React.createElement("section", {
     id: "productions",
     className: "px-6 md:px-12 lg:px-24 py-16 md:py-28"
-  }, /*#__PURE__*/React.createElement(LabTile, {
+  }, /*#__PURE__*/React.createElement(FadeIn, {
+    className: "mb-8 flex flex-wrap items-center justify-between gap-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/60"
+  }, "Productions"), /*#__PURE__*/React.createElement("span", {
+    className: "text-white font-body text-base md:text-lg tracking-tight"
+  }, "Enqu\xEAtes & exp\xE9rimentations")), /*#__PURE__*/React.createElement(NavLink, {
+    href: PRODUCTIONS_PATH,
+    className: "group inline-flex items-center gap-2 text-sm font-medium font-body text-white/80 hover:text-white"
+  }, "Toutes mes productions ", /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 14,
+    strokeWidth: 2,
+    className: "transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+  }))), /*#__PURE__*/React.createElement(LabTile, {
     video: "/tmflab.mp4",
     logo: "/tmflab-logo.svg"
   }), /*#__PURE__*/React.createElement(FadeIn, {
@@ -2523,6 +2571,181 @@ function PravdaArticle() {
   }, "Wikip\xE9dia"), ")")))));
 }
 
+// ---------- Bouton « Nouveau » (hero) : ma dernière production ----------
+function NouveauPill() {
+  const p = PRODUCTIONS[0];
+  const cls = "group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors";
+  const inner = /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("span", {
+    className: "rounded-full px-3 py-1 text-xs font-semibold font-body text-black",
+    style: {
+      background: "#fb7193"
+    }
+  }, "Nouveau"), /*#__PURE__*/React.createElement("span", {
+    className: "text-sm text-white/90 font-body"
+  }, p.court), /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 14,
+    strokeWidth: 2,
+    className: "text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+  }));
+  return isAppView(p.href) ? /*#__PURE__*/React.createElement(NavLink, {
+    href: p.href,
+    className: cls,
+    "aria-label": "Nouveau : " + p.titre
+  }, inner) : /*#__PURE__*/React.createElement("a", {
+    href: p.href,
+    target: p.href.startsWith("http") ? "_blank" : undefined,
+    rel: "noopener",
+    className: cls,
+    "aria-label": "Nouveau : " + p.titre
+  }, inner);
+}
+
+// ---------- Complorama : le dernier épisode, à jour tout seul ----------
+// /complorama/dernier.json est réécrit par le workflow « Sync new episodes »
+// (scripts/complorama-dernier.mjs) deux fois par jour. Tant qu'il n'est pas
+// chargé, ou s'il manque, on affiche la carte habituelle.
+const COMPLORAMA_CARTE = {
+  href: "/complorama/",
+  img: "/complorama.jpg",
+  badge: "Podcast",
+  kicker: "France Info",
+  title: "Complorama",
+  body: "Co-producteur et coanimateur de ce podcast France Info qui explore les dynamiques du complotisme contemporain.",
+  cta: "Voir tous les épisodes"
+};
+const frDate = d => {
+  try {
+    return new Date(d + "T12:00:00").toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+  } catch (e) {
+    return d;
+  }
+};
+function ComploramaDernier() {
+  const [ep, setEp] = React.useState(null);
+  React.useEffect(() => {
+    fetch("/complorama/dernier.json").then(r => r.ok ? r.json() : null).then(setEp).catch(() => {});
+  }, []);
+  if (!ep) return /*#__PURE__*/React.createElement(MediaCard, COMPLORAMA_CARTE);
+  const btn = "inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium font-body transition-colors";
+  return /*#__PURE__*/React.createElement("div", {
+    className: "liquid-glass rounded-2xl overflow-hidden h-full flex flex-col"
+  }, /*#__PURE__*/React.createElement("a", {
+    href: ep.url,
+    target: "_blank",
+    rel: "noopener",
+    className: "group relative block aspect-[4/3] overflow-hidden"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: ep.img || "/complorama.jpg",
+    alt: "",
+    className: "absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "absolute top-4 left-4 rounded-full px-3 py-1 text-[11px] font-medium text-white font-body border border-white/15",
+    style: {
+      background: 'rgba(0,0,0,0.6)',
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)'
+    }
+  }, "Dernier \xE9pisode \xB7 n\xB0", ep.n)), /*#__PURE__*/React.createElement("div", {
+    className: "p-6 flex-1 flex flex-col"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-[11px] uppercase tracking-[0.15em] text-white/50 font-body font-medium mb-2"
+  }, "Complorama \xB7 France Info", ep.date ? " · " + frDate(ep.date) : ""), /*#__PURE__*/React.createElement("h4", {
+    className: "font-heading italic text-2xl md:text-3xl text-white leading-tight"
+  }, ep.title), /*#__PURE__*/React.createElement("p", {
+    className: "mt-3 text-white/65 font-body font-light text-base leading-relaxed flex-1"
+  }, "Le podcast que je coanime avec Rudy Reichstadt sur les dynamiques du complotisme contemporain."), /*#__PURE__*/React.createElement("div", {
+    className: "mt-5 flex flex-wrap items-center gap-2"
+  }, /*#__PURE__*/React.createElement("a", {
+    href: ep.url,
+    target: "_blank",
+    rel: "noopener",
+    className: btn + " bg-white text-black hover:bg-white/85"
+  }, /*#__PURE__*/React.createElement(Play, {
+    size: 12
+  }), " \xC9couter"), ep.youtube && /*#__PURE__*/React.createElement("a", {
+    href: ep.youtube,
+    target: "_blank",
+    rel: "noopener",
+    className: btn + " border border-white/20 text-white hover:bg-white/10"
+  }, "Vid\xE9o ", /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 14,
+    strokeWidth: 2
+  })), /*#__PURE__*/React.createElement("a", {
+    href: "/complorama/",
+    className: "ml-auto inline-flex items-center gap-1 text-sm font-medium font-body text-white/70 hover:text-white"
+  }, "Tous les \xE9pisodes ", /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 14,
+    strokeWidth: 2
+  })))));
+}
+
+// ---------- Productions (vue /productions/) ----------
+function ProductionsPage() {
+  return /*#__PURE__*/React.createElement("main", {
+    className: "relative z-10 px-6 md:px-12 lg:px-24 pt-32 md:pt-40 pb-8"
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "max-w-4xl"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "inline-flex items-center liquid-glass rounded-full px-4 py-3 max-w-full"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.14em] sm:tracking-[0.2em] text-white/60"
+  }, "Enqu\xEAtes \xB7 essais \xB7 exp\xE9rimentations")), /*#__PURE__*/React.createElement("h1", {
+    className: "mt-6 font-heading italic text-6xl md:text-8xl text-white tracking-tight leading-[0.9]"
+  }, "Productions"), /*#__PURE__*/React.createElement("p", {
+    className: "mt-6 text-white/75 font-body font-light text-lg md:text-xl leading-relaxed max-w-3xl"
+  }, "Mes derni\xE8res enqu\xEAtes et r\xE9alisations, la plus r\xE9cente en premier. Toutes mes exp\xE9rimentations num\xE9riques vivent ensuite dans mon laboratoire, TMF Lab.")), /*#__PURE__*/React.createElement("div", {
+    className: "mt-12 grid grid-cols-1 md:grid-cols-3 gap-6"
+  }, PRODUCTIONS.map((p, i) => {
+    const inner = /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+      className: "relative aspect-[1200/630] overflow-hidden"
+    }, /*#__PURE__*/React.createElement("img", {
+      src: p.img,
+      alt: "",
+      loading: i > 2 ? "lazy" : undefined,
+      className: "absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+    })), /*#__PURE__*/React.createElement("div", {
+      className: "p-6 flex-1 flex flex-col"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "text-[11px] uppercase tracking-[0.15em] text-white/50 font-body font-medium mb-2"
+    }, p.quand, " \xB7 ", p.kicker), /*#__PURE__*/React.createElement("h2", {
+      className: "font-heading italic text-2xl md:text-3xl text-white leading-tight"
+    }, p.titre), /*#__PURE__*/React.createElement("p", {
+      className: "mt-3 text-white/65 font-body font-light text-base leading-relaxed flex-1"
+    }, p.desc), /*#__PURE__*/React.createElement("div", {
+      className: "mt-5 inline-flex items-center gap-2 text-sm font-medium text-white/90 font-body"
+    }, isAppView(p.href) ? "Lire" : "Découvrir", " ", /*#__PURE__*/React.createElement(ArrowUpRight, {
+      size: 14,
+      strokeWidth: 2,
+      className: "transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+    }))));
+    const cls = "group liquid-glass rounded-2xl overflow-hidden h-full flex flex-col";
+    return /*#__PURE__*/React.createElement(FadeIn, {
+      key: p.href,
+      delay: i * 0.08,
+      className: "h-full"
+    }, isAppView(p.href) ? /*#__PURE__*/React.createElement(NavLink, {
+      href: p.href,
+      className: cls
+    }, inner) : /*#__PURE__*/React.createElement("a", {
+      href: p.href,
+      target: p.href.startsWith("http") ? "_blank" : undefined,
+      rel: "noopener",
+      className: cls
+    }, inner));
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "mt-16 md:mt-24"
+  }, /*#__PURE__*/React.createElement(LabTile, {
+    video: "/tmflab.mp4",
+    logo: "/tmflab-logo.svg"
+  })));
+}
+
 // ---------- App ----------
 function App() {
   const [view, setView] = React.useState(viewFromPath);
@@ -2564,7 +2787,9 @@ function App() {
     view: view
   }), view === "presse" ? /*#__PURE__*/React.createElement("div", {
     className: "bg-black"
-  }, /*#__PURE__*/React.createElement(PressReview, null), /*#__PURE__*/React.createElement(CtaFooter, null)) : view === "pravda" ? /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement(PressReview, null), /*#__PURE__*/React.createElement(CtaFooter, null)) : view === "productions" ? /*#__PURE__*/React.createElement("div", {
+    className: "bg-black"
+  }, /*#__PURE__*/React.createElement(ProductionsPage, null), /*#__PURE__*/React.createElement(CtaFooter, null)) : view === "pravda" ? /*#__PURE__*/React.createElement("div", {
     className: "bg-black"
   }, /*#__PURE__*/React.createElement(PravdaArticle, null), /*#__PURE__*/React.createElement(CtaFooter, null)) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Hero, null), /*#__PURE__*/React.createElement("div", {
     className: "bg-black"

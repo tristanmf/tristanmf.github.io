@@ -18,6 +18,14 @@
       "pied": "Tristan Mendès France"
     },
     {
+      "sortie": "apercus/productions.jpg",
+      "modele": "section",
+      "rubrique": "Enquêtes · essais · expérimentations",
+      "titre": "Productions",
+      "sous_titre": "Mes dernières enquêtes et réalisations numériques",
+      "pied": "Tristan Mendès France"
+    },
+    {
       "sortie": "ia/pravda-perplexity/apercu.jpg",
       "modele": "projet",
       "accent": "#fb7193",
