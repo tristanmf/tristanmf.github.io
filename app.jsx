@@ -1406,6 +1406,9 @@ const PV_ACCENT = "#fb7193";
 const PV_XLSX = "donnees-pravda-perplexity-2026-10-16.xlsx";
 const PV_REPONSES = "reponses-perplexity-420.csv";
 const PV_PAGES = "pages-pravda-43.csv";
+// Data Nation : adresses relevées dans leurs échanges avec Tristan (septembre 2026).
+const PV_LLMMON = "https://llmmonitor.org/";
+const PV_DATANATION = "https://data-nation.org/";
 const PV_VIGINUM = "https://www.sgdsn.gouv.fr/files/files/20240212_NP_SGDSN_VIGINUM_RAPPORT-RESEAU-PORTAL-KOMBAT_VF.pdf";
 
 // CSV RFC 4180 (guillemets doublés, BOM) → tableau d'objets.
@@ -1573,7 +1576,7 @@ function PravdaArticle() {
 
         <PvSchema />
 
-        <PvP>Pour ce test inédit, mené avec le système LLM-Monitoring de Data Nation, j'ai posé à Perplexity 42 questions neutres sur six candidats (sans le mot « Russie »), dix fois chacune. Résultat : 182 réponses sur 420 (43 %) citent au moins une page du réseau Pravda (francais.news-pravda.com et ses déclinaisons). La source est bien affichée, mais comme n'importe quelle autre, au même titre que TF1 Info, Le Figaro, BFMTV, franceinfo ou Le Monde, cités dans les mêmes réponses. Rien n'indique au lecteur qu'il s'agit d'un réseau de propagande.</PvP>
+        <PvP>Pour ce test inédit, mené avec le système <PvExt href={PV_LLMMON}>LLM-Monitoring</PvExt> de <PvExt href={PV_DATANATION}>Data Nation</PvExt>, j'ai posé à Perplexity 42 questions neutres sur six candidats (sans le mot « Russie »), dix fois chacune. Résultat : 182 réponses sur 420 (43 %) citent au moins une page du réseau Pravda (francais.news-pravda.com et ses déclinaisons). La source est bien affichée, mais comme n'importe quelle autre, au même titre que TF1 Info, Le Figaro, BFMTV, franceinfo ou Le Monde, cités dans les mêmes réponses. Rien n'indique au lecteur qu'il s'agit d'un réseau de propagande.</PvP>
 
         <aside className="my-12 liquid-glass rounded-3xl p-5 md:p-8">
           <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">Les questions posées</div>
@@ -1603,7 +1606,7 @@ function PravdaArticle() {
         <section className="mt-16 liquid-glass rounded-3xl p-5 md:p-8" aria-labelledby="pv-methode">
           <h2 id="pv-methode" className="font-heading italic text-3xl text-white">Méthode et données</h2>
           <ul className="mt-5 space-y-3 font-body text-sm md:text-base text-white/75 leading-relaxed">
-            <li><span className="text-white">Outil :</span> système LLM-Monitoring de Data Nation. Modèle : Perplexity sonar, recherche web activée, en français.</li>
+            <li><span className="text-white">Outil :</span> système <PvExt href={PV_LLMMON}>LLM-Monitoring</PvExt> de <PvExt href={PV_DATANATION}>Data Nation</PvExt>. Modèle : Perplexity sonar, recherche web activée, en français.</li>
             <li><span className="text-white">Collecte :</span> 16 octobre 2026. 6 candidats × 7 questions neutres × 10 essais = 420 réponses. Le mot « Russie » n'apparaît dans aucune question.</li>
             <li><span className="text-white">Critère :</span> une réponse « cite la Pravda » si au moins une page d'un sous-domaine de news-pravda.com figure parmi ses sources.</li>
             <li><span className="text-white">Choix des candidats :</span> retenus après un premier balayage d'environ 2 300 réponses sur 28 candidats et prétendants. Le taux de 43 % vaut pour cet échantillon, pas pour l'ensemble des candidats.</li>

@@ -2186,6 +2186,9 @@ const PV_ACCENT = "#fb7193";
 const PV_XLSX = "donnees-pravda-perplexity-2026-10-16.xlsx";
 const PV_REPONSES = "reponses-perplexity-420.csv";
 const PV_PAGES = "pages-pravda-43.csv";
+// Data Nation : adresses relevées dans leurs échanges avec Tristan (septembre 2026).
+const PV_LLMMON = "https://llmmonitor.org/";
+const PV_DATANATION = "https://data-nation.org/";
 const PV_VIGINUM = "https://www.sgdsn.gouv.fr/files/files/20240212_NP_SGDSN_VIGINUM_RAPPORT-RESEAU-PORTAL-KOMBAT_VF.pdf";
 
 // CSV RFC 4180 (guillemets doublés, BOM) → tableau d'objets.
@@ -2424,7 +2427,11 @@ function PravdaArticle() {
     className: "font-heading italic text-3xl md:text-4xl text-white leading-tight"
   }, pvNb("« Que propose Florian Philippot sur l'aide à l'Ukraine ? »"))), /*#__PURE__*/React.createElement(PvP, null, "Pos\xE9e dix fois \xE0 Perplexity le 16 octobre 2026, la question renvoie dix fois vers le r\xE9seau Pravda."), /*#__PURE__*/React.createElement(PvP, null, "Ce r\xE9seau, identifi\xE9 par Viginum en f\xE9vrier 2024 (rapport ", /*#__PURE__*/React.createElement(PvExt, {
     href: PV_VIGINUM
-  }, "\xAB Portal Kombat \xBB"), ", 193 sites), republie des d\xE9p\xEAches d'agences de presse russes et des messages de comptes pro-russes sur les r\xE9seaux sociaux, sans produire aucun contenu original. Il vise semble-t-il moins les lecteurs que les moteurs de recherche et les IA. Dont l'IA qui m'int\xE9resse aujourd'hui."), /*#__PURE__*/React.createElement(PvSchema, null), /*#__PURE__*/React.createElement(PvP, null, "Pour ce test in\xE9dit, men\xE9 avec le syst\xE8me LLM-Monitoring de Data Nation, j'ai pos\xE9 \xE0 Perplexity 42 questions neutres sur six candidats (sans le mot \xAB Russie \xBB), dix fois chacune. R\xE9sultat : 182 r\xE9ponses sur 420 (43 %) citent au moins une page du r\xE9seau Pravda (francais.news-pravda.com et ses d\xE9clinaisons). La source est bien affich\xE9e, mais comme n'importe quelle autre, au m\xEAme titre que TF1 Info, Le Figaro, BFMTV, franceinfo ou Le Monde, cit\xE9s dans les m\xEAmes r\xE9ponses. Rien n'indique au lecteur qu'il s'agit d'un r\xE9seau de propagande."), /*#__PURE__*/React.createElement("aside", {
+  }, "\xAB Portal Kombat \xBB"), ", 193 sites), republie des d\xE9p\xEAches d'agences de presse russes et des messages de comptes pro-russes sur les r\xE9seaux sociaux, sans produire aucun contenu original. Il vise semble-t-il moins les lecteurs que les moteurs de recherche et les IA. Dont l'IA qui m'int\xE9resse aujourd'hui."), /*#__PURE__*/React.createElement(PvSchema, null), /*#__PURE__*/React.createElement(PvP, null, "Pour ce test in\xE9dit, men\xE9 avec le syst\xE8me ", /*#__PURE__*/React.createElement(PvExt, {
+    href: PV_LLMMON
+  }, "LLM-Monitoring"), " de ", /*#__PURE__*/React.createElement(PvExt, {
+    href: PV_DATANATION
+  }, "Data Nation"), ", j'ai pos\xE9 \xE0 Perplexity 42 questions neutres sur six candidats (sans le mot \xAB Russie \xBB), dix fois chacune. R\xE9sultat : 182 r\xE9ponses sur 420 (43 %) citent au moins une page du r\xE9seau Pravda (francais.news-pravda.com et ses d\xE9clinaisons). La source est bien affich\xE9e, mais comme n'importe quelle autre, au m\xEAme titre que TF1 Info, Le Figaro, BFMTV, franceinfo ou Le Monde, cit\xE9s dans les m\xEAmes r\xE9ponses. Rien n'indique au lecteur qu'il s'agit d'un r\xE9seau de propagande."), /*#__PURE__*/React.createElement("aside", {
     className: "my-12 liquid-glass rounded-3xl p-5 md:p-8"
   }, /*#__PURE__*/React.createElement("div", {
     className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/50"
@@ -2471,7 +2478,11 @@ function PravdaArticle() {
     className: "mt-5 space-y-3 font-body text-sm md:text-base text-white/75 leading-relaxed"
   }, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("span", {
     className: "text-white"
-  }, "Outil :"), " syst\xE8me LLM-Monitoring de Data Nation. Mod\xE8le : Perplexity sonar, recherche web activ\xE9e, en fran\xE7ais."), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("span", {
+  }, "Outil :"), " syst\xE8me ", /*#__PURE__*/React.createElement(PvExt, {
+    href: PV_LLMMON
+  }, "LLM-Monitoring"), " de ", /*#__PURE__*/React.createElement(PvExt, {
+    href: PV_DATANATION
+  }, "Data Nation"), ". Mod\xE8le : Perplexity sonar, recherche web activ\xE9e, en fran\xE7ais."), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("span", {
     className: "text-white"
   }, "Collecte :"), " 16 octobre 2026. 6 candidats \xD7 7 questions neutres \xD7 10 essais = 420 r\xE9ponses. Le mot \xAB Russie \xBB n'appara\xEEt dans aucune question."), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("span", {
     className: "text-white"
