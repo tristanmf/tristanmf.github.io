@@ -92,6 +92,9 @@
   body.projet.grotesk .accroche { font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 26px; }
   body.projet.grotesk .mono, body.projet.grotesk .foot { font-family: 'JetBrains Mono', monospace; }
   body.projet.grotesk .foot .site { font-family: 'Space Grotesk', sans-serif; font-style: normal; font-weight: 700; font-size: 30px; }
+  /* Illustration (pas d'aperçu de partage) : un chiffre et une capture, sans titre */
+  .illu .grand { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 230px; line-height: .8; color: var(--accent); margin-top: 70px; }
+  .illu .leg { margin-top: 26px; font-size: 30px; font-weight: 300; line-height: 1.3; color: rgba(255,255,255,.85); max-width: 560px; }
 </style>
 </head>
 <body>
@@ -138,6 +141,15 @@
       <h1 class="${p.police === "grotesk" ? "" : "serif"}">${nb(p.titre)}</h1>
       <div class="accroche">${nb(p.accroche)}</div>
       <div class="bas"><div class="rule"></div><div class="foot"><span>${nb(p.pied || "Tristan Mendès France")}</span><span class="site">${esc(p.site || "tristan.pro")}</span></div></div>`;
+  } else if (p.modele === "illustration") {
+    document.body.classList.add("autre", "projet", "illu", "avec-cap");
+    if (p.accent) document.body.style.setProperty("--accent", p.accent);
+    document.body.insertAdjacentHTML("afterbegin", `<div class="voile" style="background:radial-gradient(ellipse at 78% 42%, rgba(251,113,147,.12), rgba(0,0,0,0) 60%)"></div>`);
+    document.body.insertAdjacentHTML("beforeend", `<div class="cap"><img src="${p.capture}" style="margin-top:${p.capture_decalage || 0}px"></div>`);
+    f.className = "frame";
+    f.innerHTML = `<span class="pill mono" style="font-size:15px"><b></b>${esc(p.rubrique)}</span>
+      <div class="grand">${nb(p.chiffre)}</div>
+      <div class="leg">${nb(p.legende)}</div>`;
   } else if (p.modele === "tmflab") {
     document.body.classList.add("autre", "tmflab");
     document.body.insertAdjacentHTML("afterbegin", `<div class="tl-glow tl-g1"></div><div class="tl-glow tl-g2"></div>`);

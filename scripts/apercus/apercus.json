@@ -93,6 +93,17 @@
       "pied": "Tristan Mendès France",
       "site": "tmflab.tech",
       "_cible": "tmflab.tech/super-propagateurs/ (www/tmflab/super-propagateurs/index.html, OVH)"
+    },
+    {
+      "sortie": "ia/pravda-perplexity/illustration.jpg",
+      "modele": "illustration",
+      "accent": "#fb7193",
+      "rubrique": "Perplexity · 16 octobre 2026",
+      "chiffre": "43 %",
+      "legende": "des 420 réponses citent le réseau Pravda, aux côtés de BFMTV, franceinfo ou Le Figaro.",
+      "capture": "fonds/perplexity-polony.jpg",
+      "capture_decalage": -150,
+      "_usage": "illustration du post Substack (pas un aperçu de partage)"
     }
   ]
 }
