@@ -95,13 +95,13 @@ const PAGES = [
   {
     out: 'ia/google-sante/index.html',
     label: 'article Google / santé',
-    title: 'Un livre sur Lyme ? Google vous conseille Perronne — Tristan Mendès France',
-    description: "Demandez à Google un livre sur Lyme, les statistiques du covid ou les effets des vaccins : son aperçu IA met en avant Christian Perronne, Pierre Chaillot ou Jean-Marc Sabatier, sans aucune mise en garde sur ces auteurs.",
+    title: "Un livre sur Lyme ? L'aperçu IA de Google vous conseille Perronne — Tristan Mendès France",
+    description: "Depuis le 22 juillet 2026, Google affiche en France des aperçus IA. Demandez-lui un livre sur Lyme, les statistiques du covid ou les effets des vaccins : il met en avant Christian Perronne, Pierre Chaillot ou Jean-Marc Sabatier, sans aucune mise en garde.",
     social: "Livre sur Lyme : Perronne, 24 aperçus sur 24, sans aucune réserve. L'aperçu IA de Google recommande les figures de la contestation vaccinale sans les qualifier.",
     url: 'https://tristan.pro/ia/google-sante/',
     ogType: 'article',
     image: 'https://tristan.pro/ia/google-sante/apercu.jpg',
-    imageAlt: "Un livre sur Lyme ? Google vous conseille Perronne. 24 aperçus IA sur 24, sans aucune réserve.",
+    imageAlt: "Un livre sur Lyme ? L'aperçu IA de Google vous conseille Perronne. 24 aperçus IA sur 24, sans aucune réserve.",
   },
 ];
 const esc = s => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
