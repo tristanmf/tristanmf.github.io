@@ -1,0 +1,9 @@
+{
+  "_lisez-moi": "Une entrée par page partageable. 'sortie' = chemin dans le dépôt (1200 × 630, JPEG). Rendu : python3 scripts/apercus/rendre.py [nom de sortie…]. Modèles : accueil, accueil-portrait, article, section. Voir CLAUDE.md, « Aperçus de partage ».",
+  "apercus": [
+    { "sortie": "apercus/accueil.jpg", "modele": "accueil" },
+    { "sortie": "apercus/accueil-portrait.jpg", "modele": "accueil-portrait" },
+    { "sortie": "apercus/presse.jpg", "modele": "section", "rubrique": "1997 – 2026", "titre": "Revue de presse", "sous_titre": "1 700+ articles depuis 1997 et plus de 300 passages radio, télé et podcast", "pied": "Tristan Mendès France" },
+    { "sortie": "ia/pravda-perplexity/apercu.jpg", "modele": "article", "accent": "#fb7193", "rubrique": "Enquête · IA et désinformation", "titre": "Présidentielle : quand Perplexity puise dans la propagande russe pour présenter les candidats", "chiffre": "43 %", "legende": "des 420 réponses citent le réseau Pravda, sans le signaler", "pied": "Tristan Mendès France · 17 octobre 2026" }
+  ]
+}
