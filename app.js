@@ -2237,7 +2237,6 @@ const PV_PAGES = "pages-pravda-43.csv";
 // Data Nation : adresses relevées dans leurs échanges avec Tristan (septembre 2026).
 const PV_LLMMON = "https://llmmonitor.org/";
 const PV_DATANATION = "https://data-nation.org/";
-const PV_SUBSTACK = "https://tristanmendesfrance.substack.com/subscribe";
 const PV_VIGINUM = "https://www.sgdsn.gouv.fr/files/files/20240212_NP_SGDSN_VIGINUM_RAPPORT-RESEAU-PORTAL-KOMBAT_VF.pdf";
 
 // CSV RFC 4180 (guillemets doublés, BOM) → tableau d'objets.
@@ -2473,19 +2472,9 @@ function PravdaArticle() {
     className: "mt-4 max-w-md mx-auto font-body text-sm text-white/55 leading-relaxed"
   }, pvNb("Perplexity.ai, 16 octobre 2026 : « Que propose Natacha Polony sur l'aide à l'Ukraine ? ». La source francais.news-pravda est citée dans le corps de la réponse."))), /*#__PURE__*/React.createElement("p", {
     className: "mt-14 font-heading italic text-3xl md:text-4xl text-white leading-tight"
-  }, pvNb("Pour atteindre les électeurs français, la propagande russe a trouvé un nouveau filon : le blanchiment par IA.")), /*#__PURE__*/React.createElement("a", {
-    href: PV_SUBSTACK,
-    target: "_blank",
-    rel: "noopener",
-    className: "group mt-10 flex flex-wrap items-center justify-between gap-4 liquid-glass rounded-3xl p-5 md:p-6"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "font-body text-white/85 leading-snug"
-  }, pvNb("Ne ratez pas mes prochaines enquêtes et publications importantes : abonnez-vous à ma newsletter, c'est gratuit.")), /*#__PURE__*/React.createElement("span", {
-    className: "inline-flex items-center gap-2 rounded-full bg-white text-black px-4 py-2.5 font-body text-sm font-medium whitespace-nowrap group-hover:bg-white/85 transition-colors"
-  }, "S'abonner sur Substack ", /*#__PURE__*/React.createElement(ArrowUpRight, {
-    size: 14,
-    strokeWidth: 2
-  }))), /*#__PURE__*/React.createElement("section", {
+  }, pvNb("Pour atteindre les électeurs français, la propagande russe a trouvé un nouveau filon : le blanchiment par IA.")), /*#__PURE__*/React.createElement("div", {
+    className: "mt-10"
+  }, /*#__PURE__*/React.createElement(SuivreSoutenir, null)), /*#__PURE__*/React.createElement("section", {
     className: "mt-16 liquid-glass rounded-3xl p-5 md:p-8",
     "aria-labelledby": "pv-methode"
   }, /*#__PURE__*/React.createElement("h2", {
@@ -2698,6 +2687,78 @@ function ComploramaDernier() {
   })))));
 }
 
+// ---------- S'abonner (Substack) et soutenir (Ko-fi) ----------
+// Deux simples liens : aucun widget Substack ni Ko-fi n'est chargé (règle du
+// site : aucun domaine tiers). Le logo Substack est dessiné ici (Simple Icons, CC0).
+const SUBSTACK_URL = "https://tristanmendesfrance.substack.com/subscribe";
+const KOFI_URL = "https://ko-fi.com/tristanmf";
+const SubstackLogo = () => /*#__PURE__*/React.createElement("svg", {
+  width: "14",
+  height: "14",
+  viewBox: "0 0 24 24",
+  fill: "currentColor",
+  "aria-hidden": "true"
+}, /*#__PURE__*/React.createElement("path", {
+  d: "M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"
+}));
+const Tasse = () => /*#__PURE__*/React.createElement("svg", {
+  width: "16",
+  height: "16",
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: "2",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  "aria-hidden": "true"
+}, /*#__PURE__*/React.createElement("path", {
+  d: "M17 8h1a4 4 0 1 1 0 8h-1"
+}), /*#__PURE__*/React.createElement("path", {
+  d: "M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"
+}), /*#__PURE__*/React.createElement("line", {
+  x1: "6",
+  y1: "2",
+  x2: "6",
+  y2: "4"
+}), /*#__PURE__*/React.createElement("line", {
+  x1: "10",
+  y1: "2",
+  x2: "10",
+  y2: "4"
+}), /*#__PURE__*/React.createElement("line", {
+  x1: "14",
+  y1: "2",
+  x2: "14",
+  y2: "4"
+}));
+function SuivreSoutenir() {
+  const nbsp = s => s.replace(/ ([%:;?!»])/g, "\u00a0$1");
+  return /*#__PURE__*/React.createElement("div", {
+    className: "grid gap-3"
+  }, /*#__PURE__*/React.createElement("a", {
+    href: SUBSTACK_URL,
+    target: "_blank",
+    rel: "noopener",
+    className: "group flex flex-wrap items-center justify-between gap-4 liquid-glass rounded-3xl p-5 md:p-6"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-body text-white/85 leading-snug"
+  }, nbsp("Ne ratez pas mes prochaines enquêtes et publications importantes : abonnez-vous à ma newsletter, c'est gratuit.")), /*#__PURE__*/React.createElement("span", {
+    className: "inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-body text-sm font-semibold text-white whitespace-nowrap transition-opacity group-hover:opacity-90",
+    style: {
+      background: "#FF6719"
+    }
+  }, /*#__PURE__*/React.createElement(SubstackLogo, null), " S'abonner sur Substack")), /*#__PURE__*/React.createElement("a", {
+    href: KOFI_URL,
+    target: "_blank",
+    rel: "noopener",
+    className: "group flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/10 p-5 md:p-6 hover:bg-white/[0.03] transition-colors"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-body font-light text-white/70 leading-snug"
+  }, nbsp("Ces enquêtes sont en accès libre, mais les outils d'IA qu'elles demandent sont payants. Si vous voulez soutenir ce travail, vous pouvez m'offrir un café.")), /*#__PURE__*/React.createElement("span", {
+    className: "inline-flex items-center gap-2 rounded-full border border-white/25 px-4 py-2.5 font-body text-sm font-medium text-white whitespace-nowrap group-hover:bg-white/10 transition-colors"
+  }, /*#__PURE__*/React.createElement(Tasse, null), " Offrir un caf\xE9")));
+}
+
 // ---------- Productions (vue /productions/) ----------
 function ProductionsPage() {
   return /*#__PURE__*/React.createElement("main", {
@@ -2752,6 +2813,8 @@ function ProductionsPage() {
       className: cls
     }, inner));
   })), /*#__PURE__*/React.createElement("div", {
+    className: "mt-10 max-w-3xl"
+  }, /*#__PURE__*/React.createElement(SuivreSoutenir, null)), /*#__PURE__*/React.createElement("div", {
     className: "mt-16 md:mt-24"
   }, /*#__PURE__*/React.createElement(LabTile, {
     video: "/tmflab.mp4",
