@@ -2237,6 +2237,7 @@ const PV_PAGES = "pages-pravda-43.csv";
 // Data Nation : adresses relevées dans leurs échanges avec Tristan (septembre 2026).
 const PV_LLMMON = "https://llmmonitor.org/";
 const PV_DATANATION = "https://data-nation.org/";
+const PV_SUBSTACK = "https://tristanmendesfrance.substack.com/subscribe";
 const PV_VIGINUM = "https://www.sgdsn.gouv.fr/files/files/20240212_NP_SGDSN_VIGINUM_RAPPORT-RESEAU-PORTAL-KOMBAT_VF.pdf";
 
 // CSV RFC 4180 (guillemets doublés, BOM) → tableau d'objets.
@@ -2472,7 +2473,19 @@ function PravdaArticle() {
     className: "mt-4 max-w-md mx-auto font-body text-sm text-white/55 leading-relaxed"
   }, pvNb("Perplexity.ai, 16 octobre 2026 : « Que propose Natacha Polony sur l'aide à l'Ukraine ? ». La source francais.news-pravda est citée dans le corps de la réponse."))), /*#__PURE__*/React.createElement("p", {
     className: "mt-14 font-heading italic text-3xl md:text-4xl text-white leading-tight"
-  }, pvNb("Pour atteindre les électeurs français, la propagande russe a trouvé un nouveau filon : le blanchiment par IA.")), /*#__PURE__*/React.createElement("section", {
+  }, pvNb("Pour atteindre les électeurs français, la propagande russe a trouvé un nouveau filon : le blanchiment par IA.")), /*#__PURE__*/React.createElement("a", {
+    href: PV_SUBSTACK,
+    target: "_blank",
+    rel: "noopener",
+    className: "group mt-10 flex flex-wrap items-center justify-between gap-4 liquid-glass rounded-3xl p-5 md:p-6"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-body text-white/85 leading-snug"
+  }, pvNb("Pour ne pas rater les prochaines enquêtes, abonnez-vous à ma newsletter.")), /*#__PURE__*/React.createElement("span", {
+    className: "inline-flex items-center gap-2 rounded-full bg-white text-black px-4 py-2.5 font-body text-sm font-medium whitespace-nowrap group-hover:bg-white/85 transition-colors"
+  }, "S'abonner sur Substack ", /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 14,
+    strokeWidth: 2
+  }))), /*#__PURE__*/React.createElement("section", {
     className: "mt-16 liquid-glass rounded-3xl p-5 md:p-8",
     "aria-labelledby": "pv-methode"
   }, /*#__PURE__*/React.createElement("h2", {
