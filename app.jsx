@@ -1669,6 +1669,7 @@ function PravdaArticle() {
 // Captures dans ia/google-sante/ (navigateur sans compte, et Google France le même jour).
 const GS_DIR = "/ia/google-sante/";
 const GS_ACCENT = "#fbbf24";
+const GS_CSV = "essais-apercus-ia-sante-2026-10-17.csv";
 const GS_CAS = [
   { q: "livre sur la maladie de Lyme", a: "Christian Perronne", n: 24, sur: 24 },
   { q: "livre sur les statistiques du covid", a: "Pierre Chaillot", n: 9, sur: 13 },
@@ -1739,9 +1740,22 @@ function SanteArticle() {
         <PvP>Le mécanisme est simple : pour une demande de livre, l'aperçu IA reprend les fiches des libraires et le résumé de l'éditeur. Il recommande, il ne qualifie pas.</PvP>
         <PvP>Même chose pour les « bienfaits » des constellations familiales (10 aperçus sur 10, sans réserve), une pratique sur laquelle la <PvExt href={GS_SOURCES[6][1]}>Miviludes</PvExt> alerte depuis 2007.</PvP>
 
-        <p className="mt-10 font-body text-sm text-white/55 italic leading-relaxed">{pvNb("Méthode : Google France, en français, sans compte, requêtes répétées le 17 octobre 2026. Ne sont comptés que les essais où l'aperçu IA s'affiche, texte déplié compris. Résultats valables pour cet échantillon et cette date.")}</p>
-
         <div className="mt-10"><SuivreSoutenir /></div>
+
+        <section className="mt-16 liquid-glass rounded-3xl p-5 md:p-8" aria-labelledby="gs-methode">
+          <h2 id="gs-methode" className="font-heading italic text-3xl text-white">Méthode et données</h2>
+          <ul className="mt-5 space-y-3 font-body text-sm md:text-base text-white/75 leading-relaxed">
+            <li><span className="text-white">Repérage :</span> environ 3 500 requêtes de santé passées entre le 28 septembre et le 17 octobre 2026, sur des formulations neutres (« livre sur… », « auteur spécialiste de… », « … bienfaits »). Seuls les cas problématiques sont présentés ici.</li>
+            <li><span className="text-white">Collecte des chiffres :</span> le 17 octobre 2026, entre 16 h 30 et 17 h 55 (heure de Paris), chaque requête a été répétée de 10 à 18 fois (pour Lyme, 24 essais sur deux formulations : « livre » et « livres sur la maladie de Lyme ») par un service commercial d'interrogation de Google (API de résultats de recherche), réglé sur Google France, en français, version ordinateur, sans compte ni historique. Il restitue la page de résultats et le texte complet de l'aperçu IA, partie dépliée comprise.</li>
+            <li><span className="text-white">Critère :</span> un essai compte si l'aperçu IA s'affiche, cite l'auteur visé et ne contient, dans tout son texte, aucun terme de réserve : complot, désinformation, controversé, contesté, critiqué, discrédité, réfuté, démenti, rejeté, antivax, pseudo-, charlatan, « aucune preuve », non démontré, infondé, radié, sanctionné, mise en garde, prudence, déconseillé, danger, risque, dérive, sectaire, Miviludes, consensus scientifique, communauté scientifique, autorités sanitaires, placebo, ANSM, HAS… Les aperçus des quatre cas de tête ont été relus à la main. Les essais sans aperçu IA ne sont pas comptés : l'aperçu ne s'affiche pas à chaque fois.</li>
+            <li><span className="text-white">Captures :</span> navigateur intégré de l'application Claude pour Mac, sans compte, le 17 octobre vers 19 h ; capture de la page Google fournie par le service de collecte pour « livre sur les statistiques du covid » (14 h 49).</li>
+            <li><span className="text-white">Outils :</span> collecte, comptage et mise en page réalisés avec <PvExt href="https://claude.com/claude-code">Claude Code</PvExt> (Anthropic). Vérification des qualifications d'auteurs dans les sources ci-dessous.</li>
+            <li><span className="text-white">Limites :</span> les résultats valent pour cet échantillon et cette date. Les chiffres de clics du Pew Research Center portent sur les États-Unis.</li>
+          </ul>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <a href={GS_DIR + GS_CSV} download className="inline-flex items-center gap-2 rounded-full bg-white text-black px-4 py-2.5 font-body text-sm font-medium hover:bg-white/85 transition-colors">Les 78 essais, texte des aperçus compris (.csv)</a>
+          </div>
+        </section>
 
         <section className="mt-14" aria-labelledby="gs-sources">
           <h2 id="gs-sources" className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">Sources</h2>
