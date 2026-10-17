@@ -1562,6 +1562,7 @@ function PravdaArticle() {
 
         <PvP>Posée dix fois à Perplexity le 16 octobre 2026, la question renvoie dix fois vers le réseau Pravda.</PvP>
         <PvP>Ce réseau, identifié par Viginum en février 2024 (rapport <PvExt href={PV_VIGINUM}>« Portal Kombat »</PvExt>, 193 sites), republie des dépêches d'agences de presse russes et des messages de comptes pro-russes sur les réseaux sociaux, sans produire aucun contenu original. Il vise semble-t-il moins les lecteurs que les moteurs de recherche et les IA. Dont l'IA qui m'intéresse aujourd'hui.</PvP>
+        <PvP>Il ne s'agit pas ici d'empoisonner les données d'entraînement des IA, mais leurs sources du moment. Pour répondre sur l'actualité, Perplexity cherche sur le web et s'appuie sur ce qu'il y trouve (c'est ce qu'on appelle le RAG, la génération augmentée par la recherche). Il tombe alors sur ces pages, et les cite.</PvP>
 
         <PvSchema />
 
