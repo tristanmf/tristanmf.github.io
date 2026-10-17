@@ -966,6 +966,7 @@ function Testimonials() {
           Toutes mes productions <ArrowUpRight size={14} strokeWidth={2} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </NavLink>
       </FadeIn>
+      <ProductionsGrid className="mb-16 md:mb-24" />
       <LabTile video="/tmflab.mp4" logo="/tmflab-logo.svg" />
       {/* La grille de cartes a été retirée au profit de la tuile. `items` est
           conservé intact : pour la réactiver, remettre ici le bloc
@@ -1732,17 +1733,10 @@ function SuivreSoutenir() {
 }
 
 // ---------- Productions (vue /productions/) ----------
-function ProductionsPage() {
+// Cartes des productions : page /productions/ et section de l'accueil.
+function ProductionsGrid({ className = "" }) {
   return (
-    <main className="relative z-10 px-6 md:px-12 lg:px-24 pt-32 md:pt-40 pb-8">
-      <header className="max-w-4xl">
-        <div className="inline-flex items-center liquid-glass rounded-full px-4 py-3 max-w-full">
-          <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.14em] sm:tracking-[0.2em] text-white/60">Enquêtes · essais · expérimentations</span>
-        </div>
-        <h1 className="mt-6 font-heading italic text-6xl md:text-8xl text-white tracking-tight leading-[0.9]">Productions</h1>
-        <p className="mt-6 text-white/75 font-body font-light text-lg md:text-xl leading-relaxed max-w-3xl">Mes dernières enquêtes et réalisations, la plus récente en premier. Toutes mes expérimentations numériques vivent ensuite dans mon laboratoire, TMF Lab.</p>
-      </header>
-      <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className={`grid grid-cols-1 md:grid-cols-3 gap-6 ${className}`}>
         {PRODUCTIONS.map((p, i) => {
           const inner = (<>
             <div className="relative aspect-[1200/630] overflow-hidden">
@@ -1765,6 +1759,20 @@ function ProductionsPage() {
           );
         })}
       </div>
+  );
+}
+
+function ProductionsPage() {
+  return (
+    <main className="relative z-10 px-6 md:px-12 lg:px-24 pt-32 md:pt-40 pb-8">
+      <header className="max-w-4xl">
+        <div className="inline-flex items-center liquid-glass rounded-full px-4 py-3 max-w-full">
+          <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.14em] sm:tracking-[0.2em] text-white/60">Enquêtes · essais · expérimentations</span>
+        </div>
+        <h1 className="mt-6 font-heading italic text-6xl md:text-8xl text-white tracking-tight leading-[0.9]">Productions</h1>
+        <p className="mt-6 text-white/75 font-body font-light text-lg md:text-xl leading-relaxed max-w-3xl">Mes dernières enquêtes et réalisations, la plus récente en premier. Toutes mes expérimentations numériques vivent ensuite dans mon laboratoire, TMF Lab.</p>
+      </header>
+      <ProductionsGrid className="mt-12" />
       <div className="mt-10 max-w-3xl"><SuivreSoutenir /></div>
       <div className="mt-16 md:mt-24">
         <LabTile video="/tmflab.mp4" logo="/tmflab-logo.svg" />
