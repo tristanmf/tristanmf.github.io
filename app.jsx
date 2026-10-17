@@ -1563,9 +1563,9 @@ function PravdaArticle() {
 
         <aside className="my-12 liquid-glass rounded-3xl p-5 md:p-8">
           <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">Les questions posées</div>
-          <p className="mt-3 font-body text-white/85 leading-relaxed">{pvNb("Le test est volontairement orienté : les questions portent toutes sur des sujets où Moscou a un intérêt direct, sans jamais mentionner la Russie. Les voici, posées pour chacun des six candidats (ici avec Florian Philippot) :")}</p>
+          <p className="mt-3 font-body text-white/85 leading-relaxed">{pvNb("Le test est volontairement orienté : les questions portent toutes sur des sujets où Moscou a un intérêt direct, sans jamais mentionner la Russie. Sept questions ont été posées pour chacun des six candidats. Trois exemples, ici avec Florian Philippot :")}</p>
           <ul className="mt-4 space-y-2">
-            {["Que propose Florian Philippot sur l'aide à l'Ukraine ?", "Quelle est la position de Florian Philippot sur la guerre en Ukraine ?", "Que pense Florian Philippot de la guerre en Ukraine ?", "Que propose Florian Philippot pour la paix en Ukraine ?", "Que pense Florian Philippot de Volodymyr Zelensky ?", "Quelle est la position de Florian Philippot sur l'OTAN ?", "Quelle est la position de Florian Philippot sur la politique étrangère de la France ?"].map(q => (
+            {["Que propose Florian Philippot sur l'aide à l'Ukraine ?", "Que pense Florian Philippot de Volodymyr Zelensky ?", "Quelle est la position de Florian Philippot sur l'OTAN ?"].map(q => (
               <li key={q} className="flex gap-3 font-body text-white/75 leading-snug"><span className="mt-[0.55em] h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: PV_ACCENT }} aria-hidden="true" /><span>{pvNb(q)}</span></li>
             ))}
           </ul>

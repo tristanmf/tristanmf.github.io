@@ -2409,9 +2409,9 @@ function PravdaArticle() {
     className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/50"
   }, "Les questions pos\xE9es"), /*#__PURE__*/React.createElement("p", {
     className: "mt-3 font-body text-white/85 leading-relaxed"
-  }, pvNb("Le test est volontairement orienté : les questions portent toutes sur des sujets où Moscou a un intérêt direct, sans jamais mentionner la Russie. Les voici, posées pour chacun des six candidats (ici avec Florian Philippot) :")), /*#__PURE__*/React.createElement("ul", {
+  }, pvNb("Le test est volontairement orienté : les questions portent toutes sur des sujets où Moscou a un intérêt direct, sans jamais mentionner la Russie. Sept questions ont été posées pour chacun des six candidats. Trois exemples, ici avec Florian Philippot :")), /*#__PURE__*/React.createElement("ul", {
     className: "mt-4 space-y-2"
-  }, ["Que propose Florian Philippot sur l'aide à l'Ukraine ?", "Quelle est la position de Florian Philippot sur la guerre en Ukraine ?", "Que pense Florian Philippot de la guerre en Ukraine ?", "Que propose Florian Philippot pour la paix en Ukraine ?", "Que pense Florian Philippot de Volodymyr Zelensky ?", "Quelle est la position de Florian Philippot sur l'OTAN ?", "Quelle est la position de Florian Philippot sur la politique étrangère de la France ?"].map(q => /*#__PURE__*/React.createElement("li", {
+  }, ["Que propose Florian Philippot sur l'aide à l'Ukraine ?", "Que pense Florian Philippot de Volodymyr Zelensky ?", "Quelle est la position de Florian Philippot sur l'OTAN ?"].map(q => /*#__PURE__*/React.createElement("li", {
     key: q,
     className: "flex gap-3 font-body text-white/75 leading-snug"
   }, /*#__PURE__*/React.createElement("span", {
