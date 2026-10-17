@@ -2418,7 +2418,7 @@ function PravdaArticle() {
     className: "mt-6 font-heading italic text-4xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.02]"
   }, pvNb("Présidentielle : quand Perplexity puise dans la propagande russe pour présenter les candidats")), /*#__PURE__*/React.createElement("p", {
     className: "mt-6 text-white/85 font-body text-xl leading-relaxed"
-  }, pvNb("En pleine campagne, interrogé sur la position des candidats à propos de l'Ukraine, de l'OTAN ou de Zelensky, Perplexity s'appuie sur le réseau de propagande russe Pravda, sans le signaler. Sur 420 réponses testées, 182 le citent parmi leurs sources (43 %).")), /*#__PURE__*/React.createElement("p", {
+  }, pvNb("En pleine campagne, interrogé sur la position des candidats à propos de l'Ukraine, de l'OTAN ou de Zelensky, Perplexity s'appuie sur le réseau de propagande russe Pravda, sans le moindre avertissement. Sur 420 réponses testées, 182 le citent parmi leurs sources (43 %).")), /*#__PURE__*/React.createElement("p", {
     className: "mt-5 font-mono text-xs uppercase tracking-[0.15em] text-white/50"
   }, /*#__PURE__*/React.createElement("time", {
     dateTime: "2026-10-17"
@@ -2435,7 +2435,7 @@ function PravdaArticle() {
     href: PV_LLMMON
   }, "LLM-Monitoring"), " de ", /*#__PURE__*/React.createElement(PvExt, {
     href: PV_DATANATION
-  }, "Data Nation"), ", j'ai pos\xE9 \xE0 Perplexity 42 questions neutres sur six candidats (sans le mot \xAB Russie \xBB), dix fois chacune. R\xE9sultat : 182 r\xE9ponses sur 420 (43 %) citent au moins une page du r\xE9seau Pravda (francais.news-pravda.com et ses d\xE9clinaisons). La source est bien affich\xE9e, mais comme n'importe quelle autre, au m\xEAme titre que TF1 Info, Le Figaro, BFMTV, franceinfo ou Le Monde, cit\xE9s dans les m\xEAmes r\xE9ponses. Rien n'indique au lecteur qu'il s'agit d'un r\xE9seau de propagande."), /*#__PURE__*/React.createElement("aside", {
+  }, "Data Nation"), ", j'ai pos\xE9 \xE0 Perplexity sept questions neutres sur chacun des six candidats (sans le mot \xAB Russie \xBB), soit 42 questions, chacune r\xE9p\xE9t\xE9e dix fois : 420 r\xE9ponses au total. R\xE9sultat : 182 d'entre elles (43 %) citent au moins une page du r\xE9seau Pravda (francais.news-pravda.com et ses d\xE9clinaisons). La source est bien affich\xE9e, mais comme n'importe quelle autre, au m\xEAme titre que TF1 Info, Le Figaro, BFMTV, franceinfo ou Le Monde, cit\xE9s dans les m\xEAmes r\xE9ponses. Rien n'indique au lecteur qu'il s'agit d'un r\xE9seau de propagande."), /*#__PURE__*/React.createElement("aside", {
     className: "my-12 liquid-glass rounded-3xl p-5 md:p-8"
   }, /*#__PURE__*/React.createElement("div", {
     className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/50"

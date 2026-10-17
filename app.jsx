@@ -1552,7 +1552,7 @@ function PravdaArticle() {
             <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/70">Enquête · IA et désinformation</span>
           </div>
           <h1 className="mt-6 font-heading italic text-4xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.02]">{pvNb("Présidentielle : quand Perplexity puise dans la propagande russe pour présenter les candidats")}</h1>
-          <p className="mt-6 text-white/85 font-body text-xl leading-relaxed">{pvNb("En pleine campagne, interrogé sur la position des candidats à propos de l'Ukraine, de l'OTAN ou de Zelensky, Perplexity s'appuie sur le réseau de propagande russe Pravda, sans le signaler. Sur 420 réponses testées, 182 le citent parmi leurs sources (43 %).")}</p>
+          <p className="mt-6 text-white/85 font-body text-xl leading-relaxed">{pvNb("En pleine campagne, interrogé sur la position des candidats à propos de l'Ukraine, de l'OTAN ou de Zelensky, Perplexity s'appuie sur le réseau de propagande russe Pravda, sans le moindre avertissement. Sur 420 réponses testées, 182 le citent parmi leurs sources (43 %).")}</p>
           <p className="mt-5 font-mono text-xs uppercase tracking-[0.15em] text-white/50"><time dateTime="2026-10-17">17 octobre 2026</time></p>
         </header>
 
@@ -1565,7 +1565,7 @@ function PravdaArticle() {
 
         <PvSchema />
 
-        <PvP>Pour ce test inédit, mené avec le système <PvExt href={PV_LLMMON}>LLM-Monitoring</PvExt> de <PvExt href={PV_DATANATION}>Data Nation</PvExt>, j'ai posé à Perplexity 42 questions neutres sur six candidats (sans le mot « Russie »), dix fois chacune. Résultat : 182 réponses sur 420 (43 %) citent au moins une page du réseau Pravda (francais.news-pravda.com et ses déclinaisons). La source est bien affichée, mais comme n'importe quelle autre, au même titre que TF1 Info, Le Figaro, BFMTV, franceinfo ou Le Monde, cités dans les mêmes réponses. Rien n'indique au lecteur qu'il s'agit d'un réseau de propagande.</PvP>
+        <PvP>Pour ce test inédit, mené avec le système <PvExt href={PV_LLMMON}>LLM-Monitoring</PvExt> de <PvExt href={PV_DATANATION}>Data Nation</PvExt>, j'ai posé à Perplexity sept questions neutres sur chacun des six candidats (sans le mot « Russie »), soit 42 questions, chacune répétée dix fois : 420 réponses au total. Résultat : 182 d'entre elles (43 %) citent au moins une page du réseau Pravda (francais.news-pravda.com et ses déclinaisons). La source est bien affichée, mais comme n'importe quelle autre, au même titre que TF1 Info, Le Figaro, BFMTV, franceinfo ou Le Monde, cités dans les mêmes réponses. Rien n'indique au lecteur qu'il s'agit d'un réseau de propagande.</PvP>
 
         <aside className="my-12 liquid-glass rounded-3xl p-5 md:p-8">
           <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">Les questions posées</div>
