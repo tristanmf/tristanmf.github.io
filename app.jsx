@@ -336,7 +336,7 @@ const PRESS_TITLE = "Revue de presse — Tristan Mendès France";
 const PRAVDA_PATH = "/ia/pravda-perplexity/";
 const PRAVDA_TITLE = "Présidentielle : quand Perplexity puise dans la propagande russe pour présenter les candidats — Tristan Mendès France";
 const SANTE_PATH = "/ia/google-sante/";
-const SANTE_TITLE = "Un livre sur Lyme ? L'aperçu IA de Google vous conseille Perronne — Tristan Mendès France";
+const SANTE_TITLE = "Santé : l'aperçu IA de Google recommande des auteurs hors du consensus scientifique — Tristan Mendès France";
 const PRODUCTIONS_PATH = "/productions/";
 const PRODUCTIONS_TITLE = "Productions — Tristan Mendès France";
 const VIEW_TITLES = { home: HOME_TITLE, presse: PRESS_TITLE, pravda: PRAVDA_TITLE, sante: SANTE_TITLE, productions: PRODUCTIONS_TITLE };
@@ -1682,10 +1682,12 @@ const GS_CAPTURES = [
   { f: "capture-chaillot.jpg", w: 820, h: 360, q: "livre sur les statistiques du covid", t: "17 octobre 2026, 14 h 49", alt: "Aperçu IA de Google : le livre de Pierre Chaillot présenté comme « le principal livre de référence critique »" },
   { f: "capture-constellations.jpg", w: 800, h: 965, q: "constellations familiales bienfaits", t: "17 octobre 2026, 19 h", alt: "Aperçu IA de Google : cinq « principaux bienfaits » des constellations familiales, sans aucune réserve" },
 ];
+const GS_CW_PERRONNE = "https://www.conspiracywatch.info/notice/christian-perronne";
 const GS_PEW = "https://www.pewresearch.org/short-reads/2025/07/22/google-users-are-less-likely-to-click-on-links-when-an-ai-summary-appears-in-the-results/";
 const GS_SOURCES = [
   ["France 24 (avec AFP), lancement des aperçus IA en France le 22 juillet 2026, 11 août 2026", "https://www.france24.com/fr/france/20260811-aper%C3%A7us-ia-google-quotidiens-fran%C3%A7ais-saisissent-autorit%C3%A9-concurrence"],
   ["Pew Research Center, clics après un aperçu IA (900 adultes américains, mars 2025), 22 juillet 2025", GS_PEW],
+  ["Conspiracy Watch, notice « Christian Perronne », mise à jour le 4 janvier 2023", GS_CW_PERRONNE],
   ["AP-HP, fin des fonctions de chef de service du Pr Perronne, 17 décembre 2020", "https://www.aphp.fr/contenu/ap-hp-le-directeur-general-mis-fin-aux-fonctions-de-chef-de-service-des-maladies"],
   ["Le Quotidien du médecin, Lyme : la polémique sur la chronicité (consensus de 24 sociétés savantes, 2019)", "https://cancerologie.lequotidiendumedecin.fr/specialites/infectiologie/maladie-de-lyme-la-polemique-sur-la-chronicite-persiste-la-prise-en-charge-evolue"],
   ["Conspiracy Watch, « Pierre Chaillot : itinéraire d'un best-seller covido-sceptique », 10 février 2023 (réaction de l'Insee au Monde)", "https://www.conspiracywatch.info/pierre-chaillot-itineraire-dun-best-seller-covido-sceptique.html"],
@@ -1701,12 +1703,12 @@ function SanteArticle() {
           <div className="inline-flex items-center liquid-glass rounded-full px-4 py-2.5">
             <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/70">Enquête · IA et santé</span>
           </div>
-          <h1 className="mt-6 font-heading italic text-4xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.02]">{pvNb("Un livre sur Lyme ? L'aperçu IA de Google vous conseille Perronne")}</h1>
+          <h1 className="mt-6 font-heading italic text-4xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.02]">{pvNb("Santé : l'aperçu IA de Google recommande des auteurs hors du consensus scientifique")}</h1>
           <p className="mt-6 text-white/85 font-body text-xl leading-relaxed">{pvNb("Depuis le 22 juillet 2026, Google affiche en France des « aperçus IA » : un résumé rédigé par son intelligence artificielle, en tête des résultats. Sur la santé, il donne du crédit à des figures qui ne représentent pas le consensus scientifique, sans la moindre mise en garde.")}</p>
           <p className="mt-5 font-mono text-xs uppercase tracking-[0.15em] text-white/50"><time dateTime="2026-10-17">17 octobre 2026</time></p>
         </header>
 
-        <PvP>Demandez « livre sur la maladie de Lyme ». L'aperçu IA place en tête <em>La Vérité sur la maladie de Lyme</em> de Christian Perronne, « un ouvrage majeur ». Rien sur l'auteur : démis en 2020 de sa chefferie de service par l'AP-HP pour des propos jugés « indignes », il défend un « Lyme chronique » que 24 sociétés savantes rejettent.</PvP>
+        <PvP>Demandez « livre sur la maladie de Lyme ». L'aperçu IA place en tête <em>La Vérité sur la maladie de Lyme</em> de <PvExt href={GS_CW_PERRONNE}>Christian Perronne</PvExt>, « un ouvrage majeur ». Rien sur l'auteur : démis en 2020 de sa chefferie de service par l'AP-HP pour des propos jugés « indignes », il défend un « Lyme chronique » que 24 sociétés savantes rejettent.</PvP>
         <PvP>Ce n'est pas un cas isolé.</PvP>
 
         <figure className="my-10 liquid-glass rounded-3xl overflow-hidden">
@@ -1738,7 +1740,7 @@ function SanteArticle() {
 
         <PvP>Or l'aperçu suffit souvent. Aux États-Unis, selon le <PvExt href={GS_PEW}>Pew Research Center</PvExt>, quand un aperçu IA s'affiche, l'internaute ne clique sur un résultat classique que dans 8 % des visites (15 % sans aperçu), et sur une des sources citées dans 1 % des cas. Pour beaucoup, la réponse s'arrête là.</PvP>
         <PvP>Le mécanisme est simple : pour une demande de livre, l'aperçu IA reprend les fiches des libraires et le résumé de l'éditeur. Il recommande, il ne qualifie pas.</PvP>
-        <PvP>Même chose pour les « bienfaits » des constellations familiales (10 aperçus sur 10, sans réserve), une pratique sur laquelle la <PvExt href={GS_SOURCES[6][1]}>Miviludes</PvExt> alerte depuis 2007.</PvP>
+        <PvP>Même chose pour les « bienfaits » des constellations familiales (10 aperçus sur 10, sans réserve), une pratique sur laquelle la <PvExt href={GS_SOURCES[7][1]}>Miviludes</PvExt> alerte depuis 2007.</PvP>
 
         <div className="mt-10"><SuivreSoutenir /></div>
 
