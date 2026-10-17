@@ -1,15 +1,90 @@
 {
   "_lisez-moi": "Une entrée par page partageable. 'sortie' = chemin dans le dépôt (1200 × 630, JPEG). Rendu : python3 scripts/apercus/rendre.py [nom de sortie…]. Modèles : accueil, accueil-portrait, article, section. Voir CLAUDE.md, « Aperçus de partage ».",
   "apercus": [
-    { "sortie": "apercus/accueil.jpg", "modele": "accueil" },
-    { "sortie": "apercus/accueil-portrait.jpg", "modele": "accueil-portrait" },
-    { "sortie": "apercus/presse.jpg", "modele": "section", "rubrique": "1997 – 2026", "titre": "Revue de presse", "sous_titre": "1 700+ articles depuis 1997 et plus de 300 passages radio, télé et podcast", "pied": "Tristan Mendès France" },
-    { "sortie": "ia/pravda-perplexity/apercu.jpg", "modele": "article", "accent": "#fb7193", "rubrique": "Enquête · IA et désinformation", "titre": "Présidentielle : quand Perplexity puise dans la propagande russe pour présenter les candidats", "chiffre": "43 %", "legende": "des 420 réponses citent le réseau Pravda, sans le signaler", "pied": "Tristan Mendès France · 17 octobre 2026" }
-    ,
-    { "sortie": "apercus/sites/tmflab.jpg", "modele": "tmflab", "pied": "Cartes interactives · applications · webdocumentaire · archives du web", "_cible": "tmflab.tech (www/tmflab/index.html, hébergement OVH egoblog)" },
-    { "sortie": "apercus/sites/egoblog.jpg", "modele": "egoblog", "sous_titre": "Le blog hyper subjectif et hyper media de Tristan Mendès France", "chiffres": [["1 149", "billets"], ["1997–2015", "en ligne"], ["11 298", "commentaires"]], "_cible": "www.egoblog.net (www/accueil/index.html, hébergement OVH egoblog)" }
-    ,
-    { "sortie": "apercus/sites/comploscore.jpg", "modele": "projet", "accent": "#e63946", "fond": "fonds/comploscore-carte.jpg", "position": "60% center", "filtre": "saturate(1.15)", "rubrique": "Carte interactive · 70 pays", "titre": "ComploScore", "accroche": "La carte mondiale des théories complotistes, notées de A à E comme un Nutri-Score", "pied": "Tristan Mendès France", "site": "tristan.pro", "_cible": "tristan.pro/carte-complotisme/ (dépôt tristanmf/carte-complotisme)" },
-    { "sortie": "apercus/sites/super-propagateurs.jpg", "modele": "projet", "police": "grotesk", "accent": "#ff5b2e", "fond": "fonds/super-propagateurs.jpg", "position": "390px 46%", "taille": "auto 125%", "voile": "linear-gradient(90deg,rgba(7,8,10,.97) 0%,rgba(7,8,10,.85) 40%,rgba(7,8,10,0) 68%)", "rubrique": "TMF Lab · visualisation 3D", "titre": "La puissance des super‑propagateurs", "accroche": "Une poignée de comptes fait circuler l'essentiel des fausses informations. Une visualisation 3D calibrée sur trois études parues dans Science.", "pied": "Tristan Mendès France", "site": "tmflab.tech", "_cible": "tmflab.tech/super-propagateurs/ (www/tmflab/super-propagateurs/index.html, OVH)" }
+    {
+      "sortie": "apercus/accueil.jpg",
+      "modele": "accueil"
+    },
+    {
+      "sortie": "apercus/accueil-portrait.jpg",
+      "modele": "accueil-portrait"
+    },
+    {
+      "sortie": "apercus/presse.jpg",
+      "modele": "section",
+      "rubrique": "1997 – 2026",
+      "titre": "Revue de presse",
+      "sous_titre": "1 700+ articles depuis 1997 et plus de 300 passages radio, télé et podcast",
+      "pied": "Tristan Mendès France"
+    },
+    {
+      "sortie": "ia/pravda-perplexity/apercu.jpg",
+      "modele": "projet",
+      "accent": "#fb7193",
+      "voile": "radial-gradient(ellipse at 80% 40%, rgba(251,113,147,.10), rgba(0,0,0,0) 60%)",
+      "rubrique": "Enquête · IA et désinformation",
+      "titre": "Quand Perplexity puise dans la propagande russe",
+      "accroche": "Présidentielle : 43 % des 420 réponses testées citent le réseau Pravda, sans le signaler.",
+      "pied": "Tristan Mendès France · 17 octobre 2026",
+      "site": "tristan.pro",
+      "capture": "fonds/perplexity-polony.jpg",
+      "capture_decalage": -150
+    },
+    {
+      "sortie": "apercus/sites/tmflab.jpg",
+      "modele": "tmflab",
+      "pied": "Cartes interactives · applications · webdocumentaire · archives du web",
+      "_cible": "tmflab.tech (www/tmflab/index.html, hébergement OVH egoblog)"
+    },
+    {
+      "sortie": "apercus/sites/egoblog.jpg",
+      "modele": "egoblog",
+      "sous_titre": "Le blog hyper subjectif et hyper media de Tristan Mendès France",
+      "chiffres": [
+        [
+          "1 149",
+          "billets"
+        ],
+        [
+          "1997–2015",
+          "en ligne"
+        ],
+        [
+          "11 298",
+          "commentaires"
+        ]
+      ],
+      "_cible": "www.egoblog.net (www/accueil/index.html, hébergement OVH egoblog)"
+    },
+    {
+      "sortie": "apercus/sites/comploscore.jpg",
+      "modele": "projet",
+      "accent": "#e63946",
+      "fond": "fonds/comploscore-carte.jpg",
+      "position": "60% center",
+      "filtre": "saturate(1.15)",
+      "rubrique": "Carte interactive · 70 pays",
+      "titre": "ComploScore",
+      "accroche": "La carte mondiale des théories complotistes, notées de A à E comme un Nutri-Score",
+      "pied": "Tristan Mendès France",
+      "site": "tristan.pro",
+      "_cible": "tristan.pro/carte-complotisme/ (dépôt tristanmf/carte-complotisme)"
+    },
+    {
+      "sortie": "apercus/sites/super-propagateurs.jpg",
+      "modele": "projet",
+      "police": "grotesk",
+      "accent": "#ff5b2e",
+      "fond": "fonds/super-propagateurs.jpg",
+      "position": "390px 46%",
+      "taille": "auto 125%",
+      "voile": "linear-gradient(90deg,rgba(7,8,10,.97) 0%,rgba(7,8,10,.85) 40%,rgba(7,8,10,0) 68%)",
+      "rubrique": "TMF Lab · visualisation 3D",
+      "titre": "La puissance des super‑propagateurs",
+      "accroche": "Une poignée de comptes fait circuler l'essentiel des fausses informations. Une visualisation 3D calibrée sur trois études parues dans Science.",
+      "pied": "Tristan Mendès France",
+      "site": "tmflab.tech",
+      "_cible": "tmflab.tech/super-propagateurs/ (www/tmflab/super-propagateurs/index.html, OVH)"
+    }
   ]
 }

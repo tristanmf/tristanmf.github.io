@@ -79,6 +79,13 @@
   /* Projet avec visuel de fond (modèle « projet ») */
   .fond { position: absolute; inset: 0; background-size: cover; background-position: center; }
   .voile { position: absolute; inset: 0; }
+  .fond { background-repeat: no-repeat; }
+  /* Capture présentée comme une carte flottante à droite */
+  .cap { position: absolute; right: 70px; top: 62px; width: 440px; height: 420px; border-radius: 22px; overflow: hidden; transform: rotate(2.2deg); box-shadow: 0 0 0 1px rgba(255,255,255,.14), 0 30px 80px rgba(0,0,0,.7), 0 0 90px color-mix(in srgb, var(--accent) 35%, transparent); }
+  .cap img { display: block; width: 100%; }
+  .cap::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 70%, rgba(0,0,0,.55) 100%); }
+  body.projet.avec-cap h1 { max-width: 600px; font-size: 84px; }
+  body.projet.avec-cap .accroche { max-width: 560px; }
   body.projet h1 { font-size: 96px; line-height: .98; margin-top: 30px; max-width: 760px; }
   body.projet .accroche { margin-top: 24px; font-size: 27px; font-weight: 300; line-height: 1.32; color: rgba(255,255,255,.86); max-width: 640px; }
   body.projet.grotesk h1 { font-family: 'Space Grotesk', sans-serif; font-style: normal; font-weight: 700; letter-spacing: -0.035em; font-size: 76px; max-width: 700px; }
@@ -121,7 +128,11 @@
     document.body.classList.add("autre", "projet");
     if (p.police === "grotesk") document.body.classList.add("grotesk");
     if (p.accent) document.body.style.setProperty("--accent", p.accent);
-    document.body.insertAdjacentHTML("afterbegin", `<div class="fond" style="background-image:url('${p.fond}');background-position:${p.position || "center"};${p.taille ? "background-size:" + p.taille + ";" : ""}${p.filtre ? "filter:" + p.filtre : ""}"></div><div class="voile" style="background:${p.voile || "linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.78) 45%,rgba(0,0,0,.15) 100%)"}"></div>`);
+    document.body.insertAdjacentHTML("afterbegin", `${p.fond ? `<div class="fond" style="background-image:url('${p.fond}');background-position:${p.position || "center"};${p.taille ? "background-size:" + p.taille + ";" : ""}${p.filtre ? "filter:" + p.filtre : ""}"></div>` : ""}<div class="voile" style="background:${p.voile || "linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.78) 45%,rgba(0,0,0,.15) 100%)"}"></div>`);
+    if (p.capture) {
+      document.body.classList.add("avec-cap");
+      document.body.insertAdjacentHTML("beforeend", `<div class="cap"><img src="${p.capture}" style="margin-top:${p.capture_decalage || 0}px"></div>`);
+    }
     f.className = "frame";
     f.innerHTML = `<span class="pill mono" style="font-size:15px"><b></b>${esc(p.rubrique)}</span>
       <h1 class="${p.police === "grotesk" ? "" : "serif"}">${nb(p.titre)}</h1>
