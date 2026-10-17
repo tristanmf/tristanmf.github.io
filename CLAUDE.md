@@ -545,11 +545,12 @@ qui produit aussi `presse/index.html`) et commitée par le workflow Build front-
 Ajouter un article = une vue dans `app.jsx`, une entrée dans `PAGES`, le chemin dans le
 `git add` du workflow, et une ligne dans `sitemap.xml`.
 
-**Pravda / Perplexity** (« Présidentielle : des IA puisent dans la propagande russe… »).
-- Texte : `contenu.md` de Tristan (Drive, « 05 - Recherche et veille/enquete-ia-sources/
-  tristan.pro - article Pravda/ »), repris tel quel. **Le volet Claude / RT a été retiré** par
-  Tristan : phrase du chapeau, paragraphe, graphique, capture et source RT ne sont pas publiés,
-  et l'onglet « Claude-RT » a été ôté de la copie publiée du `.xlsx`.
+**Pravda / Perplexity** (« Présidentielle : quand Perplexity puise dans la propagande russe… »).
+- Texte : `contenu-v2.md` de Tristan (Drive, « 05 - Recherche et veille/enquete-ia-sources/
+  tristan.pro - article Pravda/ », version définitive du 17 octobre 2026), repris tel quel.
+  **C'est la seule référence** : l'ancien `contenu.md` est périmé. Article recentré sur
+  Perplexity. Le `.xlsx` publié est une copie de celui du Drive, réduite aux cinq onglets
+  Perplexity.
 - Données dans `ia/pravda-perplexity/` : `graphique.json` (barres), les deux CSV (lus par la
   page pour les tableaux dépliables **et** proposés au téléchargement — une seule source), le
   `.xlsx`, la capture. Liens Pravda en `rel="nofollow noopener"`.

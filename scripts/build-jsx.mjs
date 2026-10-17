@@ -72,9 +72,9 @@ const PAGES = [
   {
     out: 'ia/pravda-perplexity/index.html',
     label: 'article Pravda / Perplexity',
-    title: 'Présidentielle : des IA puisent dans la propagande russe pour répondre sur les candidats — Tristan Mendès France',
-    description: "Interrogées sur la position des candidats à propos de l'Ukraine, de l'OTAN ou de Zelensky, des IA s'appuient sur des sources de propagande russe, sans le signaler. Sur 420 réponses de Perplexity, 182 citent le réseau Pravda (43 %).",
-    social: 'Sur 420 réponses de Perplexity sur six candidats, 182 citent le réseau de propagande russe Pravda (43 %), sans le signaler.',
+    title: 'Présidentielle : quand Perplexity puise dans la propagande russe pour présenter les candidats — Tristan Mendès France',
+    description: "En pleine campagne, interrogé sur la position des candidats à propos de l'Ukraine, de l'OTAN ou de Zelensky, Perplexity s'appuie sur le réseau de propagande russe Pravda, sans le signaler. Sur 420 réponses testées, 182 le citent parmi leurs sources (43 %).",
+    social: 'Interrogé sur les candidats, Perplexity cite le réseau de propagande russe Pravda dans 182 réponses sur 420 (43 %), sans le signaler.',
     url: 'https://tristan.pro/ia/pravda-perplexity/',
     ogType: 'article',
   },
