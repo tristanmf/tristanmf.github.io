@@ -535,6 +535,27 @@ le site, seul le milieu change.
   RTL 2015 identifiée comme *L'heure du crime* (Jacques Pradel). Pas de carte « émission
   non identifiée ».
 
+## Aperçus de partage et icône d'onglet (17 octobre 2026)
+
+**Règle : toute page partageable de tristan.pro a son propre aperçu soigné** (image Open Graph
+1200 × 630), jamais l'image générique. Demande explicite de Tristan : « que l'aperçu soit
+sympa, raccord et propre », y compris pour les projets hébergés ailleurs.
+
+- **Gabarit** : `scripts/apercus/gabarit.html` (fond noir, aurora bleu/violet, Instrument
+  Serif italique + Barlow + DM Mono, pied « tristan.pro »). Modèles : `accueil`,
+  `accueil-portrait` (portrait passé en bichromie bleu/violet), `article` (rubrique, titre,
+  grand chiffre en couleur d'accent), `section`.
+- **Liste** : `scripts/apercus/apercus.json`, une entrée par image. **Rendu** sur le Mac :
+  `python3 scripts/apercus/rendre.py [sortie…]` (Chrome sans interface + Pillow). Les JPEG
+  sont commités : `apercus/` pour les pages du site, `<dossier de l'article>/apercu.jpg`.
+- **Branchement** : l'accueil dans `index.html` ; les autres pages par `image` / `imageAlt`
+  dans le tableau `PAGES` de `scripts/build-jsx.mjs`.
+- **Nouvel article** = une entrée dans `apercus.json` (modèle `article`), le rendu, et
+  `image` dans `PAGES`. À faire **avant** le premier partage : les réseaux gardent en cache le
+  premier aperçu vu.
+- **Icône d'onglet** : `favicon.png` (96 px, rond) et `apple-touch-icon.png` (180 px), tirés
+  de `profile.jpg`, le portrait affiché sur le site. `og-image.jpg` n'est plus utilisée.
+
 ## Articles — `tristan.pro/ia/…` (premier : 17 octobre 2026)
 
 **Même principe que la revue de presse : une vue de l'application.** `viewFromPath()` renvoie

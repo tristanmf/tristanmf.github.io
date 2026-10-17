@@ -68,6 +68,8 @@ const PAGES = [
     description: 'Revue de presse de Tristan Mendès France : les articles qui le citent depuis 1997 — presse nationale, régionale, étrangère, agences et web — et ses interventions radio, télé et podcast.',
     social: '1 700+ articles depuis 1997 et plus de 300 passages radio, télé et podcast.',
     url: 'https://tristan.pro/presse/',
+    image: 'https://tristan.pro/apercus/presse.jpg',
+    imageAlt: 'Revue de presse de Tristan Mendès France : 1 700+ articles depuis 1997',
   },
   {
     out: 'ia/pravda-perplexity/index.html',
@@ -77,6 +79,8 @@ const PAGES = [
     social: 'Interrogé sur les candidats, Perplexity cite le réseau de propagande russe Pravda dans 182 réponses sur 420 (43 %), sans le signaler.',
     url: 'https://tristan.pro/ia/pravda-perplexity/',
     ogType: 'article',
+    image: 'https://tristan.pro/ia/pravda-perplexity/apercu.jpg',
+    imageAlt: 'Présidentielle : quand Perplexity puise dans la propagande russe pour présenter les candidats. 43 % des 420 réponses citent le réseau Pravda.',
   },
 ];
 const esc = s => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
@@ -95,6 +99,13 @@ for (const P of PAGES) {
   set(/(<meta property="og:description" content=")[^"]*(")/, `$1${esc(P.social)}$2`);
   set(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${esc(P.title)}$2`);
   set(/(<meta name="twitter:description" content=")[^"]*(")/, `$1${esc(P.social)}$2`);
+  // Aperçu de partage propre à la page (images fabriquées par scripts/apercus/rendre.py).
+  if (P.image) {
+    set(/(<meta property="og:image" content=")[^"]*(")/, `$1${P.image}$2`);
+    set(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${P.image}$2`);
+    set(/(<meta property="og:image:alt" content=")[^"]*(")/, `$1${esc(P.imageAlt || P.title)}$2`);
+    set(/(<meta name="twitter:image:alt" content=")[^"]*(")/, `$1${esc(P.imageAlt || P.title)}$2`);
+  }
   if (P.ogType) set(/(<meta property="og:type" content=")[^"]*(")/, `$1${P.ogType}$2`);
   html = html.replace(/^<!doctype html>/i, '<!doctype html>\n<!-- GENERATED FILE — do not edit. Built from index.html by scripts/build-jsx.mjs -->');
   await writeFile(path.join(ROOT, P.out), html);
