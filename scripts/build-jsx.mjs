@@ -94,6 +94,15 @@ const PAGES = [
   },
 ];
 const esc = s => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+// assets/site-inline.css : le <style> de index.html (liquid-glass, aurora…), pour
+// les en-têtes et pieds montés dans d'autres pages (voir EMBED dans app.jsx).
+{
+  const idx = await readFile(path.join(ROOT, 'index.html'), 'utf8');
+  const m = idx.match(/<style>([\s\S]*?)<\/style>/);
+  if (!m) throw new Error('index.html : bloc <style> introuvable');
+  await writeFile(path.join(ROOT, 'assets/site-inline.css'), '/* GENERATED FILE — do not edit. Extrait de index.html par scripts/build-jsx.mjs */\n' + m[1].trim() + '\n');
+  console.log('✓ index.html <style> → assets/site-inline.css');
+}
 const shell = await readFile(path.join(ROOT, 'index.html'), 'utf8');
 for (const P of PAGES) {
   let html = shell;

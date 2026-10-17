@@ -576,6 +576,25 @@ sympa, raccord et propre », y compris pour les projets hébergés ailleurs.
   élargie, images recopiées et réduites à 600 px. Reste une image `franceinfo.fr/pictures/…`
   (épisode du 5 juin) non prise en charge.
 
+## En-tête et pied de tristan.pro sur les autres pages (17 octobre 2026)
+
+Décision de Tristan : **toute production publiée sous tristan.pro porte la barre de navigation
+et le pied « Parlons-en » du site**, même si ce n'est pas une vue de l'application.
+
+- **Mécanisme** : mode `EMBED` d'`app.js`. Une page qui contient `<div id="tmf-entete"
+  data-vue="productions"></div>` (en haut) et/ou `<div id="tmf-pied" data-vue="productions"></div>`
+  (en bas), puis charge `/assets/fonts/site.css`, `/vendor/react.production.min.js`,
+  `/vendor/react-dom.production.min.js`, `/vendor/framer-motion.js` et `/app.js`, reçoit `Navbar`
+  et `CtaFooter` montés dans des **Shadow DOM** : les styles du site (`/assets/tailwind.css`,
+  `/assets/site-inline.css`, extrait du `<style>` d'`index.html` par `build-jsx.mjs`) et ceux de la
+  page ne se mélangent pas. En mode EMBED, `NavLink` est un lien ordinaire.
+- La barre est fixe : la page doit réserver ~84 px en haut (76 px sur mobile).
+- **Pages concernées** : `/carte-complotisme/` (dépôt `tristanmf/carte-complotisme` — l'appli tient
+  dans un cadre `.cs-app` de la hauteur de l'écran, le pied du site en dessous ; sur mobile la page
+  défile) et **`/productions/super-propagateurs/`**, copie de `tmflab.tech/super-propagateurs/`
+  (Three.js r128 dans `vendor/three-r128.min.js`, polices TMF Lab dans `assets/fonts/tmflab.css` :
+  tout auto-hébergé). La version tristan.pro est la canonique.
+
 ## Articles — `tristan.pro/ia/…` (premier : 17 octobre 2026)
 
 **Même principe que la revue de presse : une vue de l'application.** `viewFromPath()` renvoie

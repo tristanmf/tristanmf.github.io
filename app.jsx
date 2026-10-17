@@ -347,7 +347,7 @@ const VIEW_NAV = { presse: PRESS_PATH, productions: PRODUCTIONS_PATH };
 // `img` : l'aperçu de partage de la page (1200 × 630, scripts/apercus/).
 const PRODUCTIONS = [
   { court: "Perplexity & Pravda", titre: "Présidentielle : quand Perplexity puise dans la propagande russe", quand: "17 octobre 2026", kicker: "Enquête · IA et désinformation", href: "/ia/pravda-perplexity/", img: "/ia/pravda-perplexity/apercu.jpg", desc: "Sur 420 réponses de Perplexity, 182 citent le réseau de propagande russe Pravda comme une source parmi d'autres." },
-  { court: "Super-propagateurs", titre: "La puissance des super-propagateurs", quand: "Septembre 2026", kicker: "TMF Lab · visualisation 3D", href: "https://tmflab.tech/super-propagateurs/", img: "/apercus/sites/super-propagateurs.jpg", desc: "Une poignée de comptes fait circuler l'essentiel des fausses informations. Une simulation calibrée sur trois études parues dans Science." },
+  { court: "Super-propagateurs", titre: "La puissance des super-propagateurs", quand: "Septembre 2026", kicker: "Visualisation 3D", href: "/productions/super-propagateurs/", img: "/apercus/sites/super-propagateurs.jpg", desc: "Une poignée de comptes fait circuler l'essentiel des fausses informations. Une simulation calibrée sur trois études parues dans Science." },
   { court: "ComploScore", titre: "ComploScore", quand: "Mars 2026", kicker: "Carte interactive · 70 pays", href: "/carte-complotisme/", img: "/apercus/sites/comploscore.jpg", desc: "La carte mondiale des théories complotistes, notées de A à E comme un Nutri-Score." },
 ];
 // Vue de l'application → NavLink ; autre site ou autre dépôt → lien normal.
@@ -368,9 +368,17 @@ function navigate(href) {
   window.dispatchEvent(new CustomEvent("tmf:navigate", { detail: { hash: url.hash } }));
 }
 
+// Pages hors application (ComploScore, super-propagateurs…) : elles ne reçoivent
+// que la barre de navigation et le pied « Parlons-en », montés dans des Shadow DOM
+// (#tmf-entete, #tmf-pied) pour que les styles du site et ceux de la page ne se
+// mélangent pas. Mode d'emploi : CLAUDE.md, « En-tête et pied sur les autres pages ».
+const EMBED = !!(document.getElementById("tmf-entete") || document.getElementById("tmf-pied"));
+
 // Lien interne. Clic simple : navigation sans rechargement. Cmd/Ctrl-clic ou
 // clic du milieu : comportement normal du navigateur (nouvel onglet).
 function NavLink({ href, onClick, children, ...rest }) {
+  // Hors application, il n'y a pas de vue à changer : lien ordinaire.
+  if (EMBED) return <a href={href} {...rest}>{children}</a>;
   const go = (e) => {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
@@ -1823,4 +1831,22 @@ function App() {
 
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+function mountShadow(id, render) {
+  const host = document.getElementById(id);
+  if (!host) return;
+  host.style.position = "relative";
+  host.style.zIndex = "2147483000";
+  const root = host.attachShadow({ mode: "open" });
+  root.innerHTML = '<link rel="stylesheet" href="/assets/tailwind.css"><link rel="stylesheet" href="/assets/site-inline.css">' +
+    "<style>:host{display:block;font-family:'Barlow',sans-serif;color:#fff;line-height:1.5;-webkit-font-smoothing:antialiased;text-align:left}</style>";
+  const mount = document.createElement("div");
+  root.appendChild(mount);
+  ReactDOM.createRoot(mount).render(render(host.dataset.vue || "productions"));
+}
+
+if (EMBED) {
+  mountShadow("tmf-entete", (v) => <Navbar view={v} />);
+  mountShadow("tmf-pied", () => <div className="bg-black"><CtaFooter /></div>);
+} else {
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+}

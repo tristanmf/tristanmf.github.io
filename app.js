@@ -585,8 +585,8 @@ const PRODUCTIONS = [{
   court: "Super-propagateurs",
   titre: "La puissance des super-propagateurs",
   quand: "Septembre 2026",
-  kicker: "TMF Lab · visualisation 3D",
-  href: "https://tmflab.tech/super-propagateurs/",
+  kicker: "Visualisation 3D",
+  href: "/productions/super-propagateurs/",
   img: "/apercus/sites/super-propagateurs.jpg",
   desc: "Une poignée de comptes fait circuler l'essentiel des fausses informations. Une simulation calibrée sur trois études parues dans Science."
 }, {
@@ -619,6 +619,12 @@ function navigate(href) {
   }));
 }
 
+// Pages hors application (ComploScore, super-propagateurs…) : elles ne reçoivent
+// que la barre de navigation et le pied « Parlons-en », montés dans des Shadow DOM
+// (#tmf-entete, #tmf-pied) pour que les styles du site et ceux de la page ne se
+// mélangent pas. Mode d'emploi : CLAUDE.md, « En-tête et pied sur les autres pages ».
+const EMBED = !!(document.getElementById("tmf-entete") || document.getElementById("tmf-pied"));
+
 // Lien interne. Clic simple : navigation sans rechargement. Cmd/Ctrl-clic ou
 // clic du milieu : comportement normal du navigateur (nouvel onglet).
 function NavLink({
@@ -627,6 +633,10 @@ function NavLink({
   children,
   ...rest
 }) {
+  // Hors application, il n'y a pas de vue à changer : lien ordinaire.
+  if (EMBED) return /*#__PURE__*/React.createElement("a", _extends({
+    href: href
+  }, rest), children);
   const go = e => {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
@@ -2871,4 +2881,26 @@ function App() {
     className: "bg-black"
   }, /*#__PURE__*/React.createElement(StartSection, null), /*#__PURE__*/React.createElement(FeaturesChess, null), /*#__PURE__*/React.createElement(FeaturesGrid, null), /*#__PURE__*/React.createElement(Testimonials, null), /*#__PURE__*/React.createElement(Conferencier, null), /*#__PURE__*/React.createElement(CtaFooter, null))));
 }
-ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));
+function mountShadow(id, render) {
+  const host = document.getElementById(id);
+  if (!host) return;
+  host.style.position = "relative";
+  host.style.zIndex = "2147483000";
+  const root = host.attachShadow({
+    mode: "open"
+  });
+  root.innerHTML = '<link rel="stylesheet" href="/assets/tailwind.css"><link rel="stylesheet" href="/assets/site-inline.css">' + "<style>:host{display:block;font-family:'Barlow',sans-serif;color:#fff;line-height:1.5;-webkit-font-smoothing:antialiased;text-align:left}</style>";
+  const mount = document.createElement("div");
+  root.appendChild(mount);
+  ReactDOM.createRoot(mount).render(render(host.dataset.vue || "productions"));
+}
+if (EMBED) {
+  mountShadow("tmf-entete", v => /*#__PURE__*/React.createElement(Navbar, {
+    view: v
+  }));
+  mountShadow("tmf-pied", () => /*#__PURE__*/React.createElement("div", {
+    className: "bg-black"
+  }, /*#__PURE__*/React.createElement(CtaFooter, null)));
+} else {
+  ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));
+}

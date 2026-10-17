@@ -1,0 +1,907 @@
+<!doctype html>
+<!-- Copie sur tristan.pro de tmflab.tech/super-propagateurs/ (17/10/2026), avec l'en-tête et le pied du site. Voir CLAUDE.md. -->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>La puissance des super-propagateurs — Tristan Mendès France</title>
+<link rel="canonical" href="https://tristan.pro/productions/super-propagateurs/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Tristan Mendès France">
+<meta property="og:title" content="La puissance des super-propagateurs">
+<meta property="og:description" content="Une poignée de comptes fait circuler l'essentiel des fausses informations. Une visualisation 3D calibrée sur trois études parues dans Science.">
+<meta property="og:url" content="https://tristan.pro/productions/super-propagateurs/">
+<meta property="og:image" content="https://tristan.pro/apercus/sites/super-propagateurs.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="La puissance des super-propagateurs : une visualisation 3D du réseau">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://tristan.pro/apercus/sites/super-propagateurs.jpg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Une simulation calibrée sur trois études parues dans Science : pourquoi une poignée de comptes suffit à faire circuler l'essentiel des fausses informations.">
+<!-- Tout est servi par tristan.pro : aucune police ni bibliothèque d'un autre domaine. -->
+<link rel="stylesheet" href="/assets/fonts/tmflab.css">
+<link rel="stylesheet" href="/assets/fonts/site.css">
+<style>
+:root{
+  --noir:#07080a; --nuit:#0d0f13; --surface:#12151b; --bord:#1e232c;
+  --texte:#e9eaee; --doux:#8e94a1; --feu:#ff5b2e; --glace:#46d8e0; --or:#f5c451;
+  --dis:'Space Grotesk',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--noir);color:var(--texte);font-family:var(--dis);
+  -webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
+.hero{position:relative;height:100svh;min-height:560px;overflow:hidden;isolation:isolate}
+#scene{position:absolute;inset:0;width:100%!important;height:100%!important;display:block;touch-action:none}
+.vignette{position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(130% 100% at 52% 45%,transparent 33%,rgba(7,8,10,.62) 100%),
+             linear-gradient(to bottom,rgba(7,8,10,.82) 0%,transparent 28%,transparent 55%,rgba(7,8,10,.93) 100%)}
+.ui{position:absolute;z-index:3}
+
+.tete{top:0;left:0;padding:clamp(18px,3.2vw,32px);padding-top:calc(clamp(18px,3.2vw,32px) + 84px);max-width:min(420px,44vw)}
+.tete .marque{display:none} /* la barre de tristan.pro tient lieu de marque */
+.marque{font-weight:700;font-size:18px;letter-spacing:-.02em;text-decoration:none;color:var(--texte)}
+.marque i{color:var(--feu);font-style:normal}
+.tete h1{margin-top:13px;font-size:clamp(21px,2.6vw,30px);font-weight:700;letter-spacing:-.03em;line-height:1.08}
+.tete p{margin-top:10px;font-size:13.5px;line-height:1.6;color:var(--doux)}
+.tete .src{margin-top:13px;font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;color:#5f6676;
+  line-height:1.65;border-left:2px solid var(--bord);padding-left:10px}
+.tete .src a{color:var(--glace);text-decoration:none;border-bottom:1px solid rgba(70,216,224,.3)}
+.tete .src a:hover{border-color:var(--glace)}
+
+.chiffres{top:clamp(18px,3.2vw,32px);right:clamp(18px,3.2vw,32px);display:flex;gap:clamp(18px,2.4vw,30px);text-align:right}
+.chiffres div span{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:#5f6676;margin-bottom:5px}
+.chiffres div b{font-size:clamp(19px,2.3vw,27px);font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.chiffres .c1 b{color:var(--feu)} .chiffres .c2 b{color:var(--texte)} .chiffres .c3 b{color:var(--or)}
+
+.verdict{top:calc(clamp(18px,3.2vw,32px) + 64px);right:clamp(18px,3.2vw,32px);text-align:right;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.03em;color:var(--doux);max-width:34ch;line-height:1.6}
+.verdict b{font-weight:500}
+.verdict.mort b{color:var(--glace)} .verdict.pris b{color:var(--feu)} .verdict.tiede b{color:var(--or)}
+.panneau{left:clamp(18px,3.2vw,32px);bottom:clamp(152px,19vh,210px);width:clamp(246px,24vw,340px)}
+.panneau .lab{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#5f6676;margin-bottom:8px}
+#courbe{width:100%;height:clamp(96px,13vh,150px);display:block;border-bottom:1px solid var(--bord);margin-bottom:9px}
+.cleg{display:flex;flex-direction:column;gap:5px;font-family:var(--mono);font-size:11px;color:#5f6676}
+.cleg div{display:flex;align-items:center;gap:7px}
+.cleg i{width:18px;height:3px;border-radius:2px;flex:none;display:block}
+
+.socle{left:0;right:0;bottom:0;padding:clamp(13px,2.2vw,22px) clamp(18px,3.2vw,32px);
+  display:flex;align-items:center;gap:clamp(12px,1.8vw,20px);flex-wrap:wrap;
+  background:linear-gradient(to top,rgba(7,8,10,.94),transparent)}
+button.ico{width:42px;height:42px;flex:none;border-radius:50%;border:1px solid var(--bord);
+  background:rgba(18,21,27,.75);color:var(--texte);cursor:pointer;display:grid;place-items:center;transition:.2s}
+button.ico:hover{border-color:var(--feu);background:rgba(255,91,46,.14)}
+button.ico svg{width:15px;height:15px;fill:currentColor}
+.piste{flex:1 1 200px;display:flex;flex-direction:column;gap:6px;min-width:170px}
+.piste .haut{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:#5f6676;letter-spacing:.04em}
+.piste .haut b{color:var(--glace);font-weight:500}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:3px;background:var(--bord);border-radius:3px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;
+  background:var(--feu);border:2px solid var(--noir);box-shadow:0 0 0 1px var(--feu)}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--feu);border:2px solid var(--noir)}
+
+.groupe{display:flex;flex-direction:column;gap:7px}
+.groupe > span{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#5f6676}
+.chx{display:flex;gap:6px;flex-wrap:wrap}
+.chx button{font-family:var(--mono);font-size:11px;color:var(--doux);background:rgba(18,21,27,.75);
+  border:1px solid var(--bord);border-radius:999px;padding:7px 13px;cursor:pointer;transition:.2s;white-space:nowrap}
+.chx button:hover{color:var(--texte);border-color:#2e3542}
+.chx button[aria-pressed=true]{color:var(--noir);background:var(--glace);border-color:var(--glace);font-weight:500}
+.chx button[data-s="faux"][aria-pressed=true]{background:var(--feu);border-color:var(--feu)}
+.chx button[data-s="sans"][aria-pressed=true]{background:var(--or);border-color:var(--or)}
+
+  .infobulle{position:fixed;z-index:4;pointer-events:none;background:rgba(13,15,19,.96);border:1px solid var(--bord);
+  border-radius:8px;padding:9px 12px;font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--doux);
+  opacity:0;transition:opacity .15s;white-space:nowrap;backdrop-filter:blur(10px)}
+.infobulle b{color:var(--texte);font-weight:500}
+.infobulle .t{color:var(--feu)} .infobulle .s{color:var(--or)}
+
+/* soutien (Ko-fi) : simple lien, aucun widget chargé */
+.soutien{margin:44px 0 8px;padding:18px 20px;border:1px solid rgba(255,91,46,.35);border-radius:14px;
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;background:rgba(255,91,46,.05)}
+.soutien p{margin:0;flex:1 1 260px;font-size:14px;line-height:1.6;color:var(--doux)}
+.soutien a{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;background:var(--feu);
+  color:#07080a;font-weight:600;font-size:14px;text-decoration:none;white-space:nowrap}
+.soutien a:hover{filter:brightness(1.08)}
+/* voile des sources */
+.voile{position:fixed;inset:0;z-index:8;background:rgba(7,8,10,.93);backdrop-filter:blur(16px);
+  display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .3s}
+.voile.ouvert{opacity:1;pointer-events:auto}
+.voile .boite{max-width:760px;width:100%;max-height:88vh;overflow-y:auto}
+.voile h2{font-size:clamp(20px,2.4vw,27px);font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.voile > .boite > p{color:var(--doux);font-size:13.5px;line-height:1.65;margin-bottom:26px;max-width:62ch}
+.etude{border-top:1px solid var(--bord);padding:18px 0}
+.etude h3{font-size:15px;font-weight:500;letter-spacing:-.01em;margin-bottom:4px}
+.etude .ref{font-family:var(--mono);font-size:10.5px;color:#5f6676;letter-spacing:.03em;margin-bottom:11px}
+.etude .ref a{color:var(--glace);text-decoration:none;border-bottom:1px solid rgba(70,216,224,.3)}
+.etude ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.etude li{font-size:13px;line-height:1.55;color:var(--doux);padding-left:16px;position:relative}
+.etude li::before{content:'';position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:50%;background:var(--feu)}
+.etude li b{color:var(--texte);font-weight:500}
+.meth{border-top:1px solid var(--bord);margin-top:6px;padding-top:18px;font-size:12.5px;line-height:1.65;color:#6f7787;max-width:66ch}
+.meth b{color:var(--doux);font-weight:500}
+.fermer{position:absolute;top:22px;right:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--bord);
+  background:rgba(18,21,27,.8);color:var(--texte);font-size:18px;cursor:pointer;line-height:1}
+.fermer:hover{border-color:var(--feu)}
+.btnsrc{font-family:var(--mono);font-size:11px;color:var(--doux);background:rgba(18,21,27,.75);
+  border:1px solid var(--bord);border-radius:999px;padding:9px 15px;cursor:pointer;transition:.2s;white-space:nowrap}
+.btnsrc:hover{color:var(--texte);border-color:var(--glace)}
+
+.texte{max-width:760px;margin:0 auto;padding:clamp(56px,9vw,110px) clamp(20px,5vw,40px) 60px}
+.texte h2{font-size:clamp(19px,2.2vw,25px);font-weight:700;letter-spacing:-.025em;margin:44px 0 14px}
+.texte p{font-size:15px;line-height:1.75;color:var(--doux);margin-bottom:15px}
+.texte p b{color:var(--texte);font-weight:500}
+.chapo{font-size:clamp(16px,1.9vw,19px)!important;line-height:1.65!important;color:var(--texte)!important}
+.cartes{display:grid;gap:14px;margin:20px 0 8px}
+.carte{background:var(--surface);border:1px solid var(--bord);border-radius:12px;padding:18px 20px}
+.carte .ref{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:#5f6676;margin-bottom:9px}
+.carte p{font-size:14px;line-height:1.65;margin-bottom:10px}
+.carte a{font-family:var(--mono);font-size:11px;color:var(--glace);text-decoration:none;border-bottom:1px solid rgba(70,216,224,.3)}
+.carte a:hover{border-color:var(--glace)}
+.garde{border-left:2px solid var(--feu);padding-left:16px}
+.pied{margin-top:60px;padding-top:24px;border-top:1px solid var(--bord);display:flex;
+  justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:#5f6676}
+.pied a{color:var(--texte);text-decoration:none}
+.pied a:hover{color:var(--feu)}
+.charge{position:fixed;inset:0;z-index:9;display:grid;place-items:center;background:var(--noir);
+  transition:opacity .7s;font-family:var(--mono);font-size:12px;color:var(--doux);letter-spacing:.1em}
+.charge.parti{opacity:0;pointer-events:none}
+
+@media (max-width:960px){
+  .tete{max-width:none;padding-right:16px} .tete p,.tete .src{display:none}
+  .panneau{display:none}
+  .chiffres{top:auto;bottom:var(--hsocle,132px);right:14px;gap:16px}
+  .verdict{display:none}
+  .chiffres div b{font-size:18px}
+  .socle{gap:10px;padding-bottom:16px}
+}
+</style>
+</head>
+<body>
+<div id="tmf-entete" data-vue="productions"></div>
+
+<div class="hero">
+<canvas id="scene"></canvas>
+<div class="vignette"></div>
+
+<header class="ui tete">
+  <a class="marque" href="https://tmflab.tech">t<i>.</i></a>
+  <h1>La puissance des super-propagateurs</h1>
+  <p>Une poignée de comptes suffit à faire circuler l'essentiel des fausses informations. Ce n'est pas une intuition : c'est mesuré.</p>
+  <p class="src">Simulation calibrée sur trois études parues dans <i>Science</i>.<br>
+     <a href="#" id="lienSrc">Voir les chiffres et la méthode &rarr;</a></p>
+</header>
+
+<div class="ui chiffres">
+  <div class="c1"><span>Comptes touchés</span><b id="nTouche">0</b></div>
+  <div class="c2"><span>du réseau</span><b id="nPct">0 %</b></div>
+  <div class="c3"><span id="labSup">Partages venant des 5 comptes</span><b id="nSup">—</b></div>
+</div>
+<p class="ui verdict" id="verdict"></p>
+
+<div class="ui panneau">
+  <p class="lab">Courbes de diffusion comparées</p>
+  <canvas id="courbe" width="680" height="300"></canvas>
+  <div class="cleg" id="cleg"></div>
+</div>
+
+<footer class="ui socle">
+  <button class="ico" id="lecture" title="Lecture / pause">
+    <svg id="icoSvg" viewBox="0 0 16 16"><path d="M3 2h3.5v12H3zM9.5 2H13v12H9.5z"/></svg>
+  </button>
+  <div class="piste">
+    <div class="haut"><span>Temps écoulé</span><b id="horloge">0 h 00</b></div>
+    <input id="temps" type="range" min="0" max="1000" value="0">
+  </div>
+  <div class="groupe">
+    <span>Ce qui circule</span>
+    <div class="chx" id="quoi">
+      <button data-q="faux" aria-pressed="true">Une info fausse</button>
+      <button data-q="vrai">Une info vraie</button>
+    </div>
+  </div>
+  <div class="groupe">
+    <span>Qui la publie &mdash; ou cliquez un compte</span>
+    <div class="chx" id="qui">
+      <button data-w="ord">Un compte ordinaire</button>
+      <button data-w="sup" aria-pressed="true">Un super-propagateur</button>
+    </div>
+  </div>
+  <button class="btnsrc" id="btnSrc">Sources</button>
+</footer>
+
+</div><!-- /hero -->
+
+<main class="texte">
+  <p class="chapo">Ce n'est pas le contenu d'un message qui décide de sa portée, c'est la position de
+  celui qui le publie. Trois grandes études parues dans <i>Science</i> mesurent la même chose, chacune
+  à sa manière&nbsp;: une fraction minuscule de comptes fait circuler l'essentiel des fausses
+  informations. Cette page met ce résultat en mouvement.</p>
+
+  <h2>Comment lire l'objet</h2>
+  <p>Chaque point est un compte. Les traits sont des liens d'abonnement. Les cinq gros points qui
+  battent lentement sont des <b>super-propagateurs</b>&nbsp;: cinq comptes sur mille cinq cents,
+  soit 0,3&nbsp;% du réseau — la proportion mesurée par Baribi-Bartov et ses collègues en 2024.</p>
+  <p>Quand la rumeur part, on voit les messages voyager le long des liens, point par point. L'arbre
+  de diffusion se dessine derrière, en orange. Les passages d'une communauté à l'autre ressortent
+  en blanc&nbsp;: ce sont les <b>ponts</b>, et c'est souvent eux qui font basculer une rumeur d'un
+  petit cercle vers tout le reste.</p>
+  <p><b>Cliquez n'importe quel compte</b> pour faire partir l'information de là. La plupart des
+  comptes ordinaires ne déclenchent rien du tout&nbsp;: la rumeur meurt au bout de deux ou trois
+  partages. C'est le cas le plus fréquent, et c'est justement ce qui rend les rares cascades
+  spectaculaires si trompeuses.</p>
+
+  <h2>Ce qui est mesuré</h2>
+  <div class="cartes">
+    <div class="carte">
+      <span class="ref">Vosoughi, Roy &amp; Aral &middot; <i>Science</i> &middot; 2018</span>
+      <p>126&nbsp;000 cascades de rumeurs, 3 millions de personnes, 4,5 millions de messages.
+      Une fausse information est <b>70&nbsp;% plus susceptible d'être repartagée</b>. Le vrai met
+      <b>six fois plus de temps</b> pour atteindre 1&nbsp;500 personnes. Et les robots accéléraient
+      le vrai et le faux à égalité&nbsp;: la différence vient des humains.</p>
+      <a href="https://www.science.org/doi/10.1126/science.aap9559" target="_blank" rel="noopener">10.1126/science.aap9559 →</a>
+    </div>
+    <div class="carte">
+      <span class="ref">Grinberg <i>et al.</i> &middot; <i>Science</i> &middot; 2019</span>
+      <p>16&nbsp;442 comptes appariés aux listes électorales pendant la présidentielle de 2016.
+      <b>0,1&nbsp;% des comptes ont partagé 81&nbsp;%</b> des fausses informations, et 1&nbsp;% des
+      comptes ont concentré 80&nbsp;% des expositions.</p>
+      <a href="https://www.science.org/doi/10.1126/science.aau2706" target="_blank" rel="noopener">10.1126/science.aau2706 →</a>
+    </div>
+    <div class="carte">
+      <span class="ref">Baribi-Bartov, Swire-Thompson &amp; Grinberg &middot; <i>Science</i> &middot; 2024</span>
+      <p>664&nbsp;391 électeurs suivis en 2020. <b>2&nbsp;107 comptes — 0,3&nbsp;% — à l'origine de
+      80&nbsp;%</b> des fausses informations, touchant 5,2&nbsp;% des électeurs inscrits présents sur
+      la plateforme. Volume <b>non automatisé</b>&nbsp;: du retweet manuel et obstiné.</p>
+      <a href="https://www.science.org/doi/10.1126/science.adl4435" target="_blank" rel="noopener">10.1126/science.adl4435 →</a>
+    </div>
+  </div>
+
+  <h2>Ce qui ne l'est pas</h2>
+  <p class="garde">Le réseau affiché est <b>fabriqué</b>. Ce n'est l'image d'aucun réseau réel&nbsp;:
+  ce sont les <b>réglages</b> qui viennent des études. Et une combinaison sort du cadre de ce qui a
+  été mesuré&nbsp;: <b>aucune de ces études n'a comparé ce que devient une information vraie selon
+  qu'elle est publiée par un gros compte ou par un petit</b>. Les deux travaux sur la concentration
+  ne portent que sur les fausses informations. La case «&nbsp;info vraie publiée par un
+  super-propagateur&nbsp;» est donc une extrapolation — la page le signale d'elle-même quand on la
+  sélectionne.</p>
+  <p>Un seul chiffre n'est pas décidé à l'avance&nbsp;: «&nbsp;partages venant des 5 comptes&nbsp;».
+  Il est recalculé sur la cascade affichée à l'écran. Qu'il retombe autour de 70&nbsp;% là où les
+  études mesurent 80&nbsp;%, c'est le signe que la mécanique reproduit le bon ordre de grandeur.</p>
+
+  <aside class="soutien">
+    <p>Cette visualisation est en accès libre, mais les outils d'IA qu'elle demande sont payants. Si vous voulez soutenir ce travail, vous pouvez m'offrir un café.</p>
+    <a href="https://ko-fi.com/tristanmf" target="_blank" rel="noopener">&#9749; Offrir un café</a>
+  </aside>
+
+  <footer class="pied">
+    <a href="https://tmflab.tech/">Une expérience née dans mon laboratoire, TMF Lab &rarr;</a>
+    <span></span>
+  </footer>
+</main>
+<div id="tmf-pied" data-vue="productions"></div>
+
+<div class="infobulle" id="bulle"></div>
+
+<div class="voile" id="voile">
+  <button class="fermer" id="fermer">&times;</button>
+  <div class="boite">
+    <h2>Ce que disent les études</h2>
+    <p style="color:#f5c451;font-family:var(--mono);font-size:11.5px;letter-spacing:.03em;line-height:1.7;
+       border-left:2px solid #f5c451;padding-left:12px;margin-bottom:22px">
+      &#9888;&nbsp; En un mot&nbsp;: l'écart <b>vrai / faux</b> est mesuré. La <b>concentration</b> des partages
+      sur une poignée de comptes est mesurée. Mais <b>le croisement des deux ne l'est pas</b> —
+      les études de concentration ne portent que sur les fausses informations.
+    </p>
+    <p>Le réseau affiché est simulé. Les paramètres qui le font vivre — vitesse, probabilité de repartage, concentration des partages sur une poignée de comptes — sont repris de trois travaux publiés dans <i>Science</i>.</p>
+
+    <div class="etude">
+      <h3>Une poignée de comptes fait circuler presque tout</h3>
+      <p class="ref">Baribi-Bartov, Swire-Thompson &amp; Grinberg, <i>Science</i>, 2024 &middot; <a href="https://www.science.org/doi/10.1126/science.adl4435" target="_blank" rel="noopener">10.1126/science.adl4435</a></p>
+      <ul>
+        <li>Sur un panel de <b>664 391 électeurs américains</b> suivis pendant la présidentielle de 2020, <b>2 107 comptes — soit 0,3 %</b> — sont à l'origine de <b>80 % des fausses informations partagées</b>.</li>
+        <li>Ces comptes ont touché <b>5,2 % des électeurs inscrits</b> présents sur la plateforme.</li>
+        <li>Leur volume <b>n'était pas automatisé</b> : du retweet manuel, obstiné, à la main. Ce ne sont pas des robots.</li>
+      </ul>
+    </div>
+
+    <div class="etude">
+      <h3>La même concentration, quatre ans plus tôt</h3>
+      <p class="ref">Grinberg, Joseph, Friedland, Swire-Thompson &amp; Lazer, <i>Science</i>, 2019 &middot; <a href="https://www.science.org/doi/10.1126/science.aau2706" target="_blank" rel="noopener">10.1126/science.aau2706</a></p>
+      <ul>
+        <li>Sur <b>16 442 comptes</b> appariés aux listes électorales pendant la présidentielle de 2016, <b>0,1 % des comptes ont partagé 81 %</b> des fausses informations.</li>
+        <li><b>1 % des comptes</b> ont concentré <b>80 % des expositions</b>.</li>
+        <li>Les fausses informations représentaient environ <b>6 % de la consommation d'information politique</b> — l'écrasante majorité venait de sources classiques.</li>
+      </ul>
+    </div>
+
+    <div class="etude">
+      <h3>Le faux va plus vite, plus loin, plus profond</h3>
+      <p class="ref">Vosoughi, Roy &amp; Aral, <i>Science</i>, 2018 &middot; <a href="https://www.science.org/doi/10.1126/science.aap9559" target="_blank" rel="noopener">10.1126/science.aap9559</a></p>
+      <ul>
+        <li><b>126 000 cascades de rumeurs</b>, partagées par <b>3 millions de personnes</b> en plus de 4,5 millions de messages, entre 2006 et 2017.</li>
+        <li>Une fausse information est <b>70 % plus susceptible d'être repartagée</b> qu'une vraie.</li>
+        <li>Le vrai met <b>six fois plus de temps</b> que le faux pour atteindre 1 500 personnes, et <b>vingt fois plus</b> pour atteindre dix niveaux de partage.</li>
+        <li>Le 1 % de cascades fausses les plus larges touche <b>1 000 à 100 000 personnes</b> ; le vrai dépasse rarement 1 000.</li>
+        <li>Les robots accéléraient le vrai et le faux <b>exactement pareil</b> : la différence vient des humains.</li>
+      </ul>
+    </div>
+
+    <p class="meth"><b>Ce qui est mesuré, ce qui ne l'est pas.</b> Il faut être net là-dessus, parce que les quatre cases de cette page n'ont pas toutes le même statut.<br><br>
+    <b>Mesuré :</b> l'écart entre le vrai et le faux (Vosoughi et al. ont comparé 126 000 cascades réelles) — c'est de là que viennent le repartage 1,7 fois moins probable, la propagation six fois plus lente et le plafond de dix niveaux. <b>Mesurée aussi :</b> la concentration extrême des partages sur une poignée de comptes (Grinberg et al., Baribi-Bartov et al., sur des panels appariés aux listes électorales).<br><br>
+    <b>Non mesuré :</b> le croisement des deux. <b>Aucune de ces études n'a comparé ce que devient une information vraie selon qu'elle est publiée par un gros compte ou par un petit.</b> La case « info vraie publiée par un super-propagateur » est donc une <b>extrapolation</b> : elle applique au même réseau deux effets établis séparément. C'est une hypothèse de travail, pas un résultat.<br><br>
+    <b>Le réseau lui-même est fabriqué</b> : 1 500 comptes, cinq communautés, quelques ponts, cinq très gros comptes (0,3 %). Ce n'est l'image d'aucun réseau réel. Le compte ordinaire proposé par le raccourci est <b>choisi pour être lisible</b> — la plupart des autres font bien pire, cliquez-en quelques-uns pour voir. Seul le compteur « partages venant des 5 comptes » n'est pas écrit à l'avance : il est recalculé sur la cascade affichée, et s'il retombe autour de 70 à 80 %, c'est que la mécanique reproduit l'ordre de grandeur observé.</p>
+  </div>
+</div>
+
+<div class="charge" id="charge">CONSTRUCTION DU RÉSEAU…</div>
+
+<script src="/vendor/three-r128.min.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* tirage reproductible : les chiffres affichés sont les mêmes pour tout le monde */
+function graine(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+var rnd = graine(20260912);
+
+var mobile = matchMedia('(max-width:960px)').matches || /iPhone|iPad|Android/i.test(navigator.userAgent);
+var NB = mobile ? 700 : 1500;
+var NSUP = Math.max(3, Math.round(NB*0.0033));     // 0,3 % — l'ordre de grandeur de Baribi-Bartov et al.
+var NCOM = 5;
+var COMS = [
+  {nom:'Communauté A', c:0xff7a52},{nom:'Communauté B', c:0x46d8e0},{nom:'Communauté C', c:0xf5c451},
+  {nom:'Communauté D', c:0x9a7bff},{nom:'Communauté E', c:0x4ade80}
+];
+
+/* ---------- réseau ---------- */
+var noeuds=new Array(NB), aretes=[], voisins=new Array(NB);
+for(var i=0;i<NB;i++) voisins[i]=[];
+var centres=[];
+for(var c=0;c<NCOM;c++){
+  var y=1-2*(c+0.5)/NCOM, r=Math.sqrt(Math.max(0,1-y*y)), t=2.399963*c;
+  centres.push(new THREE.Vector3(Math.cos(t)*r,y*0.75,Math.sin(t)*r).multiplyScalar(4.3));
+}
+var parCom=[]; for(c=0;c<NCOM;c++) parCom.push([]);
+for(i=0;i<NB;i++){ var cc=Math.floor(rnd()*NCOM); noeuds[i]={com:cc,deg:0,sup:false}; parCom[cc].push(i); }
+
+function relier(a,b){
+  if(a===b) return false;
+  if(voisins[a].indexOf(b)>=0) return false;
+  voisins[a].push(b); voisins[b].push(a); noeuds[a].deg++; noeuds[b].deg++; aretes.push(a,b); return true;
+}
+for(c=0;c<NCOM;c++){
+  var L=parCom[c], sac=[];
+  for(var j=0;j<L.length;j++){
+    var n=L[j];
+    if(j===1) relier(L[0],L[1]);
+    else if(j>1){
+      var m=2+(rnd()<0.25?1:0);
+      for(var e=0;e<m;e++){
+        var cible = sac.length ? sac[Math.floor(rnd()*sac.length)] : L[Math.floor(rnd()*j)];
+        relier(n,cible);
+      }
+    }
+    for(var s=0;s<voisins[n].length;s++) sac.push(n);
+    sac.push(n);
+  }
+}
+/* ponts entre communautés */
+var NPONT=Math.round(NB*0.022), essais=0;
+for(var p=0;p<NPONT && essais<NPONT*40;essais++){
+  var a=Math.floor(rnd()*NB), b=Math.floor(rnd()*NB);
+  if(noeuds[a].com!==noeuds[b].com && relier(a,b)) p++;
+}
+
+/* les super-propagateurs : les plus gros comptes, dotés d'une audience massive */
+var ordre=[]; for(i=0;i<NB;i++) ordre.push(i);
+ordre.sort(function(x,y){ return noeuds[y].deg-noeuds[x].deg; });
+var SUP=ordre.slice(0,NSUP);
+SUP.forEach(function(n){
+  noeuds[n].sup=true;
+  var vise = Math.round(NB*0.11);                  // une audience massive : 11 % du réseau
+  var tours=0;
+  while(voisins[n].length<vise && tours<vise*12){ relier(n, Math.floor(rnd()*NB)); tours++; }
+});
+
+/* placement */
+var degMax=1; for(i=0;i<NB;i++) degMax=Math.max(degMax,noeuds[i].deg);
+var pos=new Float32Array(NB*3);
+for(i=0;i<NB;i++){
+  var d=noeuds[i].deg/degMax;
+  var rayon=(0.55+2.35*Math.pow(1-d,1.5))*(0.65+rnd()*0.6);
+  var u=rnd()*Math.PI*2, v=Math.acos(2*rnd()-1), ce=centres[noeuds[i].com];
+  pos[i*3]=ce.x+Math.sin(v)*Math.cos(u)*rayon;
+  pos[i*3+1]=ce.y+Math.cos(v)*rayon*0.85;
+  pos[i*3+2]=ce.z+Math.sin(v)*Math.sin(u)*rayon;
+}
+for(var it=0;it<26;it++){
+  for(var k2=0;k2<aretes.length;k2+=2){
+    var A=aretes[k2],B=aretes[k2+1];
+    if(noeuds[A].com===noeuds[B].com) continue;
+    for(var ax=0;ax<3;ax++){ var mid=(pos[A*3+ax]+pos[B*3+ax])*0.5;
+      pos[A*3+ax]+=(mid-pos[A*3+ax])*0.012; pos[B*3+ax]+=(mid-pos[B*3+ax])*0.012; }
+  }
+}
+(function(){ var mx=0,my=0,mz=0; for(var i=0;i<NB;i++){mx+=pos[i*3];my+=pos[i*3+1];mz+=pos[i*3+2];}
+  mx/=NB;my/=NB;mz/=NB; for(i=0;i<NB;i++){pos[i*3]-=mx;pos[i*3+1]-=my;pos[i*3+2]-=mz;} })();
+
+/* ---------- cascades ---------- */
+/* Vosoughi et al. 2018 : le faux est 1,7× plus repartagé, le vrai 6× plus lent,
+   et le vrai n'a jamais dépassé dix niveaux de partage.                          */
+var P_ORD=0.09;          // un compte ordinaire repartage rarement : seul, ça s'éteint
+var P_SUP=0.92;          // « du retweet manuel et obstiné » (Baribi-Bartov et al., 2024)
+var RATIO_REPARTAGE=1.7, RATIO_LENTEUR=6, PLAFOND_VRAI=10;
+
+function tas(){ var a=[]; return {
+  push:function(t,n,d){ a.push([t,n,d]); var i=a.length-1; while(i>0){var q=(i-1)>>1; if(a[q][0]<=a[i][0])break; var z=a[q];a[q]=a[i];a[i]=z;i=q;} },
+  pop:function(){ var top=a[0], last=a.pop(); if(a.length){ a[0]=last; var i=0; for(;;){var l=2*i+1,r=l+1,m=i;
+    if(l<a.length&&a[l][0]<a[m][0])m=l; if(r<a.length&&a[r][0]<a[m][0])m=r; if(m===i)break; var z=a[m];a[m]=a[i];a[i]=z;i=m;} } return top; },
+  vide:function(){return a.length===0;} }; }
+
+function simuler(depart, opt){
+  var re = graine(opt.seed);
+  var infT=new Float32Array(NB), infPar=new Int32Array(NB), prof=new Int32Array(NB);
+  for(var i=0;i<NB;i++){ infT[i]=Infinity; infPar[i]=-1; prof[i]=0; }
+  var h=tas(); infT[depart]=0; h.push(0,depart,0);
+  while(!h.vide()){
+    var ev=h.pop(), t=ev[0], n=ev[1], d=ev[2];
+    if(t>infT[n]+1e-6) continue;
+    if(opt.plafond && d>=opt.plafond) continue;
+    // scénario « sans les super-propagateurs » : ils sont là, mais ne relaient plus.
+    // Celui qui a lancé le message garde le droit de le publier, sinon il n'y a rien à voir.
+    if(opt.sansSup && noeuds[n].sup && n!==depart) continue;
+    var pn = (noeuds[n].sup ? P_SUP : P_ORD) / opt.div;
+    var V=voisins[n];
+    for(var k=0;k<V.length;k++){
+      var w=V[k];
+      if(re()>pn) continue;
+      var delai=(0.25+(-Math.log(1-re()))*2.2)*opt.lenteur;
+      var tt=t+delai;
+      if(tt<infT[w]){ infT[w]=tt; infPar[w]=n; prof[w]=d+1; h.push(tt,w,d+1); }
+    }
+  }
+  var touches=0,max=0,depuisSup=0,total=0;
+  for(i=0;i<NB;i++){
+    if(infT[i]<Infinity){ touches++; if(infT[i]>max) max=infT[i]; }
+    if(infPar[i]>=0){ total++; if(noeuds[infPar[i]].sup) depuisSup++; }
+  }
+  return {infT:infT, infPar:infPar, touches:touches, duree:Math.max(max,1),
+          partSup: total? depuisSup/total : 0, transmissions: total};
+}
+
+/* Les trois scénarios partent toujours du MÊME compte : c'est ce qui rend la
+   comparaison honnête. Changer de point de départ recalcule les trois.          */
+var PAS=160, SC=null, DUREE=1, COURBES={}, courant='faux', DEPART=-1;
+var PREMIER_SUP = SUP[0];
+/* Le compte ordinaire du raccourci est choisi pour être LISIBLE : il faut qu'on
+   voie partir quelque chose dans les deux cas, sinon l'écran reste vide et on ne
+   comprend rien. La grande majorité des comptes ordinaires font bien pire — il
+   suffit d'en cliquer d'autres pour s'en rendre compte. C'est dit dans la méthode. */
+var ORD_MORT=-1, ORD_SECOURS=-1;
+(function(){
+  var sans=ordre.filter(function(n){ return !noeuds[n].sup; });
+  /* On cherche parmi les comptes un peu suivis (6 à 30 liens), qui restent des
+     comptes ordinaires, mais où il se passe quelque chose de visible des deux côtés. */
+  /* Ce qu'on cherche pour le raccourci « compte ordinaire » :
+       - la fausse information circule un peu puis s'arrête (on la VOIT partir) ;
+       - la vraie fait au moins deux transmissions, sinon l'écran reste figé ;
+       - et la fausse va nettement plus loin que la vraie, sinon la comparaison ne dit rien.
+     La plupart des comptes ordinaires ne remplissent pas ces conditions : ils tuent la
+     rumeur en deux partages, ou bien ils touchent un super-propagateur et tout explose.
+     C'est justement le propos — mais pour l'écran d'accueil il faut un cas lisible. */
+  var cand=sans.filter(function(n){ return noeuds[n].deg>=10 && noeuds[n].deg<=60; });
+  var repli=-1;
+  for(var k=0;k<cand.length && k<500 && ORD_MORT<0;k++){
+    var n=cand[k];
+    var f=simuler(n,{div:1,lenteur:1,plafond:0,sansSup:false,seed:7001});
+    if(f.touches>90) continue;                      /* celui-là explose : ce n'est pas le cas voulu */
+    var v=simuler(n,{div:RATIO_REPARTAGE,lenteur:RATIO_LENTEUR,plafond:PLAFOND_VRAI,sansSup:false,seed:7001});
+    if(v.touches>=3 && f.touches>=v.touches*1.8 && f.touches>=6){ ORD_MORT=n; break; }
+    if(repli<0 && f.touches>=4 && v.touches>=2) repli=n;
+  }
+  if(ORD_MORT<0) ORD_MORT = repli>=0 ? repli : cand[0];
+  if(ORD_MORT===undefined || ORD_MORT<0) ORD_MORT = sans[sans.length-1];
+})();
+
+function relancer(depart, regle){
+  DEPART = depart;
+  courant = regle || 'faux';
+  SC = {
+    faux: simuler(depart,{div:1, lenteur:1, plafond:0, sansSup:false, seed:7001}),
+    vrai: simuler(depart,{div:RATIO_REPARTAGE, lenteur:RATIO_LENTEUR, plafond:PLAFOND_VRAI, sansSup:false, seed:7001})
+  };
+  DUREE = Math.max(SC.faux.duree, SC.vrai.duree, 6);
+  COURBES = {};
+  Object.keys(SC).forEach(function(k){
+    var t=new Float32Array(PAS), sc=SC[k];
+    for(var i=0;i<NB;i++){ if(sc.infT[i]===Infinity) continue;
+      var b=Math.min(PAS-1,Math.floor(sc.infT[i]/DUREE*(PAS-1))); t[b]++; }
+    var cum=0; for(i=0;i<PAS;i++){ cum+=t[i]; t[i]=cum; }
+    COURBES[k]=t;
+  });
+  majDepart();
+  afficher(courant);
+}
+
+/* ---------- rendu ---------- */
+var cnv=document.getElementById('scene');
+var renderer=new THREE.WebGLRenderer({canvas:cnv,antialias:!mobile,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,mobile?1.5:2));
+renderer.setClearColor(0x07080a,1);
+var scene=new THREE.Scene(); scene.fog=new THREE.FogExp2(0x07080a,0.035);
+var camera=new THREE.PerspectiveCamera(50,1,0.1,200);
+var monde=new THREE.Group(); scene.add(monde);
+var uT={value:0}, uPR={value:renderer.getPixelRatio()};
+
+/* liens dormants — on laisse de côté ceux des super-propagateurs, sinon c'est illisible */
+var lp=[];
+for(i=0;i<aretes.length;i+=2){
+  var x=aretes[i],y2=aretes[i+1];
+  if(noeuds[x].sup||noeuds[y2].sup) continue;
+  lp.push(pos[x*3],pos[x*3+1],pos[x*3+2],pos[y2*3],pos[y2*3+1],pos[y2*3+2]);
+}
+var geoLin=new THREE.BufferGeometry();
+geoLin.setAttribute('position',new THREE.BufferAttribute(new Float32Array(lp),3));
+monde.add(new THREE.LineSegments(geoLin,new THREE.LineBasicMaterial({color:0x232b36,transparent:true,opacity:0.40,blending:THREE.AdditiveBlending,depthWrite:false})));
+
+/* arbre de la cascade */
+var matCasc=new THREE.ShaderMaterial({
+  uniforms:{uT:uT,uFeu:{value:new THREE.Color(0xff5b2e)},uOr:{value:new THREE.Color(0xfff0d0)}},
+  vertexShader:['attribute float aT0,aT1,aPont; uniform float uT; varying float vA,vP;',
+   'void main(){ float age=uT-aT1; vA=step(0.0,age)*(0.30+0.70*exp(-age*0.35)); vP=aPont;',
+   ' gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }'].join('\n'),
+  fragmentShader:['precision mediump float; uniform vec3 uFeu,uOr; varying float vA,vP;',
+   'void main(){ if(vA<0.01) discard; gl_FragColor=vec4(mix(uFeu,uOr,vP*0.8), vA*(0.34+vP*0.5)); }'].join('\n'),
+  transparent:true,depthWrite:false,blending:THREE.AdditiveBlending});
+var ligCasc=new THREE.LineSegments(new THREE.BufferGeometry(),matCasc); monde.add(ligCasc);
+
+/* comptes */
+var couls=new Float32Array(NB*3), tailles=new Float32Array(NB), sups=new Float32Array(NB);
+for(i=0;i<NB;i++){
+  var col=new THREE.Color(COMS[noeuds[i].com].c);
+  couls[i*3]=col.r;couls[i*3+1]=col.g;couls[i*3+2]=col.b;
+  tailles[i]= noeuds[i].sup ? 11.0 : 1.1+2.6*Math.pow(noeuds[i].deg/degMax,0.6);
+  sups[i]= noeuds[i].sup?1:0;
+}
+var infAttr=new Float32Array(NB);
+var geoN=new THREE.BufferGeometry();
+geoN.setAttribute('position',new THREE.BufferAttribute(pos,3));
+geoN.setAttribute('aCol',new THREE.BufferAttribute(couls,3));
+geoN.setAttribute('aTaille',new THREE.BufferAttribute(tailles,1));
+geoN.setAttribute('aSup',new THREE.BufferAttribute(sups,1));
+var ids=new Float32Array(NB); for(i=0;i<NB;i++) ids[i]=i;
+geoN.setAttribute('aId',new THREE.BufferAttribute(ids,1));
+var attrInf=new THREE.BufferAttribute(infAttr,1);
+geoN.setAttribute('aInf',attrInf);
+geoN.boundingSphere=new THREE.Sphere(new THREE.Vector3(),40);
+var matN=new THREE.ShaderMaterial({
+  uniforms:{uT:uT,uPR:uPR,uPulse:{value:0},uDepart:{value:-1}},
+  vertexShader:[
+   'attribute vec3 aCol; attribute float aTaille,aInf,aSup,aId; uniform float uT,uPR,uPulse,uDepart;',
+   'varying vec3 vC; varying float vA,vS;',
+   'void main(){',
+   '  float age=uT-aInf; float on=step(0.0,age); float flash=on*exp(-age*1.6);',
+   '  vec3 gris=vec3(0.26,0.29,0.34);',
+   '  vC = mix(gris, aCol, on*(0.55+0.45*exp(-age*0.12))) + flash*0.9;',
+   '  vC = mix(vC, vC+vec3(0.35,0.30,0.18), aSup);',
+   '  vA = mix(0.46,1.0,on) + flash*0.6;',
+   '  vS = aSup;',
+   '  vec4 mv=modelViewMatrix*vec4(position,1.0);',
+   '  gl_Position=projectionMatrix*mv;',
+   '  float dep = 1.0-min(abs(aId-uDepart),1.0);',
+'  float bat = 1.0 + aSup*0.14*sin(uPulse*2.4) + dep*(0.9+0.5*sin(uPulse*4.0));',
+'  vC += dep*vec3(0.9,0.8,0.6);',
+   '  gl_PointSize = aTaille*uPR*bat*(1.0+flash*1.9)*(26.0/max(-mv.z,0.4));',
+   '}'].join('\n'),
+  fragmentShader:[
+   'precision mediump float; varying vec3 vC; varying float vA,vS;',
+   'void main(){ vec2 c=gl_PointCoord-0.5; float d=dot(c,c); if(d>0.25) discard;',
+   '  float h=smoothstep(0.25,0.02,d);',
+   '  float anneau = vS*smoothstep(0.25,0.20,d)*smoothstep(0.13,0.18,d);',
+   '  gl_FragColor=vec4(vC+anneau*0.8, max(h*vA, anneau*0.9)); }'].join('\n'),
+  transparent:true,depthWrite:false,blending:THREE.AdditiveBlending});
+var pts=new THREE.Points(geoN,matN); monde.add(pts);
+
+/* messages en transit */
+var transPos=new Float32Array(NB*3), transP=new Float32Array(NB);
+var geoTrans=new THREE.BufferGeometry();
+geoTrans.setAttribute('position',new THREE.BufferAttribute(transPos,3));
+geoTrans.setAttribute('aPont',new THREE.BufferAttribute(transP,1));
+geoTrans.boundingSphere=new THREE.Sphere(new THREE.Vector3(),40);
+var matTrans=new THREE.ShaderMaterial({
+  uniforms:{uPR:uPR,uGros:{value:1},uA:{value:new THREE.Color(0x9ef4f8)},uB:{value:new THREE.Color(0xfff4ee)}},
+  vertexShader:['attribute float aPont; uniform float uPR,uGros; varying float vP;',
+   'void main(){ vP=aPont; vec4 mv=modelViewMatrix*vec4(position,1.0);',
+   ' gl_Position=projectionMatrix*mv; gl_PointSize=(2.6+aPont*3.4)*uGros*uPR*(26.0/max(-mv.z,0.4)); }'].join('\n'),
+  fragmentShader:['precision mediump float; uniform vec3 uA,uB; varying float vP;',
+   'void main(){ vec2 c=gl_PointCoord-0.5; float d=dot(c,c); if(d>0.25) discard;',
+   ' float h=smoothstep(0.25,0.0,d); gl_FragColor=vec4(mix(uA,uB,vP)+pow(h,5.0)*0.6,h); }'].join('\n'),
+  transparent:true,depthWrite:false,blending:THREE.AdditiveBlending});
+var ptsTrans=new THREE.Points(geoTrans,matTrans); monde.add(ptsTrans);
+geoTrans.setDrawRange(0,0);
+
+/* ---------- le scénario affiché ---------- */
+var evFrom=[],evTo=[],evT0=[],evT1=[],evPont=[],nCasc=0,SUR=null;
+function afficher(k){
+  courant=k; SUR=SC[k];
+  evFrom.length=evTo.length=evT0.length=evT1.length=evPont.length=0;
+  for(var i=0;i<NB;i++){
+    infAttr[i]= SUR.infT[i]===Infinity ? 1e9 : SUR.infT[i];
+    var s=SUR.infPar[i]; if(s<0) continue;
+    evFrom.push(s); evTo.push(i); evT0.push(SUR.infT[s]); evT1.push(SUR.infT[i]);
+    evPont.push(noeuds[s].com!==noeuds[i].com?1:0);
+  }
+  attrInf.needsUpdate=true;
+  nCasc=evFrom.length;
+  var P=new Float32Array(nCasc*6),T0=new Float32Array(nCasc*2),T1=new Float32Array(nCasc*2),PO=new Float32Array(nCasc*2);
+  for(i=0;i<nCasc;i++){
+    var a=evFrom[i],b=evTo[i];
+    P[i*6]=pos[a*3];P[i*6+1]=pos[a*3+1];P[i*6+2]=pos[a*3+2];
+    P[i*6+3]=pos[b*3];P[i*6+4]=pos[b*3+1];P[i*6+5]=pos[b*3+2];
+    T0[i*2]=T0[i*2+1]=evT0[i]; T1[i*2]=T1[i*2+1]=evT1[i]; PO[i*2]=PO[i*2+1]=evPont[i];
+  }
+  var g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(P,3));
+  g.setAttribute('aT0',new THREE.BufferAttribute(T0,1));
+  g.setAttribute('aT1',new THREE.BufferAttribute(T1,1));
+  g.setAttribute('aPont',new THREE.BufferAttribute(PO,1));
+  g.boundingSphere=new THREE.Sphere(new THREE.Vector3(),40);
+  if(ligCasc.geometry) ligCasc.geometry.dispose();
+  ligCasc.geometry=g;
+  elSup.textContent = SUR.transmissions===0 ? '—' : Math.round(SUR.partSup*100)+' %';
+  /* une cascade de trois messages se perd dans un nuage de 1 500 points : on les grossit */
+  matTrans.uniforms.uGros.value = nCasc<8 ? 3.2 : (nCasc<30 ? 2.0 : 1.0);
+  var n=SUR.touches, part=n/NB, v=document.getElementById('verdict');
+  var auteur = noeuds[DEPART].sup ? 'un super-propagateur' : 'un compte ordinaire';
+  var liens = noeuds[DEPART].deg.toLocaleString('fr-FR');
+  var quoi = (typeInfo==='faux') ? 'fausse' : 'vraie';
+  var fin = part<0.02 ? "elle <b>s'éteint</b>&nbsp;: "+n+' compte'+(n>1?'s':'')+' touché'+(n>1?'s':'')+'.'
+          : part<0.25 ? 'elle <b>circule sans prendre</b>&nbsp;: '+n.toLocaleString('fr-FR')+' comptes.'
+          : 'elle <b>prend le réseau</b>&nbsp;: '+n.toLocaleString('fr-FR')+' comptes.';
+  v.className='ui verdict '+(part<0.02?'mort':(part<0.25?'tiede':'pris'));
+  var aut = SC[contraire()].touches;
+  v.innerHTML = 'Une information <b>'+quoi+'</b>, publiée par <b>'+auteur+'</b> ('+liens+' liens)&nbsp;&mdash; '+fin
+    + '<br><span style="opacity:.75">La même en <b>'+(quoi==='fausse'?'vraie':'fausse')+'</b>&nbsp;: '
+      + aut.toLocaleString('fr-FR')+' compte'+(aut>1?'s':'')+'.</span>'
+    /* On le dit là où ça se joue, pas seulement dans la note de méthode. */
+    + (typeInfo==='vrai' && noeuds[DEPART].sup
+       ? '<br><span style="color:#f5c451">&#9888;&nbsp;Aucune étude n\'a mesuré cette combinaison. '
+         + '<a href="#" id="lienExtra" style="color:#f5c451">Extrapolation &rarr;</a></span>' : '');
+  var le=document.getElementById('lienExtra');
+  if(le) le.addEventListener('click',ouvrir);
+  T=0; slT.value=0; play(true);
+}
+
+/* ---------- caméra ---------- */
+var cam={lacet:0.7,tangage:0.3,dist:mobile?17.5:14,cl:0.7,ct:0.3,cd:mobile?17.5:14};
+var glisse=false,lx=0,ly=0,aGeste=false;
+function majCam(){
+  cam.lacet+=(cam.cl-cam.lacet)*0.09; cam.tangage+=(cam.ct-cam.tangage)*0.09; cam.dist+=(cam.cd-cam.dist)*0.08;
+  var cp=Math.cos(cam.tangage),sp=Math.sin(cam.tangage);
+  camera.position.set(Math.sin(cam.lacet)*cp*cam.dist,sp*cam.dist,Math.cos(cam.lacet)*cp*cam.dist);
+  camera.lookAt(0,0,0);
+}
+var ndc=new THREE.Vector2(9,9), survol=-1, bulleXY={x:0,y:0};
+cnv.addEventListener('pointerdown',function(e){
+  glisse=true; aGeste=true; lx=e.clientX; ly=e.clientY; cnv.setPointerCapture(e.pointerId);
+  var r=cnv.getBoundingClientRect();          /* au doigt, il n'y a pas de survol préalable */
+  ndc.x=((e.clientX-r.left)/r.width)*2-1; ndc.y=-((e.clientY-r.top)/r.height)*2+1;
+});
+cnv.addEventListener('pointermove',function(e){
+  var r=cnv.getBoundingClientRect();
+  ndc.x=((e.clientX-r.left)/r.width)*2-1; ndc.y=-((e.clientY-r.top)/r.height)*2+1;
+  bulleXY.x=e.clientX; bulleXY.y=e.clientY;
+  if(!glisse) return;
+  cam.cl-=(e.clientX-lx)/hero.clientWidth*3.0; cam.ct+=(e.clientY-ly)/hero.clientHeight*2.4;
+  cam.ct=Math.max(-1.35,Math.min(1.35,cam.ct)); lx=e.clientX; ly=e.clientY;
+});
+cnv.addEventListener('pointerup',function(){glisse=false;});
+cnv.addEventListener('pointercancel',function(){glisse=false;});
+/* Pas de zoom à la molette : sur une page qui défile, il empêcherait de lire la suite.
+   On tourne à la souris, on pince à deux doigts sur mobile. */
+/* On vise à l'écran, pas dans l'espace : c'est le point qu'on VOIT sous le curseur
+   qu'il faut attraper. Un gros compte dessiné large doit être facile à toucher, même
+   si un petit point traîne devant lui dans la profondeur. */
+var tactile = matchMedia('(hover:none)').matches || 'ontouchstart' in window;
+var vProj=new THREE.Vector3();
+function viser(n){
+  var L=hero.clientWidth, H=hero.clientHeight, meilleur=-1, score=1e9;
+  var sx=(n.x*0.5+0.5)*L, sy=(-n.y*0.5+0.5)*H;
+  for(var i=0;i<NB;i++){
+    vProj.set(pos[i*3],pos[i*3+1],pos[i*3+2]).project(camera);
+    if(vProj.z>1) continue;
+    var dx=(vProj.x*0.5+0.5)*L-sx, dy=(-vProj.y*0.5+0.5)*H-sy;
+    var d=Math.sqrt(dx*dx+dy*dy);
+    /* rayon apparent : les super-propagateurs sont gros, donc plus faciles à viser */
+    var rayon = (noeuds[i].sup ? 22 : 7) * (tactile ? 2.0 : 1.0);
+    if(d>rayon+(tactile?14:6)) continue;
+    var sc = d - rayon;                    /* on préfère celui dont on est « dedans » */
+    if(sc<score){ score=sc; meilleur=i; }
+  }
+  return meilleur;
+}
+var bougeDepuisClic=0;
+cnv.addEventListener('pointerdown',function(){ bougeDepuisClic=0; });
+var dx0=0,dy0=0;
+cnv.addEventListener('pointerdown',function(e){ dx0=e.clientX; dy0=e.clientY; });
+cnv.addEventListener('pointermove',function(e){
+  if(glisse) bougeDepuisClic=Math.abs(e.clientX-dx0)+Math.abs(e.clientY-dy0);
+});
+cnv.addEventListener('click',function(){
+  if(bougeDepuisClic>(tactile?14:6)) return;                 // c'était une rotation, pas un clic
+  var cible = viser(ndc);                       // on vise MAINTENANT, sous le doigt ou le curseur
+  if(cible<0) return;                           // à côté d'un compte : on ne fait rien
+  quiPublie = noeuds[cible].sup ? 'sup' : 'ord';
+  relancer(cible, cle());
+});
+
+/* ---------- interface ---------- */
+var elT=document.getElementById('nTouche'),elP=document.getElementById('nPct'),elSup=document.getElementById('nSup');
+document.getElementById('labSup').textContent='Partages venant des '+NSUP+' comptes';
+var elH=document.getElementById('horloge'),slT=document.getElementById('temps');
+var btn=document.getElementById('lecture'),ico=document.getElementById('icoSvg');
+var bulle=document.getElementById('bulle');
+var cCv=document.getElementById('courbe'),cx=cCv.getContext('2d');
+var T=0,lit=true;
+function play(v){ lit=v; ico.innerHTML = v?'<path d="M3 2h3.5v12H3zM9.5 2H13v12H9.5z"/>':'<path d="M4 2l10 6-10 6z"/>'; }
+btn.addEventListener('click',function(){ play(!lit); });
+slT.addEventListener('input',function(){ T=this.value/1000*Math.max(SUR.duree,3); play(false); });
+/* Deux questions indépendantes : ce qui circule, et qui le publie.
+   Plus un interrupteur d'expérience : débrancher les super-propagateurs. */
+var typeInfo='faux', quiPublie='sup';
+function cle(){ return typeInfo; }
+function contraire(){ return typeInfo==='faux' ? 'vrai' : 'faux'; }
+
+document.getElementById('quoi').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-q]'); if(!b) return;
+  typeInfo=b.dataset.q; majBoutons(); afficher(cle());
+});
+document.getElementById('qui').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-w]'); if(!b) return;
+  quiPublie=b.dataset.w;
+  relancer(quiPublie==='sup'?PREMIER_SUP:ORD_MORT, cle());
+});
+function majBoutons(){
+  [].forEach.call(document.getElementById('quoi').children,function(x){
+    x.setAttribute('aria-pressed', x.dataset.q===typeInfo ? 'true':'false'); });
+  [].forEach.call(document.getElementById('qui').children,function(x){
+    x.setAttribute('aria-pressed', x.dataset.w===quiPublie ? 'true':'false'); });
+}
+function majDepart(){ majBoutons(); matN.uniforms.uDepart.value = DEPART; }
+addEventListener('keydown',function(e){ if(e.code==='Space'){e.preventDefault();play(!lit);} if(e.key==='Escape') voile.classList.remove('ouvert'); });
+
+var voile=document.getElementById('voile');
+function ouvrir(e){ if(e) e.preventDefault(); voile.classList.add('ouvert'); play(false); }
+document.getElementById('btnSrc').addEventListener('click',ouvrir);
+document.getElementById('lienSrc').addEventListener('click',ouvrir);
+document.getElementById('fermer').addEventListener('click',function(){ voile.classList.remove('ouvert'); play(true); });
+
+function legende(){
+  var coul={faux:'#ff5b2e',vrai:'#46d8e0'};
+  var nom={faux:'Info fausse',vrai:'Info vraie'};
+  var a=courant, b=contraire();
+  document.getElementById('cleg').innerHTML =
+    '<div><i style="background:'+coul[a]+'"></i>'+nom[a]+'</div>'+
+    '<div style="opacity:.55"><i style="background:'+coul[b]+'"></i>'+nom[b]+'</div>';
+}
+function courbes(){
+  legende();
+  var W=cCv.width,H=cCv.height; cx.clearRect(0,0,W,H);
+  var max=1; Object.keys(COURBES).forEach(function(k){ max=Math.max(max,COURBES[k][PAS-1]); });
+  var coul={faux:'#ff5b2e',vrai:'#46d8e0'};
+  [contraire(),courant].forEach(function(k){
+    var c=COURBES[k], actif=(k===courant);
+    if(actif){
+      cx.beginPath(); cx.moveTo(0,H);
+      for(var i=0;i<PAS;i++) cx.lineTo(i/(PAS-1)*W,H-c[i]/max*(H-8));
+      cx.lineTo(W,H); cx.closePath();
+      var g=cx.createLinearGradient(0,0,0,H);
+      g.addColorStop(0,coul[k]+'55'); g.addColorStop(1,coul[k]+'00');
+      cx.fillStyle=g; cx.fill();
+    }
+    cx.beginPath();
+    for(i=0;i<PAS;i++){ var x=i/(PAS-1)*W,y=H-c[i]/max*(H-8); i?cx.lineTo(x,y):cx.moveTo(x,y); }
+    cx.strokeStyle=coul[k]; cx.lineWidth=actif?4:2; cx.globalAlpha=actif?1:0.42; cx.stroke(); cx.globalAlpha=1;
+  });
+  var px=Math.min(1,T/DUREE)*W;   /* le graphique garde l'axe commun : c'est lui qui compare */
+  cx.beginPath(); cx.moveTo(px,0); cx.lineTo(px,H); cx.strokeStyle='rgba(233,234,238,.55)'; cx.lineWidth=1.5; cx.stroke();
+}
+
+function fmt(h){ if(h===Infinity||h>=1e8) return '—'; var H=Math.floor(h),M=Math.floor((h-H)*60); return H+' h '+(M<10?'0':'')+M; }
+
+var dernier=performance.now(), majUI=0, pulse=0;
+var visible=true;
+if('IntersectionObserver' in window){
+  var zoneHero=document.querySelector('.hero');
+  if(zoneHero) new IntersectionObserver(function(e){ visible=e[0].isIntersecting; },{threshold:0.01}).observe(zoneHero);
+}
+function boucle(now){
+  requestAnimationFrame(boucle);
+  if(!visible || document.hidden){ dernier=now; return; }
+  var dt=Math.min((now-dernier)/1000,0.05); dernier=now;
+  pulse+=dt; matN.uniforms.uPulse.value=pulse;
+  var duLecture = Math.max(SUR.duree, 3);        /* la durée propre à la cascade affichée */
+  if(lit){ T+=dt*(duLecture/20); if(T>duLecture*1.06){T=duLecture*1.06;play(false);} }
+  slT.value=Math.min(1000,T/duLecture*1000);
+  uT.value=T;
+
+  var n=0;
+  for(var i=0;i<nCasc&&n<NB;i++){
+    if(T>=evT0[i]&&T<=evT1[i]){
+      var f=(T-evT0[i])/Math.max(evT1[i]-evT0[i],1e-4), a=evFrom[i],b=evTo[i];
+      transPos[n*3]=pos[a*3]+(pos[b*3]-pos[a*3])*f;
+      transPos[n*3+1]=pos[a*3+1]+(pos[b*3+1]-pos[a*3+1])*f;
+      transPos[n*3+2]=pos[a*3+2]+(pos[b*3+2]-pos[a*3+2])*f;
+      transP[n]=evPont[i]; n++;
+    }
+  }
+  geoTrans.attributes.position.needsUpdate=true;
+  geoTrans.attributes.aPont.needsUpdate=true;
+  geoTrans.setDrawRange(0,n);
+
+  if(!glisse) cam.cl+=dt*0.045;   /* elle tourne toujours, tout doucement */
+  majCam();
+
+  if(!glisse&&ndc.x<2) survol = viser(ndc);
+  if(survol>=0){
+    var q=noeuds[survol];
+    var txt = q.sup ? '<b class="s">Super-propagateur</b><br>' : '<b>Compte #'+survol+'</b><br>';
+    txt += COMS[q.com].nom+' &middot; '+q.deg.toLocaleString('fr-FR')+' liens<br>';
+    txt += SUR.infT[survol]===Infinity ? 'jamais touché'
+         : (SUR.infT[survol]<=T ? '<span class="t">touché à '+fmt(SUR.infT[survol])+'</span>' : 'touché à '+fmt(SUR.infT[survol]));
+    bulle.innerHTML=txt; bulle.style.opacity=1;
+    bulle.style.left=Math.min(innerWidth-210,bulleXY.x+16)+'px';
+    bulle.style.top=(bulleXY.y+16)+'px';
+    cnv.style.cursor='default';
+  } else { bulle.style.opacity=0; cnv.style.cursor=glisse?'grabbing':'grab'; }
+
+  renderer.render(scene,camera);
+
+  majUI+=dt;
+  if(majUI>0.1){
+    majUI=0;
+    var t2=0; for(i=0;i<NB;i++) if(SUR.infT[i]<=T) t2++;
+    elT.textContent=t2.toLocaleString('fr-FR');
+    elP.textContent=Math.round(t2/NB*100)+' %';
+    elH.textContent=fmt(T);
+    courbes();
+  }
+}
+var hero=document.querySelector('.hero');
+var socleEl=document.querySelector('.socle');
+function taille(){ var L=hero.clientWidth||1, H=hero.clientHeight||1;
+  camera.aspect=L/H; camera.updateProjectionMatrix();
+  renderer.setSize(L,H); uPR.value=renderer.getPixelRatio();
+  /* les compteurs se posent juste au-dessus de la barre, quelle que soit sa hauteur */
+  if(socleEl) document.documentElement.style.setProperty('--hsocle',(socleEl.offsetHeight+14)+'px');
+}
+addEventListener('resize',taille); taille();
+
+relancer(PREMIER_SUP,'faux');
+requestAnimationFrame(boucle);
+setTimeout(function(){document.getElementById('charge').classList.add('parti');},300);
+
+/* pour l'inspection en console */
+window.__bilan = function(d){
+  if(d!==undefined) relancer(d);
+  return { comptes:NB, superpropagateurs:NSUP, depart:DEPART, departSup:noeuds[DEPART].sup,
+    liensDepart:noeuds[DEPART].deg,
+    faux:{touches:SC.faux.touches, partSup:+SC.faux.partSup.toFixed(3), duree:+SC.faux.duree.toFixed(1)},
+    vrai:{touches:SC.vrai.touches, duree:+SC.vrai.duree.toFixed(1)},
+
+    ordinaire:ORD_MORT, premierSup:PREMIER_SUP };
+};
+})();
+</script>
+<!-- En-tête et pied de tristan.pro (mode EMBED de app.js) -->
+<script src="/vendor/react.production.min.js"></script>
+<script src="/vendor/react-dom.production.min.js"></script>
+<script src="/vendor/framer-motion.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>
