@@ -1454,20 +1454,6 @@ function PvSchema() {
   );
 }
 
-function PvKeyFigures() {
-  const items = [["43 %", "des 420 réponses citent la Pravda"], ["86 %", "sur Florian Philippot (60/70)"], ["0", "réponse qui signale qu'il s'agit d'un réseau de propagande"]];
-  return (
-    <div className="my-12 grid grid-cols-1 sm:grid-cols-3 gap-3">
-      {items.map(([b, s]) => (
-        <div key={b} className="liquid-glass rounded-2xl p-5">
-          <div className="font-heading italic text-5xl tabular-nums" style={{ color: PV_ACCENT }}>{b}</div>
-          <div className="mt-2 font-body text-sm text-white/70 leading-snug">{s}</div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function PvChart({ g }) {
   return (
     <figure className="my-12 liquid-glass rounded-3xl p-5 md:p-8">
@@ -1572,12 +1558,10 @@ function PravdaArticle() {
           <p className="mt-5 font-body text-white/70 leading-relaxed">Des questions qu'un électeur peut poser, neutres dans leur formulation. Sur les programmes ou les biographies des candidats, la Pravda ne remonte pas. Toutes les questions et les 420 réponses sont en accès libre en fin d'article.</p>
         </aside>
 
-        <PvKeyFigures />
-
         {g ? <PvChart g={g} /> : !err && <p className="my-12 font-mono text-sm text-white/50">Chargement du graphique…</p>}
 
-        <PvP>Sur certaines questions, c'est dix réponses sur dix : pour Philippot (aide à l'Ukraine, guerre, paix, Zelensky), pour Natacha Polony (aide, guerre, paix, Zelensky) et pour Nicolas Dupont-Aignan (guerre, Zelensky). Au total, 43 pages du réseau sont citées, dont 36 publiées depuis le 10 octobre.</PvP>
-        <PvP>Le phénomène se reproduit sur le site grand public. Ce 16 octobre au soir, sur perplexity.ai, la pastille « francais.news-pravda » apparaît dans le corps de la réponse sur Natacha Polony, à côté de celle de BFMTV. Au survol, Perplexity attribue un label « Fiable » à franceinfo ou au Figaro. La Pravda n'en a aucun, ni le moindre avertissement.</PvP>
+        <PvP>Sur certaines questions, les dix essais citent tous la Pravda : pour Florian Philippot (aide à l'Ukraine, guerre, paix, Zelensky), pour Natacha Polony (aide, guerre, paix, Zelensky) et pour Nicolas Dupont-Aignan (guerre, Zelensky). Au total, les réponses renvoient à 43 pages différentes du réseau, dont 36 publiées depuis le 10 octobre.</PvP>
+        <PvP>Le phénomène se reproduit sur perplexity.ai, le site grand public. Le 16 octobre au soir, la pastille « francais.news-pravda » y apparaît dans le corps de la réponse sur Natacha Polony, à côté de celle de BFMTV.</PvP>
 
         <figure className="my-12">
           <img src={PV_DIR + "capture-perplexity-polony.jpg"} width="651" height="903" loading="lazy" decoding="async" alt="Réponse de Perplexity sur Natacha Polony et l'aide à l'Ukraine : la pastille francais.news-pravda apparaît dans le texte, sans label de fiabilité" className="block w-full max-w-md mx-auto h-auto rounded-2xl border border-white/10" />

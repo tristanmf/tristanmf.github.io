@@ -2267,22 +2267,6 @@ function PvSchema() {
     }, t));
   }));
 }
-function PvKeyFigures() {
-  const items = [["43 %", "des 420 réponses citent la Pravda"], ["86 %", "sur Florian Philippot (60/70)"], ["0", "réponse qui signale qu'il s'agit d'un réseau de propagande"]];
-  return /*#__PURE__*/React.createElement("div", {
-    className: "my-12 grid grid-cols-1 sm:grid-cols-3 gap-3"
-  }, items.map(([b, s]) => /*#__PURE__*/React.createElement("div", {
-    key: b,
-    className: "liquid-glass rounded-2xl p-5"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "font-heading italic text-5xl tabular-nums",
-    style: {
-      color: PV_ACCENT
-    }
-  }, b), /*#__PURE__*/React.createElement("div", {
-    className: "mt-2 font-body text-sm text-white/70 leading-snug"
-  }, s))));
-}
 function PvChart({
   g
 }) {
@@ -2422,11 +2406,11 @@ function PravdaArticle() {
     "aria-hidden": "true"
   }), /*#__PURE__*/React.createElement("span", null, pvNb(q))))), /*#__PURE__*/React.createElement("p", {
     className: "mt-5 font-body text-white/70 leading-relaxed"
-  }, "Des questions qu'un \xE9lecteur peut poser, neutres dans leur formulation. Sur les programmes ou les biographies des candidats, la Pravda ne remonte pas. Toutes les questions et les 420 r\xE9ponses sont en acc\xE8s libre en fin d'article.")), /*#__PURE__*/React.createElement(PvKeyFigures, null), g ? /*#__PURE__*/React.createElement(PvChart, {
+  }, "Des questions qu'un \xE9lecteur peut poser, neutres dans leur formulation. Sur les programmes ou les biographies des candidats, la Pravda ne remonte pas. Toutes les questions et les 420 r\xE9ponses sont en acc\xE8s libre en fin d'article.")), g ? /*#__PURE__*/React.createElement(PvChart, {
     g: g
   }) : !err && /*#__PURE__*/React.createElement("p", {
     className: "my-12 font-mono text-sm text-white/50"
-  }, "Chargement du graphique\u2026"), /*#__PURE__*/React.createElement(PvP, null, "Sur certaines questions, c'est dix r\xE9ponses sur dix : pour Philippot (aide \xE0 l'Ukraine, guerre, paix, Zelensky), pour Natacha Polony (aide, guerre, paix, Zelensky) et pour Nicolas Dupont-Aignan (guerre, Zelensky). Au total, 43 pages du r\xE9seau sont cit\xE9es, dont 36 publi\xE9es depuis le 10 octobre."), /*#__PURE__*/React.createElement(PvP, null, "Le ph\xE9nom\xE8ne se reproduit sur le site grand public. Ce 16 octobre au soir, sur perplexity.ai, la pastille \xAB francais.news-pravda \xBB appara\xEEt dans le corps de la r\xE9ponse sur Natacha Polony, \xE0 c\xF4t\xE9 de celle de BFMTV. Au survol, Perplexity attribue un label \xAB Fiable \xBB \xE0 franceinfo ou au Figaro. La Pravda n'en a aucun, ni le moindre avertissement."), /*#__PURE__*/React.createElement("figure", {
+  }, "Chargement du graphique\u2026"), /*#__PURE__*/React.createElement(PvP, null, "Sur certaines questions, les dix essais citent tous la Pravda : pour Florian Philippot (aide \xE0 l'Ukraine, guerre, paix, Zelensky), pour Natacha Polony (aide, guerre, paix, Zelensky) et pour Nicolas Dupont-Aignan (guerre, Zelensky). Au total, les r\xE9ponses renvoient \xE0 43 pages diff\xE9rentes du r\xE9seau, dont 36 publi\xE9es depuis le 10 octobre."), /*#__PURE__*/React.createElement(PvP, null, "Le ph\xE9nom\xE8ne se reproduit sur perplexity.ai, le site grand public. Le 16 octobre au soir, la pastille \xAB francais.news-pravda \xBB y appara\xEEt dans le corps de la r\xE9ponse sur Natacha Polony, \xE0 c\xF4t\xE9 de celle de BFMTV."), /*#__PURE__*/React.createElement("figure", {
     className: "my-12"
   }, /*#__PURE__*/React.createElement("img", {
     src: PV_DIR + "capture-perplexity-polony.jpg",
