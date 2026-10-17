@@ -1436,38 +1436,21 @@ const pvNb = s => (typeof s === "string" ? s.replace(/ ([%:;?!»])/g, "\u00a0$1"
 const PvP = ({ children }) => <p className="mt-6 text-white/80 font-body font-light text-lg leading-relaxed">{React.Children.map(children, pvNb)}</p>;
 const PvExt = ({ href, children }) => <a href={href} target="_blank" rel="noopener" className="text-white underline decoration-white/30 underline-offset-4 hover:decoration-white">{children}</a>;
 
-function PvArrow() {
-  return (
-    <div className="flex justify-center items-center text-white/35 py-1 lg:py-0 lg:px-1" aria-hidden="true">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="rotate-90 lg:rotate-0"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
-    </div>
-  );
-}
-
+// Le circuit en une ligne (deux sur mobile) : il ne doit pas retarder la lecture.
 function PvSchema() {
-  const steps = [
-    ["Sources russes", "agences de presse, comptes pro-russes sur les réseaux sociaux"],
-    ["Réseau Pravda", "193 sites (Viginum, 2024), republient en masse, sans contenu original"],
-    ["Perplexity", "cite ces pages parmi ses sources, sans les disqualifier", true],
-    ["L'électeur", "voit la Pravda au même rang que franceinfo ou Le Figaro"],
-  ];
+  const steps = ["Sources russes", "Réseau Pravda", "Perplexity", "L'électeur"];
   return (
-    <figure className="my-12 liquid-glass rounded-3xl p-5 md:p-8">
-      <figcaption className="font-heading italic text-2xl md:text-3xl text-white leading-tight">Comment la propagande russe arrive dans les réponses de Perplexity</figcaption>
-      <ol className="mt-6 flex flex-col lg:flex-row lg:items-stretch">
-        {steps.map(([t, d, hot], i) => (
-          <li key={t} className="flex flex-col lg:flex-row lg:flex-1 lg:min-w-0">
-            {i > 0 && <PvArrow />}
-            <div className={"flex-1 min-w-0 rounded-2xl p-4 border " + (hot ? "bg-white/[0.06]" : "border-white/10 bg-white/[0.02]")} style={hot ? { borderColor: PV_ACCENT, boxShadow: `0 0 0 1px ${PV_ACCENT}55, 0 0 32px ${PV_ACCENT}33` } : null}>
-              <div className="font-mono text-[11px] tracking-[0.2em] text-white/45">{String(i + 1).padStart(2, "0")}</div>
-              <div className="mt-1 font-body font-semibold text-white text-base" style={hot ? { color: PV_ACCENT } : null}>{t}</div>
-              <div className="mt-1 font-body font-light text-sm text-white/70 leading-snug">{d}</div>
-            </div>
+    <ol className="my-8 flex flex-wrap items-center gap-x-2 gap-y-2.5 font-body text-sm" aria-label="Comment la propagande russe arrive dans les réponses de Perplexity">
+      {steps.map((t, i) => {
+        const hot = t === "Perplexity";
+        return (
+          <li key={t} className="flex items-center gap-2">
+            {i > 0 && <span className="text-white/35" aria-hidden="true">→</span>}
+            <span className={"rounded-full px-3.5 py-1.5 border whitespace-nowrap " + (hot ? "font-semibold" : "border-white/15 bg-white/[0.03] text-white/80")} style={hot ? { color: PV_ACCENT, borderColor: PV_ACCENT, boxShadow: `0 0 18px ${PV_ACCENT}40` } : null}>{t}</span>
           </li>
-        ))}
-      </ol>
-      <p className="mt-5 font-body text-sm text-white/55">{pvNb("Sur perplexity.ai, franceinfo ou Le Figaro sont marqués « Fiable » au survol. La Pravda n'a aucun label, ni avertissement.")}</p>
-    </figure>
+        );
+      })}
+    </ol>
   );
 }
 
