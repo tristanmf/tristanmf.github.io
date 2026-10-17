@@ -625,7 +625,8 @@ Ajouter un article = une vue dans `app.jsx`, une entrée dans `PAGES`, le chemin
   Google du même jour, 14 h 49). Signé « Prompté par Tristan Mendès France ».
 - **Volontairement absent de `PRODUCTIONS`, du bouton « Nouveau » et de `sitemap.xml`** : Tristan le
   publie sans le mettre en avant ni l'annoncer sur Substack. Ne pas l'y ajouter sans sa demande.
-- Ne jamais nommer l'outil de collecte des aperçus IA dans l'article.
+- DataForSEO (outil de collecte des aperçus IA) est nommé, avec un lien, dans la section « Méthode et
+  données » : décision de Tristan du 17/10/2026 pour cet article, contre la règle habituelle de l'enquête.
 
 ## Décisions prises (et pourquoi) — ne pas rouvrir sans raison
 
