@@ -1530,7 +1530,9 @@ function Testimonials() {
     size: 14,
     strokeWidth: 2,
     className: "transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-  }))), /*#__PURE__*/React.createElement(LabTile, {
+  }))), /*#__PURE__*/React.createElement(ProductionsGrid, {
+    className: "mb-16 md:mb-24"
+  }), /*#__PURE__*/React.createElement(LabTile, {
     video: "/tmflab.mp4",
     logo: "/tmflab-logo.svg"
   }), /*#__PURE__*/React.createElement(FadeIn, {
@@ -2770,21 +2772,12 @@ function SuivreSoutenir() {
 }
 
 // ---------- Productions (vue /productions/) ----------
-function ProductionsPage() {
-  return /*#__PURE__*/React.createElement("main", {
-    className: "relative z-10 px-6 md:px-12 lg:px-24 pt-32 md:pt-40 pb-8"
-  }, /*#__PURE__*/React.createElement("header", {
-    className: "max-w-4xl"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "inline-flex items-center liquid-glass rounded-full px-4 py-3 max-w-full"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.14em] sm:tracking-[0.2em] text-white/60"
-  }, "Enqu\xEAtes \xB7 essais \xB7 exp\xE9rimentations")), /*#__PURE__*/React.createElement("h1", {
-    className: "mt-6 font-heading italic text-6xl md:text-8xl text-white tracking-tight leading-[0.9]"
-  }, "Productions"), /*#__PURE__*/React.createElement("p", {
-    className: "mt-6 text-white/75 font-body font-light text-lg md:text-xl leading-relaxed max-w-3xl"
-  }, "Mes derni\xE8res enqu\xEAtes et r\xE9alisations, la plus r\xE9cente en premier. Toutes mes exp\xE9rimentations num\xE9riques vivent ensuite dans mon laboratoire, TMF Lab.")), /*#__PURE__*/React.createElement("div", {
-    className: "mt-12 grid grid-cols-1 md:grid-cols-3 gap-6"
+// Cartes des productions : page /productions/ et section de l'accueil.
+function ProductionsGrid({
+  className = ""
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: `grid grid-cols-1 md:grid-cols-3 gap-6 ${className}`
   }, PRODUCTIONS.map((p, i) => {
     const inner = /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
       className: "relative aspect-[1200/630] overflow-hidden"
@@ -2822,7 +2815,24 @@ function ProductionsPage() {
       rel: "noopener",
       className: cls
     }, inner));
-  })), /*#__PURE__*/React.createElement("div", {
+  }));
+}
+function ProductionsPage() {
+  return /*#__PURE__*/React.createElement("main", {
+    className: "relative z-10 px-6 md:px-12 lg:px-24 pt-32 md:pt-40 pb-8"
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "max-w-4xl"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "inline-flex items-center liquid-glass rounded-full px-4 py-3 max-w-full"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.14em] sm:tracking-[0.2em] text-white/60"
+  }, "Enqu\xEAtes \xB7 essais \xB7 exp\xE9rimentations")), /*#__PURE__*/React.createElement("h1", {
+    className: "mt-6 font-heading italic text-6xl md:text-8xl text-white tracking-tight leading-[0.9]"
+  }, "Productions"), /*#__PURE__*/React.createElement("p", {
+    className: "mt-6 text-white/75 font-body font-light text-lg md:text-xl leading-relaxed max-w-3xl"
+  }, "Mes derni\xE8res enqu\xEAtes et r\xE9alisations, la plus r\xE9cente en premier. Toutes mes exp\xE9rimentations num\xE9riques vivent ensuite dans mon laboratoire, TMF Lab.")), /*#__PURE__*/React.createElement(ProductionsGrid, {
+    className: "mt-12"
+  }), /*#__PURE__*/React.createElement("div", {
     className: "mt-10 max-w-3xl"
   }, /*#__PURE__*/React.createElement(SuivreSoutenir, null)), /*#__PURE__*/React.createElement("div", {
     className: "mt-16 md:mt-24"
