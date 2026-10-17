@@ -617,6 +617,16 @@ Ajouter un article = une vue dans `app.jsx`, une entrée dans `PAGES`, le chemin
 - Visuels en HTML/SVG natif, aucune bibliothèque. Schéma horizontal à partir de `lg`, vertical
   en dessous. Espaces insécables françaises via `pvNb()`.
 
+**Google / santé** (« Un livre sur Lyme ? Google vous conseille Perronne », `/ia/google-sante/`, vue `sante`).
+- Préparé le 17 octobre 2026 sur la branche `claude/article-sante-google`. Texte court (~1 600 signes)
+  validé sur le fond par Tristan ; chiffres de la consolidation du 17/10 (Drive, enquete-ia-sources,
+  « [DATA] Santé aperçus IA »), gardés tels quels même si un contrôle du soir n'a pas reproduit les
+  deux cas Chaillot. Captures dans `ia/google-sante/` (navigateur sans compte ; Chaillot : capture
+  Google du même jour, 14 h 49). Signé « Prompté par Tristan Mendès France ».
+- **Volontairement absent de `PRODUCTIONS`, du bouton « Nouveau » et de `sitemap.xml`** : Tristan le
+  publie sans le mettre en avant ni l'annoncer sur Substack. Ne pas l'y ajouter sans sa demande.
+- Ne jamais nommer l'outil de collecte des aperçus IA dans l'article.
+
 ## Décisions prises (et pourquoi) — ne pas rouvrir sans raison
 
 **Contact**
