@@ -577,6 +577,14 @@ const VIEW_NAV = {
 // tenir sur une ligne sur iPhone) ; toutes s'affichent sur /productions/.
 // `img` : l'aperçu de partage de la page (1200 × 630, scripts/apercus/).
 const PRODUCTIONS = [{
+  court: "Google IA & santé",
+  titre: "Santé : l'aperçu IA de Google met en avant des figures complotistes",
+  quand: "17 octobre 2026",
+  kicker: "Enquête · IA et santé",
+  href: "/ia/google-sante/",
+  img: "/ia/google-sante/apercu.jpg",
+  desc: "Demandez à Google un livre sur Lyme : son aperçu IA recommande Christian Perronne 24 fois sur 24, sans la moindre mise en garde."
+}, {
   court: "Perplexity & Pravda",
   titre: "Présidentielle : quand Perplexity puise dans la propagande russe",
   quand: "17 octobre 2026",
