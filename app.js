@@ -2663,7 +2663,10 @@ const GS_WIKI_CONST = "https://fr.wikipedia.org/wiki/Constellation_familiale";
 const GS_LEMONDE = "https://www.lemonde.fr/les-decodeurs/article/2021/04/01/que-vaut-l-etude-de-toubiana-et-mucchielli-sur-la-tres-faible-surmortalite-due-au-covid_6075279_4355770.html";
 const GS_SURLIGNEURS = "https://lessurligneurs.eu/maladie-de-lyme-arme-biologique-rumeur-rfk-kennedy/";
 const GS_PEW = "https://www.pewresearch.org/short-reads/2025/07/22/google-users-are-less-likely-to-click-on-links-when-an-ai-summary-appears-in-the-results/";
-const GS_SOURCES = [["France 24 (avec AFP), lancement des aperçus IA en France le 22 juillet 2026, 11 août 2026", "https://www.france24.com/fr/france/20260811-aper%C3%A7us-ia-google-quotidiens-fran%C3%A7ais-saisissent-autorit%C3%A9-concurrence"], ["Pew Research Center, clics après un aperçu IA (900 adultes américains, mars 2025), 22 juillet 2025", GS_PEW], ["Wikipédia, « Constellation familiale »", GS_WIKI_CONST], ["Conspiracy Watch, notice « Christian Perronne », mise à jour le 4 janvier 2023", GS_CW_PERRONNE], ["Conspiracy Watch, notice « Conseil scientifique indépendant (CSI) »", GS_CW_CSI], ["Conspiracy Watch, « Laurent Mucchielli, de Mediapart à FranceSoir », 6 août 2021", GS_CW_MUCCHIELLI], ["AP-HP, fin des fonctions de chef de service du Pr Perronne, 17 décembre 2020", "https://www.aphp.fr/contenu/ap-hp-le-directeur-general-mis-fin-aux-fonctions-de-chef-de-service-des-maladies"], ["Le Quotidien du médecin, Lyme : la polémique sur la chronicité (consensus de 24 sociétés savantes, 2019)", "https://cancerologie.lequotidiendumedecin.fr/specialites/infectiologie/maladie-de-lyme-la-polemique-sur-la-chronicite-persiste-la-prise-en-charge-evolue"], ["Conspiracy Watch, « Pierre Chaillot : itinéraire d'un best-seller covido-sceptique », 10 février 2023 (réaction de l'Insee au Monde)", "https://www.conspiracywatch.info/pierre-chaillot-itineraire-dun-best-seller-covido-sceptique.html"], ["AFP Factuel, affirmations fausses ou trompeuses sur les vaccins, 23 mai 2022 (reprise Imaz Press)", "https://imazpress.com/factchecking/inefficacite-nocivite-baisse-de-limmunite-attention-a-ces-affirmations-fausses-ou-trompeuses-sur-les-vaccins"], ["Miviludes, rapport au Premier ministre 2007, p. 81 et suivantes", "https://www.vie-publique.fr/sites/default/files/rapport/pdf/084000190.pdf"], ["Le Monde, Les Décodeurs, « Que vaut l'étude de Toubiana et Mucchielli sur la \"très faible\" surmortalité due au Covid ? », 1er avril 2021", GS_LEMONDE], ["Les Surligneurs, « La maladie de Lyme n'a pas été créée dans un laboratoire militaire », 16 mai 2025", GS_SURLIGNEURS]];
+const GS_FRANCE24 = "https://www.france24.com/fr/france/20260811-aper%C3%A7us-ia-google-quotidiens-fran%C3%A7ais-saisissent-autorit%C3%A9-concurrence";
+const GS_APHP = "https://www.aphp.fr/contenu/ap-hp-le-directeur-general-mis-fin-aux-fonctions-de-chef-de-service-des-maladies";
+const GS_QDM = "https://cancerologie.lequotidiendumedecin.fr/specialites/infectiologie/maladie-de-lyme-la-polemique-sur-la-chronicite-persiste-la-prise-en-charge-evolue";
+const GS_MIVILUDES = "https://www.vie-publique.fr/sites/default/files/rapport/pdf/084000190.pdf";
 function SanteArticle() {
   return /*#__PURE__*/React.createElement("main", {
     className: "relative z-10 px-6 md:px-12 lg:px-24 pt-32 md:pt-40 pb-8"
@@ -2677,7 +2680,9 @@ function SanteArticle() {
     className: "mt-6 font-heading italic text-4xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.02]"
   }, pvNb("Santé : l'aperçu IA de Google met en avant des figures complotistes et covido-sceptiques")), /*#__PURE__*/React.createElement("p", {
     className: "mt-6 text-white/85 font-body text-xl leading-relaxed"
-  }, pvNb("Depuis le 22 juillet 2026, Google affiche en France des « aperçus IA » : un résumé rédigé par son intelligence artificielle, en tête des résultats. Sur la santé, il recommande sans la moindre mise en garde des figures complotistes ou covido-sceptiques, dont plusieurs ont été sanctionnées ou désavouées par leur institution.")), /*#__PURE__*/React.createElement("p", {
+  }, "Depuis le ", /*#__PURE__*/React.createElement(PvExt, {
+    href: GS_FRANCE24
+  }, "22 juillet 2026"), ", Google affiche en France des \xAB aper\xE7us IA \xBB : un r\xE9sum\xE9 r\xE9dig\xE9 par son intelligence artificielle, en t\xEAte des r\xE9sultats. Sur la sant\xE9, il recommande sans la moindre mise en garde des figures complotistes ou covido-sceptiques, dont plusieurs ont \xE9t\xE9 sanctionn\xE9es ou d\xE9savou\xE9es par leur institution."), /*#__PURE__*/React.createElement("p", {
     className: "mt-5 font-mono text-xs uppercase tracking-[0.15em] text-white/50"
   }, /*#__PURE__*/React.createElement("time", {
     dateTime: "2026-10-17"
@@ -2692,7 +2697,11 @@ function SanteArticle() {
     className: "block w-full h-auto rounded-2xl border border-white/10"
   })), /*#__PURE__*/React.createElement(PvP, null, "Si vous demandez par exemple \xAB livre sur la maladie de Lyme \xBB. L'aper\xE7u IA place en t\xEAte ", /*#__PURE__*/React.createElement("em", null, "La V\xE9rit\xE9 sur la maladie de Lyme"), " de ", /*#__PURE__*/React.createElement(PvExt, {
     href: GS_CW_PERRONNE
-  }, "Christian Perronne"), ", pr\xE9sent\xE9 comme \xAB un ouvrage majeur \xBB. Rien sur l'auteur : d\xE9mis en 2020 de son poste de chef de service par l'AP-HP pour des propos jug\xE9s \xAB indignes \xBB, il d\xE9fend un \xAB Lyme chronique \xBB que 24 soci\xE9t\xE9s savantes rejettent. Il a aussi repris \xE0 son compte la th\xE8se d'une maladie sortie d'un laboratoire militaire am\xE9ricain d'armes biologiques, sans aucune preuve selon les chercheurs (", /*#__PURE__*/React.createElement(PvExt, {
+  }, "Christian Perronne"), ", pr\xE9sent\xE9 comme \xAB un ouvrage majeur \xBB. Rien sur l'auteur : ", /*#__PURE__*/React.createElement(PvExt, {
+    href: GS_APHP
+  }, "d\xE9mis en 2020"), " de son poste de chef de service par l'AP-HP pour des propos jug\xE9s \xAB indignes \xBB, il d\xE9fend un \xAB Lyme chronique \xBB que ", /*#__PURE__*/React.createElement(PvExt, {
+    href: GS_QDM
+  }, "24 soci\xE9t\xE9s savantes"), " rejettent. Il a aussi repris \xE0 son compte la th\xE8se d'une maladie sortie d'un laboratoire militaire am\xE9ricain d'armes biologiques, sans aucune preuve selon les chercheurs (", /*#__PURE__*/React.createElement(PvExt, {
     href: GS_SURLIGNEURS
   }, "Les Surligneurs"), "). Sur le Covid, il parle de \xAB pland\xE9mie \xBB et de \xAB complot mondial \xBB."), /*#__PURE__*/React.createElement(PvP, null, "Et ce n'est pas un cas isol\xE9."), /*#__PURE__*/React.createElement("figure", {
     className: "my-10 liquid-glass rounded-3xl p-5 md:p-8"
@@ -2753,13 +2762,13 @@ function SanteArticle() {
     className: "block w-full h-auto rounded-2xl border border-white/10"
   }), /*#__PURE__*/React.createElement("figcaption", {
     className: "mt-3 font-body text-sm text-white/55 leading-relaxed"
-  }, pvNb("« " + c.q + " », Google France, sans compte, " + c.t + "."))))), /*#__PURE__*/React.createElement(PvP, null, "Or l'aper\xE7u suffit souvent : selon le ", /*#__PURE__*/React.createElement(PvExt, {
-    href: GS_PEW
-  }, "Pew Research Center"), ", l'internaute ne clique sur une des sources de l'aper\xE7u IA que dans 1 % des cas."), /*#__PURE__*/React.createElement(PvP, null, "M\xEAme chose pour les \xAB bienfaits \xBB des ", /*#__PURE__*/React.createElement(PvExt, {
+  }, pvNb("« " + c.q + " », Google France, sans compte, " + c.t + "."))))), /*#__PURE__*/React.createElement(PvP, null, "M\xEAme chose pour les \xAB bienfaits \xBB des ", /*#__PURE__*/React.createElement(PvExt, {
     href: GS_WIKI_CONST
   }, "constellations familiales"), " (10 aper\xE7us sur 10, sans r\xE9serve). Invent\xE9e par l'ancien pr\xEAtre allemand Bert Hellinger, la m\xE9thode fait \xAB repr\xE9senter \xBB les membres de votre famille par des inconnus, en groupe, pour r\xE9v\xE9ler des conflits h\xE9rit\xE9s des g\xE9n\xE9rations pr\xE9c\xE9dentes. La ", /*#__PURE__*/React.createElement(PvExt, {
-    href: GS_SOURCES[10][1]
-  }, "Miviludes"), " alerte depuis 2007 sur ses dangers, t\xE9moignages de victimes \xE0 l'appui."), /*#__PURE__*/React.createElement("div", {
+    href: GS_MIVILUDES
+  }, "Miviludes"), " alerte depuis 2007 sur ses dangers, t\xE9moignages de victimes \xE0 l'appui."), /*#__PURE__*/React.createElement(PvP, null, "Or l'aper\xE7u suffit souvent : selon le ", /*#__PURE__*/React.createElement(PvExt, {
+    href: GS_PEW
+  }, "Pew Research Center"), ", l'internaute ne clique sur une des sources de l'aper\xE7u IA que dans 1 % des cas. Son opinion se forge donc sur ces recommandations, qui peuvent \xEAtre, on vient de le voir, tr\xE8s probl\xE9matiques."), /*#__PURE__*/React.createElement("div", {
     className: "mt-10"
   }, /*#__PURE__*/React.createElement(SuivreSoutenir, null)), /*#__PURE__*/React.createElement("section", {
     className: "mt-16 liquid-glass rounded-3xl p-5 md:p-8",
@@ -2785,19 +2794,7 @@ function SanteArticle() {
     href: GS_DIR + GS_CSV,
     download: true,
     className: "inline-flex items-center gap-2 rounded-full bg-white text-black px-4 py-2.5 font-body text-sm font-medium hover:bg-white/85 transition-colors"
-  }, "Les 78 essais, texte des aper\xE7us compris (.csv)"))), /*#__PURE__*/React.createElement("section", {
-    className: "mt-14",
-    "aria-labelledby": "gs-sources"
-  }, /*#__PURE__*/React.createElement("h2", {
-    id: "gs-sources",
-    className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/50"
-  }, "Sources"), /*#__PURE__*/React.createElement("ul", {
-    className: "mt-4 space-y-2 font-body text-sm text-white/65 leading-relaxed"
-  }, GS_SOURCES.map(([l, h]) => /*#__PURE__*/React.createElement("li", {
-    key: h
-  }, /*#__PURE__*/React.createElement(PvExt, {
-    href: h
-  }, pvNb(l))))))));
+  }, "Les 78 essais, texte des aper\xE7us compris (.csv)")))));
 }
 
 // ---------- Bouton « Nouveau » (hero) : ma dernière production ----------
