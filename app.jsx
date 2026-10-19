@@ -1694,21 +1694,10 @@ const GS_WIKI_CONST = "https://fr.wikipedia.org/wiki/Constellation_familiale";
 const GS_LEMONDE = "https://www.lemonde.fr/les-decodeurs/article/2021/04/01/que-vaut-l-etude-de-toubiana-et-mucchielli-sur-la-tres-faible-surmortalite-due-au-covid_6075279_4355770.html";
 const GS_SURLIGNEURS = "https://lessurligneurs.eu/maladie-de-lyme-arme-biologique-rumeur-rfk-kennedy/";
 const GS_PEW = "https://www.pewresearch.org/short-reads/2025/07/22/google-users-are-less-likely-to-click-on-links-when-an-ai-summary-appears-in-the-results/";
-const GS_SOURCES = [
-  ["France 24 (avec AFP), lancement des aperçus IA en France le 22 juillet 2026, 11 août 2026", "https://www.france24.com/fr/france/20260811-aper%C3%A7us-ia-google-quotidiens-fran%C3%A7ais-saisissent-autorit%C3%A9-concurrence"],
-  ["Pew Research Center, clics après un aperçu IA (900 adultes américains, mars 2025), 22 juillet 2025", GS_PEW],
-  ["Wikipédia, « Constellation familiale »", GS_WIKI_CONST],
-  ["Conspiracy Watch, notice « Christian Perronne », mise à jour le 4 janvier 2023", GS_CW_PERRONNE],
-  ["Conspiracy Watch, notice « Conseil scientifique indépendant (CSI) »", GS_CW_CSI],
-  ["Conspiracy Watch, « Laurent Mucchielli, de Mediapart à FranceSoir », 6 août 2021", GS_CW_MUCCHIELLI],
-  ["AP-HP, fin des fonctions de chef de service du Pr Perronne, 17 décembre 2020", "https://www.aphp.fr/contenu/ap-hp-le-directeur-general-mis-fin-aux-fonctions-de-chef-de-service-des-maladies"],
-  ["Le Quotidien du médecin, Lyme : la polémique sur la chronicité (consensus de 24 sociétés savantes, 2019)", "https://cancerologie.lequotidiendumedecin.fr/specialites/infectiologie/maladie-de-lyme-la-polemique-sur-la-chronicite-persiste-la-prise-en-charge-evolue"],
-  ["Conspiracy Watch, « Pierre Chaillot : itinéraire d'un best-seller covido-sceptique », 10 février 2023 (réaction de l'Insee au Monde)", "https://www.conspiracywatch.info/pierre-chaillot-itineraire-dun-best-seller-covido-sceptique.html"],
-  ["AFP Factuel, affirmations fausses ou trompeuses sur les vaccins, 23 mai 2022 (reprise Imaz Press)", "https://imazpress.com/factchecking/inefficacite-nocivite-baisse-de-limmunite-attention-a-ces-affirmations-fausses-ou-trompeuses-sur-les-vaccins"],
-  ["Miviludes, rapport au Premier ministre 2007, p. 81 et suivantes", "https://www.vie-publique.fr/sites/default/files/rapport/pdf/084000190.pdf"],
-  ["Le Monde, Les Décodeurs, « Que vaut l'étude de Toubiana et Mucchielli sur la \"très faible\" surmortalité due au Covid ? », 1er avril 2021", GS_LEMONDE],
-  ["Les Surligneurs, « La maladie de Lyme n'a pas été créée dans un laboratoire militaire », 16 mai 2025", GS_SURLIGNEURS],
-];
+const GS_FRANCE24 = "https://www.france24.com/fr/france/20260811-aper%C3%A7us-ia-google-quotidiens-fran%C3%A7ais-saisissent-autorit%C3%A9-concurrence";
+const GS_APHP = "https://www.aphp.fr/contenu/ap-hp-le-directeur-general-mis-fin-aux-fonctions-de-chef-de-service-des-maladies";
+const GS_QDM = "https://cancerologie.lequotidiendumedecin.fr/specialites/infectiologie/maladie-de-lyme-la-polemique-sur-la-chronicite-persiste-la-prise-en-charge-evolue";
+const GS_MIVILUDES = "https://www.vie-publique.fr/sites/default/files/rapport/pdf/084000190.pdf";
 
 function SanteArticle() {
   return (
@@ -1719,7 +1708,7 @@ function SanteArticle() {
             <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/70">Enquête · IA et santé</span>
           </div>
           <h1 className="mt-6 font-heading italic text-4xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.02]">{pvNb("Santé : l'aperçu IA de Google met en avant des figures complotistes et covido-sceptiques")}</h1>
-          <p className="mt-6 text-white/85 font-body text-xl leading-relaxed">{pvNb("Depuis le 22 juillet 2026, Google affiche en France des « aperçus IA » : un résumé rédigé par son intelligence artificielle, en tête des résultats. Sur la santé, il recommande sans la moindre mise en garde des figures complotistes ou covido-sceptiques, dont plusieurs ont été sanctionnées ou désavouées par leur institution.")}</p>
+          <p className="mt-6 text-white/85 font-body text-xl leading-relaxed">Depuis le <PvExt href={GS_FRANCE24}>22 juillet 2026</PvExt>, Google affiche en France des « aperçus IA » : un résumé rédigé par son intelligence artificielle, en tête des résultats. Sur la santé, il recommande sans la moindre mise en garde des figures complotistes ou covido-sceptiques, dont plusieurs ont été sanctionnées ou désavouées par leur institution.</p>
           <p className="mt-5 font-mono text-xs uppercase tracking-[0.15em] text-white/50"><time dateTime="2026-10-17">17 octobre 2026</time></p>
         </header>
 
@@ -1727,7 +1716,7 @@ function SanteArticle() {
           <img src={GS_DIR + "illustration.jpg"} width="1200" height="630" decoding="async" alt="24 aperçus IA de Google sur 24 recommandent le livre de Christian Perronne sur la maladie de Lyme, sans mise en garde" className="block w-full h-auto rounded-2xl border border-white/10" />
         </figure>
 
-        <PvP>Si vous demandez par exemple « livre sur la maladie de Lyme ». L'aperçu IA place en tête <em>La Vérité sur la maladie de Lyme</em> de <PvExt href={GS_CW_PERRONNE}>Christian Perronne</PvExt>, présenté comme « un ouvrage majeur ». Rien sur l'auteur : démis en 2020 de son poste de chef de service par l'AP-HP pour des propos jugés « indignes », il défend un « Lyme chronique » que 24 sociétés savantes rejettent. Il a aussi repris à son compte la thèse d'une maladie sortie d'un laboratoire militaire américain d'armes biologiques, sans aucune preuve selon les chercheurs (<PvExt href={GS_SURLIGNEURS}>Les Surligneurs</PvExt>). Sur le Covid, il parle de « plandémie » et de « complot mondial ».</PvP>
+        <PvP>Si vous demandez par exemple « livre sur la maladie de Lyme ». L'aperçu IA place en tête <em>La Vérité sur la maladie de Lyme</em> de <PvExt href={GS_CW_PERRONNE}>Christian Perronne</PvExt>, présenté comme « un ouvrage majeur ». Rien sur l'auteur : <PvExt href={GS_APHP}>démis en 2020</PvExt> de son poste de chef de service par l'AP-HP pour des propos jugés « indignes », il défend un « Lyme chronique » que <PvExt href={GS_QDM}>24 sociétés savantes</PvExt> rejettent. Il a aussi repris à son compte la thèse d'une maladie sortie d'un laboratoire militaire américain d'armes biologiques, sans aucune preuve selon les chercheurs (<PvExt href={GS_SURLIGNEURS}>Les Surligneurs</PvExt>). Sur le Covid, il parle de « plandémie » et de « complot mondial ».</PvP>
         <PvP>Et ce n'est pas un cas isolé.</PvP>
 
         <figure className="my-10 liquid-glass rounded-3xl p-5 md:p-8">
@@ -1765,8 +1754,8 @@ function SanteArticle() {
           ))}
         </div>
 
-        <PvP>Or l'aperçu suffit souvent : selon le <PvExt href={GS_PEW}>Pew Research Center</PvExt>, l'internaute ne clique sur une des sources de l'aperçu IA que dans 1 % des cas.</PvP>
-        <PvP>Même chose pour les « bienfaits » des <PvExt href={GS_WIKI_CONST}>constellations familiales</PvExt> (10 aperçus sur 10, sans réserve). Inventée par l'ancien prêtre allemand Bert Hellinger, la méthode fait « représenter » les membres de votre famille par des inconnus, en groupe, pour révéler des conflits hérités des générations précédentes. La <PvExt href={GS_SOURCES[10][1]}>Miviludes</PvExt> alerte depuis 2007 sur ses dangers, témoignages de victimes à l'appui.</PvP>
+        <PvP>Même chose pour les « bienfaits » des <PvExt href={GS_WIKI_CONST}>constellations familiales</PvExt> (10 aperçus sur 10, sans réserve). Inventée par l'ancien prêtre allemand Bert Hellinger, la méthode fait « représenter » les membres de votre famille par des inconnus, en groupe, pour révéler des conflits hérités des générations précédentes. La <PvExt href={GS_MIVILUDES}>Miviludes</PvExt> alerte depuis 2007 sur ses dangers, témoignages de victimes à l'appui.</PvP>
+        <PvP>Or l'aperçu suffit souvent : selon le <PvExt href={GS_PEW}>Pew Research Center</PvExt>, l'internaute ne clique sur une des sources de l'aperçu IA que dans 1 % des cas. Son opinion se forge donc sur ces recommandations, qui peuvent être, on vient de le voir, très problématiques.</PvP>
 
         <div className="mt-10"><SuivreSoutenir /></div>
 
@@ -1783,12 +1772,6 @@ function SanteArticle() {
           </div>
         </section>
 
-        <section className="mt-14" aria-labelledby="gs-sources">
-          <h2 id="gs-sources" className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">Sources</h2>
-          <ul className="mt-4 space-y-2 font-body text-sm text-white/65 leading-relaxed">
-            {GS_SOURCES.map(([l, h]) => <li key={h}><PvExt href={h}>{pvNb(l)}</PvExt></li>)}
-          </ul>
-        </section>
 
       </article>
     </main>
