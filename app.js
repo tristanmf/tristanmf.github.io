@@ -2652,8 +2652,10 @@ const GS_CW_CSI = "https://www.conspiracywatch.info/notice/conseil-scientifique-
 const GS_CW_MUCCHIELLI = "https://www.conspiracywatch.info/laurent-mucchielli-de-mediapart-a-francesoir.html";
 const GS_AFP = "https://imazpress.com/factchecking/inefficacite-nocivite-baisse-de-limmunite-attention-a-ces-affirmations-fausses-ou-trompeuses-sur-les-vaccins";
 const GS_WIKI_CONST = "https://fr.wikipedia.org/wiki/Constellation_familiale";
+const GS_LEMONDE = "https://www.lemonde.fr/les-decodeurs/article/2021/04/01/que-vaut-l-etude-de-toubiana-et-mucchielli-sur-la-tres-faible-surmortalite-due-au-covid_6075279_4355770.html";
+const GS_SURLIGNEURS = "https://lessurligneurs.eu/maladie-de-lyme-arme-biologique-rumeur-rfk-kennedy/";
 const GS_PEW = "https://www.pewresearch.org/short-reads/2025/07/22/google-users-are-less-likely-to-click-on-links-when-an-ai-summary-appears-in-the-results/";
-const GS_SOURCES = [["France 24 (avec AFP), lancement des aperçus IA en France le 22 juillet 2026, 11 août 2026", "https://www.france24.com/fr/france/20260811-aper%C3%A7us-ia-google-quotidiens-fran%C3%A7ais-saisissent-autorit%C3%A9-concurrence"], ["Pew Research Center, clics après un aperçu IA (900 adultes américains, mars 2025), 22 juillet 2025", GS_PEW], ["Wikipédia, « Constellation familiale »", GS_WIKI_CONST], ["Conspiracy Watch, notice « Christian Perronne », mise à jour le 4 janvier 2023", GS_CW_PERRONNE], ["Conspiracy Watch, notice « Conseil scientifique indépendant (CSI) »", GS_CW_CSI], ["Conspiracy Watch, « Laurent Mucchielli, de Mediapart à FranceSoir », 6 août 2021", GS_CW_MUCCHIELLI], ["AP-HP, fin des fonctions de chef de service du Pr Perronne, 17 décembre 2020", "https://www.aphp.fr/contenu/ap-hp-le-directeur-general-mis-fin-aux-fonctions-de-chef-de-service-des-maladies"], ["Le Quotidien du médecin, Lyme : la polémique sur la chronicité (consensus de 24 sociétés savantes, 2019)", "https://cancerologie.lequotidiendumedecin.fr/specialites/infectiologie/maladie-de-lyme-la-polemique-sur-la-chronicite-persiste-la-prise-en-charge-evolue"], ["Conspiracy Watch, « Pierre Chaillot : itinéraire d'un best-seller covido-sceptique », 10 février 2023 (réaction de l'Insee au Monde)", "https://www.conspiracywatch.info/pierre-chaillot-itineraire-dun-best-seller-covido-sceptique.html"], ["AFP Factuel, affirmations fausses ou trompeuses sur les vaccins, 23 mai 2022 (reprise Imaz Press)", "https://imazpress.com/factchecking/inefficacite-nocivite-baisse-de-limmunite-attention-a-ces-affirmations-fausses-ou-trompeuses-sur-les-vaccins"], ["Miviludes, rapport au Premier ministre 2007, p. 81 et suivantes", "https://www.vie-publique.fr/sites/default/files/rapport/pdf/084000190.pdf"]];
+const GS_SOURCES = [["France 24 (avec AFP), lancement des aperçus IA en France le 22 juillet 2026, 11 août 2026", "https://www.france24.com/fr/france/20260811-aper%C3%A7us-ia-google-quotidiens-fran%C3%A7ais-saisissent-autorit%C3%A9-concurrence"], ["Pew Research Center, clics après un aperçu IA (900 adultes américains, mars 2025), 22 juillet 2025", GS_PEW], ["Wikipédia, « Constellation familiale »", GS_WIKI_CONST], ["Conspiracy Watch, notice « Christian Perronne », mise à jour le 4 janvier 2023", GS_CW_PERRONNE], ["Conspiracy Watch, notice « Conseil scientifique indépendant (CSI) »", GS_CW_CSI], ["Conspiracy Watch, « Laurent Mucchielli, de Mediapart à FranceSoir », 6 août 2021", GS_CW_MUCCHIELLI], ["AP-HP, fin des fonctions de chef de service du Pr Perronne, 17 décembre 2020", "https://www.aphp.fr/contenu/ap-hp-le-directeur-general-mis-fin-aux-fonctions-de-chef-de-service-des-maladies"], ["Le Quotidien du médecin, Lyme : la polémique sur la chronicité (consensus de 24 sociétés savantes, 2019)", "https://cancerologie.lequotidiendumedecin.fr/specialites/infectiologie/maladie-de-lyme-la-polemique-sur-la-chronicite-persiste-la-prise-en-charge-evolue"], ["Conspiracy Watch, « Pierre Chaillot : itinéraire d'un best-seller covido-sceptique », 10 février 2023 (réaction de l'Insee au Monde)", "https://www.conspiracywatch.info/pierre-chaillot-itineraire-dun-best-seller-covido-sceptique.html"], ["AFP Factuel, affirmations fausses ou trompeuses sur les vaccins, 23 mai 2022 (reprise Imaz Press)", "https://imazpress.com/factchecking/inefficacite-nocivite-baisse-de-limmunite-attention-a-ces-affirmations-fausses-ou-trompeuses-sur-les-vaccins"], ["Miviludes, rapport au Premier ministre 2007, p. 81 et suivantes", "https://www.vie-publique.fr/sites/default/files/rapport/pdf/084000190.pdf"], ["Le Monde, Les Décodeurs, « Que vaut l'étude de Toubiana et Mucchielli sur la \"très faible\" surmortalité due au Covid ? », 1er avril 2021", GS_LEMONDE], ["Les Surligneurs, « La maladie de Lyme n'a pas été créée dans un laboratoire militaire », 16 mai 2025", GS_SURLIGNEURS]];
 function SanteArticle() {
   return /*#__PURE__*/React.createElement("main", {
     className: "relative z-10 px-6 md:px-12 lg:px-24 pt-32 md:pt-40 pb-8"
@@ -2680,9 +2682,11 @@ function SanteArticle() {
     decoding: "async",
     alt: "24 aper\xE7us IA de Google sur 24 recommandent le livre de Christian Perronne sur la maladie de Lyme, sans mise en garde",
     className: "block w-full h-auto rounded-2xl border border-white/10"
-  })), /*#__PURE__*/React.createElement(PvP, null, "Demandez \xAB livre sur la maladie de Lyme \xBB. L'aper\xE7u IA place en t\xEAte ", /*#__PURE__*/React.createElement("em", null, "La V\xE9rit\xE9 sur la maladie de Lyme"), " de ", /*#__PURE__*/React.createElement(PvExt, {
+  })), /*#__PURE__*/React.createElement(PvP, null, "Si vous demandez par exemple \xAB livre sur la maladie de Lyme \xBB. L'aper\xE7u IA place en t\xEAte ", /*#__PURE__*/React.createElement("em", null, "La V\xE9rit\xE9 sur la maladie de Lyme"), " de ", /*#__PURE__*/React.createElement(PvExt, {
     href: GS_CW_PERRONNE
-  }, "Christian Perronne"), ", \xAB un ouvrage majeur \xBB. Rien sur l'auteur : d\xE9mis en 2020 de sa chefferie de service par l'AP-HP pour des propos jug\xE9s \xAB indignes \xBB, il d\xE9fend un \xAB Lyme chronique \xBB que 24 soci\xE9t\xE9s savantes rejettent, et parle de \xAB pland\xE9mie \xBB et de \xAB complot mondial \xBB."), /*#__PURE__*/React.createElement(PvP, null, "Ce n'est pas un cas isol\xE9."), /*#__PURE__*/React.createElement("figure", {
+  }, "Christian Perronne"), ", pr\xE9sent\xE9 comme \xAB un ouvrage majeur \xBB. Rien sur l'auteur : d\xE9mis en 2020 de son poste de chef de service par l'AP-HP pour des propos jug\xE9s \xAB indignes \xBB, il d\xE9fend un \xAB Lyme chronique \xBB que 24 soci\xE9t\xE9s savantes rejettent. Il a aussi repris \xE0 son compte la th\xE8se d'une maladie sortie d'un laboratoire militaire am\xE9ricain d'armes biologiques, sans aucune preuve selon les chercheurs (", /*#__PURE__*/React.createElement(PvExt, {
+    href: GS_SURLIGNEURS
+  }, "Les Surligneurs"), "). Sur le Covid, il parle de \xAB pland\xE9mie \xBB et de \xAB complot mondial \xBB."), /*#__PURE__*/React.createElement(PvP, null, "Et ce n'est pas un cas isol\xE9."), /*#__PURE__*/React.createElement("figure", {
     className: "my-10 liquid-glass rounded-3xl p-5 md:p-8"
   }, /*#__PURE__*/React.createElement("figcaption", null, /*#__PURE__*/React.createElement("div", {
     className: "font-heading italic text-2xl md:text-3xl text-white leading-tight"
@@ -2719,9 +2723,11 @@ function SanteArticle() {
     })));
   }))), /*#__PURE__*/React.createElement(PvP, null, "Google pr\xE9sente ", /*#__PURE__*/React.createElement(PvExt, {
     href: GS_CW_CHAILLOT
-  }, "Pierre Chaillot"), " comme \xAB ancien membre de l'Insee \xBB ; l'Insee avait jug\xE9 \xAB erron\xE9e et trompeuse \xBB la mention de cette affiliation sur une \xE9tude qu'il cosignait. ", /*#__PURE__*/React.createElement(PvExt, {
+  }, "Pierre Chaillot"), " comme un \xAB ancien membre de l'Insee \xBB. L'Insee avait pourtant jug\xE9 \xAB erron\xE9e et trompeuse \xBB la mention de cette affiliation sur une \xE9tude qu'il cosignait, et que ", /*#__PURE__*/React.createElement(PvExt, {
+    href: GS_LEMONDE
+  }, "Le Monde"), " a d\xE9mont\xE9e. ", /*#__PURE__*/React.createElement(PvExt, {
     href: GS_AFP
-  }, "Jean-Marc Sabatier"), " devient \xAB directeur de recherche au CNRS \xBB ; l'AFP a jug\xE9 fausses ou infond\xE9es ses affirmations sur les vaccins. Tous deux gravitent autour du ", /*#__PURE__*/React.createElement(PvExt, {
+  }, "Jean-Marc Sabatier"), " devient \xAB directeur de recherche au CNRS \xBB, alors que l'AFP a jug\xE9 fausses ou infond\xE9es ses affirmations sur les vaccins. Tous deux gravitent autour du ", /*#__PURE__*/React.createElement(PvExt, {
     href: GS_CW_CSI
   }, "\xAB Conseil scientifique ind\xE9pendant \xBB"), ", collectif covido-sceptique cofond\xE9 par Perronne."), /*#__PURE__*/React.createElement(PvP, null, "Le m\xEAme aper\xE7u cite aussi ", /*#__PURE__*/React.createElement(PvExt, {
     href: GS_CW_MUCCHIELLI
@@ -2765,7 +2771,7 @@ function SanteArticle() {
     className: "text-white"
   }, "Captures :"), " navigateur de l'application Claude, sans compte."), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("span", {
     className: "text-white"
-  }, "Limites :"), " r\xE9sultats valables pour cet \xE9chantillon et cette date ; l'aper\xE7u ne s'affiche pas \xE0 chaque fois.")), /*#__PURE__*/React.createElement("div", {
+  }, "Limites :"), " r\xE9sultats valables pour cet \xE9chantillon et cette date, et l'aper\xE7u ne s'affiche pas \xE0 chaque fois.")), /*#__PURE__*/React.createElement("div", {
     className: "mt-6 flex flex-wrap gap-3"
   }, /*#__PURE__*/React.createElement("a", {
     href: GS_DIR + GS_CSV,
