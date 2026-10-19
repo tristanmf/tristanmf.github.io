@@ -1687,10 +1687,12 @@ const GS_CW_CHAILLOT = "https://www.conspiracywatch.info/pierre-chaillot-itinera
 const GS_CW_CSI = "https://www.conspiracywatch.info/notice/conseil-scientifique-independant-csi";
 const GS_CW_MUCCHIELLI = "https://www.conspiracywatch.info/laurent-mucchielli-de-mediapart-a-francesoir.html";
 const GS_AFP = "https://imazpress.com/factchecking/inefficacite-nocivite-baisse-de-limmunite-attention-a-ces-affirmations-fausses-ou-trompeuses-sur-les-vaccins";
+const GS_WIKI_CONST = "https://fr.wikipedia.org/wiki/Constellation_familiale";
 const GS_PEW = "https://www.pewresearch.org/short-reads/2025/07/22/google-users-are-less-likely-to-click-on-links-when-an-ai-summary-appears-in-the-results/";
 const GS_SOURCES = [
   ["France 24 (avec AFP), lancement des aperçus IA en France le 22 juillet 2026, 11 août 2026", "https://www.france24.com/fr/france/20260811-aper%C3%A7us-ia-google-quotidiens-fran%C3%A7ais-saisissent-autorit%C3%A9-concurrence"],
   ["Pew Research Center, clics après un aperçu IA (900 adultes américains, mars 2025), 22 juillet 2025", GS_PEW],
+  ["Wikipédia, « Constellation familiale »", GS_WIKI_CONST],
   ["Conspiracy Watch, notice « Christian Perronne », mise à jour le 4 janvier 2023", GS_CW_PERRONNE],
   ["Conspiracy Watch, notice « Conseil scientifique indépendant (CSI) »", GS_CW_CSI],
   ["Conspiracy Watch, « Laurent Mucchielli, de Mediapart à FranceSoir », 6 août 2021", GS_CW_MUCCHIELLI],
@@ -1756,9 +1758,8 @@ function SanteArticle() {
           ))}
         </div>
 
-        <PvP>Or l'aperçu suffit souvent. Aux États-Unis, selon le <PvExt href={GS_PEW}>Pew Research Center</PvExt>, quand un aperçu IA s'affiche, l'internaute ne clique sur un résultat classique que dans 8 % des visites (15 % sans aperçu), et sur une des sources citées dans 1 % des cas. Pour beaucoup, la réponse s'arrête là.</PvP>
-        <PvP>Le mécanisme est simple : pour une demande de livre, l'aperçu IA reprend les fiches des libraires et le résumé de l'éditeur. Il recommande, il ne qualifie pas.</PvP>
-        <PvP>Même chose pour les « bienfaits » des constellations familiales (10 aperçus sur 10, sans réserve), une pratique sur laquelle la <PvExt href={GS_SOURCES[9][1]}>Miviludes</PvExt> alerte depuis 2007.</PvP>
+        <PvP>Or l'aperçu suffit souvent : selon le <PvExt href={GS_PEW}>Pew Research Center</PvExt>, l'internaute ne clique sur une des sources de l'aperçu IA que dans 1 % des cas.</PvP>
+        <PvP>Même chose pour les « bienfaits » des <PvExt href={GS_WIKI_CONST}>constellations familiales</PvExt> (10 aperçus sur 10, sans réserve). Inventée par l'ancien prêtre allemand Bert Hellinger, la méthode fait « représenter » les membres de votre famille par des inconnus, en groupe, pour révéler des conflits hérités des générations précédentes. La <PvExt href={GS_SOURCES[10][1]}>Miviludes</PvExt> alerte depuis 2007 sur ses dangers, témoignages de victimes à l'appui.</PvP>
 
         <div className="mt-10"><SuivreSoutenir /></div>
 
@@ -1767,7 +1768,7 @@ function SanteArticle() {
           <ul className="mt-5 space-y-3 font-body text-sm md:text-base text-white/75 leading-relaxed">
             <li><span className="text-white">Collecte :</span> <PvExt href="https://dataforseo.com/">DataForSEO</PvExt>, Google France, en français, sans compte, le 17 octobre 2026. Chaque requête est répétée de 10 à 24 fois, texte complet de l'aperçu IA récupéré.</li>
             <li><span className="text-white">Critère :</span> l'aperçu cite l'auteur et ne contient aucun terme de réserve (controversé, réfuté, pseudo-, consensus scientifique, Miviludes…). Cas de tête relus à la main.</li>
-            <li><span className="text-white">Captures :</span> navigateur de l'application Claude, sans compte. Analyse avec <PvExt href="https://claude.com/claude-code">Claude Code</PvExt>.</li>
+            <li><span className="text-white">Captures :</span> navigateur de l'application Claude, sans compte.</li>
             <li><span className="text-white">Limites :</span> résultats valables pour cet échantillon et cette date ; l'aperçu ne s'affiche pas à chaque fois.</li>
           </ul>
           <div className="mt-6 flex flex-wrap gap-3">
@@ -1782,7 +1783,6 @@ function SanteArticle() {
           </ul>
         </section>
 
-        <p className="mt-14 font-body text-sm text-white/60">Prompté par <a href="https://tristan.pro" className="text-white underline decoration-white/30 underline-offset-4 hover:decoration-white">Tristan Mendès France</a></p>
       </article>
     </main>
   );

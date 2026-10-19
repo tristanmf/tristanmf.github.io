@@ -101,7 +101,7 @@ const PAGES = [
     url: 'https://tristan.pro/ia/google-sante/',
     ogType: 'article',
     image: 'https://tristan.pro/ia/google-sante/apercu.jpg',
-    imageAlt: "Santé : l'aperçu IA de Google met en avant des figures complotistes et covido-sceptiques. Lyme, covid, vaccins : Perronne, Chaillot ou Sabatier mis en avant sans mise en garde.",
+    imageAlt: "24/24 : un livre sur Lyme ? L'aperçu IA de Google recommande le complotiste Christian Perronne, sans mise en garde.",
   },
 ];
 const esc = s => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
