@@ -39,6 +39,27 @@
       "capture_decalage": -150
     },
     {
+      "sortie": "ia/google-sante/apercu.jpg",
+      "modele": "illustration",
+      "accent": "#fbbf24",
+      "rubrique": "Enquête · IA et santé · tristan.pro",
+      "chiffre": "24/24",
+      "legende": "Un livre sur Lyme ? L'aperçu IA de Google recommande le complotiste Christian Perronne, sans mise en garde.",
+      "capture": "fonds/google-lyme.jpg",
+      "capture_decalage": 0
+    },
+    {
+      "sortie": "ia/google-sante/illustration.jpg",
+      "modele": "illustration",
+      "accent": "#fbbf24",
+      "rubrique": "Aperçu IA de Google · 17 octobre 2026",
+      "chiffre": "24/24",
+      "legende": "« livre sur la maladie de Lyme » : le livre de Christian Perronne recommandé à chaque fois, sans mise en garde.",
+      "capture": "fonds/google-lyme.jpg",
+      "capture_decalage": 0,
+      "_usage": "illustration en tête de l'article (pas un aperçu de partage)"
+    },
+    {
       "sortie": "apercus/sites/tmflab.jpg",
       "modele": "tmflab",
       "pied": "Cartes interactives · applications · webdocumentaire · archives du web",

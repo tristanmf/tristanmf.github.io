@@ -335,9 +335,11 @@ const PRESS_TITLE = "Revue de presse — Tristan Mendès France";
 // est lui aussi généré par scripts/build-jsx.mjs).
 const PRAVDA_PATH = "/ia/pravda-perplexity/";
 const PRAVDA_TITLE = "Présidentielle : quand Perplexity puise dans la propagande russe pour présenter les candidats — Tristan Mendès France";
+const SANTE_PATH = "/ia/google-sante/";
+const SANTE_TITLE = "Santé : l'aperçu IA de Google met en avant des figures complotistes et covido-sceptiques — Tristan Mendès France";
 const PRODUCTIONS_PATH = "/productions/";
 const PRODUCTIONS_TITLE = "Productions — Tristan Mendès France";
-const VIEW_TITLES = { home: HOME_TITLE, presse: PRESS_TITLE, pravda: PRAVDA_TITLE, productions: PRODUCTIONS_TITLE };
+const VIEW_TITLES = { home: HOME_TITLE, presse: PRESS_TITLE, pravda: PRAVDA_TITLE, sante: SANTE_TITLE, productions: PRODUCTIONS_TITLE };
 // Lien de menu actif pour chaque vue autre que l'accueil.
 const VIEW_NAV = { presse: PRESS_PATH, productions: PRODUCTIONS_PATH };
 
@@ -351,11 +353,12 @@ const PRODUCTIONS = [
   { court: "ComploScore", titre: "ComploScore", quand: "Mars 2026", kicker: "Carte interactive · 70 pays", href: "/carte-complotisme/", img: "/apercus/sites/comploscore.jpg", desc: "La carte mondiale des théories complotistes, notées de A à E comme un Nutri-Score." },
 ];
 // Vue de l'application → NavLink ; autre site ou autre dépôt → lien normal.
-const isAppView = (h) => h === PRESS_PATH || h === PRODUCTIONS_PATH || h === PRAVDA_PATH;
+const isAppView = (h) => h === PRESS_PATH || h === PRODUCTIONS_PATH || h === PRAVDA_PATH || h === SANTE_PATH;
 const viewFromPath = () => {
   const p = location.pathname;
   if (p.startsWith("/presse")) return "presse";
   if (p.startsWith("/ia/pravda-perplexity")) return "pravda";
+  if (p.startsWith("/ia/google-sante")) return "sante";
   if (p.startsWith("/productions")) return "productions";
   return "home";
 };
@@ -1662,6 +1665,131 @@ function PravdaArticle() {
   );
 }
 
+// ---------- Article : l'aperçu IA de Google et les livres de santé (vue /ia/google-sante/) ----------
+// Pas encore dans PRODUCTIONS : Tristan le publie sans le mettre en avant (17 octobre 2026).
+// Chiffres : consolidation du 17 octobre 2026 (enquete-ia-sources, « [DATA] Santé aperçus IA »).
+// Captures dans ia/google-sante/ (navigateur sans compte, et Google France le même jour).
+const GS_DIR = "/ia/google-sante/";
+const GS_ACCENT = "#fbbf24";
+const GS_CSV = "essais-apercus-ia-sante-2026-10-17.csv";
+const GS_CAS = [
+  { q: "livre sur la maladie de Lyme", a: "Christian Perronne", n: 24, sur: 24 },
+  { q: "livre sur les statistiques du covid", a: "Pierre Chaillot", n: 9, sur: 13 },
+  { q: "auteur spécialiste des effets indésirables des vaccins covid", a: "Jean-Marc Sabatier", n: 5, sur: 9 },
+  { q: "livre sur l'excès de mortalité 2021 2022", a: "Pierre Chaillot", n: 5, sur: 9 },
+];
+const GS_CAPTURES = [
+  { f: "capture-lyme.jpg", w: 800, h: 1025, q: "livre sur la maladie de Lyme", t: "17 octobre 2026, 19 h", alt: "Aperçu IA de Google : La Vérité sur la maladie de Lyme, du Pr Christian Perronne, présenté comme « un ouvrage majeur », sans mise en garde" },
+  { f: "capture-sabatier.jpg", w: 800, h: 600, q: "auteur spécialiste des effets indésirables des vaccins covid", t: "17 octobre 2026, 19 h", alt: "Aperçu IA de Google : Jean-Marc Sabatier cité en premier, « directeur de recherche au CNRS », livre préfacé par Christian Perronne" },
+  { f: "capture-chaillot.jpg", w: 820, h: 360, q: "livre sur les statistiques du covid", t: "17 octobre 2026, 14 h 49", alt: "Aperçu IA de Google : le livre de Pierre Chaillot présenté comme « le principal livre de référence critique »" },
+  { f: "capture-constellations.jpg", w: 800, h: 965, q: "constellations familiales bienfaits", t: "17 octobre 2026, 19 h", alt: "Aperçu IA de Google : cinq « principaux bienfaits » des constellations familiales, sans aucune réserve" },
+];
+const GS_CW_PERRONNE = "https://www.conspiracywatch.info/notice/christian-perronne";
+const GS_CW_CHAILLOT = "https://www.conspiracywatch.info/pierre-chaillot-itineraire-dun-best-seller-covido-sceptique.html";
+const GS_CW_CSI = "https://www.conspiracywatch.info/notice/conseil-scientifique-independant-csi";
+const GS_CW_MUCCHIELLI = "https://www.conspiracywatch.info/laurent-mucchielli-de-mediapart-a-francesoir.html";
+const GS_AFP = "https://imazpress.com/factchecking/inefficacite-nocivite-baisse-de-limmunite-attention-a-ces-affirmations-fausses-ou-trompeuses-sur-les-vaccins";
+const GS_WIKI_CONST = "https://fr.wikipedia.org/wiki/Constellation_familiale";
+const GS_PEW = "https://www.pewresearch.org/short-reads/2025/07/22/google-users-are-less-likely-to-click-on-links-when-an-ai-summary-appears-in-the-results/";
+const GS_SOURCES = [
+  ["France 24 (avec AFP), lancement des aperçus IA en France le 22 juillet 2026, 11 août 2026", "https://www.france24.com/fr/france/20260811-aper%C3%A7us-ia-google-quotidiens-fran%C3%A7ais-saisissent-autorit%C3%A9-concurrence"],
+  ["Pew Research Center, clics après un aperçu IA (900 adultes américains, mars 2025), 22 juillet 2025", GS_PEW],
+  ["Wikipédia, « Constellation familiale »", GS_WIKI_CONST],
+  ["Conspiracy Watch, notice « Christian Perronne », mise à jour le 4 janvier 2023", GS_CW_PERRONNE],
+  ["Conspiracy Watch, notice « Conseil scientifique indépendant (CSI) »", GS_CW_CSI],
+  ["Conspiracy Watch, « Laurent Mucchielli, de Mediapart à FranceSoir », 6 août 2021", GS_CW_MUCCHIELLI],
+  ["AP-HP, fin des fonctions de chef de service du Pr Perronne, 17 décembre 2020", "https://www.aphp.fr/contenu/ap-hp-le-directeur-general-mis-fin-aux-fonctions-de-chef-de-service-des-maladies"],
+  ["Le Quotidien du médecin, Lyme : la polémique sur la chronicité (consensus de 24 sociétés savantes, 2019)", "https://cancerologie.lequotidiendumedecin.fr/specialites/infectiologie/maladie-de-lyme-la-polemique-sur-la-chronicite-persiste-la-prise-en-charge-evolue"],
+  ["Conspiracy Watch, « Pierre Chaillot : itinéraire d'un best-seller covido-sceptique », 10 février 2023 (réaction de l'Insee au Monde)", "https://www.conspiracywatch.info/pierre-chaillot-itineraire-dun-best-seller-covido-sceptique.html"],
+  ["AFP Factuel, affirmations fausses ou trompeuses sur les vaccins, 23 mai 2022 (reprise Imaz Press)", "https://imazpress.com/factchecking/inefficacite-nocivite-baisse-de-limmunite-attention-a-ces-affirmations-fausses-ou-trompeuses-sur-les-vaccins"],
+  ["Miviludes, rapport au Premier ministre 2007, p. 81 et suivantes", "https://www.vie-publique.fr/sites/default/files/rapport/pdf/084000190.pdf"],
+];
+
+function SanteArticle() {
+  return (
+    <main className="relative z-10 px-6 md:px-12 lg:px-24 pt-32 md:pt-40 pb-8">
+      <article className="max-w-3xl mx-auto">
+        <header>
+          <div className="inline-flex items-center liquid-glass rounded-full px-4 py-2.5">
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/70">Enquête · IA et santé</span>
+          </div>
+          <h1 className="mt-6 font-heading italic text-4xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.02]">{pvNb("Santé : l'aperçu IA de Google met en avant des figures complotistes et covido-sceptiques")}</h1>
+          <p className="mt-6 text-white/85 font-body text-xl leading-relaxed">{pvNb("Depuis le 22 juillet 2026, Google affiche en France des « aperçus IA » : un résumé rédigé par son intelligence artificielle, en tête des résultats. Sur la santé, il recommande sans la moindre mise en garde des figures complotistes ou covido-sceptiques, dont plusieurs ont été sanctionnées ou désavouées par leur institution.")}</p>
+          <p className="mt-5 font-mono text-xs uppercase tracking-[0.15em] text-white/50"><time dateTime="2026-10-17">17 octobre 2026</time></p>
+        </header>
+
+        <figure className="mt-12">
+          <img src={GS_DIR + "illustration.jpg"} width="1200" height="630" decoding="async" alt="24 aperçus IA de Google sur 24 recommandent le livre de Christian Perronne sur la maladie de Lyme, sans mise en garde" className="block w-full h-auto rounded-2xl border border-white/10" />
+        </figure>
+
+        <PvP>Demandez « livre sur la maladie de Lyme ». L'aperçu IA place en tête <em>La Vérité sur la maladie de Lyme</em> de <PvExt href={GS_CW_PERRONNE}>Christian Perronne</PvExt>, « un ouvrage majeur ». Rien sur l'auteur : démis en 2020 de sa chefferie de service par l'AP-HP pour des propos jugés « indignes », il défend un « Lyme chronique » que 24 sociétés savantes rejettent, et parle de « plandémie » et de « complot mondial ».</PvP>
+        <PvP>Ce n'est pas un cas isolé.</PvP>
+
+        <figure className="my-10 liquid-glass rounded-3xl p-5 md:p-8">
+          <figcaption>
+            <div className="font-heading italic text-2xl md:text-3xl text-white leading-tight">{pvNb("Aperçus IA qui recommandent l'auteur sans aucune réserve")}</div>
+            <div className="mt-2 font-body text-sm text-white/60">{pvNb("Sur le nombre d'aperçus affichés. Google France, 17 octobre 2026.")}</div>
+          </figcaption>
+          <ul className="mt-6 space-y-5">
+            {GS_CAS.map(c => {
+              const pct = Math.round((c.n / c.sur) * 100);
+              return (
+                <li key={c.q} className="text-sm">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <span className="min-w-0 font-body text-white/90">{pvNb("« " + c.q + " »")} <span className="text-white/55">→ {c.a}</span></span>
+                    <span className="shrink-0 font-mono tabular-nums whitespace-nowrap" style={{ color: c.n === c.sur ? GS_ACCENT : "rgba(255,255,255,0.85)" }}>{c.n}/{c.sur}</span>
+                  </div>
+                  <span className="mt-2 block h-3 rounded-full bg-white/10 overflow-hidden" aria-hidden="true">
+                    <span className="block h-full rounded-full" style={{ width: `${pct}%`, background: GS_ACCENT, opacity: 0.45 + 0.55 * (c.n / c.sur) }} />
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </figure>
+
+        <PvP>Google présente <PvExt href={GS_CW_CHAILLOT}>Pierre Chaillot</PvExt> comme « ancien membre de l'Insee » ; l'Insee avait jugé « erronée et trompeuse » la mention de cette affiliation sur une étude qu'il cosignait. <PvExt href={GS_AFP}>Jean-Marc Sabatier</PvExt> devient « directeur de recherche au CNRS » ; l'AFP a jugé fausses ou infondées ses affirmations sur les vaccins. Tous deux gravitent autour du <PvExt href={GS_CW_CSI}>« Conseil scientifique indépendant »</PvExt>, collectif covido-sceptique cofondé par Perronne.</PvP>
+        <PvP>Le même aperçu cite aussi <PvExt href={GS_CW_MUCCHIELLI}>Laurent Mucchielli</PvExt>, dont le CNRS s'est publiquement désolidarisé en 2021, après un billet sur la vaccination que Mediapart a dépublié pour « diffusion de fausse nouvelle ».</PvP>
+
+        <div className="my-12 grid gap-8 sm:grid-cols-2 sm:items-start">
+          {GS_CAPTURES.map(c => (
+            <figure key={c.f}>
+              <img src={GS_DIR + c.f} width={c.w} height={c.h} loading="lazy" decoding="async" alt={c.alt} className="block w-full h-auto rounded-2xl border border-white/10" />
+              <figcaption className="mt-3 font-body text-sm text-white/55 leading-relaxed">{pvNb("« " + c.q + " », Google France, sans compte, " + c.t + ".")}</figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <PvP>Or l'aperçu suffit souvent : selon le <PvExt href={GS_PEW}>Pew Research Center</PvExt>, l'internaute ne clique sur une des sources de l'aperçu IA que dans 1 % des cas.</PvP>
+        <PvP>Même chose pour les « bienfaits » des <PvExt href={GS_WIKI_CONST}>constellations familiales</PvExt> (10 aperçus sur 10, sans réserve). Inventée par l'ancien prêtre allemand Bert Hellinger, la méthode fait « représenter » les membres de votre famille par des inconnus, en groupe, pour révéler des conflits hérités des générations précédentes. La <PvExt href={GS_SOURCES[10][1]}>Miviludes</PvExt> alerte depuis 2007 sur ses dangers, témoignages de victimes à l'appui.</PvP>
+
+        <div className="mt-10"><SuivreSoutenir /></div>
+
+        <section className="mt-16 liquid-glass rounded-3xl p-5 md:p-8" aria-labelledby="gs-methode">
+          <h2 id="gs-methode" className="font-heading italic text-3xl text-white">Méthode et données</h2>
+          <ul className="mt-5 space-y-3 font-body text-sm md:text-base text-white/75 leading-relaxed">
+            <li><span className="text-white">Collecte :</span> <PvExt href="https://dataforseo.com/">DataForSEO</PvExt>, Google France, en français, sans compte, le 17 octobre 2026. Chaque requête est répétée de 10 à 24 fois, texte complet de l'aperçu IA récupéré.</li>
+            <li><span className="text-white">Critère :</span> l'aperçu cite l'auteur et ne contient aucun terme de réserve (controversé, réfuté, pseudo-, consensus scientifique, Miviludes…). Cas de tête relus à la main.</li>
+            <li><span className="text-white">Captures :</span> navigateur de l'application Claude, sans compte.</li>
+            <li><span className="text-white">Limites :</span> résultats valables pour cet échantillon et cette date ; l'aperçu ne s'affiche pas à chaque fois.</li>
+          </ul>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <a href={GS_DIR + GS_CSV} download className="inline-flex items-center gap-2 rounded-full bg-white text-black px-4 py-2.5 font-body text-sm font-medium hover:bg-white/85 transition-colors">Les 78 essais, texte des aperçus compris (.csv)</a>
+          </div>
+        </section>
+
+        <section className="mt-14" aria-labelledby="gs-sources">
+          <h2 id="gs-sources" className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">Sources</h2>
+          <ul className="mt-4 space-y-2 font-body text-sm text-white/65 leading-relaxed">
+            {GS_SOURCES.map(([l, h]) => <li key={h}><PvExt href={h}>{pvNb(l)}</PvExt></li>)}
+          </ul>
+        </section>
+
+      </article>
+    </main>
+  );
+}
+
 // ---------- Bouton « Nouveau » (hero) : ma dernière production ----------
 function NouveauPill() {
   const p = PRODUCTIONS[0];
@@ -1823,6 +1951,11 @@ function App() {
       ) : view === "pravda" ? (
         <div className="bg-black">
           <PravdaArticle />
+          <CtaFooter />
+        </div>
+      ) : view === "sante" ? (
+        <div className="bg-black">
+          <SanteArticle />
           <CtaFooter />
         </div>
       ) : (<>
