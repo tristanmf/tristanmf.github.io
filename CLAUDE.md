@@ -617,7 +617,7 @@ Ajouter un article = une vue dans `app.jsx`, une entrée dans `PAGES`, le chemin
 - Visuels en HTML/SVG natif, aucune bibliothèque. Schéma horizontal à partir de `lg`, vertical
   en dessous. Espaces insécables françaises via `pvNb()`.
 
-**Google / santé** (« Santé : l'aperçu IA de Google recommande des auteurs hors du consensus scientifique », `/ia/google-sante/`, vue `sante`).
+**Google / santé** (« Santé : l'aperçu IA de Google met en avant des figures complotistes et covido-sceptiques », `/ia/google-sante/`, vue `sante`).
 - Préparé le 17 octobre 2026 sur la branche `claude/article-sante-google`. Texte court (~1 600 signes)
   validé sur le fond par Tristan ; chiffres de la consolidation du 17/10 (Drive, enquete-ia-sources,
   « [DATA] Santé aperçus IA »), gardés tels quels même si un contrôle du soir n'a pas reproduit les

@@ -336,7 +336,7 @@ const PRESS_TITLE = "Revue de presse — Tristan Mendès France";
 const PRAVDA_PATH = "/ia/pravda-perplexity/";
 const PRAVDA_TITLE = "Présidentielle : quand Perplexity puise dans la propagande russe pour présenter les candidats — Tristan Mendès France";
 const SANTE_PATH = "/ia/google-sante/";
-const SANTE_TITLE = "Santé : l'aperçu IA de Google recommande des auteurs hors du consensus scientifique — Tristan Mendès France";
+const SANTE_TITLE = "Santé : l'aperçu IA de Google met en avant des figures complotistes et covido-sceptiques — Tristan Mendès France";
 const PRODUCTIONS_PATH = "/productions/";
 const PRODUCTIONS_TITLE = "Productions — Tristan Mendès France";
 const VIEW_TITLES = { home: HOME_TITLE, presse: PRESS_TITLE, pravda: PRAVDA_TITLE, sante: SANTE_TITLE, productions: PRODUCTIONS_TITLE };
@@ -1683,11 +1683,17 @@ const GS_CAPTURES = [
   { f: "capture-constellations.jpg", w: 800, h: 965, q: "constellations familiales bienfaits", t: "17 octobre 2026, 19 h", alt: "Aperçu IA de Google : cinq « principaux bienfaits » des constellations familiales, sans aucune réserve" },
 ];
 const GS_CW_PERRONNE = "https://www.conspiracywatch.info/notice/christian-perronne";
+const GS_CW_CHAILLOT = "https://www.conspiracywatch.info/pierre-chaillot-itineraire-dun-best-seller-covido-sceptique.html";
+const GS_CW_CSI = "https://www.conspiracywatch.info/notice/conseil-scientifique-independant-csi";
+const GS_CW_MUCCHIELLI = "https://www.conspiracywatch.info/laurent-mucchielli-de-mediapart-a-francesoir.html";
+const GS_AFP = "https://imazpress.com/factchecking/inefficacite-nocivite-baisse-de-limmunite-attention-a-ces-affirmations-fausses-ou-trompeuses-sur-les-vaccins";
 const GS_PEW = "https://www.pewresearch.org/short-reads/2025/07/22/google-users-are-less-likely-to-click-on-links-when-an-ai-summary-appears-in-the-results/";
 const GS_SOURCES = [
   ["France 24 (avec AFP), lancement des aperçus IA en France le 22 juillet 2026, 11 août 2026", "https://www.france24.com/fr/france/20260811-aper%C3%A7us-ia-google-quotidiens-fran%C3%A7ais-saisissent-autorit%C3%A9-concurrence"],
   ["Pew Research Center, clics après un aperçu IA (900 adultes américains, mars 2025), 22 juillet 2025", GS_PEW],
   ["Conspiracy Watch, notice « Christian Perronne », mise à jour le 4 janvier 2023", GS_CW_PERRONNE],
+  ["Conspiracy Watch, notice « Conseil scientifique indépendant (CSI) »", GS_CW_CSI],
+  ["Conspiracy Watch, « Laurent Mucchielli, de Mediapart à FranceSoir », 6 août 2021", GS_CW_MUCCHIELLI],
   ["AP-HP, fin des fonctions de chef de service du Pr Perronne, 17 décembre 2020", "https://www.aphp.fr/contenu/ap-hp-le-directeur-general-mis-fin-aux-fonctions-de-chef-de-service-des-maladies"],
   ["Le Quotidien du médecin, Lyme : la polémique sur la chronicité (consensus de 24 sociétés savantes, 2019)", "https://cancerologie.lequotidiendumedecin.fr/specialites/infectiologie/maladie-de-lyme-la-polemique-sur-la-chronicite-persiste-la-prise-en-charge-evolue"],
   ["Conspiracy Watch, « Pierre Chaillot : itinéraire d'un best-seller covido-sceptique », 10 février 2023 (réaction de l'Insee au Monde)", "https://www.conspiracywatch.info/pierre-chaillot-itineraire-dun-best-seller-covido-sceptique.html"],
@@ -1703,8 +1709,8 @@ function SanteArticle() {
           <div className="inline-flex items-center liquid-glass rounded-full px-4 py-2.5">
             <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/70">Enquête · IA et santé</span>
           </div>
-          <h1 className="mt-6 font-heading italic text-4xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.02]">{pvNb("Santé : l'aperçu IA de Google recommande des auteurs hors du consensus scientifique")}</h1>
-          <p className="mt-6 text-white/85 font-body text-xl leading-relaxed">{pvNb("Depuis le 22 juillet 2026, Google affiche en France des « aperçus IA » : un résumé rédigé par son intelligence artificielle, en tête des résultats. Sur la santé, il donne du crédit à des figures qui ne représentent pas le consensus scientifique, sans la moindre mise en garde.")}</p>
+          <h1 className="mt-6 font-heading italic text-4xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.02]">{pvNb("Santé : l'aperçu IA de Google met en avant des figures complotistes et covido-sceptiques")}</h1>
+          <p className="mt-6 text-white/85 font-body text-xl leading-relaxed">{pvNb("Depuis le 22 juillet 2026, Google affiche en France des « aperçus IA » : un résumé rédigé par son intelligence artificielle, en tête des résultats. Sur la santé, il recommande sans la moindre mise en garde des figures complotistes ou covido-sceptiques, dont plusieurs ont été sanctionnées ou désavouées par leur institution.")}</p>
           <p className="mt-5 font-mono text-xs uppercase tracking-[0.15em] text-white/50"><time dateTime="2026-10-17">17 octobre 2026</time></p>
         </header>
 
@@ -1712,26 +1718,34 @@ function SanteArticle() {
           <img src={GS_DIR + "illustration.jpg"} width="1200" height="630" decoding="async" alt="24 aperçus IA de Google sur 24 recommandent le livre de Christian Perronne sur la maladie de Lyme, sans mise en garde" className="block w-full h-auto rounded-2xl border border-white/10" />
         </figure>
 
-        <PvP>Demandez « livre sur la maladie de Lyme ». L'aperçu IA place en tête <em>La Vérité sur la maladie de Lyme</em> de <PvExt href={GS_CW_PERRONNE}>Christian Perronne</PvExt>, « un ouvrage majeur ». Rien sur l'auteur : démis en 2020 de sa chefferie de service par l'AP-HP pour des propos jugés « indignes », il défend un « Lyme chronique » que 24 sociétés savantes rejettent.</PvP>
+        <PvP>Demandez « livre sur la maladie de Lyme ». L'aperçu IA place en tête <em>La Vérité sur la maladie de Lyme</em> de <PvExt href={GS_CW_PERRONNE}>Christian Perronne</PvExt>, « un ouvrage majeur ». Rien sur l'auteur : démis en 2020 de sa chefferie de service par l'AP-HP pour des propos jugés « indignes », il défend un « Lyme chronique » que 24 sociétés savantes rejettent, et parle de « plandémie » et de « complot mondial ».</PvP>
         <PvP>Ce n'est pas un cas isolé.</PvP>
 
-        <figure className="my-10 liquid-glass rounded-3xl overflow-hidden">
-          <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 px-5 py-3 border-b border-white/10 font-mono text-[11px] uppercase tracking-[0.15em] text-white/50">
-            <span>Requête · auteur mis en avant</span><span>Sans aucune réserve</span>
-          </div>
-          {GS_CAS.map(c => (
-            <div key={c.q} className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-0.5 px-5 py-3 border-b border-white/5 last:border-b-0 text-sm font-body">
-              <span className="min-w-0">
-                <span className="block text-white/90 font-medium">{pvNb("« " + c.q + " »")}</span>
-                <span className="block text-white/65 font-light leading-snug">{c.a}</span>
-              </span>
-              <span className="font-mono tabular-nums whitespace-nowrap self-center" style={{ color: c.n === c.sur ? GS_ACCENT : "rgba(255,255,255,0.8)" }}>{c.n} sur {c.sur}</span>
-            </div>
-          ))}
-          <figcaption className="px-5 py-3 border-t border-white/10 font-body text-xs text-white/50 leading-relaxed">{pvNb("Nombre d'aperçus IA où l'auteur apparaît sans aucune réserve, sur le nombre d'aperçus affichés. Google France, 17 octobre 2026.")}</figcaption>
+        <figure className="my-10 liquid-glass rounded-3xl p-5 md:p-8">
+          <figcaption>
+            <div className="font-heading italic text-2xl md:text-3xl text-white leading-tight">{pvNb("Aperçus IA qui recommandent l'auteur sans aucune réserve")}</div>
+            <div className="mt-2 font-body text-sm text-white/60">{pvNb("Sur le nombre d'aperçus affichés. Google France, 17 octobre 2026.")}</div>
+          </figcaption>
+          <ul className="mt-6 space-y-5">
+            {GS_CAS.map(c => {
+              const pct = Math.round((c.n / c.sur) * 100);
+              return (
+                <li key={c.q} className="text-sm">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <span className="min-w-0 font-body text-white/90">{pvNb("« " + c.q + " »")} <span className="text-white/55">→ {c.a}</span></span>
+                    <span className="shrink-0 font-mono tabular-nums whitespace-nowrap" style={{ color: c.n === c.sur ? GS_ACCENT : "rgba(255,255,255,0.85)" }}>{c.n}/{c.sur}</span>
+                  </div>
+                  <span className="mt-2 block h-3 rounded-full bg-white/10 overflow-hidden" aria-hidden="true">
+                    <span className="block h-full rounded-full" style={{ width: `${pct}%`, background: GS_ACCENT, opacity: 0.45 + 0.55 * (c.n / c.sur) }} />
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
         </figure>
 
-        <PvP>Google présente Chaillot comme « ancien membre de l'Insee » ; l'Insee avait jugé « erronée et trompeuse » la mention de cette affiliation sur une étude qu'il cosignait. Sabatier devient « directeur de recherche au CNRS » ; l'AFP a jugé fausses ou infondées ses affirmations sur les vaccins.</PvP>
+        <PvP>Google présente <PvExt href={GS_CW_CHAILLOT}>Pierre Chaillot</PvExt> comme « ancien membre de l'Insee » ; l'Insee avait jugé « erronée et trompeuse » la mention de cette affiliation sur une étude qu'il cosignait. <PvExt href={GS_AFP}>Jean-Marc Sabatier</PvExt> devient « directeur de recherche au CNRS » ; l'AFP a jugé fausses ou infondées ses affirmations sur les vaccins. Tous deux gravitent autour du <PvExt href={GS_CW_CSI}>« Conseil scientifique indépendant »</PvExt>, collectif covido-sceptique cofondé par Perronne.</PvP>
+        <PvP>Le même aperçu cite aussi <PvExt href={GS_CW_MUCCHIELLI}>Laurent Mucchielli</PvExt>, dont le CNRS s'est publiquement désolidarisé en 2021, après un billet sur la vaccination que Mediapart a dépublié pour « diffusion de fausse nouvelle ».</PvP>
 
         <div className="my-12 grid gap-8 sm:grid-cols-2 sm:items-start">
           {GS_CAPTURES.map(c => (
@@ -1744,7 +1758,7 @@ function SanteArticle() {
 
         <PvP>Or l'aperçu suffit souvent. Aux États-Unis, selon le <PvExt href={GS_PEW}>Pew Research Center</PvExt>, quand un aperçu IA s'affiche, l'internaute ne clique sur un résultat classique que dans 8 % des visites (15 % sans aperçu), et sur une des sources citées dans 1 % des cas. Pour beaucoup, la réponse s'arrête là.</PvP>
         <PvP>Le mécanisme est simple : pour une demande de livre, l'aperçu IA reprend les fiches des libraires et le résumé de l'éditeur. Il recommande, il ne qualifie pas.</PvP>
-        <PvP>Même chose pour les « bienfaits » des constellations familiales (10 aperçus sur 10, sans réserve), une pratique sur laquelle la <PvExt href={GS_SOURCES[7][1]}>Miviludes</PvExt> alerte depuis 2007.</PvP>
+        <PvP>Même chose pour les « bienfaits » des constellations familiales (10 aperçus sur 10, sans réserve), une pratique sur laquelle la <PvExt href={GS_SOURCES[9][1]}>Miviludes</PvExt> alerte depuis 2007.</PvP>
 
         <div className="mt-10"><SuivreSoutenir /></div>
 
