@@ -1708,6 +1708,10 @@ function SanteArticle() {
           <p className="mt-5 font-mono text-xs uppercase tracking-[0.15em] text-white/50"><time dateTime="2026-10-17">17 octobre 2026</time></p>
         </header>
 
+        <figure className="mt-12">
+          <img src={GS_DIR + "illustration.jpg"} width="1200" height="630" decoding="async" alt="24 aperçus IA de Google sur 24 recommandent le livre de Christian Perronne sur la maladie de Lyme, sans mise en garde" className="block w-full h-auto rounded-2xl border border-white/10" />
+        </figure>
+
         <PvP>Demandez « livre sur la maladie de Lyme ». L'aperçu IA place en tête <em>La Vérité sur la maladie de Lyme</em> de <PvExt href={GS_CW_PERRONNE}>Christian Perronne</PvExt>, « un ouvrage majeur ». Rien sur l'auteur : démis en 2020 de sa chefferie de service par l'AP-HP pour des propos jugés « indignes », il défend un « Lyme chronique » que 24 sociétés savantes rejettent.</PvP>
         <PvP>Ce n'est pas un cas isolé.</PvP>
 
