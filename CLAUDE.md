@@ -623,8 +623,8 @@ Ajouter un article = une vue dans `app.jsx`, une entrée dans `PAGES`, le chemin
   « [DATA] Santé aperçus IA »), gardés tels quels même si un contrôle du soir n'a pas reproduit les
   deux cas Chaillot. Captures dans `ia/google-sante/` (navigateur sans compte ; Chaillot : capture
   Google du même jour, 14 h 49). **Pas de signature « Prompté par »** (retirée à la demande de Tristan le 19/10/2026).
-- **Volontairement absent de `PRODUCTIONS`, du bouton « Nouveau » et de `sitemap.xml`** : Tristan le
-  publie sans le mettre en avant ni l'annoncer sur Substack. Ne pas l'y ajouter sans sa demande.
+- Mis en ligne le 19/10/2026 sans mise en avant, puis **mis en avant le même jour à la demande de Tristan** :
+  en tête de `PRODUCTIONS` (bouton « Nouveau ») et dans `sitemap.xml`. Pas d'envoi Substack à ce stade.
 - DataForSEO (outil de collecte des aperçus IA) est nommé, avec un lien, dans la section « Méthode et
   données » : décision de Tristan du 17/10/2026 pour cet article, contre la règle habituelle de l'enquête.
 
