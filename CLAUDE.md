@@ -628,6 +628,11 @@ Ajouter un article = une vue dans `app.jsx`, une entrée dans `PAGES`, le chemin
 - DataForSEO (outil de collecte des aperçus IA) est nommé, avec un lien, dans la section « Méthode et
   données » : décision de Tristan du 17/10/2026 pour cet article, contre la règle habituelle de l'enquête.
 
+**Substack partout où c'est utile (20/10/2026, demande de Tristan)** : icône dans la rangée des réseaux sociaux
+de l'accueil (7 icônes, réduites à 40 px sous `sm` pour tenir sur une ligne en 375 px), bloc `SubstackInvite`
+juste avant « Parlons-en » sur l'accueil, lien « Newsletter » dans le pied de page de toutes les pages.
+Les articles et /productions/ gardent `SuivreSoutenir` (Substack + Ko-fi).
+
 ## Décisions prises (et pourquoi) — ne pas rouvrir sans raison
 
 **Contact**

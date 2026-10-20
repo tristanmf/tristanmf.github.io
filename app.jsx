@@ -568,25 +568,28 @@ function Hero() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.35, ease: [0.2,0.7,0.2,1] }}
-          className="mt-7 flex items-center gap-3"
+          className="mt-7 flex flex-wrap items-center gap-1.5 sm:gap-3"
         >
-          <a href="http://www.linkedin.com/in/tristanmf" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
+          <a href="http://www.linkedin.com/in/tristanmf" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="liquid-glass h-10 w-10 sm:h-12 sm:w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
           </a>
-          <a href="https://www.facebook.com/tristan.mendes.france" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
+          <a href="https://www.facebook.com/tristan.mendes.france" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="liquid-glass h-10 w-10 sm:h-12 sm:w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
           </a>
-          <a href="https://www.instagram.com/tristanmf/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
+          <a href="https://www.instagram.com/tristanmf/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="liquid-glass h-10 w-10 sm:h-12 sm:w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
-          <a href="https://x.com/tristanmf" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" className="liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
+          <a href="https://x.com/tristanmf" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" className="liquid-glass h-10 w-10 sm:h-12 sm:w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           </a>
-          <a href="https://bsky.app/profile/tmf.bsky.social" target="_blank" rel="noopener noreferrer" aria-label="Bluesky" className="liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
+          <a href="https://bsky.app/profile/tmf.bsky.social" target="_blank" rel="noopener noreferrer" aria-label="Bluesky" className="liquid-glass h-10 w-10 sm:h-12 sm:w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 0 0 0 3.2c0 .324.018 2.846.166 3.653.644 3.515 4.363 4.606 6.758 3.553-2.585.808-3.484 2.505-1.782 4.629 2.508 2.508 5.768-.426 6.858-1.77.108-.134.217-.268.318-.396l.123.149c1.09 1.344 4.35 4.278 6.858 1.77 1.702-2.124.803-3.82-1.782-4.629 2.395 1.053 6.114-.038 6.758-3.553.148-.807.166-3.329.166-3.653 0-3.2-2.566-2.256-5.202-.395C16.046 4.747 13.087 8.686 12 10.8z"/></svg>
           </a>
-          <a href="https://www.threads.com/@tristanmf" target="_blank" rel="noopener noreferrer" aria-label="Threads" className="liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
+          <a href="https://www.threads.com/@tristanmf" target="_blank" rel="noopener noreferrer" aria-label="Threads" className="liquid-glass h-10 w-10 sm:h-12 sm:w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65z"/></svg>
+          </a>
+          <a href={SUBSTACK_HOME} target="_blank" rel="noopener noreferrer" aria-label="Newsletter Substack" title="Ma newsletter sur Substack" className="liquid-glass h-10 w-10 sm:h-12 sm:w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>
           </a>
         </mot.div>
 
@@ -1105,6 +1108,7 @@ function CtaFooter() {
             <NavLink href="/#projets" className="text-white/40 text-xs font-body hover:text-white/70">Projets</NavLink>
             <NavLink href={PRESS_PATH} className="text-white/40 text-xs font-body hover:text-white/70">Revue de presse</NavLink>
             <NavLink href="/#apropos" className="text-white/40 text-xs font-body hover:text-white/70">À propos</NavLink>
+            <a href={SUBSTACK_URL} target="_blank" rel="noopener" className="text-white/40 text-xs font-body hover:text-white/70">Newsletter</a>
             <MailLink className="text-white/40 text-xs font-body hover:text-white/70">Contact</MailLink>
           </div>
         </div>
@@ -1830,9 +1834,19 @@ function ComploramaDernier() {
 // Deux simples liens : aucun widget Substack ni Ko-fi n'est chargé (règle du
 // site : aucun domaine tiers). Le logo Substack est dessiné ici (Simple Icons, CC0).
 const SUBSTACK_URL = "https://tristanmendesfrance.substack.com/subscribe";
+const SUBSTACK_HOME = "https://tristanmendesfrance.substack.com/";
 const KOFI_URL = "https://ko-fi.com/tristanmf";
 const SubstackLogo = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z" /></svg>;
 const Tasse = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 1 1 0 8h-1" /><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" /><line x1="6" y1="2" x2="6" y2="4" /><line x1="10" y1="2" x2="10" y2="4" /><line x1="14" y1="2" x2="14" y2="4" /></svg>;
+// Seul le bloc newsletter, pour l'accueil (Tristan, 20/10/2026 : Substack partout où c'est utile).
+function SubstackInvite() {
+  return (
+    <a href={SUBSTACK_URL} target="_blank" rel="noopener" className="group flex flex-wrap items-center justify-between gap-4 liquid-glass rounded-3xl p-5 md:p-6">
+      <span className="font-body text-white/85 leading-snug">{"Ne ratez pas mes prochaines enquêtes et publications importantes : abonnez-vous à ma newsletter, c'est gratuit.".replace(/ ([%:;?!»])/g, "\u00a0$1")}</span>
+      <span className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-body text-sm font-semibold text-white whitespace-nowrap transition-opacity group-hover:opacity-90" style={{ background: "#FF6719" }}><SubstackLogo /> S'abonner sur Substack</span>
+    </a>
+  );
+}
 function SuivreSoutenir() {
   const nbsp = s => s.replace(/ ([%:;?!»])/g, "\u00a0$1");
   return (
@@ -1954,6 +1968,9 @@ function App() {
           <FeaturesGrid />
           <Testimonials />
           <Conferencier />
+          <section className="relative z-10 px-6 md:px-12 lg:px-24 pt-16" aria-label="Newsletter">
+            <div className="max-w-3xl mx-auto"><SubstackInvite /></div>
+          </section>
           <CtaFooter />
         </div>
       </>)}
