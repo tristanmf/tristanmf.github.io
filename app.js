@@ -951,13 +951,13 @@ function Hero() {
       delay: 1.35,
       ease: [0.2, 0.7, 0.2, 1]
     },
-    className: "mt-7 flex items-center gap-3"
+    className: "mt-7 flex flex-wrap items-center gap-1.5 sm:gap-3"
   }, /*#__PURE__*/React.createElement("a", {
     href: "http://www.linkedin.com/in/tristanmf",
     target: "_blank",
     rel: "noopener noreferrer",
     "aria-label": "LinkedIn",
-    className: "liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors"
+    className: "liquid-glass h-10 w-10 sm:h-12 sm:w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors"
   }, /*#__PURE__*/React.createElement("svg", {
     width: "19",
     height: "19",
@@ -971,7 +971,7 @@ function Hero() {
     target: "_blank",
     rel: "noopener noreferrer",
     "aria-label": "Facebook",
-    className: "liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors"
+    className: "liquid-glass h-10 w-10 sm:h-12 sm:w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors"
   }, /*#__PURE__*/React.createElement("svg", {
     width: "19",
     height: "19",
@@ -985,7 +985,7 @@ function Hero() {
     target: "_blank",
     rel: "noopener noreferrer",
     "aria-label": "Instagram",
-    className: "liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors"
+    className: "liquid-glass h-10 w-10 sm:h-12 sm:w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors"
   }, /*#__PURE__*/React.createElement("svg", {
     width: "19",
     height: "19",
@@ -1015,7 +1015,7 @@ function Hero() {
     target: "_blank",
     rel: "noopener noreferrer",
     "aria-label": "X / Twitter",
-    className: "liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors"
+    className: "liquid-glass h-10 w-10 sm:h-12 sm:w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors"
   }, /*#__PURE__*/React.createElement("svg", {
     width: "17",
     height: "17",
@@ -1029,7 +1029,7 @@ function Hero() {
     target: "_blank",
     rel: "noopener noreferrer",
     "aria-label": "Bluesky",
-    className: "liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors"
+    className: "liquid-glass h-10 w-10 sm:h-12 sm:w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors"
   }, /*#__PURE__*/React.createElement("svg", {
     width: "19",
     height: "19",
@@ -1043,7 +1043,7 @@ function Hero() {
     target: "_blank",
     rel: "noopener noreferrer",
     "aria-label": "Threads",
-    className: "liquid-glass h-12 w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors"
+    className: "liquid-glass h-10 w-10 sm:h-12 sm:w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors"
   }, /*#__PURE__*/React.createElement("svg", {
     width: "19",
     height: "19",
@@ -1052,6 +1052,21 @@ function Hero() {
     "aria-hidden": "true"
   }, /*#__PURE__*/React.createElement("path", {
     d: "M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65z"
+  }))), /*#__PURE__*/React.createElement("a", {
+    href: SUBSTACK_HOME,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    "aria-label": "Newsletter Substack",
+    title: "Ma newsletter sur Substack",
+    className: "liquid-glass h-10 w-10 sm:h-12 sm:w-12 rounded-full flex items-center justify-center text-white/75 hover:text-white hover:bg-white/15 transition-colors"
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "17",
+    height: "17",
+    viewBox: "0 0 24 24",
+    fill: "currentColor",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"
   })))), /*#__PURE__*/React.createElement(mot.a, {
     href: "#apropos",
     initial: {
@@ -1728,7 +1743,12 @@ function CtaFooter() {
   }, "Revue de presse"), /*#__PURE__*/React.createElement(NavLink, {
     href: "/#apropos",
     className: "text-white/40 text-xs font-body hover:text-white/70"
-  }, "\xC0 propos"), /*#__PURE__*/React.createElement(MailLink, {
+  }, "\xC0 propos"), /*#__PURE__*/React.createElement("a", {
+    href: SUBSTACK_URL,
+    target: "_blank",
+    rel: "noopener",
+    className: "text-white/40 text-xs font-body hover:text-white/70"
+  }, "Newsletter"), /*#__PURE__*/React.createElement(MailLink, {
     className: "text-white/40 text-xs font-body hover:text-white/70"
   }, "Contact")))));
 }
@@ -2915,6 +2935,7 @@ function ComploramaDernier() {
 // Deux simples liens : aucun widget Substack ni Ko-fi n'est chargé (règle du
 // site : aucun domaine tiers). Le logo Substack est dessiné ici (Simple Icons, CC0).
 const SUBSTACK_URL = "https://tristanmendesfrance.substack.com/subscribe";
+const SUBSTACK_HOME = "https://tristanmendesfrance.substack.com/";
 const KOFI_URL = "https://ko-fi.com/tristanmf";
 const SubstackLogo = () => /*#__PURE__*/React.createElement("svg", {
   width: "14",
@@ -2955,6 +2976,22 @@ const Tasse = () => /*#__PURE__*/React.createElement("svg", {
   x2: "14",
   y2: "4"
 }));
+// Seul le bloc newsletter, pour l'accueil (Tristan, 20/10/2026 : Substack partout où c'est utile).
+function SubstackInvite() {
+  return /*#__PURE__*/React.createElement("a", {
+    href: SUBSTACK_URL,
+    target: "_blank",
+    rel: "noopener",
+    className: "group flex flex-wrap items-center justify-between gap-4 liquid-glass rounded-3xl p-5 md:p-6"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-body text-white/85 leading-snug"
+  }, "Ne ratez pas mes prochaines enquêtes et publications importantes : abonnez-vous à ma newsletter, c'est gratuit.".replace(/ ([%:;?!»])/g, "\u00a0$1")), /*#__PURE__*/React.createElement("span", {
+    className: "inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-body text-sm font-semibold text-white whitespace-nowrap transition-opacity group-hover:opacity-90",
+    style: {
+      background: "#FF6719"
+    }
+  }, /*#__PURE__*/React.createElement(SubstackLogo, null), " S'abonner sur Substack"));
+}
 function SuivreSoutenir() {
   const nbsp = s => s.replace(/ ([%:;?!»])/g, "\u00a0$1");
   return /*#__PURE__*/React.createElement("div", {
@@ -3103,7 +3140,12 @@ function App() {
     className: "bg-black"
   }, /*#__PURE__*/React.createElement(SanteArticle, null), /*#__PURE__*/React.createElement(CtaFooter, null)) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Hero, null), /*#__PURE__*/React.createElement("div", {
     className: "bg-black"
-  }, /*#__PURE__*/React.createElement(StartSection, null), /*#__PURE__*/React.createElement(FeaturesChess, null), /*#__PURE__*/React.createElement(FeaturesGrid, null), /*#__PURE__*/React.createElement(Testimonials, null), /*#__PURE__*/React.createElement(Conferencier, null), /*#__PURE__*/React.createElement(CtaFooter, null))));
+  }, /*#__PURE__*/React.createElement(StartSection, null), /*#__PURE__*/React.createElement(FeaturesChess, null), /*#__PURE__*/React.createElement(FeaturesGrid, null), /*#__PURE__*/React.createElement(Testimonials, null), /*#__PURE__*/React.createElement(Conferencier, null), /*#__PURE__*/React.createElement("section", {
+    className: "relative z-10 px-6 md:px-12 lg:px-24 pt-16",
+    "aria-label": "Newsletter"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "max-w-3xl mx-auto"
+  }, /*#__PURE__*/React.createElement(SubstackInvite, null))), /*#__PURE__*/React.createElement(CtaFooter, null))));
 }
 function mountShadow(id, render) {
   const host = document.getElementById(id);
