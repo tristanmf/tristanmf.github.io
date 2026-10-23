@@ -2934,8 +2934,8 @@ function ComploramaDernier() {
 // ---------- S'abonner (Substack) et soutenir (Ko-fi) ----------
 // Deux simples liens : aucun widget Substack ni Ko-fi n'est chargé (règle du
 // site : aucun domaine tiers). Le logo Substack est dessiné ici (Simple Icons, CC0).
-const SUBSTACK_URL = "https://tristanmendesfrance.substack.com/subscribe";
-const SUBSTACK_HOME = "https://tristanmendesfrance.substack.com/";
+const SUBSTACK_URL = "https://newsletter.tristan.pro/subscribe";
+const SUBSTACK_HOME = "https://newsletter.tristan.pro/";
 const KOFI_URL = "https://ko-fi.com/tristanmf";
 const SubstackLogo = () => /*#__PURE__*/React.createElement("svg", {
   width: "14",
