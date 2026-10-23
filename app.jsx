@@ -1833,8 +1833,8 @@ function ComploramaDernier() {
 // ---------- S'abonner (Substack) et soutenir (Ko-fi) ----------
 // Deux simples liens : aucun widget Substack ni Ko-fi n'est chargé (règle du
 // site : aucun domaine tiers). Le logo Substack est dessiné ici (Simple Icons, CC0).
-const SUBSTACK_URL = "https://tristanmendesfrance.substack.com/subscribe";
-const SUBSTACK_HOME = "https://tristanmendesfrance.substack.com/";
+const SUBSTACK_URL = "https://newsletter.tristan.pro/subscribe";
+const SUBSTACK_HOME = "https://newsletter.tristan.pro/";
 const KOFI_URL = "https://ko-fi.com/tristanmf";
 const SubstackLogo = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z" /></svg>;
 const Tasse = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 1 1 0 8h-1" /><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" /><line x1="6" y1="2" x2="6" y2="4" /><line x1="10" y1="2" x2="10" y2="4" /><line x1="14" y1="2" x2="14" y2="4" /></svg>;
