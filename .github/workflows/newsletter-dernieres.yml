@@ -1,0 +1,43 @@
+name: Newsletter · dernières lettres
+
+# Copie les trois dernières lettres Substack (titre, résumé, date, image) dans
+# newsletter/dernieres.json pour l'accueil de tristan.pro. Une passe par jour
+# suffit : Tristan publie environ une fois par semaine. Idempotent, sans commit
+# quand rien n'a changé. Après un envoi, on peut le lancer à la main.
+
+on:
+  schedule:
+    - cron: '0 19 * * *'   # 19:00 UTC = ~20:00/21:00 Paris
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  lettres:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Lire le flux Substack
+        run: node scripts/newsletter-dernieres.mjs
+
+      - name: Commit changes
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A newsletter
+          if git diff --staged --quiet; then
+            echo "Nothing to commit."
+          else
+            git commit -m "chore(newsletter): dernières lettres Substack"
+            git pull --rebase
+            git push
+          fi
