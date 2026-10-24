@@ -1,0 +1,25 @@
+{
+  "lettres": [
+    {
+      "titre": "On fait tous confiance aux aperçus IA de Google. Sur la santé, ils recommandent des complotistes.",
+      "resume": "On lit tous les aperçus IA de Google, souvent sans aller plus loin. J’ai testé leur intégrité sur des questions de santé. Résultat : de gros trous dans la raquette.",
+      "date": "2026-10-19",
+      "url": "https://newsletter.tristan.pro/p/on-fait-tous-confiance-aux-apercus",
+      "img": "/newsletter/img/on-fait-tous-confiance-aux-apercus.jpg"
+    },
+    {
+      "titre": "Présidentielle : quand Perplexity puise dans la propagande russe pour présenter les candidats",
+      "resume": "Sur 420 réponses testées, 182 citent le réseau de propagande russe Pravda, sans le moindre avertissement.",
+      "date": "2026-10-17",
+      "url": "https://newsletter.tristan.pro/p/presidentielle-quand-perplexity-puise",
+      "img": "/newsletter/img/presidentielle-quand-perplexity-puise.jpg"
+    },
+    {
+      "titre": "Le monde vu par Midjourney",
+      "resume": "Quand l'IA fait du tourisme.",
+      "date": "2023-05-03",
+      "url": "https://newsletter.tristan.pro/p/le-monde-vu-par-midjourney",
+      "img": "/newsletter/img/le-monde-vu-par-midjourney.jpg"
+    }
+  ]
+}
