@@ -518,7 +518,7 @@ function Hero() {
               <span className="text-sm text-white/90 font-body">1 700+ articles</span>
               <ArrowUpRight size={14} strokeWidth={2} className="text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </NavLink>
-            <NouveauPill />
+            <NewsletterPill />
           </div>
         </FadeIn>
 
@@ -964,6 +964,7 @@ function Testimonials() {
 
   return (
     <section id="productions" className="px-6 md:px-12 lg:px-24 py-16 md:py-28">
+      <NewsletterBloc />
       <FadeIn className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div className="inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap">
           <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/60">Productions</span>
@@ -973,7 +974,6 @@ function Testimonials() {
           Toutes mes productions <ArrowUpRight size={14} strokeWidth={2} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </NavLink>
       </FadeIn>
-      <ProductionsGrid className="mb-16 md:mb-24" />
       <LabTile video="/tmflab.mp4" logo="/tmflab-logo.svg" />
       {/* La grille de cartes a été retirée au profit de la tuile. `items` est
           conservé intact : pour la réactiver, remettre ici le bloc
@@ -1782,7 +1782,20 @@ function SanteArticle() {
   );
 }
 
-// ---------- Bouton « Nouveau » (hero) : ma dernière production ----------
+// ---------- Bouton « Newsletter » (hero) ----------
+// Depuis le 24/10/2026 (Tristan) : les enquêtes paraissent d'abord sur Substack,
+// le bouton sous le portrait mène donc à l'abonnement plutôt qu'au dernier article.
+function NewsletterPill() {
+  return (
+    <a href={SUBSTACK_URL} target="_blank" rel="noopener" className="group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors" aria-label="S'abonner à ma newsletter sur Substack">
+      <span className="rounded-full px-3 py-1 text-xs font-semibold font-body text-white" style={{ background: "#FF6719" }}>Newsletter</span>
+      <span className="text-sm text-white/90 font-body">Je m'abonne</span>
+      <ArrowUpRight size={14} strokeWidth={2} className="text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+    </a>
+  );
+}
+
+// ---------- Bouton « Nouveau » : ma dernière production (plus affiché depuis le 24/10/2026) ----------
 function NouveauPill() {
   const p = PRODUCTIONS[0];
   const cls = "group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors";
@@ -1860,6 +1873,41 @@ function SuivreSoutenir() {
         <span className="inline-flex items-center gap-2 rounded-full border border-white/25 px-4 py-2.5 font-body text-sm font-medium text-white whitespace-nowrap group-hover:bg-white/10 transition-colors"><Tasse /> Offrir un café</span>
       </a>
     </div>
+  );
+}
+
+// Accueil : le grand appel à s'abonner, avec les dernières enquêtes en petit
+// dessous (Tristan, 24/10/2026 : pousser la newsletter, les articles d'abord sur Substack).
+function NewsletterBloc() {
+  const nbsp = s => s.replace(/ ([%:;?!»])/g, "\u00a0$1");
+  return (
+    <FadeIn className="mb-16 md:mb-24">
+      <div className="liquid-glass rounded-[2rem] px-6 py-10 md:px-14 md:py-16 text-center">
+        <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/55">Newsletter · gratuite</div>
+        <h2 className="mt-4 font-heading italic text-white tracking-tight leading-[0.95] text-[clamp(2.5rem,7vw,5rem)]">Aux frontières de l'extrême</h2>
+        <p className="mt-5 mx-auto max-w-2xl text-white/75 font-body font-light text-lg md:text-xl leading-relaxed">{nbsp("Restez informé : mes enquêtes sur la désinformation, le complotisme et les extrémismes en ligne, et les informations importantes du moment, directement dans votre boîte mail.")}</p>
+        <a href={SUBSTACK_URL} target="_blank" rel="noopener" className="group mt-8 inline-flex items-center justify-center gap-3 rounded-full px-8 py-5 md:px-12 md:py-6 font-body text-lg md:text-2xl font-semibold text-white shadow-[0_10px_40px_-10px_rgba(255,103,25,0.7)] transition-transform hover:scale-[1.03]" style={{ background: "#FF6719" }}>
+          <SubstackLogo /> Abonnez-vous à ma newsletter
+          <ArrowUpRight size={22} strokeWidth={2} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        </a>
+        <div className="mt-3 text-white/45 font-body text-sm">newsletter.tristan.pro · désinscription en un clic</div>
+        <div className="mt-12 text-left">
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3">Dernières enquêtes</div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {PRODUCTIONS.slice(0, 3).map(p => {
+              const inner = (<>
+                <img src={p.img} alt="" loading="lazy" className="w-20 shrink-0 aspect-[1200/630] object-cover rounded-lg opacity-80 group-hover:opacity-100 transition-opacity" />
+                <span className="text-white/65 group-hover:text-white font-body text-sm leading-snug transition-colors">{p.titre}</span>
+              </>);
+              const cls = "group flex items-center gap-3 rounded-xl p-2 hover:bg-white/[0.04] transition-colors";
+              return isAppView(p.href)
+                ? <NavLink key={p.href} href={p.href} className={cls}>{inner}</NavLink>
+                : <a key={p.href} href={p.href} rel="noopener" className={cls}>{inner}</a>;
+            })}
+          </div>
+        </div>
+      </div>
+    </FadeIn>
   );
 }
 
