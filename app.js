@@ -2850,14 +2850,18 @@ function Glisse({
         ddx = t.clientX - x0,
         ddy = t.clientY - y0;
       if (!actif) {
-        if (Math.abs(ddy) > 10 && Math.abs(ddy) > Math.abs(ddx)) {
+        if (Math.abs(ddx) < 6 && Math.abs(ddy) < 6) return;
+        // Le premier mouvement net décide : vertical → la page défile, sinon on glisse.
+        if (Math.abs(ddy) > Math.abs(ddx) || ddx < 0) {
           ignore = true;
           return;
         }
-        if (ddx < 8) return;
         actif = true;
         el.style.animation = "none";
       }
+      // Safari iOS : sans cela, il lance le défilement au moindre écart vertical
+      // du doigt et interrompt le geste (touchcancel). D'où l'écouteur non passif.
+      if (e.cancelable) e.preventDefault();
       dx = Math.max(0, Math.min(MAX, ddx));
       pose(dx);
     };
@@ -2876,7 +2880,7 @@ function Glisse({
       passive: true
     });
     el.addEventListener("touchmove", bouge, {
-      passive: true
+      passive: false
     });
     el.addEventListener("touchend", fin);
     el.addEventListener("touchcancel", fin);
@@ -2892,6 +2896,9 @@ function Glisse({
     className: "glisse inline-flex",
     style: {
       touchAction: "pan-y",
+      WebkitTouchCallout: "none",
+      WebkitUserSelect: "none",
+      userSelect: "none",
       animationDelay: delai + "s"
     }
   }, children);

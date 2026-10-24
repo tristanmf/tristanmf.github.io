@@ -1800,11 +1800,15 @@ function Glisse({ delai = 0, children }) {
       if (ignore) return;
       const t = e.touches[0], ddx = t.clientX - x0, ddy = t.clientY - y0;
       if (!actif) {
-        if (Math.abs(ddy) > 10 && Math.abs(ddy) > Math.abs(ddx)) { ignore = true; return; }
-        if (ddx < 8) return;
+        if (Math.abs(ddx) < 6 && Math.abs(ddy) < 6) return;
+        // Le premier mouvement net décide : vertical → la page défile, sinon on glisse.
+        if (Math.abs(ddy) > Math.abs(ddx) || ddx < 0) { ignore = true; return; }
         actif = true;
         el.style.animation = "none";
       }
+      // Safari iOS : sans cela, il lance le défilement au moindre écart vertical
+      // du doigt et interrompt le geste (touchcancel). D'où l'écouteur non passif.
+      if (e.cancelable) e.preventDefault();
       dx = Math.max(0, Math.min(MAX, ddx));
       pose(dx);
     };
@@ -1820,7 +1824,7 @@ function Glisse({ delai = 0, children }) {
       }
     };
     el.addEventListener("touchstart", debut, { passive: true });
-    el.addEventListener("touchmove", bouge, { passive: true });
+    el.addEventListener("touchmove", bouge, { passive: false });
     el.addEventListener("touchend", fin);
     el.addEventListener("touchcancel", fin);
     return () => {
@@ -1830,7 +1834,7 @@ function Glisse({ delai = 0, children }) {
       el.removeEventListener("touchcancel", fin);
     };
   }, []);
-  return <span ref={ref} className="glisse inline-flex" style={{ touchAction: "pan-y", animationDelay: delai + "s" }}>{children}</span>;
+  return <span ref={ref} className="glisse inline-flex" style={{ touchAction: "pan-y", WebkitTouchCallout: "none", WebkitUserSelect: "none", userSelect: "none", animationDelay: delai + "s" }}>{children}</span>;
 }
 
 // ---------- Bouton « Newsletter » (hero) ----------
