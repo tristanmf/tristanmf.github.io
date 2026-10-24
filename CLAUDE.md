@@ -572,6 +572,10 @@ sympa, raccord et propre », y compris pour les projets hébergés ailleurs.
   section `#productions` de l'accueil, la grille de cartes est remplacée par `NewsletterBloc` :
   gros bouton « Abonnez-vous à ma newsletter », les trois premières lignes de `PRODUCTIONS` en
   petites vignettes dessous. Un bouton Ko-fi à cet endroit : « peut-être pas, on verra ».
+  Même jour (PR #122) : les trois pastilles du hero sont des liens (« Disponible… » → `/#contact`)
+  et, **au toucher seulement**, se valident aussi en glissant vers la droite (composant `Glisse`,
+  animation `tmf-nudge` dans `index.html`). L'en-tête « Productions · Enquêtes & expérimentations »
+  de l'accueil est retiré, jugé redondant ; « Toutes mes productions » est dans `NewsletterBloc`.
 - **Carte Complorama de l'accueil = dernier épisode**, lu dans `complorama/dernier.json`
   (écrit par `scripts/complorama-dernier.mjs`, étape du workflow « Sync new episodes »). L'accueil
   ne charge que ce fichier, pas le catalogue. Image : miroir local uniquement ; repli sur la carte
