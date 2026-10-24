@@ -867,7 +867,7 @@ function Hero() {
     size: 14,
     strokeWidth: 2,
     className: "text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-  })), /*#__PURE__*/React.createElement(NouveauPill, null))), /*#__PURE__*/React.createElement("div", {
+  })), /*#__PURE__*/React.createElement(NewsletterPill, null))), /*#__PURE__*/React.createElement("div", {
     className: "mt-6 text-center w-full px-4"
   }, /*#__PURE__*/React.createElement(BlurText, {
     text: "Tristan Mend\xE8s France",
@@ -1542,7 +1542,7 @@ function Testimonials() {
   return /*#__PURE__*/React.createElement("section", {
     id: "productions",
     className: "px-6 md:px-12 lg:px-24 py-16 md:py-28"
-  }, /*#__PURE__*/React.createElement(FadeIn, {
+  }, /*#__PURE__*/React.createElement(NewsletterBloc, null), /*#__PURE__*/React.createElement(FadeIn, {
     className: "mb-8 flex flex-wrap items-center justify-between gap-4"
   }, /*#__PURE__*/React.createElement("div", {
     className: "inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap"
@@ -1557,9 +1557,7 @@ function Testimonials() {
     size: 14,
     strokeWidth: 2,
     className: "transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-  }))), /*#__PURE__*/React.createElement(ProductionsGrid, {
-    className: "mb-16 md:mb-24"
-  }), /*#__PURE__*/React.createElement(LabTile, {
+  }))), /*#__PURE__*/React.createElement(LabTile, {
     video: "/tmflab.mp4",
     logo: "/tmflab-logo.svg"
   }), /*#__PURE__*/React.createElement(FadeIn, {
@@ -2817,7 +2815,31 @@ function SanteArticle() {
   }, "Les 78 essais, texte des aper\xE7us compris (.csv)")))));
 }
 
-// ---------- Bouton « Nouveau » (hero) : ma dernière production ----------
+// ---------- Bouton « Newsletter » (hero) ----------
+// Depuis le 24/10/2026 (Tristan) : les enquêtes paraissent d'abord sur Substack,
+// le bouton sous le portrait mène donc à l'abonnement plutôt qu'au dernier article.
+function NewsletterPill() {
+  return /*#__PURE__*/React.createElement("a", {
+    href: SUBSTACK_URL,
+    target: "_blank",
+    rel: "noopener",
+    className: "group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors",
+    "aria-label": "S'abonner \xE0 ma newsletter sur Substack"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "rounded-full px-3 py-1 text-xs font-semibold font-body text-white",
+    style: {
+      background: "#FF6719"
+    }
+  }, "Newsletter"), /*#__PURE__*/React.createElement("span", {
+    className: "text-sm text-white/90 font-body"
+  }, "Je m'abonne"), /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 14,
+    strokeWidth: 2,
+    className: "text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+  }));
+}
+
+// ---------- Bouton « Nouveau » : ma dernière production (plus affiché depuis le 24/10/2026) ----------
 function NouveauPill() {
   const p = PRODUCTIONS[0];
   const cls = "group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors";
@@ -3018,6 +3040,63 @@ function SuivreSoutenir() {
   }, nbsp("Ces enquêtes sont en accès libre, mais les outils d'IA qu'elles demandent sont payants. Si vous voulez soutenir ce travail, vous pouvez m'offrir un café.")), /*#__PURE__*/React.createElement("span", {
     className: "inline-flex items-center gap-2 rounded-full border border-white/25 px-4 py-2.5 font-body text-sm font-medium text-white whitespace-nowrap group-hover:bg-white/10 transition-colors"
   }, /*#__PURE__*/React.createElement(Tasse, null), " Offrir un caf\xE9")));
+}
+
+// Accueil : le grand appel à s'abonner, avec les dernières enquêtes en petit
+// dessous (Tristan, 24/10/2026 : pousser la newsletter, les articles d'abord sur Substack).
+function NewsletterBloc() {
+  const nbsp = s => s.replace(/ ([%:;?!»])/g, "\u00a0$1");
+  return /*#__PURE__*/React.createElement(FadeIn, {
+    className: "mb-16 md:mb-24"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "liquid-glass rounded-[2rem] px-6 py-10 md:px-14 md:py-16 text-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/55"
+  }, "Newsletter \xB7 gratuite"), /*#__PURE__*/React.createElement("h2", {
+    className: "mt-4 font-heading italic text-white tracking-tight leading-[0.95] text-[clamp(2.5rem,7vw,5rem)]"
+  }, "Aux fronti\xE8res de l'extr\xEAme"), /*#__PURE__*/React.createElement("p", {
+    className: "mt-5 mx-auto max-w-2xl text-white/75 font-body font-light text-lg md:text-xl leading-relaxed"
+  }, nbsp("Restez informé : mes enquêtes sur la désinformation, le complotisme et les extrémismes en ligne, et les informations importantes du moment, directement dans votre boîte mail.")), /*#__PURE__*/React.createElement("a", {
+    href: SUBSTACK_URL,
+    target: "_blank",
+    rel: "noopener",
+    className: "group mt-8 inline-flex items-center justify-center gap-3 rounded-full px-8 py-5 md:px-12 md:py-6 font-body text-lg md:text-2xl font-semibold text-white shadow-[0_10px_40px_-10px_rgba(255,103,25,0.7)] transition-transform hover:scale-[1.03]",
+    style: {
+      background: "#FF6719"
+    }
+  }, /*#__PURE__*/React.createElement(SubstackLogo, null), " Abonnez-vous \xE0 ma newsletter", /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 22,
+    strokeWidth: 2,
+    className: "transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "mt-3 text-white/45 font-body text-sm"
+  }, "newsletter.tristan.pro \xB7 d\xE9sinscription en un clic"), /*#__PURE__*/React.createElement("div", {
+    className: "mt-12 text-left"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3"
+  }, "Derni\xE8res enqu\xEAtes"), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 sm:grid-cols-3 gap-3"
+  }, PRODUCTIONS.slice(0, 3).map(p => {
+    const inner = /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("img", {
+      src: p.img,
+      alt: "",
+      loading: "lazy",
+      className: "w-20 sm:w-full shrink-0 aspect-[1200/630] object-cover rounded-lg opacity-80 group-hover:opacity-100 transition-opacity"
+    }), /*#__PURE__*/React.createElement("span", {
+      className: "text-white/65 group-hover:text-white font-body text-sm leading-snug transition-colors"
+    }, p.titre));
+    const cls = "group flex sm:flex-col items-center sm:items-start gap-3 rounded-xl p-2 hover:bg-white/[0.04] transition-colors";
+    return isAppView(p.href) ? /*#__PURE__*/React.createElement(NavLink, {
+      key: p.href,
+      href: p.href,
+      className: cls
+    }, inner) : /*#__PURE__*/React.createElement("a", {
+      key: p.href,
+      href: p.href,
+      rel: "noopener",
+      className: cls
+    }, inner);
+  })))));
 }
 
 // ---------- Productions (vue /productions/) ----------
