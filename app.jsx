@@ -1896,10 +1896,10 @@ function NewsletterBloc() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {PRODUCTIONS.slice(0, 3).map(p => {
               const inner = (<>
-                <img src={p.img} alt="" loading="lazy" className="w-20 sm:w-full shrink-0 aspect-[1200/630] object-cover rounded-lg opacity-80 group-hover:opacity-100 transition-opacity" />
+                <img src={p.img} alt="" loading="lazy" className="w-20 shrink-0 aspect-[1200/630] object-cover rounded-lg opacity-80 group-hover:opacity-100 transition-opacity" />
                 <span className="text-white/65 group-hover:text-white font-body text-sm leading-snug transition-colors">{p.titre}</span>
               </>);
-              const cls = "group flex sm:flex-col items-center sm:items-start gap-3 rounded-xl p-2 hover:bg-white/[0.04] transition-colors";
+              const cls = "group flex items-center gap-3 rounded-xl p-2 hover:bg-white/[0.04] transition-colors";
               return isAppView(p.href)
                 ? <NavLink key={p.href} href={p.href} className={cls}>{inner}</NavLink>
                 : <a key={p.href} href={p.href} rel="noopener" className={cls}>{inner}</a>;
