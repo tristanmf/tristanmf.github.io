@@ -566,6 +566,12 @@ sympa, raccord et propre », y compris pour les projets hébergés ailleurs.
   de l'accueil garde la tuile TMF Lab et un lien « Toutes mes productions ».
   Décision de Tristan : le bouton montre la **dernière production seule**, pas « Productions »
   (sinon doublon avec le menu). Pas de section « À la une » sur l'accueil (repousserait tout).
+  **Remplacé le 24/10/2026 (PR #120)** : Tristan pousse désormais la newsletter, ses enquêtes
+  paraissent d'abord sur Substack. Le bouton sous le portrait est `NewsletterPill`
+  (« Newsletter · Je m'abonne » → `SUBSTACK_URL`) ; `NouveauPill` est gardé, inutilisé. Dans la
+  section `#productions` de l'accueil, la grille de cartes est remplacée par `NewsletterBloc` :
+  gros bouton « Abonnez-vous à ma newsletter », les trois premières lignes de `PRODUCTIONS` en
+  petites vignettes dessous. Un bouton Ko-fi à cet endroit : « peut-être pas, on verra ».
 - **Carte Complorama de l'accueil = dernier épisode**, lu dans `complorama/dernier.json`
   (écrit par `scripts/complorama-dernier.mjs`, étape du workflow « Sync new episodes »). L'accueil
   ne charge que ce fichier, pas le catalogue. Image : miroir local uniquement ; repli sur la carte
