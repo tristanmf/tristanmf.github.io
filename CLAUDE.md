@@ -576,6 +576,16 @@ sympa, raccord et propre », y compris pour les projets hébergés ailleurs.
   et, **au toucher seulement**, se valident aussi en glissant vers la droite (composant `Glisse`,
   animation `tmf-nudge` dans `index.html`). L'en-tête « Productions · Enquêtes & expérimentations »
   de l'accueil est retiré, jugé redondant ; « Toutes mes productions » est dans `NewsletterBloc`.
+  **Glisser = « glisser pour déverrouiller »** (demande précise de Tristan) : le contour de la
+  pastille ne bouge pas, seule la languette (étiquette colorée, attribut `data-languette`) glisse
+  jusqu'au bord droit ; le reste s'efface. Écouteur `touchmove` non passif, sinon Safari iOS
+  annule le geste pour faire défiler la page.
+  **Dernières lettres Substack** dans `NewsletterBloc` : workflow `Newsletter · dernières lettres`
+  (une passe par jour, ~une lettre par semaine) → `scripts/newsletter-dernieres.mjs` lit
+  `newsletter.tristan.pro/feed`, écrit `newsletter/dernieres.json` (3 lettres, « Coming soon »
+  écarté) et copie les images dans `newsletter/img/`. Substack n'offre pas de module d'aperçu
+  des lettres, et un module tiers chargerait un autre domaine. Après un envoi, on peut lancer
+  le workflow à la main. Repli sur `PRODUCTIONS` si le fichier manque.
 - **Carte Complorama de l'accueil = dernier épisode**, lu dans `complorama/dernier.json`
   (écrit par `scripts/complorama-dernier.mjs`, étape du workflow « Sync new episodes »). L'accueil
   ne charge que ce fichier, pas le catalogue. Image : miroir local uniquement ; repli sur la carte
