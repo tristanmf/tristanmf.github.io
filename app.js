@@ -3081,11 +3081,11 @@ function NewsletterBloc() {
       src: p.img,
       alt: "",
       loading: "lazy",
-      className: "w-20 sm:w-full shrink-0 aspect-[1200/630] object-cover rounded-lg opacity-80 group-hover:opacity-100 transition-opacity"
+      className: "w-20 shrink-0 aspect-[1200/630] object-cover rounded-lg opacity-80 group-hover:opacity-100 transition-opacity"
     }), /*#__PURE__*/React.createElement("span", {
       className: "text-white/65 group-hover:text-white font-body text-sm leading-snug transition-colors"
     }, p.titre));
-    const cls = "group flex sm:flex-col items-center sm:items-start gap-3 rounded-xl p-2 hover:bg-white/[0.04] transition-colors";
+    const cls = "group flex items-center gap-3 rounded-xl p-2 hover:bg-white/[0.04] transition-colors";
     return isAppView(p.href) ? /*#__PURE__*/React.createElement(NavLink, {
       key: p.href,
       href: p.href,
