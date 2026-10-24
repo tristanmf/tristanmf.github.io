@@ -851,11 +851,12 @@ function Hero() {
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex flex-wrap items-center justify-center gap-2"
   }, /*#__PURE__*/React.createElement(Glisse, {
-    delai: 1.8
+    delai: 1.6
   }, /*#__PURE__*/React.createElement(NavLink, {
     href: "/#contact",
     className: "group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors"
   }, /*#__PURE__*/React.createElement("span", {
+    "data-languette": true,
     className: "bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body"
   }, "2026"), /*#__PURE__*/React.createElement("span", {
     className: "text-sm text-white/90 font-body"
@@ -869,6 +870,7 @@ function Hero() {
     href: PRESS_PATH,
     className: "group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors"
   }, /*#__PURE__*/React.createElement("span", {
+    "data-languette": true,
     className: "bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body"
   }, "Revue de presse"), /*#__PURE__*/React.createElement("span", {
     className: "text-sm text-white/90 font-body"
@@ -2812,10 +2814,11 @@ function SanteArticle() {
 }
 
 // ---------- Pastilles du hero : glisser pour valider (écrans tactiles) ----------
-// Pour le plaisir (Tristan, 24/10/2026) : on peut toucher la pastille comme un lien,
-// ou la faire glisser du doigt vers la droite — au-delà du seuil, elle s'ouvre.
-// Uniquement au toucher : à la souris, rien ne change. Un glissement vertical
-// laisse la page défiler normalement.
+// Pour le plaisir (Tristan, 24/10/2026), comme « glisser pour déverrouiller » sur
+// iPhone : le contour reste en place, seule la languette (l'étiquette colorée,
+// marquée data-languette) glisse jusqu'au bout et ouvre le lien. Un simple
+// toucher marche toujours ; à la souris, rien ne change ; un glissement vertical
+// laisse la page défiler.
 function Glisse({
   delai = 0,
   children
@@ -2823,18 +2826,27 @@ function Glisse({
   const ref = React.useRef(null);
   React.useEffect(() => {
     const el = ref.current;
-    if (!el) return;
-    const MAX = 64,
-      SEUIL = 44;
+    const a = el && el.querySelector("a");
+    const k = el && el.querySelector("[data-languette]");
+    if (!a || !k) return;
+    k.style.position = "relative";
+    k.style.zIndex = "1";
+    const reste = [...a.children].filter(c => c !== k);
     let x0 = 0,
       y0 = 0,
       dx = 0,
+      max = 0,
       actif = false,
       ignore = false;
     const pose = (v, anime) => {
-      el.style.transition = anime ? "transform .25s cubic-bezier(.2,.8,.2,1)" : "none";
-      el.style.transform = v ? `translateX(${v}px)` : "";
-      el.style.filter = v >= SEUIL ? "brightness(1.35)" : "";
+      const t = anime ? ".28s cubic-bezier(.2,.8,.2,1)" : "0s";
+      k.style.transition = `transform ${t}`;
+      k.style.transform = v ? `translateX(${v}px)` : "";
+      const o = max ? Math.max(0, 1 - v / max * 1.4) : 1;
+      reste.forEach(c => {
+        c.style.transition = `opacity ${t}`;
+        c.style.opacity = v ? String(o) : "";
+      });
     };
     const debut = e => {
       const t = e.touches[0];
@@ -2843,6 +2855,9 @@ function Glisse({
       dx = 0;
       actif = false;
       ignore = false;
+      const ra = a.getBoundingClientRect(),
+        rk = k.getBoundingClientRect();
+      max = Math.max(0, ra.right - rk.right - (rk.left - ra.left)); // jusqu'au bord droit du contour
     };
     const bouge = e => {
       if (ignore) return;
@@ -2857,24 +2872,23 @@ function Glisse({
           return;
         }
         actif = true;
-        el.style.animation = "none";
+        k.style.animation = "none";
       }
-      // Safari iOS : sans cela, il lance le défilement au moindre écart vertical
-      // du doigt et interrompt le geste (touchcancel). D'où l'écouteur non passif.
+      // Safari iOS lancerait le défilement au moindre écart vertical et
+      // annulerait le geste : d'où l'écouteur non passif.
       if (e.cancelable) e.preventDefault();
-      dx = Math.max(0, Math.min(MAX, ddx));
+      dx = Math.max(0, Math.min(max, ddx));
       pose(dx);
     };
     const fin = () => {
       if (!actif) return;
       actif = false;
-      const ok = dx >= SEUIL;
-      pose(0, true);
-      if (ok) {
+      if (max && dx >= max * 0.8) {
+        pose(max, true);
         if (navigator.vibrate) navigator.vibrate(12);
-        const a = el.querySelector("a");
-        if (a) setTimeout(() => a.click(), 160);
-      }
+        setTimeout(() => a.click(), 220);
+        setTimeout(() => pose(0, true), 900); // lien externe : la page reste, on remet en place
+      } else pose(0, true);
     };
     el.addEventListener("touchstart", debut, {
       passive: true
@@ -2899,7 +2913,7 @@ function Glisse({
       WebkitTouchCallout: "none",
       WebkitUserSelect: "none",
       userSelect: "none",
-      animationDelay: delai + "s"
+      "--glisse-delai": delai + "s"
     }
   }, children);
 }
@@ -2915,6 +2929,7 @@ function NewsletterPill() {
     className: "group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors",
     "aria-label": "S'abonner \xE0 ma newsletter sur Substack"
   }, /*#__PURE__*/React.createElement("span", {
+    "data-languette": true,
     className: "rounded-full px-3 py-1 text-xs font-semibold font-body text-white",
     style: {
       background: "#FF6719"
@@ -3133,8 +3148,14 @@ function SuivreSoutenir() {
 
 // Accueil : le grand appel à s'abonner, avec les dernières enquêtes en petit
 // dessous (Tristan, 24/10/2026 : pousser la newsletter, les articles d'abord sur Substack).
+// Les lettres viennent de newsletter/dernieres.json (workflow « Newsletter ·
+// dernières lettres », une passe par jour) ; à défaut, les dernières productions.
 function NewsletterBloc() {
   const nbsp = s => s.replace(/ ([%:;?!»])/g, "\u00a0$1");
+  const [lettres, setLettres] = React.useState(null);
+  React.useEffect(() => {
+    fetch("/newsletter/dernieres.json").then(r => r.ok ? r.json() : null).then(d => d && d.lettres && d.lettres.length && setLettres(d.lettres)).catch(() => {});
+  }, []);
   return /*#__PURE__*/React.createElement(FadeIn, {
     className: "mb-16 md:mb-24"
   }, /*#__PURE__*/React.createElement("div", {
@@ -3165,15 +3186,40 @@ function NewsletterBloc() {
     className: "mb-3 flex items-baseline justify-between gap-4"
   }, /*#__PURE__*/React.createElement("span", {
     className: "font-mono text-[10px] uppercase tracking-[0.2em] text-white/40"
-  }, "Derni\xE8res enqu\xEAtes"), /*#__PURE__*/React.createElement(NavLink, {
+  }, lettres ? "Dernières lettres" : "Dernières enquêtes"), lettres ? /*#__PURE__*/React.createElement("a", {
+    href: SUBSTACK_HOME + "archive",
+    target: "_blank",
+    rel: "noopener",
+    className: "inline-flex items-center gap-1 font-body text-xs text-white/55 hover:text-white"
+  }, "Toutes les lettres ", /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 12,
+    strokeWidth: 2
+  })) : /*#__PURE__*/React.createElement(NavLink, {
     href: PRODUCTIONS_PATH,
-    className: "group inline-flex items-center gap-1 font-body text-xs text-white/55 hover:text-white"
+    className: "inline-flex items-center gap-1 font-body text-xs text-white/55 hover:text-white"
   }, "Toutes mes productions ", /*#__PURE__*/React.createElement(ArrowUpRight, {
     size: 12,
     strokeWidth: 2
   }))), /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-1 sm:grid-cols-3 gap-3"
-  }, PRODUCTIONS.slice(0, 3).map(p => {
+    className: "grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4"
+  }, lettres ? lettres.map(l => /*#__PURE__*/React.createElement("a", {
+    key: l.url,
+    href: l.url,
+    target: "_blank",
+    rel: "noopener",
+    className: "group flex sm:flex-col gap-3 rounded-2xl p-2 sm:p-0 sm:pb-3 border border-white/[0.06] sm:overflow-hidden hover:bg-white/[0.04] transition-colors"
+  }, l.img && /*#__PURE__*/React.createElement("img", {
+    src: l.img,
+    alt: "",
+    loading: "lazy",
+    className: "w-24 sm:w-full shrink-0 self-start aspect-[1200/630] object-cover rounded-lg sm:rounded-none opacity-85 group-hover:opacity-100 transition-opacity"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "flex flex-col gap-1 sm:px-3 min-w-0"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-mono text-[10px] uppercase tracking-[0.15em] text-white/40"
+  }, frDate(l.date)), /*#__PURE__*/React.createElement("span", {
+    className: "text-white/80 group-hover:text-white font-body text-sm leading-snug line-clamp-3 transition-colors"
+  }, l.titre)))) : PRODUCTIONS.slice(0, 3).map(p => {
     const inner = /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("img", {
       src: p.img,
       alt: "",

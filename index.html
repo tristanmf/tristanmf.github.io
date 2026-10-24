@@ -217,15 +217,15 @@
   }
 
   /* Pastilles du hero : petit coup de pouce vers la droite, une fois, sur écran
-     tactile seulement — elles se valident en les faisant glisser (Glisse, app.jsx). */
+     tactile seulement — leur languette se fait glisser pour valider (Glisse, app.jsx). */
   @keyframes tmf-nudge {
     0%, 100% { transform: none; }
-    30% { transform: translateX(14px); }
+    30% { transform: translateX(22px); }
     60% { transform: none; }
-    78% { transform: translateX(6px); }
+    78% { transform: translateX(8px); }
   }
   @media (hover: none) and (pointer: coarse) {
-    .glisse { animation: tmf-nudge 1.1s ease 1; }
+    .glisse [data-languette] { animation: tmf-nudge 1.2s ease 1; animation-delay: var(--glisse-delai, 0s); }
   }
 
   .edge-fade-both {

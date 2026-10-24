@@ -507,9 +507,9 @@ function Hero() {
 
         <FadeIn delay={0.25}>
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <Glisse delai={1.8}>
+            <Glisse delai={1.6}>
             <NavLink href="/#contact" className="group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors">
-              <span className="bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body">2026</span>
+              <span data-languette className="bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body">2026</span>
               <span className="text-sm text-white/90 font-body">Disponible pour confs & interviews</span>
               <ArrowUpRight size={14} strokeWidth={2} className="text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </NavLink>
@@ -518,7 +518,7 @@ function Hero() {
                 arrondi volontairement, pour rester vrai quand le relevé grossit. */}
             <Glisse delai={2.0}>
             <NavLink href={PRESS_PATH} className="group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors">
-              <span className="bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body">Revue de presse</span>
+              <span data-languette className="bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body">Revue de presse</span>
               <span className="text-sm text-white/90 font-body">1 700+ articles</span>
               <ArrowUpRight size={14} strokeWidth={2} className="text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </NavLink>
@@ -1779,23 +1779,34 @@ function SanteArticle() {
 }
 
 // ---------- Pastilles du hero : glisser pour valider (écrans tactiles) ----------
-// Pour le plaisir (Tristan, 24/10/2026) : on peut toucher la pastille comme un lien,
-// ou la faire glisser du doigt vers la droite — au-delà du seuil, elle s'ouvre.
-// Uniquement au toucher : à la souris, rien ne change. Un glissement vertical
-// laisse la page défiler normalement.
+// Pour le plaisir (Tristan, 24/10/2026), comme « glisser pour déverrouiller » sur
+// iPhone : le contour reste en place, seule la languette (l'étiquette colorée,
+// marquée data-languette) glisse jusqu'au bout et ouvre le lien. Un simple
+// toucher marche toujours ; à la souris, rien ne change ; un glissement vertical
+// laisse la page défiler.
 function Glisse({ delai = 0, children }) {
   const ref = React.useRef(null);
   React.useEffect(() => {
     const el = ref.current;
-    if (!el) return;
-    const MAX = 64, SEUIL = 44;
-    let x0 = 0, y0 = 0, dx = 0, actif = false, ignore = false;
+    const a = el && el.querySelector("a");
+    const k = el && el.querySelector("[data-languette]");
+    if (!a || !k) return;
+    k.style.position = "relative";
+    k.style.zIndex = "1";
+    const reste = [...a.children].filter((c) => c !== k);
+    let x0 = 0, y0 = 0, dx = 0, max = 0, actif = false, ignore = false;
     const pose = (v, anime) => {
-      el.style.transition = anime ? "transform .25s cubic-bezier(.2,.8,.2,1)" : "none";
-      el.style.transform = v ? `translateX(${v}px)` : "";
-      el.style.filter = v >= SEUIL ? "brightness(1.35)" : "";
+      const t = anime ? ".28s cubic-bezier(.2,.8,.2,1)" : "0s";
+      k.style.transition = `transform ${t}`;
+      k.style.transform = v ? `translateX(${v}px)` : "";
+      const o = max ? Math.max(0, 1 - (v / max) * 1.4) : 1;
+      reste.forEach((c) => { c.style.transition = `opacity ${t}`; c.style.opacity = v ? String(o) : ""; });
     };
-    const debut = (e) => { const t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; dx = 0; actif = false; ignore = false; };
+    const debut = (e) => {
+      const t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; dx = 0; actif = false; ignore = false;
+      const ra = a.getBoundingClientRect(), rk = k.getBoundingClientRect();
+      max = Math.max(0, ra.right - rk.right - (rk.left - ra.left)); // jusqu'au bord droit du contour
+    };
     const bouge = (e) => {
       if (ignore) return;
       const t = e.touches[0], ddx = t.clientX - x0, ddy = t.clientY - y0;
@@ -1804,24 +1815,23 @@ function Glisse({ delai = 0, children }) {
         // Le premier mouvement net décide : vertical → la page défile, sinon on glisse.
         if (Math.abs(ddy) > Math.abs(ddx) || ddx < 0) { ignore = true; return; }
         actif = true;
-        el.style.animation = "none";
+        k.style.animation = "none";
       }
-      // Safari iOS : sans cela, il lance le défilement au moindre écart vertical
-      // du doigt et interrompt le geste (touchcancel). D'où l'écouteur non passif.
+      // Safari iOS lancerait le défilement au moindre écart vertical et
+      // annulerait le geste : d'où l'écouteur non passif.
       if (e.cancelable) e.preventDefault();
-      dx = Math.max(0, Math.min(MAX, ddx));
+      dx = Math.max(0, Math.min(max, ddx));
       pose(dx);
     };
     const fin = () => {
       if (!actif) return;
       actif = false;
-      const ok = dx >= SEUIL;
-      pose(0, true);
-      if (ok) {
+      if (max && dx >= max * 0.8) {
+        pose(max, true);
         if (navigator.vibrate) navigator.vibrate(12);
-        const a = el.querySelector("a");
-        if (a) setTimeout(() => a.click(), 160);
-      }
+        setTimeout(() => a.click(), 220);
+        setTimeout(() => pose(0, true), 900); // lien externe : la page reste, on remet en place
+      } else pose(0, true);
     };
     el.addEventListener("touchstart", debut, { passive: true });
     el.addEventListener("touchmove", bouge, { passive: false });
@@ -1834,7 +1844,7 @@ function Glisse({ delai = 0, children }) {
       el.removeEventListener("touchcancel", fin);
     };
   }, []);
-  return <span ref={ref} className="glisse inline-flex" style={{ touchAction: "pan-y", WebkitTouchCallout: "none", WebkitUserSelect: "none", userSelect: "none", animationDelay: delai + "s" }}>{children}</span>;
+  return <span ref={ref} className="glisse inline-flex" style={{ touchAction: "pan-y", WebkitTouchCallout: "none", WebkitUserSelect: "none", userSelect: "none", "--glisse-delai": delai + "s" }}>{children}</span>;
 }
 
 // ---------- Bouton « Newsletter » (hero) ----------
@@ -1843,7 +1853,7 @@ function Glisse({ delai = 0, children }) {
 function NewsletterPill() {
   return (
     <a href={SUBSTACK_URL} target="_blank" rel="noopener" className="group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors" aria-label="S'abonner à ma newsletter sur Substack">
-      <span className="rounded-full px-3 py-1 text-xs font-semibold font-body text-white" style={{ background: "#FF6719" }}>Newsletter</span>
+      <span data-languette className="rounded-full px-3 py-1 text-xs font-semibold font-body text-white" style={{ background: "#FF6719" }}>Newsletter</span>
       <span className="text-sm text-white/90 font-body">Je m'abonne</span>
       <ArrowUpRight size={14} strokeWidth={2} className="text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
     </a>
@@ -1933,8 +1943,14 @@ function SuivreSoutenir() {
 
 // Accueil : le grand appel à s'abonner, avec les dernières enquêtes en petit
 // dessous (Tristan, 24/10/2026 : pousser la newsletter, les articles d'abord sur Substack).
+// Les lettres viennent de newsletter/dernieres.json (workflow « Newsletter ·
+// dernières lettres », une passe par jour) ; à défaut, les dernières productions.
 function NewsletterBloc() {
   const nbsp = s => s.replace(/ ([%:;?!»])/g, "\u00a0$1");
+  const [lettres, setLettres] = React.useState(null);
+  React.useEffect(() => {
+    fetch("/newsletter/dernieres.json").then(r => (r.ok ? r.json() : null)).then(d => d && d.lettres && d.lettres.length && setLettres(d.lettres)).catch(() => {});
+  }, []);
   return (
     <FadeIn className="mb-16 md:mb-24">
       <div className="liquid-glass rounded-[2rem] px-6 py-10 md:px-14 md:py-16 text-center">
@@ -1948,11 +1964,21 @@ function NewsletterBloc() {
         <div className="mt-3 text-white/45 font-body text-sm">newsletter.tristan.pro · désinscription en un clic</div>
         <div className="mt-12 text-left">
           <div className="mb-3 flex items-baseline justify-between gap-4">
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">Dernières enquêtes</span>
-            <NavLink href={PRODUCTIONS_PATH} className="group inline-flex items-center gap-1 font-body text-xs text-white/55 hover:text-white">Toutes mes productions <ArrowUpRight size={12} strokeWidth={2} /></NavLink>
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">{lettres ? "Dernières lettres" : "Dernières enquêtes"}</span>
+            {lettres
+              ? <a href={SUBSTACK_HOME + "archive"} target="_blank" rel="noopener" className="inline-flex items-center gap-1 font-body text-xs text-white/55 hover:text-white">Toutes les lettres <ArrowUpRight size={12} strokeWidth={2} /></a>
+              : <NavLink href={PRODUCTIONS_PATH} className="inline-flex items-center gap-1 font-body text-xs text-white/55 hover:text-white">Toutes mes productions <ArrowUpRight size={12} strokeWidth={2} /></NavLink>}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {PRODUCTIONS.slice(0, 3).map(p => {
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+            {lettres ? lettres.map(l => (
+              <a key={l.url} href={l.url} target="_blank" rel="noopener" className="group flex sm:flex-col gap-3 rounded-2xl p-2 sm:p-0 sm:pb-3 border border-white/[0.06] sm:overflow-hidden hover:bg-white/[0.04] transition-colors">
+                {l.img && <img src={l.img} alt="" loading="lazy" className="w-24 sm:w-full shrink-0 self-start aspect-[1200/630] object-cover rounded-lg sm:rounded-none opacity-85 group-hover:opacity-100 transition-opacity" />}
+                <span className="flex flex-col gap-1 sm:px-3 min-w-0">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40">{frDate(l.date)}</span>
+                  <span className="text-white/80 group-hover:text-white font-body text-sm leading-snug line-clamp-3 transition-colors">{l.titre}</span>
+                </span>
+              </a>
+            )) : PRODUCTIONS.slice(0, 3).map(p => {
               const inner = (<>
                 <img src={p.img} alt="" loading="lazy" className="w-20 shrink-0 aspect-[1200/630] object-cover rounded-lg opacity-80 group-hover:opacity-100 transition-opacity" />
                 <span className="text-white/65 group-hover:text-white font-body text-sm leading-snug transition-colors">{p.titre}</span>
