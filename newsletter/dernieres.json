@@ -1,6 +1,13 @@
 {
   "lettres": [
     {
+      "titre": "Le « prompt power » chinois, épisode 1",
+      "resume": "DeepSeek, Qwen, GLM, Kimi : des IA chinoises au service de la propagande du Parti communiste ?",
+      "date": "2026-10-24",
+      "url": "https://newsletter.tristan.pro/p/le-prompt-power-chinois-episode-1",
+      "img": "/newsletter/img/le-prompt-power-chinois-episode-1.jpg"
+    },
+    {
       "titre": "On fait tous confiance aux aperçus IA de Google. Sur la santé, ils recommandent des complotistes.",
       "resume": "On lit tous les aperçus IA de Google, souvent sans aller plus loin. J’ai testé leur intégrité sur des questions de santé. Résultat : de gros trous dans la raquette.",
       "date": "2026-10-19",
@@ -13,13 +20,6 @@
       "date": "2026-10-17",
       "url": "https://newsletter.tristan.pro/p/presidentielle-quand-perplexity-puise",
       "img": "/newsletter/img/presidentielle-quand-perplexity-puise.jpg"
-    },
-    {
-      "titre": "Le monde vu par Midjourney",
-      "resume": "Quand l'IA fait du tourisme.",
-      "date": "2023-05-03",
-      "url": "https://newsletter.tristan.pro/p/le-monde-vu-par-midjourney",
-      "img": "/newsletter/img/le-monde-vu-par-midjourney.jpg"
     }
   ]
 }
