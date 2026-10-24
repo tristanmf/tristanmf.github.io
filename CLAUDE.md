@@ -15,6 +15,9 @@ automatiser, vérifier soi-même, livrer, expliquer en clair.
   chargement d'une page. Polices dans `assets/fonts/`, bibliothèques dans `vendor/`
   (`scripts/vendor-assets.mjs` les rafraîchit). Ne jamais réintroduire une ressource externe.
 - **Fichiers générés, ne pas éditer à la main** : `app.js`, `complorama/*.js`, `assets/tailwind.css`.
+  Le build ajoute aussi `?v=<empreinte>` à `/app.js` et `/assets/tailwind.css` dans `index.html`
+  et les coquilles (`scripts/stamp-versions.mjs`) : sans cela, Safari iOS gardait l'ancien app.js.
+  Toujours `git pull` avant d'éditer `index.html`, que le bot réécrit.
   Sources : `app.jsx`, `complorama/episodes-wall.jsx`, `complorama/episode-visual.jsx`,
   `tailwind.css` + `tailwind.config.js`. Le workflow **Build front-end** recompile et commite à
   chaque push d'une source sur `main` (`scripts/build-jsx.mjs`, Tailwind CLI).
