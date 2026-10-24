@@ -1829,7 +1829,9 @@ function Glisse({ delai = 0, children }) {
       if (max && dx >= max * 0.8) {
         pose(max, true);
         if (navigator.vibrate) navigator.vibrate(12);
-        setTimeout(() => a.click(), 220);
+        // Lien externe (newsletter) : même onglet. Safari iOS bloque l'ouverture
+        // d'un nouvel onglet qui ne suit pas directement un toucher.
+        setTimeout(() => { if (a.target === "_blank") location.href = a.href; else a.click(); }, 220);
         setTimeout(() => pose(0, true), 900); // lien externe : la page reste, on remet en place
       } else pose(0, true);
     };
