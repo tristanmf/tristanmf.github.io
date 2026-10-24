@@ -507,18 +507,23 @@ function Hero() {
 
         <FadeIn delay={0.25}>
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <div className="liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-4 whitespace-nowrap">
+            <Glisse delai={1.8}>
+            <NavLink href="/#contact" className="group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors">
               <span className="bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body">2026</span>
               <span className="text-sm text-white/90 font-body">Disponible pour confs & interviews</span>
-            </div>
+              <ArrowUpRight size={14} strokeWidth={2} className="text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </NavLink>
+            </Glisse>
             {/* Revue de presse : la preuve à côté de la disponibilité. Chiffre
                 arrondi volontairement, pour rester vrai quand le relevé grossit. */}
+            <Glisse delai={2.0}>
             <NavLink href={PRESS_PATH} className="group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors">
               <span className="bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body">Revue de presse</span>
               <span className="text-sm text-white/90 font-body">1 700+ articles</span>
               <ArrowUpRight size={14} strokeWidth={2} className="text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </NavLink>
-            <NewsletterPill />
+            </Glisse>
+            <Glisse delai={2.2}><NewsletterPill /></Glisse>
           </div>
         </FadeIn>
 
@@ -965,15 +970,6 @@ function Testimonials() {
   return (
     <section id="productions" className="px-6 md:px-12 lg:px-24 py-16 md:py-28">
       <NewsletterBloc />
-      <FadeIn className="mb-8 flex flex-wrap items-center justify-between gap-4">
-        <div className="inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap">
-          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/60">Productions</span>
-          <span className="text-white font-body text-base md:text-lg tracking-tight">Enquêtes & expérimentations</span>
-        </div>
-        <NavLink href={PRODUCTIONS_PATH} className="group inline-flex items-center gap-2 text-sm font-medium font-body text-white/80 hover:text-white">
-          Toutes mes productions <ArrowUpRight size={14} strokeWidth={2} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-        </NavLink>
-      </FadeIn>
       <LabTile video="/tmflab.mp4" logo="/tmflab-logo.svg" />
       {/* La grille de cartes a été retirée au profit de la tuile. `items` est
           conservé intact : pour la réactiver, remettre ici le bloc
@@ -1782,6 +1778,61 @@ function SanteArticle() {
   );
 }
 
+// ---------- Pastilles du hero : glisser pour valider (écrans tactiles) ----------
+// Pour le plaisir (Tristan, 24/10/2026) : on peut toucher la pastille comme un lien,
+// ou la faire glisser du doigt vers la droite — au-delà du seuil, elle s'ouvre.
+// Uniquement au toucher : à la souris, rien ne change. Un glissement vertical
+// laisse la page défiler normalement.
+function Glisse({ delai = 0, children }) {
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const MAX = 64, SEUIL = 44;
+    let x0 = 0, y0 = 0, dx = 0, actif = false, ignore = false;
+    const pose = (v, anime) => {
+      el.style.transition = anime ? "transform .25s cubic-bezier(.2,.8,.2,1)" : "none";
+      el.style.transform = v ? `translateX(${v}px)` : "";
+      el.style.filter = v >= SEUIL ? "brightness(1.35)" : "";
+    };
+    const debut = (e) => { const t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; dx = 0; actif = false; ignore = false; };
+    const bouge = (e) => {
+      if (ignore) return;
+      const t = e.touches[0], ddx = t.clientX - x0, ddy = t.clientY - y0;
+      if (!actif) {
+        if (Math.abs(ddy) > 10 && Math.abs(ddy) > Math.abs(ddx)) { ignore = true; return; }
+        if (ddx < 8) return;
+        actif = true;
+        el.style.animation = "none";
+      }
+      dx = Math.max(0, Math.min(MAX, ddx));
+      pose(dx);
+    };
+    const fin = () => {
+      if (!actif) return;
+      actif = false;
+      const ok = dx >= SEUIL;
+      pose(0, true);
+      if (ok) {
+        if (navigator.vibrate) navigator.vibrate(12);
+        const a = el.querySelector("a");
+        if (a) setTimeout(() => a.click(), 160);
+      }
+    };
+    el.addEventListener("touchstart", debut, { passive: true });
+    el.addEventListener("touchmove", bouge, { passive: true });
+    el.addEventListener("touchend", fin);
+    el.addEventListener("touchcancel", fin);
+    return () => {
+      el.removeEventListener("touchstart", debut);
+      el.removeEventListener("touchmove", bouge);
+      el.removeEventListener("touchend", fin);
+      el.removeEventListener("touchcancel", fin);
+    };
+  }, []);
+  return <span ref={ref} className="glisse inline-flex" style={{ touchAction: "pan-y", animationDelay: delai + "s" }}>{children}</span>;
+}
+
 // ---------- Bouton « Newsletter » (hero) ----------
 // Depuis le 24/10/2026 (Tristan) : les enquêtes paraissent d'abord sur Substack,
 // le bouton sous le portrait mène donc à l'abonnement plutôt qu'au dernier article.
@@ -1892,7 +1943,10 @@ function NewsletterBloc() {
         </a>
         <div className="mt-3 text-white/45 font-body text-sm">newsletter.tristan.pro · désinscription en un clic</div>
         <div className="mt-12 text-left">
-          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3">Dernières enquêtes</div>
+          <div className="mb-3 flex items-baseline justify-between gap-4">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">Dernières enquêtes</span>
+            <NavLink href={PRODUCTIONS_PATH} className="group inline-flex items-center gap-1 font-body text-xs text-white/55 hover:text-white">Toutes mes productions <ArrowUpRight size={12} strokeWidth={2} /></NavLink>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {PRODUCTIONS.slice(0, 3).map(p => {
               const inner = (<>

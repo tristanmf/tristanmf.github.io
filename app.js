@@ -850,13 +850,22 @@ function Hero() {
     delay: 0.25
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex flex-wrap items-center justify-center gap-2"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-4 whitespace-nowrap"
+  }, /*#__PURE__*/React.createElement(Glisse, {
+    delai: 1.8
+  }, /*#__PURE__*/React.createElement(NavLink, {
+    href: "/#contact",
+    className: "group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors"
   }, /*#__PURE__*/React.createElement("span", {
     className: "bg-white text-black rounded-full px-3 py-1 text-xs font-semibold font-body"
   }, "2026"), /*#__PURE__*/React.createElement("span", {
     className: "text-sm text-white/90 font-body"
-  }, "Disponible pour confs & interviews")), /*#__PURE__*/React.createElement(NavLink, {
+  }, "Disponible pour confs & interviews"), /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 14,
+    strokeWidth: 2,
+    className: "text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+  }))), /*#__PURE__*/React.createElement(Glisse, {
+    delai: 2.0
+  }, /*#__PURE__*/React.createElement(NavLink, {
     href: PRESS_PATH,
     className: "group liquid-glass rounded-full px-1 py-1 flex items-center gap-2 pr-3.5 whitespace-nowrap hover:bg-white/10 transition-colors"
   }, /*#__PURE__*/React.createElement("span", {
@@ -867,7 +876,9 @@ function Hero() {
     size: 14,
     strokeWidth: 2,
     className: "text-white/70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-  })), /*#__PURE__*/React.createElement(NewsletterPill, null))), /*#__PURE__*/React.createElement("div", {
+  }))), /*#__PURE__*/React.createElement(Glisse, {
+    delai: 2.2
+  }, /*#__PURE__*/React.createElement(NewsletterPill, null)))), /*#__PURE__*/React.createElement("div", {
     className: "mt-6 text-center w-full px-4"
   }, /*#__PURE__*/React.createElement(BlurText, {
     text: "Tristan Mend\xE8s France",
@@ -1542,22 +1553,7 @@ function Testimonials() {
   return /*#__PURE__*/React.createElement("section", {
     id: "productions",
     className: "px-6 md:px-12 lg:px-24 py-16 md:py-28"
-  }, /*#__PURE__*/React.createElement(NewsletterBloc, null), /*#__PURE__*/React.createElement(FadeIn, {
-    className: "mb-8 flex flex-wrap items-center justify-between gap-4"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/60"
-  }, "Productions"), /*#__PURE__*/React.createElement("span", {
-    className: "text-white font-body text-base md:text-lg tracking-tight"
-  }, "Enqu\xEAtes & exp\xE9rimentations")), /*#__PURE__*/React.createElement(NavLink, {
-    href: PRODUCTIONS_PATH,
-    className: "group inline-flex items-center gap-2 text-sm font-medium font-body text-white/80 hover:text-white"
-  }, "Toutes mes productions ", /*#__PURE__*/React.createElement(ArrowUpRight, {
-    size: 14,
-    strokeWidth: 2,
-    className: "transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-  }))), /*#__PURE__*/React.createElement(LabTile, {
+  }, /*#__PURE__*/React.createElement(NewsletterBloc, null), /*#__PURE__*/React.createElement(LabTile, {
     video: "/tmflab.mp4",
     logo: "/tmflab-logo.svg"
   }), /*#__PURE__*/React.createElement(FadeIn, {
@@ -2815,6 +2811,92 @@ function SanteArticle() {
   }, "Les 78 essais, texte des aper\xE7us compris (.csv)")))));
 }
 
+// ---------- Pastilles du hero : glisser pour valider (écrans tactiles) ----------
+// Pour le plaisir (Tristan, 24/10/2026) : on peut toucher la pastille comme un lien,
+// ou la faire glisser du doigt vers la droite — au-delà du seuil, elle s'ouvre.
+// Uniquement au toucher : à la souris, rien ne change. Un glissement vertical
+// laisse la page défiler normalement.
+function Glisse({
+  delai = 0,
+  children
+}) {
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const MAX = 64,
+      SEUIL = 44;
+    let x0 = 0,
+      y0 = 0,
+      dx = 0,
+      actif = false,
+      ignore = false;
+    const pose = (v, anime) => {
+      el.style.transition = anime ? "transform .25s cubic-bezier(.2,.8,.2,1)" : "none";
+      el.style.transform = v ? `translateX(${v}px)` : "";
+      el.style.filter = v >= SEUIL ? "brightness(1.35)" : "";
+    };
+    const debut = e => {
+      const t = e.touches[0];
+      x0 = t.clientX;
+      y0 = t.clientY;
+      dx = 0;
+      actif = false;
+      ignore = false;
+    };
+    const bouge = e => {
+      if (ignore) return;
+      const t = e.touches[0],
+        ddx = t.clientX - x0,
+        ddy = t.clientY - y0;
+      if (!actif) {
+        if (Math.abs(ddy) > 10 && Math.abs(ddy) > Math.abs(ddx)) {
+          ignore = true;
+          return;
+        }
+        if (ddx < 8) return;
+        actif = true;
+        el.style.animation = "none";
+      }
+      dx = Math.max(0, Math.min(MAX, ddx));
+      pose(dx);
+    };
+    const fin = () => {
+      if (!actif) return;
+      actif = false;
+      const ok = dx >= SEUIL;
+      pose(0, true);
+      if (ok) {
+        if (navigator.vibrate) navigator.vibrate(12);
+        const a = el.querySelector("a");
+        if (a) setTimeout(() => a.click(), 160);
+      }
+    };
+    el.addEventListener("touchstart", debut, {
+      passive: true
+    });
+    el.addEventListener("touchmove", bouge, {
+      passive: true
+    });
+    el.addEventListener("touchend", fin);
+    el.addEventListener("touchcancel", fin);
+    return () => {
+      el.removeEventListener("touchstart", debut);
+      el.removeEventListener("touchmove", bouge);
+      el.removeEventListener("touchend", fin);
+      el.removeEventListener("touchcancel", fin);
+    };
+  }, []);
+  return /*#__PURE__*/React.createElement("span", {
+    ref: ref,
+    className: "glisse inline-flex",
+    style: {
+      touchAction: "pan-y",
+      animationDelay: delai + "s"
+    }
+  }, children);
+}
+
 // ---------- Bouton « Newsletter » (hero) ----------
 // Depuis le 24/10/2026 (Tristan) : les enquêtes paraissent d'abord sur Substack,
 // le bouton sous le portrait mène donc à l'abonnement plutôt qu'au dernier article.
@@ -3073,8 +3155,16 @@ function NewsletterBloc() {
   }, "newsletter.tristan.pro \xB7 d\xE9sinscription en un clic"), /*#__PURE__*/React.createElement("div", {
     className: "mt-12 text-left"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "font-mono text-[10px] uppercase tracking-[0.2em] text-white/40 mb-3"
-  }, "Derni\xE8res enqu\xEAtes"), /*#__PURE__*/React.createElement("div", {
+    className: "mb-3 flex items-baseline justify-between gap-4"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-mono text-[10px] uppercase tracking-[0.2em] text-white/40"
+  }, "Derni\xE8res enqu\xEAtes"), /*#__PURE__*/React.createElement(NavLink, {
+    href: PRODUCTIONS_PATH,
+    className: "group inline-flex items-center gap-1 font-body text-xs text-white/55 hover:text-white"
+  }, "Toutes mes productions ", /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 12,
+    strokeWidth: 2
+  }))), /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-1 sm:grid-cols-3 gap-3"
   }, PRODUCTIONS.slice(0, 3).map(p => {
     const inner = /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("img", {
