@@ -1,0 +1,7 @@
+# Publication GitHub Pages (Jekyll) de tristan.pro.
+# Seul rôle de ce fichier : ne pas publier les notes de travail destinées aux IA
+# (elles restent dans le dépôt, mais n'apparaissent plus sur le site).
+exclude:
+  - CLAUDE.md
+  - AGENTS.md
+  - README.md
