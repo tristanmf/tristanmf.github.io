@@ -330,9 +330,11 @@ un jeton API à validité illimitée est stocké dans les secrets du dépôt
 
 ### État connu au 2 septembre 2026
 
-- Dix zones sur le compte : blogtrotters.fr, complorama.fr, egoblog.net, faismoila.biz,
-  mendes-france.com, mendes-france.net, radiosofa.com, tmfab.fr, tmflab.tech, tristan.pro.
-- Hébergement web `egoblog.net` (offre perso, cluster013, IP 213.186.33.24), multisite :
+- Dix-sept zones sur le compte (relevé du 25/10/2026) : avant-signer.com, avant-signer.fr,
+  avantsigner.com, avantsigner.fr, blogtrotters.fr, complorama.fr, egoblog.net, faismoila.biz,
+  mendes-france.com, mendes-france.net, nahimok.app, nahimok.com, radiosofa.com, tmfab.fr,
+  tmflab.tech, tristan.pro, tropdeter.app.
+- Hébergement web `egoblog.net` (offre perso, cluster113, IP 213.186.33.24), multisite :
   egoblog.net, blogtrotters.fr, tmflab.tech, tmfab.fr, complorama.fr (avec et sans www).
 - `complorama.fr` et `www.complorama.fr` → 301 vers `https://tristan.pro/complorama/`, servie par
   le dossier `www/complorama-redir` de cet hébergement, Let's Encrypt valide pour les deux noms.
@@ -348,6 +350,9 @@ un jeton API à validité illimitée est stocké dans les secrets du dépôt
   aucun module OVH installé. Dossiers servis : `www` (egoblog.net), `blogtrotters`,
   `www/tmflab` (tmflab.tech + tmfab.fr), `www/complorama-redir`.
   De quoi héberger un petit backend (PHP + SQLite ou MySQL) si un projet en a besoin.
+  *Mise à jour du 25/10/2026 : ce relevé date du 3 septembre. Depuis, la base d'egoblog a été
+  migrée (04/09) et le SQL privé n'est plus utilisé ; 8,4 Go occupés. L'état à jour de
+  l'hébergement est tenu côté Mac (`~/Sites/CLAUDE.md`).*
 - `tristan.pro` → GitHub Pages (ce dépôt). Vérifié le 3 septembre : https OK (Let's Encrypt
   jusqu'au 5 novembre 2026, renouvelé par GitHub), http → https, www → apex en http. Le 2 septembre
   au soir Tristan a supprimé puis recréé le fichier `CNAME` (contenu inchangé) : sans effet.
@@ -697,17 +702,17 @@ Les articles et /productions/ gardent `SuivreSoutenir` (Substack + Ko-fi).
 - **Sonde HTTP du 3 sept. 11:19 UTC** (run 33749009094, ~3h après la resaisie) : `www`
   toujours **non couvert**, apex inchangé — même résultat qu'à 08:09. La resaisie du
   Custom domain n'a donc pas suffi à elle seule à déclencher l'émission.
-- **À faire : ne pas répéter le remove/re-add.** Attendre le renouvellement naturel du
-  6 octobre, puis resonder avec Tools · HTTP probe. Si `www` est alors couvert, cocher
-  *Enforce HTTPS*.
+- ✅ **Résolu** (constaté le 25/10/2026 par l'API GitHub Pages) : le certificat est approuvé
+  pour `tristan.pro` **et** `www.tristan.pro`, et *Enforce HTTPS* est activé. Plus rien à faire.
+- (Historique) Il ne fallait pas répéter le remove/re-add, mais attendre le renouvellement
+  naturel du 6 octobre.
 - Ne jamais activer l'hébergement web OVH sur tristan.pro (réécrit A et MX). Ne toucher qu'à
   `www` ; A, MX, NS, TXT et CNAME de service OVH sont à préserver.
 
 ## Reste à faire / à surveiller
 
-- [ ] **Certificat www** : HTTP probe du 3 septembre 10:07 → certificat encore limité à l'apex
-      (émis le 7 août) ; la resaisie du 2 septembre n'a rien redéclenché. Attendre le
-      renouvellement (~6 octobre), resonder, puis recocher *Enforce HTTPS*.
+- [x] **Certificat www** : réglé (certificat approuvé pour l'apex et `www`, *Enforce HTTPS*
+      activé — constaté le 25/10/2026).
 - [ ] **1er octobre 2026** : sortie des *Faussaires de la nation* → lien vers la page éditeur,
       retirer « Parution le 1er octobre » de la carte.
 - [ ] Vérifications visuelles impossibles depuis le bac à sable (Tristan) : rendu de la tuile
