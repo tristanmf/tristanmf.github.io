@@ -1,6 +1,13 @@
 {
   "lettres": [
     {
+      "titre": "La traduction par IA, nouvel eldorado des radicalités en ligne",
+      "resume": "Depuis le printemps, X traduit tous les posts grâce à Grok. Pour l'extrême droite, c'est une audience mondiale, un business et une ligne directe avec Musk.",
+      "date": "2026-10-26",
+      "url": "https://newsletter.tristan.pro/p/la-traduction-par-ia-nouvel-eldorado",
+      "img": "/newsletter/img/la-traduction-par-ia-nouvel-eldorado.jpg"
+    },
+    {
       "titre": "Le « prompt power » chinois, épisode 1",
       "resume": "DeepSeek, Qwen, GLM, Kimi : des IA chinoises au service de la propagande du Parti communiste ?",
       "date": "2026-10-24",
@@ -13,13 +20,6 @@
       "date": "2026-10-19",
       "url": "https://newsletter.tristan.pro/p/on-fait-tous-confiance-aux-apercus",
       "img": "/newsletter/img/on-fait-tous-confiance-aux-apercus.jpg"
-    },
-    {
-      "titre": "Présidentielle : quand Perplexity puise dans la propagande russe pour présenter les candidats",
-      "resume": "Sur 420 réponses testées, 182 citent le réseau de propagande russe Pravda, sans le moindre avertissement.",
-      "date": "2026-10-17",
-      "url": "https://newsletter.tristan.pro/p/presidentielle-quand-perplexity-puise",
-      "img": "/newsletter/img/presidentielle-quand-perplexity-puise.jpg"
     }
   ]
 }
