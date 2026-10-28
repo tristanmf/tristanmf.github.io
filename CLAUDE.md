@@ -574,6 +574,10 @@ sympa, raccord et propre », y compris pour les projets hébergés ailleurs.
   `/#productions`** (bloc newsletter + tuile TMF Lab) : `/productions/`, tenue à la main, n'était
   plus à jour depuis que les enquêtes paraissent sur Substack, et « productions » se confondait
   avec TMF Lab. La page reste en ligne mais n'est plus liée nulle part (ni menu, ni bloc newsletter).
+  **Nom de la newsletter : « Nouvelles du front numérique »** (renommée le 27/10/2026, ex « Aux
+  frontières de l'extrême »), constantes `NEWSLETTER_NOM` / `NEWSLETTER_LOGO` dans `app.jsx`. Logo
+  « ligne de front » copié du Drive (`08 - Outils et IA/front-numerique-logo.svg`) en
+  `newsletter/logo.svg` : en tête de `NewsletterBloc` et à gauche des invitations à s'abonner.
   Décision de Tristan : le bouton montre la **dernière production seule**, pas « Productions »
   (sinon doublon avec le menu). Pas de section « À la une » sur l'accueil (repousserait tout).
   **Remplacé le 24/10/2026 (PR #120)** : Tristan pousse désormais la newsletter, ses enquêtes
