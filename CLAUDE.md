@@ -570,8 +570,10 @@ sympa, raccord et propre », y compris pour les projets hébergés ailleurs.
   **`/productions/`** (vue `productions`, coquille générée par `PAGES`) et le **bouton
   « Nouveau »** sous le portrait (étiquette `court`, 25 caractères au plus : il doit tenir sur une
   ligne sur iPhone). Publier une production = une ligne en tête du tableau (+ son aperçu de
-  partage). Le lien « Productions » du menu mène à `/productions/` ; la section `#productions`
-  de l'accueil garde la tuile TMF Lab et un lien « Toutes mes productions ».
+  partage). **Depuis le 28/10/2026 (demande de Tristan), le menu dit « Newsletter » et mène à
+  `/#productions`** (bloc newsletter + tuile TMF Lab) : `/productions/`, tenue à la main, n'était
+  plus à jour depuis que les enquêtes paraissent sur Substack, et « productions » se confondait
+  avec TMF Lab. La page reste en ligne mais n'est plus liée nulle part (ni menu, ni bloc newsletter).
   Décision de Tristan : le bouton montre la **dernière production seule**, pas « Productions »
   (sinon doublon avec le menu). Pas de section « À la une » sur l'accueil (repousserait tout).
   **Remplacé le 24/10/2026 (PR #120)** : Tristan pousse désormais la newsletter, ses enquêtes
