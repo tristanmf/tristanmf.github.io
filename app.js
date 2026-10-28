@@ -572,7 +572,9 @@ const VIEW_NAV = {
   productions: PRODUCTIONS_PATH
 };
 
-// Mes productions, la plus récente en premier. La première alimente le bouton
+// Mes productions, la plus récente en premier. Plus liées depuis le menu
+// (28/10/2026 : l'entrée « Newsletter » mène à #productions de l'accueil) ;
+// la page /productions/ reste en ligne, accessible par son adresse. La première alimente le bouton
 // « Nouveau » sous le portrait (étiquette `court`, 25 caractères au plus pour
 // tenir sur une ligne sur iPhone) ; toutes s'affichent sur /productions/.
 // `img` : l'aperçu de partage de la page (1200 × 630, scripts/apercus/).
@@ -676,8 +678,8 @@ function Navbar({
     l: "Revue de presse",
     h: PRESS_PATH
   }, {
-    l: "Productions",
-    h: PRODUCTIONS_PATH
+    l: "Newsletter",
+    h: "/#productions"
   }, {
     l: "Conférences",
     h: "/#conferences"
@@ -695,7 +697,7 @@ function Navbar({
     if (!sections.length) return;
     const io = new IntersectionObserver(entries => {
       const visible = entries.filter(e => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-      if (visible[0]) setActive(visible[0].target.id === "productions" ? PRODUCTIONS_PATH : "/#" + visible[0].target.id);
+      if (visible[0]) setActive("/#" + visible[0].target.id);
     }, {
       rootMargin: "-40% 0px -50% 0px",
       threshold: [0, 0.1, 0.25, 0.5]
@@ -3198,13 +3200,7 @@ function NewsletterBloc() {
   }, "Toutes les lettres ", /*#__PURE__*/React.createElement(ArrowUpRight, {
     size: 12,
     strokeWidth: 2
-  })) : /*#__PURE__*/React.createElement(NavLink, {
-    href: PRODUCTIONS_PATH,
-    className: "inline-flex items-center gap-1 font-body text-xs text-white/55 hover:text-white"
-  }, "Toutes mes productions ", /*#__PURE__*/React.createElement(ArrowUpRight, {
-    size: 12,
-    strokeWidth: 2
-  }))), /*#__PURE__*/React.createElement("div", {
+  })) : null), /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4"
   }, lettres ? lettres.map(l => /*#__PURE__*/React.createElement("a", {
     key: l.url,
