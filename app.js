@@ -3069,6 +3069,10 @@ function ComploramaDernier() {
 const SUBSTACK_URL = "https://newsletter.tristan.pro/subscribe";
 const SUBSTACK_HOME = "https://newsletter.tristan.pro/";
 const KOFI_URL = "https://ko-fi.com/tristanmf";
+// Nom et logo de la newsletter (renommée le 27/10/2026, ex « Aux frontières de
+// l'extrême ») ; source du logo : Drive, « 08 - Outils et IA/front-numerique-logo.svg ».
+const NEWSLETTER_NOM = "Nouvelles du front numérique";
+const NEWSLETTER_LOGO = "/newsletter/logo.svg";
 const SubstackLogo = () => /*#__PURE__*/React.createElement("svg", {
   width: "14",
   height: "14",
@@ -3116,8 +3120,16 @@ function SubstackInvite() {
     rel: "noopener",
     className: "group flex flex-wrap items-center justify-between gap-4 liquid-glass rounded-3xl p-5 md:p-6"
   }, /*#__PURE__*/React.createElement("span", {
+    className: "flex items-center gap-4 flex-1 min-w-[14rem]"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: NEWSLETTER_LOGO,
+    alt: "",
+    width: "48",
+    height: "48",
+    className: "w-12 h-12 shrink-0 rounded-xl ring-1 ring-white/10"
+  }), /*#__PURE__*/React.createElement("span", {
     className: "font-body text-white/85 leading-snug"
-  }, "Ne ratez pas mes prochaines enquêtes et publications importantes : abonnez-vous à ma newsletter, c'est gratuit.".replace(/ ([%:;?!»])/g, "\u00a0$1")), /*#__PURE__*/React.createElement("span", {
+  }, ("Ne ratez pas mes prochaines enquêtes et publications importantes : abonnez-vous à ma newsletter «\u00a0" + NEWSLETTER_NOM + "\u00a0», c'est gratuit.").replace(/ ([%:;?!»])/g, "\u00a0$1"))), /*#__PURE__*/React.createElement("span", {
     className: "inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-body text-sm font-semibold text-white whitespace-nowrap transition-opacity group-hover:opacity-90",
     style: {
       background: "#FF6719"
@@ -3134,8 +3146,16 @@ function SuivreSoutenir() {
     rel: "noopener",
     className: "group flex flex-wrap items-center justify-between gap-4 liquid-glass rounded-3xl p-5 md:p-6"
   }, /*#__PURE__*/React.createElement("span", {
+    className: "flex items-center gap-4 flex-1 min-w-[14rem]"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: NEWSLETTER_LOGO,
+    alt: "",
+    width: "48",
+    height: "48",
+    className: "w-12 h-12 shrink-0 rounded-xl ring-1 ring-white/10"
+  }), /*#__PURE__*/React.createElement("span", {
     className: "font-body text-white/85 leading-snug"
-  }, nbsp("Ne ratez pas mes prochaines enquêtes et publications importantes : abonnez-vous à ma newsletter, c'est gratuit.")), /*#__PURE__*/React.createElement("span", {
+  }, nbsp("Ne ratez pas mes prochaines enquêtes et publications importantes : abonnez-vous à ma newsletter «\u00a0" + NEWSLETTER_NOM + "\u00a0», c'est gratuit."))), /*#__PURE__*/React.createElement("span", {
     className: "inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-body text-sm font-semibold text-white whitespace-nowrap transition-opacity group-hover:opacity-90",
     style: {
       background: "#FF6719"
@@ -3166,11 +3186,17 @@ function NewsletterBloc() {
     className: "mb-16 md:mb-24"
   }, /*#__PURE__*/React.createElement("div", {
     className: "liquid-glass rounded-[2rem] px-6 py-10 md:px-14 md:py-16 text-center"
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("img", {
+    src: NEWSLETTER_LOGO,
+    alt: "",
+    width: "80",
+    height: "80",
+    className: "mx-auto mb-6 w-16 h-16 md:w-20 md:h-20 rounded-2xl ring-1 ring-white/10"
+  }), /*#__PURE__*/React.createElement("div", {
     className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/55"
   }, "Newsletter \xB7 gratuite"), /*#__PURE__*/React.createElement("h2", {
     className: "mt-4 font-heading italic text-white tracking-tight leading-[0.95] text-[clamp(2.5rem,7vw,5rem)]"
-  }, "Aux fronti\xE8res de l'extr\xEAme"), /*#__PURE__*/React.createElement("p", {
+  }, "Nouvelles du front num\xE9rique"), /*#__PURE__*/React.createElement("p", {
     className: "mt-5 mx-auto max-w-2xl text-white/75 font-body font-light text-lg md:text-xl leading-relaxed"
   }, nbsp("Restez informé : mes enquêtes sur la désinformation, le complotisme et les extrémismes en ligne, et les informations importantes du moment, directement dans votre boîte mail.")), /*#__PURE__*/React.createElement("a", {
     href: SUBSTACK_URL,
