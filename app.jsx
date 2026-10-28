@@ -1918,13 +1918,17 @@ function ComploramaDernier() {
 const SUBSTACK_URL = "https://newsletter.tristan.pro/subscribe";
 const SUBSTACK_HOME = "https://newsletter.tristan.pro/";
 const KOFI_URL = "https://ko-fi.com/tristanmf";
+// Nom et logo de la newsletter (renommée le 27/10/2026, ex « Aux frontières de
+// l'extrême ») ; source du logo : Drive, « 08 - Outils et IA/front-numerique-logo.svg ».
+const NEWSLETTER_NOM = "Nouvelles du front numérique";
+const NEWSLETTER_LOGO = "/newsletter/logo.svg";
 const SubstackLogo = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z" /></svg>;
 const Tasse = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 1 1 0 8h-1" /><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" /><line x1="6" y1="2" x2="6" y2="4" /><line x1="10" y1="2" x2="10" y2="4" /><line x1="14" y1="2" x2="14" y2="4" /></svg>;
 // Seul le bloc newsletter, pour l'accueil (Tristan, 20/10/2026 : Substack partout où c'est utile).
 function SubstackInvite() {
   return (
     <a href={SUBSTACK_URL} target="_blank" rel="noopener" className="group flex flex-wrap items-center justify-between gap-4 liquid-glass rounded-3xl p-5 md:p-6">
-      <span className="font-body text-white/85 leading-snug">{"Ne ratez pas mes prochaines enquêtes et publications importantes : abonnez-vous à ma newsletter, c'est gratuit.".replace(/ ([%:;?!»])/g, "\u00a0$1")}</span>
+      <span className="flex items-center gap-4 flex-1 min-w-[14rem]"><img src={NEWSLETTER_LOGO} alt="" width="48" height="48" className="w-12 h-12 shrink-0 rounded-xl ring-1 ring-white/10" /><span className="font-body text-white/85 leading-snug">{("Ne ratez pas mes prochaines enquêtes et publications importantes : abonnez-vous à ma newsletter «\u00a0" + NEWSLETTER_NOM + "\u00a0», c'est gratuit.").replace(/ ([%:;?!»])/g, "\u00a0$1")}</span></span>
       <span className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-body text-sm font-semibold text-white whitespace-nowrap transition-opacity group-hover:opacity-90" style={{ background: "#FF6719" }}><SubstackLogo /> S'abonner sur Substack</span>
     </a>
   );
@@ -1934,7 +1938,7 @@ function SuivreSoutenir() {
   return (
     <div className="grid gap-3">
       <a href={SUBSTACK_URL} target="_blank" rel="noopener" className="group flex flex-wrap items-center justify-between gap-4 liquid-glass rounded-3xl p-5 md:p-6">
-        <span className="font-body text-white/85 leading-snug">{nbsp("Ne ratez pas mes prochaines enquêtes et publications importantes : abonnez-vous à ma newsletter, c'est gratuit.")}</span>
+        <span className="flex items-center gap-4 flex-1 min-w-[14rem]"><img src={NEWSLETTER_LOGO} alt="" width="48" height="48" className="w-12 h-12 shrink-0 rounded-xl ring-1 ring-white/10" /><span className="font-body text-white/85 leading-snug">{nbsp("Ne ratez pas mes prochaines enquêtes et publications importantes : abonnez-vous à ma newsletter «\u00a0" + NEWSLETTER_NOM + "\u00a0», c'est gratuit.")}</span></span>
         <span className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-body text-sm font-semibold text-white whitespace-nowrap transition-opacity group-hover:opacity-90" style={{ background: "#FF6719" }}><SubstackLogo /> S'abonner sur Substack</span>
       </a>
       <a href={KOFI_URL} target="_blank" rel="noopener" className="group flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-white/10 p-5 md:p-6 hover:bg-white/[0.03] transition-colors">
@@ -1958,8 +1962,9 @@ function NewsletterBloc() {
   return (
     <FadeIn className="mb-16 md:mb-24">
       <div className="liquid-glass rounded-[2rem] px-6 py-10 md:px-14 md:py-16 text-center">
+        <img src={NEWSLETTER_LOGO} alt="" width="80" height="80" className="mx-auto mb-6 w-16 h-16 md:w-20 md:h-20 rounded-2xl ring-1 ring-white/10" />
         <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/55">Newsletter · gratuite</div>
-        <h2 className="mt-4 font-heading italic text-white tracking-tight leading-[0.95] text-[clamp(2.5rem,7vw,5rem)]">Aux frontières de l'extrême</h2>
+        <h2 className="mt-4 font-heading italic text-white tracking-tight leading-[0.95] text-[clamp(2.5rem,7vw,5rem)]">Nouvelles du front numérique</h2>
         <p className="mt-5 mx-auto max-w-2xl text-white/75 font-body font-light text-lg md:text-xl leading-relaxed">{nbsp("Restez informé : mes enquêtes sur la désinformation, le complotisme et les extrémismes en ligne, et les informations importantes du moment, directement dans votre boîte mail.")}</p>
         <a href={SUBSTACK_URL} target="_blank" rel="noopener" className="group mt-8 inline-flex items-center justify-center gap-3 rounded-full px-8 py-5 md:px-12 md:py-6 font-body text-lg md:text-2xl font-semibold text-white shadow-[0_10px_40px_-10px_rgba(255,103,25,0.7)] transition-transform hover:scale-[1.03]" style={{ background: "#FF6719" }}>
           <SubstackLogo /> Abonnez-vous à ma newsletter
