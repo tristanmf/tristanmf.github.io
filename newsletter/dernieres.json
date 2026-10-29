@@ -1,6 +1,13 @@
 {
   "lettres": [
     {
+      "titre": "Le « prompt power » chinois, épisode 2",
+      "resume": "Jusque dans les ordinateurs de l’État",
+      "date": "2026-10-29",
+      "url": "https://newsletter.tristan.pro/p/le-prompt-power-chinois-episode-2",
+      "img": "/newsletter/img/le-prompt-power-chinois-episode-2.jpg"
+    },
+    {
       "titre": "La traduction par IA, nouvel eldorado des radicalités en ligne",
       "resume": "Depuis le printemps, X traduit tous les posts grâce à Grok. Pour l'extrême droite, c'est une audience mondiale, un business et une ligne directe avec Musk.",
       "date": "2026-10-26",
@@ -13,13 +20,6 @@
       "date": "2026-10-24",
       "url": "https://newsletter.tristan.pro/p/le-prompt-power-chinois-episode-1",
       "img": "/newsletter/img/le-prompt-power-chinois-episode-1.jpg"
-    },
-    {
-      "titre": "On fait tous confiance aux aperçus IA de Google. Sur la santé, ils recommandent des complotistes.",
-      "resume": "On lit tous les aperçus IA de Google, souvent sans aller plus loin. J’ai testé leur intégrité sur des questions de santé. Résultat : de gros trous dans la raquette.",
-      "date": "2026-10-19",
-      "url": "https://newsletter.tristan.pro/p/on-fait-tous-confiance-aux-apercus",
-      "img": "/newsletter/img/on-fait-tous-confiance-aux-apercus.jpg"
     }
   ]
 }
