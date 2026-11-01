@@ -1,6 +1,13 @@
 {
   "lettres": [
     {
+      "titre": "Le slop idéologique, mode d’emploi : le cas Brivael Le Pogam",
+      "resume": "Rédigé par l’IA, traduit par Grok, relayé par Musk, consacré par Fox News : anatomie d’une ascension éclair.",
+      "date": "2026-11-01",
+      "url": "https://newsletter.tristan.pro/p/le-slop-ideologique-mode-demploi",
+      "img": "/newsletter/img/le-slop-ideologique-mode-demploi.jpg"
+    },
+    {
       "titre": "Le « prompt power » chinois, épisode 2",
       "resume": "Jusque dans les ordinateurs de l’État",
       "date": "2026-10-29",
@@ -13,13 +20,6 @@
       "date": "2026-10-26",
       "url": "https://newsletter.tristan.pro/p/la-traduction-par-ia-nouvel-eldorado",
       "img": "/newsletter/img/la-traduction-par-ia-nouvel-eldorado.jpg"
-    },
-    {
-      "titre": "Le « prompt power » chinois, épisode 1",
-      "resume": "DeepSeek, Qwen, GLM, Kimi : des IA chinoises au service de la propagande du Parti communiste ?",
-      "date": "2026-10-24",
-      "url": "https://newsletter.tristan.pro/p/le-prompt-power-chinois-episode-1",
-      "img": "/newsletter/img/le-prompt-power-chinois-episode-1.jpg"
     }
   ]
 }
