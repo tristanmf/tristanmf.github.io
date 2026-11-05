@@ -1,6 +1,13 @@
 {
   "lettres": [
     {
+      "titre": "Présidentielle 2027 : ces IA qui recommandent un candidat",
+      "resume": "J'ai posé 5 005 fois la même question à onze IA. Une réponse sur deux désigne un candidat, avec aplomb, et pas toujours le même.",
+      "date": "2026-11-04",
+      "url": "https://newsletter.tristan.pro/p/presidentielle-2027-ces-ia-qui-recommandent",
+      "img": "/newsletter/img/presidentielle-2027-ces-ia-qui-recommandent.jpg"
+    },
+    {
       "titre": "Le slop idéologique, mode d’emploi : le cas Brivael Le Pogam",
       "resume": "Rédigé par l’IA, traduit par Grok, relayé par Musk, consacré par Fox News : anatomie d’une ascension éclair.",
       "date": "2026-11-01",
@@ -13,13 +20,6 @@
       "date": "2026-10-29",
       "url": "https://newsletter.tristan.pro/p/le-prompt-power-chinois-episode-2",
       "img": "/newsletter/img/le-prompt-power-chinois-episode-2.jpg"
-    },
-    {
-      "titre": "La traduction par IA, nouvel eldorado des radicalités en ligne",
-      "resume": "Depuis le printemps, X traduit tous les posts grâce à Grok. Pour l'extrême droite, c'est une audience mondiale, un business et une ligne directe avec Musk.",
-      "date": "2026-10-26",
-      "url": "https://newsletter.tristan.pro/p/la-traduction-par-ia-nouvel-eldorado",
-      "img": "/newsletter/img/la-traduction-par-ia-nouvel-eldorado.jpg"
     }
   ]
 }
