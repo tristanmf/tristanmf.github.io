@@ -1,6 +1,13 @@
 {
   "lettres": [
     {
+      "titre": "L’internationale Musk",
+      "resume": "J’ai voulu regrouper en un seul panorama toute cette internationale d’extrême droite qu’Elon Musk fait monter sur X. Depuis 2022, sa virulence à l’international saute aux yeux.",
+      "date": "2026-11-06",
+      "url": "https://newsletter.tristan.pro/p/linternationale-musk",
+      "img": "/newsletter/img/linternationale-musk.jpg"
+    },
+    {
       "titre": "Présidentielle 2027 : ces IA qui recommandent un candidat",
       "resume": "J'ai posé 5 005 fois la même question à onze IA. Une réponse sur deux désigne un candidat, avec aplomb, et pas toujours le même.",
       "date": "2026-11-04",
@@ -13,13 +20,6 @@
       "date": "2026-11-01",
       "url": "https://newsletter.tristan.pro/p/le-slop-ideologique-mode-demploi",
       "img": "/newsletter/img/le-slop-ideologique-mode-demploi.jpg"
-    },
-    {
-      "titre": "Le « prompt power » chinois, épisode 2",
-      "resume": "Jusque dans les ordinateurs de l’État",
-      "date": "2026-10-29",
-      "url": "https://newsletter.tristan.pro/p/le-prompt-power-chinois-episode-2",
-      "img": "/newsletter/img/le-prompt-power-chinois-episode-2.jpg"
     }
   ]
 }
