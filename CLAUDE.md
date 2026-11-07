@@ -14,6 +14,9 @@ automatiser, vérifier soi-même, livrer, expliquer en clair.
 - **Tout auto-hébergé, zéro tracker.** Aucun CDN, aucune Google Font, aucun domaine tiers au
   chargement d'une page. Polices dans `assets/fonts/`, bibliothèques dans `vendor/`
   (`scripts/vendor-assets.mjs` les rafraîchit). Ne jamais réintroduire une ressource externe.
+  **Seule exception, décidée par Tristan le 07/11/2026** : la mesure d'audience Metricool
+  (`tracker.metricool.com/resources/be.js`, marque 7731750), dans le `<head>` des pages HTML publiées.
+  À ajouter aussi à toute nouvelle page. Aucune autre ressource externe.
 - **Fichiers générés, ne pas éditer à la main** : `app.js`, `complorama/*.js`, `assets/tailwind.css`.
   Le build ajoute aussi `?v=<empreinte>` à `/app.js` et `/assets/tailwind.css` dans `index.html`
   et les coquilles (`scripts/stamp-versions.mjs`) : sans cela, Safari iOS gardait l'ancien app.js.
