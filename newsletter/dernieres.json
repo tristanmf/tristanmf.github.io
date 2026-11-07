@@ -1,6 +1,13 @@
 {
   "lettres": [
     {
+      "titre": "Europe, we have a problem",
+      "resume": "Le « prompt power » chinois, épisode 3",
+      "date": "2026-11-07",
+      "url": "https://newsletter.tristan.pro/p/europe-we-have-a-problem",
+      "img": "/newsletter/img/europe-we-have-a-problem.jpg"
+    },
+    {
       "titre": "L’internationale Musk",
       "resume": "J’ai voulu regrouper en un seul panorama toute cette internationale d’extrême droite qu’Elon Musk fait monter sur X. Depuis 2022, sa virulence à l’international saute aux yeux.",
       "date": "2026-11-06",
@@ -13,13 +20,6 @@
       "date": "2026-11-04",
       "url": "https://newsletter.tristan.pro/p/presidentielle-2027-ces-ia-qui-recommandent",
       "img": "/newsletter/img/presidentielle-2027-ces-ia-qui-recommandent.jpg"
-    },
-    {
-      "titre": "Le slop idéologique, mode d’emploi : le cas Brivael Le Pogam",
-      "resume": "Rédigé par l’IA, traduit par Grok, relayé par Musk, consacré par Fox News : anatomie d’une ascension éclair.",
-      "date": "2026-11-01",
-      "url": "https://newsletter.tristan.pro/p/le-slop-ideologique-mode-demploi",
-      "img": "/newsletter/img/le-slop-ideologique-mode-demploi.jpg"
     }
   ]
 }
