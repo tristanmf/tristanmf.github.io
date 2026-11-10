@@ -1,6 +1,13 @@
 {
   "lettres": [
     {
+      "titre": "Podcasts : la porte dérobée, épisode 1. La Russie sous sanctions émet toujours en clair",
+      "resume": "Plus de 75 émissions de médias d’État russes bannis sont en libre accès sur Apple Podcasts et Spotify France. Et huit podcasts de Sputnik y avancent masqués.",
+      "date": "2026-11-10",
+      "url": "https://newsletter.tristan.pro/p/podcasts-la-porte-derobee-episode",
+      "img": "/newsletter/img/podcasts-la-porte-derobee-episode.jpg"
+    },
+    {
       "titre": "Europe, we have a problem",
       "resume": "Le « prompt power » chinois, épisode 3",
       "date": "2026-11-07",
@@ -13,13 +20,6 @@
       "date": "2026-11-06",
       "url": "https://newsletter.tristan.pro/p/linternationale-musk",
       "img": "/newsletter/img/linternationale-musk.jpg"
-    },
-    {
-      "titre": "Présidentielle 2027 : ces IA qui recommandent un candidat",
-      "resume": "J'ai posé 5 005 fois la même question à onze IA. Une réponse sur deux désigne un candidat, avec aplomb, et pas toujours le même.",
-      "date": "2026-11-04",
-      "url": "https://newsletter.tristan.pro/p/presidentielle-2027-ces-ia-qui-recommandent",
-      "img": "/newsletter/img/presidentielle-2027-ces-ia-qui-recommandent.jpg"
     }
   ]
 }
