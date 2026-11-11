@@ -561,8 +561,12 @@ sympa, raccord et propre », y compris pour les projets hébergés ailleurs.
 - **Nouvel article** = une entrée dans `apercus.json` (modèle `article`), le rendu, et
   `image` dans `PAGES`. À faire **avant** le premier partage : les réseaux gardent en cache le
   premier aperçu vu.
-- **Icône d'onglet** : `favicon.png` (96 px, rond) et `apple-touch-icon.png` (180 px), tirés
-  de `profile.jpg`, le portrait affiché sur le site. `og-image.jpg` n'est plus utilisée.
+- **Icône d'onglet = le logo « t. »** (11 novembre 2026, choix de Tristan) : « t » blanc, point bleu
+  `#5b8cff`, fond `#07080a`. `favicon.svg` (dessin vectoriel, sans police), `favicon.png` (96 px) et
+  `apple-touch-icon.png` (180 px). C'est le logo du site ; TMF Lab garde le même « t. » avec un point
+  orange. **Le portrait reste** sur la page et dans les aperçus de partage. Reste à faire : poser le
+  « t. » dans la barre de navigation (à intégrer à la refonte de l'accueil, qui réécrit cette barre).
+  Anciennes icônes au portrait : dans l'historique Git. `og-image.jpg` n'est plus utilisée.
 
 ## Productions, bouton « Nouveau », dernier Complorama (17 octobre 2026)
 
