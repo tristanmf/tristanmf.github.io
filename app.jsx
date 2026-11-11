@@ -2175,6 +2175,7 @@ function HomeChapitres() {
     const cards = chs.map(c => c.firstElementChild);
     const verbs = [...root.querySelectorAll(".ch-verb")];
     const words = [...root.querySelectorAll(".ch-say span")];
+    const marqT = root.querySelector(".ch-marq-t");
     const dock = root.querySelector(".ch-dock");
     const dbtns = [...dock.querySelectorAll("button[data-ch]")];
     const ind = dock.querySelector("i");
@@ -2201,6 +2202,7 @@ function HomeChapitres() {
     const frame = () => {
       raf = null;
       const y = window.scrollY || 0;
+      if (marqT) marqT.style.transform = "translate3d(" + (-Math.min(400, y * 0.3)).toFixed(1) + "px,0,0)";
       const docked = y > vh * 0.35 && y < tops[tops.length - 1] - vh * 0.4;
       dock.classList.toggle("on", docked);
       html.classList.toggle("ch-docked", docked);
@@ -2251,7 +2253,7 @@ function HomeChapitres() {
 
   const ext = { target: "_blank", rel: "noopener" };
   const fleche = <ArrowUpRight size={14} strokeWidth={2} />;
-  const marq = CH_DOMAINES.concat(CH_DOMAINES);
+  const marq = CH_DOMAINES.concat(CH_DOMAINES, CH_DOMAINES, CH_DOMAINES);
   return (
     <main ref={ref} className="ch">
       <section id="top" className="ch-hero">
@@ -2272,9 +2274,9 @@ function HomeChapitres() {
           </section>
           <NavLink href={PRESS_PATH} className="ch-proof"><b>1 700+ articles</b> dans 360 médias<span>Voir la revue de presse {fleche}</span></NavLink>
         </div>
-        <div className="ch-marq" aria-hidden="true"><div>
-          {marq.map((d, i) => <React.Fragment key={i}><span>{d}</span><i>✳</i></React.Fragment>)}
-        </div></div>
+        <div className="ch-marq" aria-hidden="true"><div className="ch-marq-t"><div>
+          {marq.map((d, i) => <React.Fragment key={i}><span>{d}</span><i /></React.Fragment>)}
+        </div></div></div>
       </section>
 
       <div className="ch-stack">
