@@ -362,6 +362,15 @@ un jeton API à validité illimitée est stocké dans les secrets du dépôt
 ## Autres outils Actions
 
 - **Tools · Fetch asset** (`url`, `dest`) : miroir d'un fichier distant dans le dépôt.
+- **Poids des tuiles (novembre 2026)** : le miroir (`scripts/download-episode-images.mjs`) réécrit en
+  WebP, 800 px de large au plus, toute image du dossier plus large ou qui n'est pas du vrai WebP.
+  Il lui faut `sharp`, installé par le workflow juste avant (étape tolérante à l'échec : sans
+  `sharp`, le miroir tourne comme avant et la passe suivante rattrape). Il reconnaît aussi les
+  adresses `franceinfo.fr/pictures/…` (fichier local `franceinfo-<nom>.webp`). Sur le Mac, sans
+  Node : `deno` avec `{"nodeModulesDir":"auto","imports":{"sharp":"npm:sharp@^0.34"}}`.
+- **Aperçu de partage du mur** : `apercus/complorama.jpg` (entrée dans `apercus.json`, fond
+  `scripts/apercus/fonds/complorama-mur.jpg` = mosaïque de 18 visuels, figée). Balises, JSON-LD
+  `PodcastSeries` et `<noscript>` sont écrits en dur dans `complorama/index.html`.
 - **Tools · Vendor assets** : re-télécharge polices et bibliothèques (`scripts/vendor-assets.mjs`).
 - **Tools · SRI hashes** : historique, plus utilisé depuis l'auto-hébergement complet.
 
