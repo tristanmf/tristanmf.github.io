@@ -26,6 +26,19 @@
       "pied": "Tristan Mendès France"
     },
     {
+      "sortie": "apercus/complorama.jpg",
+      "modele": "projet",
+      "accent": "#e63946",
+      "fond": "fonds/complorama-mur.jpg",
+      "voile": "linear-gradient(90deg,rgba(10,10,12,.97) 0%,rgba(10,10,12,.93) 62%,rgba(10,10,12,.55) 100%)",
+      "rubrique": "Podcast · franceinfo",
+      "titre": "Complorama, le mur des épisodes",
+      "accroche": "Tous les épisodes du podcast Complorama (franceinfo), en un coup d'œil.",
+      "pied": "Tristan Mendès France, Rudy Reichstadt et Noé Da Silva",
+      "site": "tristan.pro",
+      "_cible": "tristan.pro/complorama/ ; fond = mosaïque des 18 visuels d'épisodes les plus récents (à refaire à la main si on veut le rafraîchir)"
+    },
+    {
       "sortie": "ia/pravda-perplexity/apercu.jpg",
       "modele": "projet",
       "accent": "#fb7193",
