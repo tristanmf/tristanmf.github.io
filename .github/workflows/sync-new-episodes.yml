@@ -37,6 +37,12 @@ jobs:
       - name: Fetch missing descriptions + upgrade generic show art
         run: node scripts/fetch-episode-descriptions.mjs
 
+      # Le miroir plafonne les images à 800 px de large (WebP) avec sharp.
+      # Si l'installation échoue, le miroir tourne quand même, sans plafonner.
+      - name: Install image tools
+        continue-on-error: true
+        run: npm install --no-save --no-audit --no-fund sharp@^0.34
+
       - name: Mirror episode images locally
         run: node scripts/download-episode-images.mjs
 
