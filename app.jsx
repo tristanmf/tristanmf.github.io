@@ -1165,21 +1165,71 @@ function PressBadge({ name, cat, domain }) {
   );
 }
 
+// Grands titres en capitales : ramenés à une ligne quelle que soit la largeur.
+function useFitVerbs(ref) {
+  React.useEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+    const fitAll = () => root.querySelectorAll(".ch-verb").forEach((v) => {
+      v.style.fontSize = "";
+      const w = v.clientWidth, n = v.scrollWidth;
+      if (n > w + 1) v.style.fontSize = (parseFloat(getComputedStyle(v).fontSize) * w / n * 0.985) + "px";
+    });
+    fitAll();
+    const ro = "ResizeObserver" in window ? new ResizeObserver(fitAll) : null;
+    if (ro) ro.observe(root);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+    window.addEventListener("resize", fitAll, { passive: true });
+    return () => { if (ro) ro.disconnect(); window.removeEventListener("resize", fitAll); };
+  }, []);
+}
+
+// Contenu du chapitre « Parlons-en », commun à l'accueil et aux autres vues.
+function ContactContenu() {
+  const ext = { target: "_blank", rel: "noopener" };
+  const fleche = <ArrowUpRight size={14} strokeWidth={2} />;
+  return (<>
+    <div className="ch-meta"><span>Contact</span><span>2026</span></div>
+    <h2 className="ch-verb">Parlons-en.</h2>
+    <p className="ch-lede">Conférences, interviews, conseil, collaborations éditoriales : écrivez-moi. Je réponds personnellement à chaque message.</p>
+    <div className="ch-act">
+      <MailLink className="ch-btn">Écrivez-moi {fleche}</MailLink>
+      <button type="button" className="ch-btn" onClick={openSolliciter}>Préciser ma demande {fleche}</button>
+    </div>
+    <div className="ch-soc">
+      {CH_SOCIAL.map(([l, h]) => <a key={l} href={h} target="_blank" rel="noopener noreferrer">{l}</a>)}
+      <a href={SUBSTACK_HOME} {...ext}>Newsletter</a>
+    </div>
+    <div className="ch-foot">
+      <span>© 2026 Tristan Mendès France — vibécodé avec décontraction.</span>
+      <nav aria-label="Pied de page">
+        <NavLink href="/#top">Accueil</NavLink>
+        <NavLink href={PRESS_PATH}>Revue de presse</NavLink>
+        <a href={SUBSTACK_URL} {...ext}>Newsletter</a>
+        <a href={KOFI_URL} {...ext}>Me soutenir</a>
+        <MailLink>Contact</MailLink>
+      </nav>
+    </div>
+  </>);
+}
+
 function PressHeading({ eyebrow, children }) {
   return (
-    <div className="mb-6">
-      <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">{eyebrow}</div>
-      <h2 className="mt-2 font-heading italic text-3xl md:text-5xl text-white tracking-tight leading-[1.05]">{children}</h2>
+    <div className="pr-head">
+      <div className="ch-mono">{eyebrow}</div>
+      <h2>{children}</h2>
     </div>
   );
 }
 
+// Barre horizontale : le rail prend la couleur du texte de la section, ce qui
+// la rend lisible sur fond sombre comme sur les aplats clairs.
 function PressBar({ label, n, max, color }) {
   return (
-    <div className="grid grid-cols-[minmax(0,11rem)_minmax(0,1fr)_3rem] items-center gap-3 py-1.5 text-sm">
-      <span className="text-white/80 leading-tight">{label}</span>
-      <span className="h-2.5 rounded-full bg-white/10 overflow-hidden"><span className="block h-full rounded-full" style={{ width: `${(n / max) * 100}%`, background: color }} /></span>
-      <span className="text-right font-mono text-white/70 tabular-nums">{pFmt(n)}</span>
+    <div className="pr-bar">
+      <span className="pr-bar-l">{label}</span>
+      <span className="pr-track"><span style={{ width: `${(n / max) * 100}%`, background: color || "currentColor" }} /></span>
+      <span className="pr-bar-n">{pFmt(n)}</span>
     </div>
   );
 }
@@ -1211,8 +1261,8 @@ function PressChart({ byY, years }) {
         <svg width={w} height={H} role="img" aria-label="Articles par année et par famille de médias" className="block">
           {grid.map(v => (
             <g key={v}>
-              <line x1={pl} x2={w - pr} y1={sy(v)} y2={sy(v)} stroke="rgba(255,255,255,0.08)" />
-              <text x={pl - 6} y={sy(v) + 4} textAnchor="end" fontSize="11" fill="rgba(255,255,255,0.45)" className="font-mono">{v}</text>
+              <line x1={pl} x2={w - pr} y1={sy(v)} y2={sy(v)} stroke="rgba(255,255,255,0.1)" />
+              <text x={pl - 6} y={sy(v) + 4} textAnchor="end" fontSize="11" fill="rgba(255,255,255,0.5)" fontFamily="'DM Mono', monospace">{v}</text>
             </g>
           ))}
           {ys.map((y, i) => {
@@ -1227,8 +1277,8 @@ function PressChart({ byY, years }) {
             return (
               <g key={y}>
                 {rects}
-                {showYear && <text x={x + bwid / 2} y={H - 7} textAnchor="middle" fontSize="10.5" fill="rgba(255,255,255,0.5)" className="font-mono">{"’" + y.slice(2)}</text>}
-                {bw >= 24 && +y >= 2019 && <text x={x + bwid / 2} y={sy(acc) - 5} textAnchor="middle" fontSize="10.5" fill="rgba(255,255,255,0.85)" className="font-mono">{acc}</text>}
+                {showYear && <text x={x + bwid / 2} y={H - 7} textAnchor="middle" fontSize="10.5" fill="rgba(255,255,255,0.55)" fontFamily="'DM Mono', monospace">{"’" + y.slice(2)}</text>}
+                {bw >= 24 && +y >= 2019 && <text x={x + bwid / 2} y={sy(acc) - 5} textAnchor="middle" fontSize="10.5" fill="rgba(255,255,255,0.9)" fontFamily="'DM Mono', monospace">{acc}</text>}
               </g>
             );
           })}
@@ -1238,7 +1288,12 @@ function PressChart({ byY, years }) {
   );
 }
 
+// ---------- Revue de presse (vue /presse/) — langage « Chapitres » (11/11/2026) ----------
+// Mêmes aplats que l'accueil : chaque section est une carte arrondie d'une couleur.
+// Styles : classes .pr-* (et .ch-* partagées) dans le <style> d'index.html.
 function PressReview() {
+  const ref = React.useRef(null);
+  useFitVerbs(ref);
   const [data, setData] = React.useState(null);
   const [domains, setDomains] = React.useState({});
   const [err, setErr] = React.useState(null);
@@ -1294,152 +1349,144 @@ function PressReview() {
       <span className="truncate">{p.s}</span>
     </span>
   );
+  const lien = (u, label) => u && <a href={u} target="_blank" rel="noopener" className="pr-link">{label} <ArrowUpRight size={12} strokeWidth={2} /></a>;
 
   return (
-    <main className="relative z-10 px-6 md:px-12 lg:px-24 pt-32 md:pt-40 pb-8">
-      <header className="max-w-4xl">
-        <div className="inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap">
-          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/60">1997 – 2026</span>
-          <span className="text-white font-body text-base md:text-lg tracking-tight">Tristan Mendès France</span>
-        </div>
-        <h1 className="mt-6 font-heading italic text-6xl md:text-8xl text-white tracking-tight leading-[0.9]">Revue de presse</h1>
-        <p className="mt-6 text-white/75 font-body font-light text-lg md:text-xl leading-relaxed max-w-3xl">
-          Ce relevé recense les articles qui me citent — presse nationale, régionale et étrangère, agences, web — ainsi que mes interventions à la radio, à la télévision et en podcast. Je le publie par souci de transparence : qui me cite, dans quels médias, et à quel titre on me présente.
-        </p>
-      </header>
-
-      {err && <p className="mt-10 font-mono text-sm text-white/60">Les données n'ont pas pu être chargées ({err}).</p>}
-      {!S && !err && <p className="mt-10 font-mono text-sm text-white/50">Chargement…</p>}
-
-      {S && (<>
-        <div className="mt-10 grid grid-cols-2 lg:grid-cols-5 gap-3">
-          {[[pFmt(S.P.length), "articles depuis 1997"], [pFmt(S.nSources), "titres de presse et sites"], ["≈ " + S.avg, "articles par an, de 2020 à 2025"], [pFmt(S.intlCount), "articles à l'étranger, dans " + S.countries.length + " pays"], [pFmt(data.av.n), "passages radio, télé et podcast"]].map(([b, s]) => (
-            <div key={s} className="liquid-glass rounded-2xl p-5">
-              <div className="font-heading italic text-4xl text-white tabular-nums">{b}</div>
-              <div className="mt-1 text-white/60 text-sm font-body font-light leading-snug">{s}</div>
-            </div>
-          ))}
-        </div>
-
-        <section className="mt-24 grid lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] gap-10">
-          <div className="min-w-0">
-            <PressHeading eyebrow="Volume">Articles par année</PressHeading>
-            <div className="liquid-glass rounded-3xl p-5 md:p-7">
-              <PressChart byY={S.byY} years={S.years} />
-              <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-white/60 font-body">
-                {PRESS_CATS.map(c => <span key={c} className="inline-flex items-center gap-1.5"><i className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: PRESS_COL[c] }} />{c}</span>)}
-              </div>
-            </div>
-            <p className="mt-3 text-xs text-white/45 font-body">Avant 2005 : {S.pre2005} articles (1997-2004). 2026 s'arrête au 10 octobre.</p>
-          </div>
-          <div className="min-w-0">
-            <PressHeading eyebrow="Familles de médias">Où je suis cité</PressHeading>
-            <div className="liquid-glass rounded-3xl p-5 md:p-7">
-              {PRESS_CATS.map(k => <PressBar key={k} label={k} n={S.cats[k] || 0} max={Math.max(...Object.values(S.cats))} color={PRESS_COL[k]} />)}
-              <p className="mt-3 text-xs text-white/50 font-body">{Math.round(((S.cats["Presse nationale"] || 0) + (S.cats["Magazines"] || 0)) / S.P.length * 100)} % des articles paraissent dans la presse nationale ou les magazines.</p>
-            </div>
-          </div>
-        </section>
-
-        <section className="mt-24 grid lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] gap-10">
-          <div className="min-w-0">
-            <PressHeading eyebrow="Les titres">Les médias qui me citent le plus</PressHeading>
-            <ul className="liquid-glass rounded-3xl p-5 md:p-7 md:columns-2 gap-8 text-sm font-body">
-              {S.tops.map(([s, n]) => (
-                <li key={s} className="break-inside-avoid flex items-center justify-between gap-3 py-2 border-b border-dashed border-white/10 text-white/85">
-                  {src({ s, c: S.srcCat[s] })}
-                  <span className="font-mono text-white/50 tabular-nums">{n}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="min-w-0">
-            <PressHeading eyebrow="À quel titre">Comment la presse me présente</PressHeading>
-            <div className="liquid-glass rounded-3xl p-5 md:p-7">
-              {S.quals.map(([k, n]) => <PressBar key={k} label={k} n={n} max={S.quals[0][1]} color="#ffffff" />)}
-              <p className="mt-3 text-xs text-white/50 font-body">Un même article peut me présenter de plusieurs façons.</p>
-            </div>
-          </div>
-        </section>
-
-        <section className="mt-24">
-          <PressHeading eyebrow="Hors de France">À l'international</PressHeading>
-          <div className="flex flex-wrap gap-2">
-            {S.countries.map(([k, n]) => (
-              <span key={k} className="liquid-glass rounded-full px-4 py-2 text-sm text-white font-body">{k} <span className="ml-1 font-mono text-white/50">{n}</span></span>
+    <main ref={ref} className="ch pr">
+      <section className="pr-hero"><div className="ch-in">
+        <div className="ch-meta"><span>1997 – 2026</span><span>Tristan Mendès France</span></div>
+        <h1 className="pr-h1"><span className="ch-verb">Revue</span><span className="ch-verb">de presse</span></h1>
+        <p className="pr-lede">Ce relevé recense les articles qui me citent (presse nationale, régionale et étrangère, agences, web) ainsi que mes interventions à la radio, à la télévision et en podcast. Je le publie par souci de transparence : qui me cite, dans quels médias, et à quel titre on me présente.</p>
+        {err && <p className="pr-note">Les données n'ont pas pu être chargées ({err}).</p>}
+        {!S && !err && <p className="pr-note">Chargement…</p>}
+        {S && (
+          <div className="pr-stats">
+            {[[pFmt(S.P.length), "articles depuis 1997"], [pFmt(S.nSources), "titres de presse et sites"], ["≈ " + S.avg, "articles par an, de 2020 à 2025"], [pFmt(S.intlCount), "articles à l'étranger, dans " + S.countries.length + " pays"], [pFmt(data.av.n), "passages radio, télé et podcast"]].map(([b, s]) => (
+              <div key={s} className="pr-stat"><b>{b}</b><span>{s}</span></div>
             ))}
           </div>
-          <div className="mt-6 grid md:grid-cols-2 gap-6">
-            <div className="liquid-glass rounded-3xl p-5 md:p-7">
-              <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50 mb-3">Dans la presse étrangère</div>
+        )}
+      </div></section>
+
+      {S && (<>
+        <section className="pr-sec pr-night"><div className="ch-in">
+          <div className="pr-cols">
+            <div className="min-w-0">
+              <PressHeading eyebrow="Volume">Articles par année</PressHeading>
+              <div className="pr-box">
+                <PressChart byY={S.byY} years={S.years} />
+                <div className="pr-legend">
+                  {PRESS_CATS.map(c => <span key={c}><i style={{ background: PRESS_COL[c] }} />{c}</span>)}
+                </div>
+              </div>
+              <p className="pr-note">Avant 2005 : {S.pre2005} articles (1997-2004). 2026 s'arrête au 10 octobre.</p>
+            </div>
+            <div className="min-w-0">
+              <PressHeading eyebrow="Familles de médias">Où je suis cité</PressHeading>
+              <div className="pr-box">
+                {PRESS_CATS.map(k => <PressBar key={k} label={k} n={S.cats[k] || 0} max={Math.max(...Object.values(S.cats))} color={PRESS_COL[k]} />)}
+                <p className="pr-note">{Math.round(((S.cats["Presse nationale"] || 0) + (S.cats["Magazines"] || 0)) / S.P.length * 100)} % des articles paraissent dans la presse nationale ou les magazines.</p>
+              </div>
+            </div>
+          </div>
+        </div></section>
+
+        <section className="pr-sec pr-ivory"><div className="ch-in">
+          <div className="pr-cols">
+            <div className="min-w-0">
+              <PressHeading eyebrow="Les titres">Les médias qui me citent le plus</PressHeading>
+              <ul className="pr-box pr-tops">
+                {S.tops.map(([s, n]) => (
+                  <li key={s}>{src({ s, c: S.srcCat[s] })}<span className="pr-num">{n}</span></li>
+                ))}
+              </ul>
+            </div>
+            <div className="min-w-0">
+              <PressHeading eyebrow="À quel titre">Comment la presse me présente</PressHeading>
+              <div className="pr-box">
+                {S.quals.map(([k, n]) => <PressBar key={k} label={k} n={n} max={S.quals[0][1]} />)}
+                <p className="pr-note">Un même article peut me présenter de plusieurs façons.</p>
+              </div>
+            </div>
+          </div>
+        </div></section>
+
+        <section className="pr-sec pr-cobalt"><div className="ch-in">
+          <PressHeading eyebrow="Hors de France">À l'international</PressHeading>
+          <div className="pr-pills">
+            {S.countries.map(([k, n]) => <span key={k}>{k} <b>{n}</b></span>)}
+          </div>
+          <div className="pr-cols pr-cols-eq">
+            <div className="pr-box">
+              <div className="ch-mono pr-boxlabel">Dans la presse étrangère</div>
               {S.intlPicks.map((p, i) => (
-                <div key={i} className="py-3 border-b border-white/10 last:border-0">
-                  <div className="flex items-center justify-between gap-3 text-sm text-white/85">{src(p)}<span className="font-mono text-xs text-white/45 shrink-0">{pDate(p.d)}</span></div>
-                  <div className="mt-1 text-white/65 text-sm font-body font-light leading-snug">{p.t}</div>
+                <div key={i} className="pr-item">
+                  <div className="pr-item-top">{src(p)}<span className="pr-num">{pDate(p.d)}</span></div>
+                  <div className="pr-item-t">{p.t}</div>
                 </div>
               ))}
             </div>
-            <div className="liquid-glass rounded-3xl p-5 md:p-7">
-              <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50 mb-3">À l'antenne, hors de France</div>
+            <div className="pr-box">
+              <div className="ch-mono pr-boxlabel">À l'antenne, hors de France</div>
               {S.avIntl.map((a, i) => (
-                <div key={i} className="py-3 border-b border-white/10 last:border-0">
-                  <div className="font-mono text-[11px] uppercase tracking-[0.12em] text-white/45">{a.k}</div>
-                  <div className="mt-1 text-white font-heading italic text-xl">{a.m}</div>
-                  <div className="text-white/65 text-sm font-body font-light">{a.e}</div>
-                  {a.u && <a href={a.u} target="_blank" rel="noopener" className="mt-1 inline-flex items-center gap-1 text-xs text-white/60 hover:text-white">Écouter / voir <ArrowUpRight size={12} strokeWidth={2} /></a>}
+                <div key={i} className="pr-item">
+                  <div className="ch-mono pr-k">{a.k}</div>
+                  <div className="pr-item-m">{a.m}</div>
+                  <div className="pr-item-t">{a.e}</div>
+                  {lien(a.u, "Écouter / voir")}
                 </div>
               ))}
             </div>
           </div>
-        </section>
+        </div></section>
 
-        <section className="mt-24">
+        <section className="pr-sec pr-sun"><div className="ch-in">
           <PressHeading eyebrow="Radio, télévision, podcast">Les rendez-vous audiovisuels</PressHeading>
-          <p className="-mt-2 mb-6 text-white/70 font-body font-light text-base md:text-lg leading-relaxed max-w-3xl">{data.av.lede}</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <p className="pr-lede pr-lede-s">{data.av.lede}</p>
+          <div className="pr-av">
             {data.av.items.map((a, i) => {
               const h = pHost(a.u);
               return (
-                <div key={i} className="liquid-glass rounded-2xl p-5 flex flex-col gap-1.5">
-                  <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-white/45 leading-snug">{a.k}</span>
-                  <span className="flex items-center gap-2 font-heading italic text-xl text-white leading-tight">{h && <PressBadge name={a.m} cat="Radio & télé (sites)" domain={h} />}{a.m}</span>
-                  <span className="text-white/60 text-sm font-body font-light leading-snug">{a.e}</span>
-                  {a.u && <a href={a.u} target="_blank" rel="noopener" className="mt-auto pt-1 inline-flex items-center gap-1 text-xs text-white/60 hover:text-white">Source <ArrowUpRight size={12} strokeWidth={2} /></a>}
+                <div key={i} className="pr-av-it">
+                  <span className="ch-mono pr-k">{a.k}</span>
+                  <span className="pr-item-m">{h && <PressBadge name={a.m} cat="Radio & télé (sites)" domain={h} />}{a.m}</span>
+                  <span className="pr-item-t">{a.e}</span>
+                  {lien(a.u, "Source")}
                 </div>
               );
             })}
           </div>
-        </section>
+        </div></section>
 
-        <section className="mt-24">
+        <section className="pr-sec pr-night"><div className="ch-in">
           <PressHeading eyebrow="Index">Toutes les références</PressHeading>
-          <div className="flex flex-wrap gap-3">
-            <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Chercher un titre, un média…" aria-label="Chercher" className="flex-1 min-w-[14rem] rounded-full bg-white/5 border border-white/10 px-5 py-2.5 text-sm text-white font-body placeholder:text-white/40 focus:outline-none focus:border-white/30" />
-            <select value={fy} onChange={e => setFy(e.target.value)} aria-label="Année" className="rounded-full bg-[#0b0d12] border border-white/10 px-4 py-2.5 text-sm text-white font-body focus:outline-none focus:border-white/30">
+          <div className="pr-filters">
+            <input type="search" id="pr-q" value={q} onChange={e => setQ(e.target.value)} placeholder="Chercher un titre, un média…" aria-label="Chercher" />
+            <select id="pr-y" value={fy} onChange={e => setFy(e.target.value)} aria-label="Année">
               <option value="">Toutes les années</option>
               {S.years.slice().reverse().map(y => <option key={y}>{y}</option>)}
             </select>
-            <select value={fc} onChange={e => setFc(e.target.value)} aria-label="Famille de médias" className="rounded-full bg-[#0b0d12] border border-white/10 px-4 py-2.5 text-sm text-white font-body focus:outline-none focus:border-white/30">
+            <select id="pr-c" value={fc} onChange={e => setFc(e.target.value)} aria-label="Famille de médias">
               <option value="">Tous les médias</option>
               {PRESS_CATS.map(c => <option key={c}>{c}</option>)}
             </select>
           </div>
-          <div className="mt-3 font-mono text-xs text-white/50">{pFmt(rows.length)} références</div>
+          <div className="pr-note">{pFmt(rows.length)} références</div>
           {/* Fenêtre volontairement basse : on y défile, et on la dépasse facilement. */}
-          <div className="mt-3 liquid-glass rounded-3xl">
-            <div className="max-h-[380px] overflow-y-auto">
-              {rows.slice(0, 600).map((p, i) => (
-                <div key={i} className="grid grid-cols-1 sm:grid-cols-[6rem_minmax(0,13rem)_minmax(0,1fr)] gap-x-4 gap-y-0.5 px-5 py-3 border-b border-white/5 text-sm font-body">
-                  <span className="font-mono text-xs text-white/45 tabular-nums sm:pt-0.5">{pDate(p.d)}</span>
-                  <span className="text-white/90 font-medium min-w-0">{src(p)}</span>
-                  <span className="text-white/65 font-light leading-snug">{p.t}</span>
-                </div>
-              ))}
-              {rows.length > 600 && <div className="px-5 py-3 font-mono text-xs text-white/45">… affinez la recherche pour voir les {pFmt(rows.length - 600)} autres.</div>}
-            </div>
+          <div className="pr-box pr-index">
+            {rows.slice(0, 600).map((p, i) => (
+              <div key={i} className="pr-row">
+                <span className="pr-num">{pDate(p.d)}</span>
+                <span className="pr-row-s">{src(p)}</span>
+                <span className="pr-item-t">{p.t}</span>
+              </div>
+            ))}
+            {rows.length > 600 && <div className="pr-note">… affinez la recherche pour voir les {pFmt(rows.length - 600)} autres.</div>}
           </div>
-        </section>
+        </div></section>
       </>)}
+
+      <section id="contact" className="pr-sec pr-black"><div className="ch-in"><ContactContenu /></div></section>
     </main>
   );
 }
@@ -2359,37 +2406,26 @@ function HomeChapitres() {
         <section id="experimenter" className="ch-ch"><div className="ch-card"><div className="ch-in">
           <div className="ch-meta"><span>Chapitre 5 sur 5</span><span>tmflab.tech</span></div>
           <h2 className="ch-verb">Expérimenter</h2>
-          <p className="ch-quote">Je ne code pas. J'expérimente.</p>
-          <p className="ch-lede">TMF Lab : ce que je fabrique avec les IA. Une carte mondiale du complotisme, une simulation 3D des super-propagateurs, des outils vidéo.</p>
-          <div className="ch-act">
-            <a className="ch-btn" href={LAB_URL} {...ext}>Entrer dans le labo {fleche}</a>
-            <a className="ch-btn" href="/carte-complotisme/">ComploScore {fleche}</a>
-            <a className="ch-btn" href="/productions/super-propagateurs/">Super-propagateurs {fleche}</a>
+          <div className="ch-lab">
+            <div>
+              <p className="ch-quote">Je ne code pas. J'expérimente.</p>
+              <p className="ch-lede">TMF Lab : ce que je fabrique avec les IA. Une carte mondiale du complotisme, une simulation 3D des super-propagateurs, des outils vidéo.</p>
+              <div className="ch-act">
+                <a className="ch-btn" href={LAB_URL} {...ext}>Entrer dans le labo {fleche}</a>
+                <a className="ch-btn" href="/carte-complotisme/">ComploScore {fleche}</a>
+                <a className="ch-btn" href="/productions/super-propagateurs/">Super-propagateurs {fleche}</a>
+              </div>
+            </div>
+            <a className="ch-shot" href={LAB_URL} {...ext} aria-label="Ouvrir TMF Lab">
+              <figure style={{ margin: 0 }}>
+                <img src="/tmflab-accueil.jpg" alt="L'accueil de TMF Lab : un bureau d'ordinateur rétro, avec la fenêtre « Je ne code pas. J'expérimente. »" width="1200" height="750" loading="lazy" />
+                <figcaption><span>tmflab.tech</span><span>Ouvrir ↗</span></figcaption>
+              </figure>
+            </a>
           </div>
         </div></div></section>
 
-        <section id="contact" className="ch-ch"><div className="ch-card"><div className="ch-in">
-          <div className="ch-meta"><span>Contact</span><span>2026</span></div>
-          <h2 className="ch-verb">Parlons-en.</h2>
-          <p className="ch-lede">Conférences, interviews, conseil, collaborations éditoriales : écrivez-moi. Je réponds personnellement à chaque message.</p>
-          <div className="ch-act">
-            <MailLink className="ch-btn">Écrivez-moi {fleche}</MailLink>
-            <button type="button" className="ch-btn" onClick={openSolliciter}>Préciser ma demande {fleche}</button>
-          </div>
-          <div className="ch-soc">
-            {CH_SOCIAL.map(([l, h]) => <a key={l} href={h} target="_blank" rel="noopener noreferrer">{l}</a>)}
-            <a href={SUBSTACK_HOME} {...ext}>Newsletter</a>
-          </div>
-          <div className="ch-foot">
-            <span>© 2026 Tristan Mendès France — vibécodé avec décontraction.</span>
-            <nav aria-label="Pied de page">
-              <NavLink href={PRESS_PATH}>Revue de presse</NavLink>
-              <a href={SUBSTACK_URL} {...ext}>Newsletter</a>
-              <a href={KOFI_URL} {...ext}>Me soutenir</a>
-              <MailLink>Contact</MailLink>
-            </nav>
-          </div>
-        </div></div></section>
+        <section id="contact" className="ch-ch"><div className="ch-card"><div className="ch-in"><ContactContenu /></div></div></section>
       </div>
 
       <nav className="ch-dock" aria-label="Chapitres">
@@ -2430,16 +2466,15 @@ function App() {
   }, []);
   return (
     <div className="bg-black min-h-screen relative">
-      <div className="aurora-blob blob-1" aria-hidden="true"></div>
-      <div className="aurora-blob blob-2" aria-hidden="true"></div>
+      {!(view === "presse" || (view === "home" && ACCUEIL_CHAPITRES)) && <>
+        <div className="aurora-blob blob-1" aria-hidden="true"></div>
+        <div className="aurora-blob blob-2" aria-hidden="true"></div>
+      </>}
       <ScrollProgress />
       <Navbar view={view} />
       <Solliciter />
       {view === "presse" ? (
-        <div className="bg-black">
-          <PressReview />
-          <CtaFooter />
-        </div>
+        <PressReview />
       ) : view === "productions" ? (
         <div className="bg-black">
           <ProductionsPage />
