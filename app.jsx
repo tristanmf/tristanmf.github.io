@@ -185,6 +185,7 @@ const Palette = (p) => <Icon {...p}><circle cx="13.5" cy="6.5" r=".5" fill="curr
 const BarChart3 = (p) => <Icon {...p}><path d="M3 3v18h18" /><path d="M8 17V9" /><path d="M13 17V5" /><path d="M18 17v-3" /></Icon>;
 const Shield = (p) => <Icon {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></Icon>;
 const Menu = (p) => <Icon {...p}><line x1="4" y1="8" x2="20" y2="8" /><line x1="4" y1="16" x2="20" y2="16" /></Icon>;
+const Mail = (p) => <Icon {...p}><rect x="3" y="5" width="18" height="14" rx="2" /><polyline points="3 7 12 13 21 7" /></Icon>;
 const X = (p) => <Icon {...p}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></Icon>;
 
 // ---------- HLS video hook ----------
@@ -394,31 +395,26 @@ function NavLink({ href, onClick, children, ...rest }) {
   return <a href={href} onClick={go} {...rest}>{children}</a>;
 }
 
+const NAV_VERRE = { background: 'rgba(8,10,18,0.55)', backdropFilter: 'blur(18px) saturate(140%)', WebkitBackdropFilter: 'blur(18px) saturate(140%)' };
 function Navbar({ view }) {
-  const links = [{ l: "Accueil", h: "/#top" }, { l: "À propos", h: "/#apropos" }, { l: "Médias", h: "/#projets" }, { l: "Revue de presse", h: PRESS_PATH }, { l: "Newsletter", h: "/#productions" }, { l: "Conférences", h: "/#conferences" }];
+  const links = [{ l: "Enquêtes", h: "/#enqueter" }, { l: "Médias", h: "/#raconter" }, { l: "Cours & conférences", h: "/#transmettre" }, { l: "Engagements", h: "/#veiller" }, { l: "Labo", h: "/#experimenter" }, { l: "Revue de presse", h: PRESS_PATH }];
   const [active, setActive] = React.useState(view === "home" ? "/#top" : VIEW_NAV[view] || "");
   const [menuOpen, setMenuOpen] = React.useState(false);
   React.useEffect(() => {
     if (view !== "home") { setActive(VIEW_NAV[view] || ""); return; }
     setActive("/#top");
-    const ids = ["top", "projets", "productions", "conferences", "apropos", "contact"];
-    const sections = ids.map(id => document.getElementById(id)).filter(Boolean);
-    if (!sections.length) return;
-    const io = new IntersectionObserver((entries) => {
-      const visible = entries.filter(e => e.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio);
-      if (visible[0]) setActive("/#" + visible[0].target.id);
-    }, { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.1, 0.25, 0.5] });
-    sections.forEach(s => io.observe(s));
-    return () => io.disconnect();
+    const onCh = (e) => setActive(e.detail || "/#top");
+    window.addEventListener("tmf:chapitre", onCh);
+    return () => window.removeEventListener("tmf:chapitre", onCh);
   }, [view]);
   return (
     <nav className="fixed top-4 left-0 right-0 z-50 px-4 md:px-8 lg:px-16 py-3">
       <div className="flex items-center justify-between">
         <NavLink href="/#top" className="flex items-center gap-2">
-          <div className="h-10 w-10 rounded-full liquid-glass-strong flex items-center justify-center">
+          <div className="h-10 w-10 rounded-full flex items-center justify-center border border-white/10" style={NAV_VERRE}>
             <ArrowUp size={18} strokeWidth={2.2} className="text-white" />
           </div>
-          <span className="hidden sm:inline font-heading italic text-xl text-white tracking-tight whitespace-nowrap">tristan.pro</span>
+          <span className="hidden sm:inline font-heading italic text-xl text-white tracking-tight whitespace-nowrap rounded-full px-3 py-1 border border-white/10" style={NAV_VERRE}>tristan.pro</span>
         </NavLink>
 
         <div className="hidden md:flex items-center rounded-full px-1.5 py-1 border border-white/10" style={{ background: 'rgba(8,10,18,0.55)', backdropFilter: 'blur(18px) saturate(140%)', WebkitBackdropFilter: 'blur(18px) saturate(140%)', boxShadow: '0 8px 24px -12px rgba(0,0,0,0.5)' }}>
@@ -437,12 +433,18 @@ function Navbar({ view }) {
               </NavLink>
             );
           })}
-          <MailLink className="ml-1 bg-white text-black rounded-full px-3.5 py-1.5 text-sm font-medium font-body flex items-center gap-1 hover:bg-white/90 transition-colors whitespace-nowrap">
-            Me contacter <ArrowUpRight size={14} strokeWidth={2} />
-          </MailLink>
+          {EMBED ? (
+            <MailLink className="ml-1 bg-white text-black rounded-full px-3.5 py-1.5 text-sm font-medium font-body flex items-center gap-1 hover:bg-white/90 transition-colors whitespace-nowrap">
+              Me contacter <ArrowUpRight size={14} strokeWidth={2} />
+            </MailLink>
+          ) : (
+            <button type="button" onClick={openSolliciter} className="ml-1 bg-white text-black rounded-full px-3.5 py-1.5 text-sm font-medium font-body flex items-center gap-1 hover:bg-white/90 transition-colors whitespace-nowrap">
+              Me solliciter <ArrowUpRight size={14} strokeWidth={2} />
+            </button>
+          )}
         </div>
 
-        <button onClick={() => setMenuOpen(o => !o)} aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"} className="md:hidden h-10 w-10 rounded-full liquid-glass flex items-center justify-center text-white">
+        <button onClick={() => setMenuOpen(o => !o)} aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"} className="md:hidden h-10 w-10 rounded-full flex items-center justify-center text-white border border-white/10" style={NAV_VERRE}>
           {menuOpen ? <X size={18} /> : <Menu size={18} />}
         </button>
       </div>
@@ -452,7 +454,9 @@ function Navbar({ view }) {
           {links.map(({ l, h }) => (
             <NavLink key={l} href={h} onClick={() => setMenuOpen(false)} className={"block px-4 py-2.5 rounded-2xl hover:bg-white/10 font-body text-base whitespace-nowrap " + (active === h ? "text-white bg-white/10" : "text-white/90")}>{l}</NavLink>
           ))}
-          <MailLink className="block mt-1 px-4 py-2.5 rounded-2xl bg-white text-black font-medium font-body text-base text-center">Me contacter</MailLink>
+          {EMBED
+            ? <MailLink className="block mt-1 px-4 py-2.5 rounded-2xl bg-white text-black font-medium font-body text-base text-center">Me contacter</MailLink>
+            : <button type="button" onClick={(e) => { setMenuOpen(false); openSolliciter(e); }} className="block w-full mt-1 px-4 py-2.5 rounded-2xl bg-white text-black font-medium font-body text-base text-center">Me solliciter</button>}
         </div>
       )}
     </nav>);
@@ -1103,9 +1107,9 @@ function CtaFooter() {
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-white/40 text-xs font-body">© 2026 Tristan Mendès France — vibécodé avec décontraction.</div>
           <div className="flex items-center gap-6">
-            <NavLink href="/#projets" className="text-white/40 text-xs font-body hover:text-white/70">Projets</NavLink>
+            <NavLink href="/#raconter" className="text-white/40 text-xs font-body hover:text-white/70">Médias</NavLink>
             <NavLink href={PRESS_PATH} className="text-white/40 text-xs font-body hover:text-white/70">Revue de presse</NavLink>
-            <NavLink href="/#apropos" className="text-white/40 text-xs font-body hover:text-white/70">À propos</NavLink>
+            <NavLink href="/#top" className="text-white/40 text-xs font-body hover:text-white/70">Accueil</NavLink>
             <a href={SUBSTACK_URL} target="_blank" rel="noopener" className="text-white/40 text-xs font-body hover:text-white/70">Newsletter</a>
             <MailLink className="text-white/40 text-xs font-body hover:text-white/70">Contact</MailLink>
           </div>
@@ -2054,6 +2058,338 @@ function ProductionsPage() {
 }
 
 // ---------- App ----------
+// ---------- Accueil « Chapitres » (refonte du 11/11/2026) ----------
+// Cinq verbes, un aplat de couleur par chapitre, qui s'empilent au défilement.
+// Styles : classes .ch-* et .sol-* dans le <style> d'index.html.
+// L'ancien accueil (Hero, StartSection, FeaturesChess…) reste dans ce fichier :
+// passer ACCUEIL_CHAPITRES à false le rétablit.
+const ACCUEIL_CHAPITRES = true;
+
+// « Me solliciter » : quatre demandes, chacune ouvre un mail avec le bon objet.
+const SOLLICITER = [
+  { k: "Conférence", un: "Une conférence", d: "Keynote, table ronde, masterclass", s: "Demande de conférence" },
+  { k: "Formation", un: "Une formation", d: "Entreprises, universités, administrations", s: "Demande de formation" },
+  { k: "Conseil", un: "Du conseil", d: "Un éclairage pour une direction ou une équipe", s: "Demande de conseil" },
+  { k: "Interview", un: "Une interview", d: "Presse, radio, télévision, podcast", s: "Demande d'interview" },
+];
+const openSolliciter = (e) => {
+  if (e && e.preventDefault) e.preventDefault();
+  window.dispatchEvent(new CustomEvent("tmf:solliciter"));
+};
+
+// Bouton flottant + volet, montés une fois dans App (toutes les vues).
+function Solliciter() {
+  const [open, setOpen] = React.useState(false);
+  const [copie, setCopie] = React.useState(false);
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    const o = () => { setCopie(false); setOpen(true); };
+    const k = (e) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("tmf:solliciter", o);
+    window.addEventListener("keydown", k);
+    return () => { window.removeEventListener("tmf:solliciter", o); window.removeEventListener("keydown", k); };
+  }, []);
+  React.useEffect(() => { if (ref.current) ref.current.inert = !open; }, [open]);
+  const copier = () => {
+    try { navigator.clipboard.writeText(decodeMail()).then(() => setCopie(true)).catch(() => {}); } catch (e) {}
+  };
+  return (<>
+    <button type="button" className={"sol-fab" + (open ? " off" : "")} onClick={openSolliciter}>Me solliciter</button>
+    <div ref={ref} className={"sol-sheet" + (open ? " open" : "")} role="dialog" aria-modal="true" aria-label="Me solliciter"
+      onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}>
+      <div className="sol-p">
+        <button type="button" className="sol-x" aria-label="Fermer" onClick={() => setOpen(false)}>✕</button>
+        <h2>Que puis-je faire pour vous ?</h2>
+        {SOLLICITER.map((x) => (
+          <MailLink key={x.k} subject={x.s}>
+            <span><b>{x.un}</b><small>{x.d}</small></span>
+            <ArrowUpRight size={18} strokeWidth={2} />
+          </MailLink>
+        ))}
+        <button type="button" className="sol-copy" onClick={copier}>{copie ? "Adresse copiée" : "Ou copier mon adresse e-mail"}</button>
+      </div>
+    </div>
+  </>);
+}
+
+// Phrase affichée dans la capsule d'une lettre : le sujet plutôt que le titre.
+// Clé = fin de l'adresse Substack. Sans entrée ici, la capsule montre le
+// sous-titre de la lettre (champ « resume » de newsletter/dernieres.json).
+const LETTRES_SUJETS = {
+  "podcasts-la-porte-derobee-episode": { theme: "Propagande russe", sujet: "Plus de 75 émissions de médias d'État russes bannis de l'Union européenne restent en libre accès sur Apple Podcasts et Spotify France." },
+  "europe-we-have-a-problem": { theme: "IA chinoises", sujet: "Des acteurs européens de l'IA, présentés comme une alternative souveraine, distribuent des modèles chinois. J'ai testé plus de 4 400 réponses sur les sujets sensibles pour Pékin." },
+  "linternationale-musk": { theme: "Extrême droite", sujet: "Comment Elon Musk a fait de X l'accélérateur d'une bonne partie des extrêmes droites de la planète." },
+};
+const LETTRES_DEFAUT = [
+  { url: "https://newsletter.tristan.pro/p/podcasts-la-porte-derobee-episode", date: "2026-11-10", img: "/newsletter/img/podcasts-la-porte-derobee-episode.jpg" },
+  { url: "https://newsletter.tristan.pro/p/europe-we-have-a-problem", date: "2026-11-07", img: "/newsletter/img/europe-we-have-a-problem.jpg" },
+  { url: "https://newsletter.tristan.pro/p/linternationale-musk", date: "2026-11-06", img: "/newsletter/img/linternationale-musk.jpg" },
+];
+const frDateCourte = (d) => { try { return new Date(d + "T12:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }); } catch (e) { return d; } };
+
+// Anciennes ancres de l'accueil (liens déjà diffusés) → nouveaux chapitres.
+const ANCRES_ANCIENNES = { projets: "raconter", productions: "enqueter", conferences: "transmettre", institutionnel: "veiller", apropos: "top" };
+// Les chapitres sont « sticky » : leur position à l'écran ne dit pas où ils
+// commencent. On recalcule donc leur vraie place avant d'y défiler.
+function scrollToChapitre(id) {
+  const el = id && document.getElementById(id);
+  if (!el || !el.classList.contains("ch-ch")) return false;
+  const stack = el.parentElement;
+  let top = docTop(stack);
+  for (const c of stack.children) { if (c === el) break; top += c.offsetHeight; }
+  window.scrollTo({ top: top + 1, behavior: PREFERS_REDUCED_MOTION ? "auto" : "smooth" });
+  return true;
+}
+
+const CH_DOCK = [["enqueter", "Enquêter"], ["raconter", "Raconter"], ["transmettre", "Transmettre"], ["veiller", "Veiller"], ["experimenter", "Labo"]];
+const CH_SOCIAL = [
+  ["LinkedIn", "http://www.linkedin.com/in/tristanmf"], ["X", "https://x.com/tristanmf"], ["Bluesky", "https://bsky.app/profile/tmf.bsky.social"],
+  ["Instagram", "https://www.instagram.com/tristanmf/"], ["Threads", "https://www.threads.com/@tristanmf"], ["Facebook", "https://www.facebook.com/tristan.mendes.france"],
+];
+const CH_SAY = "Je travaille sur la façon dont le numérique transforme la société, la démocratie et les formes contemporaines de radicalité.";
+const CH_DOMAINES = ["Désinformation", "Complotisme", "IA génératives", "Extrémismes", "Géopolitique de l'information", "Cultures numériques"];
+
+function HomeChapitres() {
+  const ref = React.useRef(null);
+  const [lettres, setLettres] = React.useState(LETTRES_DEFAUT);
+  const [ep, setEp] = React.useState(null);
+  React.useEffect(() => {
+    fetch("/newsletter/dernieres.json").then(r => (r.ok ? r.json() : null)).then(d => d && d.lettres && d.lettres.length && setLettres(d.lettres.slice(0, 3))).catch(() => {});
+    fetch("/complorama/dernier.json").then(r => (r.ok ? r.json() : null)).then(d => d && setEp(d)).catch(() => {});
+  }, []);
+
+  React.useEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+    const stack = root.querySelector(".ch-stack");
+    const chs = [...stack.children];
+    const cards = chs.map(c => c.firstElementChild);
+    const verbs = [...root.querySelectorAll(".ch-verb")];
+    const words = [...root.querySelectorAll(".ch-say span")];
+    const dock = root.querySelector(".ch-dock");
+    const dbtns = [...dock.querySelectorAll("button[data-ch]")];
+    const ind = dock.querySelector("i");
+    const html = document.documentElement;
+    let tops = [], vh = 0, raf = null, cur = -2;
+    html.classList.add("ch-home");
+
+    const fit = (v) => {
+      v.style.fontSize = "";
+      const w = v.clientWidth, n = v.scrollWidth;
+      if (n > w + 1) v.style.fontSize = (parseFloat(getComputedStyle(v).fontSize) * w / n * 0.985) + "px";
+    };
+    const measure = () => {
+      vh = window.innerHeight || 1;
+      verbs.forEach(fit);
+      let acc = docTop(stack);
+      chs.forEach((c, i) => {
+        const h = c.offsetHeight;
+        tops[i] = acc; acc += h;
+        // Un chapitre plus haut que l'écran défile en entier avant de se figer.
+        c.style.top = Math.min(0, vh - h) + "px";
+      });
+    };
+    const frame = () => {
+      raf = null;
+      const y = window.scrollY || 0;
+      const docked = y > vh * 0.35 && y < tops[tops.length - 1] - vh * 0.4;
+      dock.classList.toggle("on", docked);
+      html.classList.toggle("ch-docked", docked);
+      const k = Math.min(1, 0.25 + y / (vh * 0.45)), n = Math.ceil(words.length * k);
+      words.forEach((w, i) => w.classList.toggle("lit", PREFERS_REDUCED_MOTION || i < n));
+      let active = -1;
+      chs.forEach((c, i) => {
+        if (y >= tops[i] - vh * 0.5) active = i;
+        if (PREFERS_REDUCED_MOTION) return;
+        const nx = tops[i + 1];
+        const cov = nx === undefined ? 0 : Math.max(0, Math.min(1, (y + vh - nx) / vh));
+        cards[i].style.transform = cov ? "scale(" + (1 - cov * 0.06).toFixed(4) + ")" : "";
+        cards[i].style.setProperty("--cov", (cov * 0.4).toFixed(3));
+      });
+      if (active !== cur) {
+        cur = active;
+        dbtns.forEach((b, i) => b.classList.toggle("cur", i === active));
+        const b = dbtns[active];
+        if (b) { ind.style.width = b.offsetWidth + "px"; ind.style.transform = "translateX(" + b.offsetLeft + "px)"; }
+        else ind.style.width = "0px";
+        window.dispatchEvent(new CustomEvent("tmf:chapitre", { detail: active < 0 ? "/#top" : "/#" + chs[active].id }));
+      }
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(frame); };
+    const redo = () => { measure(); cur = -2; frame(); };
+
+    // Apparitions : seulement pour ce qui est sous l'écran au chargement.
+    let io = null;
+    if (!PREFERS_REDUCED_MOTION && "IntersectionObserver" in window) {
+      io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.remove("wait"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+      root.querySelectorAll(".ch-rv").forEach((el) => { if (el.getBoundingClientRect().top > window.innerHeight * 0.92) { el.classList.add("wait"); io.observe(el); } });
+    }
+    redo();
+    const ro = "ResizeObserver" in window ? new ResizeObserver(redo) : null;
+    if (ro) ro.observe(root);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(redo);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", redo, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", redo);
+      if (ro) ro.disconnect();
+      if (io) io.disconnect();
+      if (raf) cancelAnimationFrame(raf);
+      html.classList.remove("ch-docked", "ch-home");
+    };
+  }, []);
+
+  const ext = { target: "_blank", rel: "noopener" };
+  const fleche = <ArrowUpRight size={14} strokeWidth={2} />;
+  const marq = CH_DOMAINES.concat(CH_DOMAINES);
+  return (
+    <main ref={ref} className="ch">
+      <section id="top" className="ch-hero">
+        <div className="ch-in">
+          <div className="ch-top">
+            <img src="/profile.jpg" alt="Tristan Mendès France" width="44" height="44" />
+            <span className="ch-mono">Journalisme · cultures numériques<br />Complotisme &amp; radicalités en ligne</span>
+          </div>
+          <h1 className="ch-h1" aria-label="Tristan Mendès France"><span>Tristan</span><span>Mendès</span><span>France</span></h1>
+          <p className="ch-say">{CH_SAY.split(" ").map((w, i) => <React.Fragment key={i}><span>{w}</span>{" "}</React.Fragment>)}</p>
+          <section className="ch-ask" aria-label="Me solliciter">
+            <div className="ch-ask-h"><span className="ch-mono">Me solliciter</span><h2>Une conférence, une formation, un conseil, une interview&nbsp;?</h2></div>
+            <div className="ch-ask-g">
+              {SOLLICITER.map((x) => (
+                <MailLink key={x.k} subject={x.s} className="ch-ask-t"><b>{x.k}</b><small>{x.d}</small><ArrowUpRight size={18} strokeWidth={2} /></MailLink>
+              ))}
+            </div>
+          </section>
+          <NavLink href={PRESS_PATH} className="ch-proof"><b>1 700+ articles</b> dans 360 médias<span>Voir la revue de presse {fleche}</span></NavLink>
+        </div>
+        <div className="ch-marq" aria-hidden="true"><div>
+          {marq.map((d, i) => <React.Fragment key={i}><span>{d}</span><i>✳</i></React.Fragment>)}
+        </div></div>
+      </section>
+
+      <div className="ch-stack">
+        <section id="enqueter" className="ch-ch"><div className="ch-card"><div className="ch-in">
+          <div className="ch-meta"><span>Chapitre 1 sur 5</span><span>Newsletter</span></div>
+          <h2 className="ch-verb">Enquêter</h2>
+          <p className="ch-lede">« {NEWSLETTER_NOM} »&nbsp;: mes enquêtes sur les IA, les plateformes et ceux qui les manipulent.</p>
+          <div className="ch-grid">
+            {lettres.map((l) => {
+              const cle = (l.url || "").split("/p/")[1] || "";
+              const s = LETTRES_SUJETS[cle] || { theme: "Enquête", sujet: l.resume || l.titre };
+              return (
+                <a key={l.url} href={l.url} {...ext} className="ch-it ch-rv">
+                  {l.img ? <img className="ch-pic" src={l.img} alt="" loading="lazy" /> : <span />}
+                  <div><span className="ch-mono">{s.theme} · {frDateCourte(l.date)}</span><h3 className="sub">{s.sujet}</h3></div>
+                </a>
+              );
+            })}
+          </div>
+          <div className="ch-act"><a className="ch-btn" href={SUBSTACK_URL} {...ext}>S'abonner à la newsletter {fleche}</a></div>
+        </div></div></section>
+
+        <section id="raconter" className="ch-ch"><div className="ch-card"><div className="ch-in">
+          <div className="ch-meta"><span>Chapitre 2 sur 5</span><span>Radio · télé · podcast</span></div>
+          <h2 className="ch-verb">Raconter</h2>
+          <p className="ch-lede">À l'antenne depuis 2020, pour décrypter le complotisme et la désinformation devant le grand public.</p>
+          <div className="ch-grid">
+            <a className="ch-it ch-rv" href="/complorama/">
+              <img className="ch-pic" src={(ep && ep.img) || "/complorama.jpg"} alt="" loading="lazy" />
+              <div><span className="ch-mono">France Info · en cours</span><h3>Complorama</h3>
+                <p>Le podcast que je coproduis et coanime. {ep && ep.n ? "Les " + ep.n + " épisodes sont" : "Tous les épisodes sont"} à écouter et à interroger sur le mur.{ep && ep.title ? " Dernier en date : « " + ep.title + " »." : ""}</p></div>
+            </a>
+            <a className="ch-it ch-rv" href="https://www.tf1info.fr/emissions/lci/verificateurs-14293/" {...ext}>
+              <img className="ch-pic" src="/lci.jpg" alt="" loading="lazy" />
+              <div><span className="ch-mono">LCI · 2025-2026</span><h3>Les Vérificateurs</h3><p>Consultant hebdomadaire : vérifier l'info en direct et déconstruire la désinformation.</p></div>
+            </a>
+            <a className="ch-it ch-rv" href="https://www.radiofrance.fr/franceinter/podcasts/antidote" {...ext}>
+              <img className="ch-pic" src="/antidote.jpg" alt="" loading="lazy" />
+              <div><span className="ch-mono">France Inter · 2020-2022</span><h3>Antidote</h3><p>Chroniqueur de la matinale : chaque semaine, les soubresauts de la complosphère.</p></div>
+            </a>
+          </div>
+        </div></div></section>
+
+        <section id="transmettre" className="ch-ch"><div className="ch-card"><div className="ch-in">
+          <div className="ch-meta"><span>Chapitre 3 sur 5</span><span>Cours · livres · conférences</span></div>
+          <h2 className="ch-verb">Transmettre</h2>
+          <p className="ch-lede">J'enseigne les cultures numériques en master, j'écris et j'interviens en conférence.</p>
+          <div className="ch-grid">
+            <div className="ch-it np ch-rv"><div><span className="ch-mono">Université Paris Cité</span><h3>Maître de conférences associé</h3><p>Cultures numériques, désinformation, complotisme, IA.</p></div></div>
+            <div className="ch-it np ch-rv"><div><span className="ch-mono">CELSA</span><h3>Enseignant</h3><p>Master, cultures numériques.</p></div></div>
+            <a className="ch-it rowy ch-rv" href="https://rdv-histoire.com/programme/les-faussaires-de-la-nation-comment-lextreme-droite-defigure-lhistoire" {...ext}>
+              <img className="ch-pic" src="/faussaires.jpg" alt="" loading="lazy" />
+              <div><span className="ch-mono">Livre collectif · Philippe Rey · 2026</span><h3>Les Faussaires de la nation</h3></div>
+            </a>
+            <a className="ch-it rowy ch-rv" href="https://www.cnrseditions.fr/catalogue/societe/internet/" {...ext}>
+              <img className="ch-pic" src="/infographie.jpg" alt="" loading="lazy" />
+              <div><span className="ch-mono">Livre · CNRS Éditions</span><h3>Internet, une infographie</h3></div>
+            </a>
+            <MailLink subject="Demande de conférence" className="ch-it np wide2 ch-rv"><div><span className="ch-mono">Conférences</span><h3>Keynotes, masterclass, formations</h3><p>Radicalités en ligne, désinformation, IA génératives, cultures numériques.</p></div></MailLink>
+          </div>
+          <div className="ch-act"><button type="button" className="ch-btn" onClick={openSolliciter}>Réserver une intervention {fleche}</button></div>
+        </div></div></section>
+
+        <section id="veiller" className="ch-ch"><div className="ch-card"><div className="ch-in">
+          <div className="ch-meta"><span>Chapitre 4 sur 5</span><span>Engagements</span></div>
+          <h2 className="ch-verb">Veiller</h2>
+          <p className="ch-lede">Deux engagements au long cours, pour documenter le complotisme et garantir l'indépendance de l'information.</p>
+          <div className="ch-grid two">
+            <a className="ch-it ch-rv" href="https://www.conspiracywatch.info" {...ext}>
+              <img className="ch-pic" src="/conspiracywatch.jpg" alt="" loading="lazy" />
+              <div><span className="ch-mono">Observatoire du conspirationnisme</span><h3>Conspiracy Watch</h3><p>Collaborateur et expert.</p></div>
+            </a>
+            <a className="ch-it ch-rv" href="https://www.francemediasmonde.com/fr/nos-engagements/deontologie/" {...ext}>
+              <img className="ch-pic" src="/france-medias-monde.jpg" alt="" loading="lazy" />
+              <div><span className="ch-mono">France Médias Monde</span><h3>CHIPIP</h3><p>Membre du comité d'indépendance et d'intégrité.</p></div>
+            </a>
+          </div>
+        </div></div></section>
+
+        <section id="experimenter" className="ch-ch"><div className="ch-card"><div className="ch-in">
+          <div className="ch-meta"><span>Chapitre 5 sur 5</span><span>tmflab.tech</span></div>
+          <h2 className="ch-verb">Expérimenter</h2>
+          <p className="ch-quote">Je ne code pas. J'expérimente.</p>
+          <p className="ch-lede">TMF Lab : ce que je fabrique avec les IA. Une carte mondiale du complotisme, une simulation 3D des super-propagateurs, des outils vidéo.</p>
+          <div className="ch-act">
+            <a className="ch-btn" href={LAB_URL} {...ext}>Entrer dans le labo {fleche}</a>
+            <a className="ch-btn" href="/carte-complotisme/">ComploScore {fleche}</a>
+            <a className="ch-btn" href="/productions/super-propagateurs/">Super-propagateurs {fleche}</a>
+          </div>
+        </div></div></section>
+
+        <section id="contact" className="ch-ch"><div className="ch-card"><div className="ch-in">
+          <div className="ch-meta"><span>Contact</span><span>2026</span></div>
+          <h2 className="ch-verb">Parlons-en.</h2>
+          <p className="ch-lede">Conférences, interviews, conseil, collaborations éditoriales : écrivez-moi. Je réponds personnellement à chaque message.</p>
+          <div className="ch-act">
+            <MailLink className="ch-btn">Écrivez-moi {fleche}</MailLink>
+            <button type="button" className="ch-btn" onClick={openSolliciter}>Préciser ma demande {fleche}</button>
+          </div>
+          <div className="ch-soc">
+            {CH_SOCIAL.map(([l, h]) => <a key={l} href={h} target="_blank" rel="noopener noreferrer">{l}</a>)}
+            <a href={SUBSTACK_HOME} {...ext}>Newsletter</a>
+          </div>
+          <div className="ch-foot">
+            <span>© 2026 Tristan Mendès France — vibécodé avec décontraction.</span>
+            <nav aria-label="Pied de page">
+              <NavLink href={PRESS_PATH}>Revue de presse</NavLink>
+              <a href={SUBSTACK_URL} {...ext}>Newsletter</a>
+              <a href={KOFI_URL} {...ext}>Me soutenir</a>
+              <MailLink>Contact</MailLink>
+            </nav>
+          </div>
+        </div></div></section>
+      </div>
+
+      <nav className="ch-dock" aria-label="Chapitres">
+        <i />
+        {CH_DOCK.map(([id, l]) => <button key={id} type="button" data-ch={id} onClick={() => scrollToChapitre(id)}>{l}</button>)}
+        <button type="button" className="ch-dock-sol" aria-label="Me solliciter" onClick={openSolliciter}><Mail size={16} /></button>
+      </nav>
+    </main>
+  );
+}
+
 function App() {
   const [view, setView] = React.useState(viewFromPath);
   React.useEffect(() => {
@@ -2064,7 +2400,10 @@ function App() {
       setView(v);
       document.title = VIEW_TITLES[v] || HOME_TITLE;
       requestAnimationFrame(() => requestAnimationFrame(() => {
-        const el = hash && document.getElementById(hash.slice(1));
+        let id = hash ? hash.slice(1) : "";
+        if (v === "home" && ACCUEIL_CHAPITRES && ANCRES_ANCIENNES[id]) id = ANCRES_ANCIENNES[id];
+        if (v === "home" && scrollToChapitre(id)) return;
+        const el = id && document.getElementById(id);
         if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
         else window.scrollTo({ top: 0 });
       }));
@@ -2073,6 +2412,9 @@ function App() {
     const onPop = () => apply(location.hash);
     window.addEventListener("tmf:navigate", onNav);
     window.addEventListener("popstate", onPop);
+    // Arrivée directe sur tristan.pro/#contact, #transmettre… : la page n'existe
+    // pas encore quand le navigateur cherche l'ancre, on y défile une fois montée.
+    if (location.hash.length > 1) setTimeout(() => apply(location.hash), 350);
     return () => { window.removeEventListener("tmf:navigate", onNav); window.removeEventListener("popstate", onPop); };
   }, []);
   return (
@@ -2081,6 +2423,7 @@ function App() {
       <div className="aurora-blob blob-2" aria-hidden="true"></div>
       <ScrollProgress />
       <Navbar view={view} />
+      <Solliciter />
       {view === "presse" ? (
         <div className="bg-black">
           <PressReview />
@@ -2101,6 +2444,8 @@ function App() {
           <SanteArticle />
           <CtaFooter />
         </div>
+      ) : ACCUEIL_CHAPITRES ? (
+        <HomeChapitres />
       ) : (<>
         <Hero />
         <div className="bg-black">

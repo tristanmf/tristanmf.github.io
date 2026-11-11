@@ -473,6 +473,43 @@ interviews). Ne pas le surcharger. Section rédigée le 2 septembre 2026.
   Technofascisme (`tristanmf/TECHNOFASCISME-Infographie-interactive`),
   Happy World (`egoblog.net/happyworld/`), TMF Lab (`tmflab.tech`).
 
+## Accueil « Chapitres » — refonte du 11 novembre 2026 (branche `claude/refonte-chapitres`)
+
+**Tant que cette branche n'est pas fusionnée, tristan.pro garde l'ancien accueil.** Tristan a choisi
+la formule sur maquette (trois formules comparées) ; il a demandé à valider avant publication.
+
+- **Composant `HomeChapitres`** (`app.jsx`), styles `.ch-*` dans le `<style>` d'`index.html`.
+  L'ancien accueil (Hero, StartSection, FeaturesChess, FeaturesGrid, Conferencier…) reste dans le
+  fichier : `ACCUEIL_CHAPITRES = false` le rétablit. La section « Structure de la page » ci-dessous
+  décrit cet ancien accueil.
+- **Ordre** : accroche (nom, phrase, quatre entrées « Me solliciter », ligne revue de presse) puis
+  cinq chapitres, un aplat de couleur chacun, qui s'empilent au défilement (`position: sticky`) :
+  **Enquêter** (newsletter) · **Raconter** (Complorama, puis LCI et France Inter au passé) ·
+  **Transmettre** (Paris Cité, CELSA, les deux livres, conférences en dernier) · **Veiller**
+  (Conspiracy Watch, CHIPIP) · **Expérimenter** (TMF Lab) · puis **Parlons-en** (`#contact`).
+- **Décisions de Tristan** : le nom sur trois lignes identiques ; dans Enquêter, chaque capsule dit
+  **le sujet en une phrase**, pas le titre de la lettre (jugé abscons) ; la revue de presse est en
+  haut, sous « Me solliciter », comme preuve ; les livres sont dans Transmettre, le plus récent
+  d'abord ; la prise de contact doit être « très présente et très facile ».
+- **Sujets des lettres** : table `LETTRES_SUJETS` dans `app.jsx` (clé = fin de l'adresse Substack →
+  thème + phrase). Sans entrée, la capsule montre le sous-titre de la lettre (`resume` de
+  `newsletter/dernieres.json`). À compléter quand un sous-titre ne dit pas le sujet.
+- **« Me solliciter »** : composant `Solliciter` monté dans `App` pour toutes les vues (bouton
+  flottant + volet, quatre demandes qui ouvrent un mail avec le bon objet, et « copier mon adresse »).
+  `openSolliciter()` l'ouvre de n'importe où. Sur mobile, l'accueil masque le bouton flottant (il
+  recouvrait le contenu) : le bouton est dans le dock des chapitres. Hors application (`EMBED`), le
+  menu garde « Me contacter ».
+- **Ancres** : `#enqueter`, `#raconter`, `#transmettre`, `#veiller`, `#experimenter`, `#contact`.
+  Les anciennes (`#projets`, `#productions`, `#conferences`, `#institutionnel`, `#apropos`) sont
+  redirigées par `ANCRES_ANCIENNES`. Les chapitres étant sticky, `scrollIntoView` ne marche pas :
+  passer par `scrollToChapitre(id)`. Même raison pour le repère du menu : `HomeChapitres` émet
+  `tmf:chapitre`, la barre l'écoute (plus d'IntersectionObserver sur l'accueil).
+- **Polices** : Unbounded (titres) et DM Mono ajoutées à `assets/fonts/site.css` par
+  `scripts/vendor-assets.mjs`, auto-hébergées.
+- **Aperçu local sur le Mac** : pas de Node, mais `deno` compile `app.jsx` (Babel par `npm:`). Le
+  serveur d'aperçu de l'app Claude ne lit pas `~/Documents` : servir une copie du dépôt depuis le
+  dossier temporaire. Ne pas commiter l'`app.js` compilé à la main, le workflow s'en charge.
+
 ## Structure de la page (ordre réel dans `App`)
 
 1. **Hero** `#top` — vidéo `hero.mp4`, titre, boutons, réseaux, indicateur « Défiler ».

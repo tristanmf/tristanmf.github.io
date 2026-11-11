@@ -19,7 +19,7 @@ const ROOT = process.cwd();
 // Same request each page used to make to Google Fonts. Keeping the exact
 // families/weights means zero visual change.
 const FONT_SHEETS = {
-  site:       'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Barlow:wght@300;400;500;600&display=swap',
+  site:       'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Barlow:wght@300;400;500;600&family=Unbounded:wght@500;800&family=DM+Mono:wght@400;500&display=swap',
   complorama: 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,400;1,400;1,700&display=swap',
 };
 // Only these Unicode subsets are kept — the site is French; cyrillic,
