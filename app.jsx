@@ -396,6 +396,15 @@ function NavLink({ href, onClick, children, ...rest }) {
 }
 
 const NAV_VERRE = { background: 'rgba(8,10,18,0.55)', backdropFilter: 'blur(18px) saturate(140%)', WebkitBackdropFilter: 'blur(18px) saturate(140%)' };
+// Le logo « t. » du site (même dessin que favicon.svg) : t blanc, point bleu.
+function LogoT({ size = 24 }) {
+  return (
+    <svg width={size} height={size} viewBox="10 12 82 80" aria-hidden="true">
+      <polygon points="30.00,18.00 44.00,18.00 44.00,32.00 60.00,32.00 60.00,45.00 44.00,45.00 44.00,62.00 44.01,62.39 44.05,62.78 44.12,63.17 44.20,63.55 44.32,63.93 44.46,64.30 44.62,64.65 44.80,65.00 45.01,65.33 45.24,65.65 45.49,65.96 45.76,66.24 46.04,66.51 46.35,66.76 46.67,66.99 47.00,67.20 47.35,67.38 47.70,67.54 48.07,67.68 48.45,67.80 48.83,67.88 49.22,67.95 49.61,67.99 50.00,68.00 60.00,68.00 60.00,81.00 48.00,81.00 46.82,80.96 45.65,80.85 44.49,80.65 43.34,80.39 42.21,80.04 41.11,79.63 40.04,79.14 39.00,78.59 38.00,77.97 37.04,77.28 36.13,76.53 35.27,75.73 34.47,74.87 33.72,73.96 33.03,73.00 32.41,72.00 31.86,70.96 31.37,69.89 30.96,68.79 30.61,67.66 30.35,66.51 30.15,65.35 30.04,64.18 30.00,63.00 30.00,45.00 21.00,45.00 21.00,32.00 30.00,32.00" fill="#fff" />
+      <circle cx="73" cy="74" r="7.5" fill="#5b8cff" />
+    </svg>
+  );
+}
 function Navbar({ view }) {
   const links = [{ l: "Enquêtes", h: "/#enqueter" }, { l: "Médias", h: "/#raconter" }, { l: "Cours & conférences", h: "/#transmettre" }, { l: "Engagements", h: "/#veiller" }, { l: "Labo", h: "/#experimenter" }, { l: "Revue de presse", h: PRESS_PATH }];
   const [active, setActive] = React.useState(view === "home" ? "/#top" : VIEW_NAV[view] || "");
@@ -411,8 +420,8 @@ function Navbar({ view }) {
     <nav className="fixed top-4 left-0 right-0 z-50 px-4 md:px-8 lg:px-16 py-3">
       <div className="flex items-center justify-between">
         <NavLink href="/#top" className="flex items-center gap-2">
-          <div className="h-10 w-10 rounded-full flex items-center justify-center border border-white/10" style={NAV_VERRE}>
-            <ArrowUp size={18} strokeWidth={2.2} className="text-white" />
+          <div className="h-10 w-10 rounded-full flex items-center justify-center border border-white/10" style={NAV_VERRE} aria-hidden="true">
+            <LogoT size={26} />
           </div>
           <span className="hidden sm:inline font-heading italic text-xl text-white tracking-tight whitespace-nowrap rounded-full px-3 py-1 border border-white/10" style={NAV_VERRE}>tristan.pro</span>
         </NavLink>
