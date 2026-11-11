@@ -473,10 +473,10 @@ interviews). Ne pas le surcharger. Section rédigée le 2 septembre 2026.
   Technofascisme (`tristanmf/TECHNOFASCISME-Infographie-interactive`),
   Happy World (`egoblog.net/happyworld/`), TMF Lab (`tmflab.tech`).
 
-## Accueil « Chapitres » — refonte du 11 novembre 2026 (branche `claude/refonte-chapitres`)
+## Accueil « Chapitres » — EN LIGNE depuis le 11 novembre 2026 (PR #138)
 
-**Tant que cette branche n'est pas fusionnée, tristan.pro garde l'ancien accueil.** Tristan a choisi
-la formule sur maquette (trois formules comparées) ; il a demandé à valider avant publication.
+Tristan a choisi la formule sur maquette (trois formules comparées), puis validé la publication.
+Vérifié en ligne le jour même : six chapitres, police chargée, aucun domaine tiers.
 
 - **Composant `HomeChapitres`** (`app.jsx`), styles `.ch-*` dans le `<style>` d'`index.html`.
   L'ancien accueil (Hero, StartSection, FeaturesChess, FeaturesGrid, Conferencier…) reste dans le
