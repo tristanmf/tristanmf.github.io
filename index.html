@@ -286,9 +286,12 @@
   .ch-proof span{margin-left:auto;opacity:.75;font-size:13.5px;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
 
   .ch-marq{margin-top:28px;overflow:hidden;white-space:nowrap;border-top:1px solid rgba(255,255,255,.22);border-bottom:1px solid rgba(255,255,255,.22);font-family:var(--ch-disp);font-weight:500;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
-  .ch-marq div{display:inline-flex;gap:26px;padding:12px 0;animation:ch-tick 30s linear infinite}
-  .ch-marq i{font-style:normal;color:var(--ch-lab)}
-  @keyframes ch-tick{to{transform:translateX(-50%)}}
+  /* Deux mouvements : le bandeau défile seul, et glisse aussi avec le défilement de la page
+     (visible même quand le téléphone réduit les animations). Quatre copies : toujours plein. */
+  .ch-marq-t{display:inline-block;will-change:transform}
+  .ch-marq-t > div{display:inline-flex;align-items:center;gap:26px;padding:12px 0;animation:ch-tick 60s linear infinite}
+  .ch-marq i{flex:none;width:7px;height:7px;background:var(--ch-lab);transform:rotate(45deg)}
+  @keyframes ch-tick{to{transform:translateX(-25%)}}
 
   .ch-ch{position:sticky;top:0}
   .ch-card{position:relative;border-radius:28px 28px 0 0;transform-origin:50% 0;will-change:transform;min-height:100vh;min-height:100svh;padding-top:88px;padding-bottom:104px;color:var(--ch-ink);--btn-fill:var(--ch-ink);--btn-on:#fff}
@@ -355,10 +358,10 @@
   @keyframes sol-pulse{50%{opacity:.25}}
   /* Sur mobile, l'accueil a déjà les quatre entrées en haut et le bouton du dock */
   @media (max-width:759px){.ch-home .sol-fab{display:none}}
-  .sol-sheet{position:fixed;inset:0;z-index:70;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}
+  .sol-sheet{position:fixed;inset:0;z-index:70;display:flex;align-items:flex-end;justify-content:center;pointer-events:none;visibility:hidden;transition:visibility 0s .55s}
   .sol-sheet::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.6);opacity:0;transition:opacity .4s}
   .sol-p{position:relative;width:min(100%,520px);background:#0d0e11;color:#eceef2;border:1px solid #2b2e36;border-bottom:0;border-radius:26px 26px 0 0;padding:20px 18px calc(22px + env(safe-area-inset-bottom,0px));transform:translateY(105%);transition:transform .55s var(--ch-ease);display:grid;gap:10px;font-family:'Barlow',sans-serif}
-  .sol-sheet.open{pointer-events:auto}
+  .sol-sheet.open{pointer-events:auto;visibility:visible;transition-delay:0s}
   .sol-sheet.open::before{opacity:1}
   .sol-sheet.open .sol-p{transform:none}
   .sol-p h2{margin:0 44px 4px 0;font-size:1.35rem;font-weight:600;line-height:1.15}
@@ -371,7 +374,7 @@
   .sol-copy{justify-self:start;margin-top:2px;border:0;background:none;color:#9aa0ad;font:400 13px 'Barlow',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:6px 0}
   .sol-copy:hover{color:#eceef2}
   @media (min-width:760px){.sol-sheet{align-items:center}.sol-p{border-bottom:1px solid #2b2e36;border-radius:26px;transform:translateY(30px) scale(.96);opacity:0;transition:transform .45s var(--ch-ease),opacity .3s}.sol-sheet.open .sol-p{opacity:1}}
-  @media (prefers-reduced-motion:reduce){.ch-rv.wait{opacity:1;transform:none}.ch-h1 span,.ch-marq div,.sol-fab::before{animation:none}.ch-say span{opacity:1}}
+  @media (prefers-reduced-motion:reduce){.ch-rv.wait{opacity:1;transform:none}.ch-h1 span,.sol-fab::before{animation:none}.ch-say span{opacity:1}}
 </style>
 </head>
 <body class="bg-black">
