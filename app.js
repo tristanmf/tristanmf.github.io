@@ -1870,18 +1870,92 @@ function PressBadge({
     className: "absolute inset-0 h-full w-full bg-white object-contain p-px"
   }));
 }
+
+// Grands titres en capitales : ramenés à une ligne quelle que soit la largeur.
+function useFitVerbs(ref) {
+  React.useEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+    const fitAll = () => root.querySelectorAll(".ch-verb").forEach(v => {
+      v.style.fontSize = "";
+      const w = v.clientWidth,
+        n = v.scrollWidth;
+      if (n > w + 1) v.style.fontSize = parseFloat(getComputedStyle(v).fontSize) * w / n * 0.985 + "px";
+    });
+    fitAll();
+    const ro = "ResizeObserver" in window ? new ResizeObserver(fitAll) : null;
+    if (ro) ro.observe(root);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+    window.addEventListener("resize", fitAll, {
+      passive: true
+    });
+    return () => {
+      if (ro) ro.disconnect();
+      window.removeEventListener("resize", fitAll);
+    };
+  }, []);
+}
+
+// Contenu du chapitre « Parlons-en », commun à l'accueil et aux autres vues.
+function ContactContenu() {
+  const ext = {
+    target: "_blank",
+    rel: "noopener"
+  };
+  const fleche = /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 14,
+    strokeWidth: 2
+  });
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "ch-meta"
+  }, /*#__PURE__*/React.createElement("span", null, "Contact"), /*#__PURE__*/React.createElement("span", null, "2026")), /*#__PURE__*/React.createElement("h2", {
+    className: "ch-verb"
+  }, "Parlons-en."), /*#__PURE__*/React.createElement("p", {
+    className: "ch-lede"
+  }, "Conf\xE9rences, interviews, conseil, collaborations \xE9ditoriales : \xE9crivez-moi. Je r\xE9ponds personnellement \xE0 chaque message."), /*#__PURE__*/React.createElement("div", {
+    className: "ch-act"
+  }, /*#__PURE__*/React.createElement(MailLink, {
+    className: "ch-btn"
+  }, "\xC9crivez-moi ", fleche), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "ch-btn",
+    onClick: openSolliciter
+  }, "Pr\xE9ciser ma demande ", fleche)), /*#__PURE__*/React.createElement("div", {
+    className: "ch-soc"
+  }, CH_SOCIAL.map(([l, h]) => /*#__PURE__*/React.createElement("a", {
+    key: l,
+    href: h,
+    target: "_blank",
+    rel: "noopener noreferrer"
+  }, l)), /*#__PURE__*/React.createElement("a", _extends({
+    href: SUBSTACK_HOME
+  }, ext), "Newsletter")), /*#__PURE__*/React.createElement("div", {
+    className: "ch-foot"
+  }, /*#__PURE__*/React.createElement("span", null, "\xA9 2026 Tristan Mend\xE8s France \u2014 vib\xE9cod\xE9 avec d\xE9contraction."), /*#__PURE__*/React.createElement("nav", {
+    "aria-label": "Pied de page"
+  }, /*#__PURE__*/React.createElement(NavLink, {
+    href: "/#top"
+  }, "Accueil"), /*#__PURE__*/React.createElement(NavLink, {
+    href: PRESS_PATH
+  }, "Revue de presse"), /*#__PURE__*/React.createElement("a", _extends({
+    href: SUBSTACK_URL
+  }, ext), "Newsletter"), /*#__PURE__*/React.createElement("a", _extends({
+    href: KOFI_URL
+  }, ext), "Me soutenir"), /*#__PURE__*/React.createElement(MailLink, null, "Contact"))));
+}
 function PressHeading({
   eyebrow,
   children
 }) {
   return /*#__PURE__*/React.createElement("div", {
-    className: "mb-6"
+    className: "pr-head"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/50"
-  }, eyebrow), /*#__PURE__*/React.createElement("h2", {
-    className: "mt-2 font-heading italic text-3xl md:text-5xl text-white tracking-tight leading-[1.05]"
-  }, children));
+    className: "ch-mono"
+  }, eyebrow), /*#__PURE__*/React.createElement("h2", null, children));
 }
+
+// Barre horizontale : le rail prend la couleur du texte de la section, ce qui
+// la rend lisible sur fond sombre comme sur les aplats clairs.
 function PressBar({
   label,
   n,
@@ -1889,19 +1963,18 @@ function PressBar({
   color
 }) {
   return /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-[minmax(0,11rem)_minmax(0,1fr)_3rem] items-center gap-3 py-1.5 text-sm"
+    className: "pr-bar"
   }, /*#__PURE__*/React.createElement("span", {
-    className: "text-white/80 leading-tight"
+    className: "pr-bar-l"
   }, label), /*#__PURE__*/React.createElement("span", {
-    className: "h-2.5 rounded-full bg-white/10 overflow-hidden"
+    className: "pr-track"
   }, /*#__PURE__*/React.createElement("span", {
-    className: "block h-full rounded-full",
     style: {
       width: `${n / max * 100}%`,
-      background: color
+      background: color || "currentColor"
     }
   })), /*#__PURE__*/React.createElement("span", {
-    className: "text-right font-mono text-white/70 tabular-nums"
+    className: "pr-bar-n"
   }, pFmt(n)));
 }
 
@@ -1951,14 +2024,14 @@ function PressChart({
     x2: w - pr,
     y1: sy(v),
     y2: sy(v),
-    stroke: "rgba(255,255,255,0.08)"
+    stroke: "rgba(255,255,255,0.1)"
   }), /*#__PURE__*/React.createElement("text", {
     x: pl - 6,
     y: sy(v) + 4,
     textAnchor: "end",
     fontSize: "11",
-    fill: "rgba(255,255,255,0.45)",
-    className: "font-mono"
+    fill: "rgba(255,255,255,0.5)",
+    fontFamily: "'DM Mono', monospace"
   }, v))), ys.map((y, i) => {
     const x = pl + i * bw + bw * 0.15,
       bwid = bw * 0.7;
@@ -1986,19 +2059,25 @@ function PressChart({
       y: H - 7,
       textAnchor: "middle",
       fontSize: "10.5",
-      fill: "rgba(255,255,255,0.5)",
-      className: "font-mono"
+      fill: "rgba(255,255,255,0.55)",
+      fontFamily: "'DM Mono', monospace"
     }, "’" + y.slice(2)), bw >= 24 && +y >= 2019 && /*#__PURE__*/React.createElement("text", {
       x: x + bwid / 2,
       y: sy(acc) - 5,
       textAnchor: "middle",
       fontSize: "10.5",
-      fill: "rgba(255,255,255,0.85)",
-      className: "font-mono"
+      fill: "rgba(255,255,255,0.9)",
+      fontFamily: "'DM Mono', monospace"
     }, acc));
   })));
 }
+
+// ---------- Revue de presse (vue /presse/) — langage « Chapitres » (11/11/2026) ----------
+// Mêmes aplats que l'accueil : chaque section est une carte arrondie d'une couleur.
+// Styles : classes .pr-* (et .ch-* partagées) dans le <style> d'index.html.
 function PressReview() {
+  const ref = React.useRef(null);
+  useFitVerbs(ref);
   const [data, setData] = React.useState(null);
   const [domains, setDomains] = React.useState({});
   const [err, setErr] = React.useState(null);
@@ -2080,62 +2159,72 @@ function PressReview() {
   }), /*#__PURE__*/React.createElement("span", {
     className: "truncate"
   }, p.s));
+  const lien = (u, label) => u && /*#__PURE__*/React.createElement("a", {
+    href: u,
+    target: "_blank",
+    rel: "noopener",
+    className: "pr-link"
+  }, label, " ", /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 12,
+    strokeWidth: 2
+  }));
   return /*#__PURE__*/React.createElement("main", {
-    className: "relative z-10 px-6 md:px-12 lg:px-24 pt-32 md:pt-40 pb-8"
-  }, /*#__PURE__*/React.createElement("header", {
-    className: "max-w-4xl"
+    ref: ref,
+    className: "ch pr"
+  }, /*#__PURE__*/React.createElement("section", {
+    className: "pr-hero"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "inline-flex items-center gap-2.5 liquid-glass rounded-full pl-4 pr-5 py-3 whitespace-nowrap"
+    className: "ch-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-meta"
+  }, /*#__PURE__*/React.createElement("span", null, "1997 \u2013 2026"), /*#__PURE__*/React.createElement("span", null, "Tristan Mend\xE8s France")), /*#__PURE__*/React.createElement("h1", {
+    className: "pr-h1"
   }, /*#__PURE__*/React.createElement("span", {
-    className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/60"
-  }, "1997 \u2013 2026"), /*#__PURE__*/React.createElement("span", {
-    className: "text-white font-body text-base md:text-lg tracking-tight"
-  }, "Tristan Mend\xE8s France")), /*#__PURE__*/React.createElement("h1", {
-    className: "mt-6 font-heading italic text-6xl md:text-8xl text-white tracking-tight leading-[0.9]"
-  }, "Revue de presse"), /*#__PURE__*/React.createElement("p", {
-    className: "mt-6 text-white/75 font-body font-light text-lg md:text-xl leading-relaxed max-w-3xl"
-  }, "Ce relev\xE9 recense les articles qui me citent \u2014 presse nationale, r\xE9gionale et \xE9trang\xE8re, agences, web \u2014 ainsi que mes interventions \xE0 la radio, \xE0 la t\xE9l\xE9vision et en podcast. Je le publie par souci de transparence : qui me cite, dans quels m\xE9dias, et \xE0 quel titre on me pr\xE9sente.")), err && /*#__PURE__*/React.createElement("p", {
-    className: "mt-10 font-mono text-sm text-white/60"
+    className: "ch-verb"
+  }, "Revue"), /*#__PURE__*/React.createElement("span", {
+    className: "ch-verb"
+  }, "de presse")), /*#__PURE__*/React.createElement("p", {
+    className: "pr-lede"
+  }, "Ce relev\xE9 recense les articles qui me citent (presse nationale, r\xE9gionale et \xE9trang\xE8re, agences, web) ainsi que mes interventions \xE0 la radio, \xE0 la t\xE9l\xE9vision et en podcast. Je le publie par souci de transparence : qui me cite, dans quels m\xE9dias, et \xE0 quel titre on me pr\xE9sente."), err && /*#__PURE__*/React.createElement("p", {
+    className: "pr-note"
   }, "Les donn\xE9es n'ont pas pu \xEAtre charg\xE9es (", err, ")."), !S && !err && /*#__PURE__*/React.createElement("p", {
-    className: "mt-10 font-mono text-sm text-white/50"
-  }, "Chargement\u2026"), S && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
-    className: "mt-10 grid grid-cols-2 lg:grid-cols-5 gap-3"
+    className: "pr-note"
+  }, "Chargement\u2026"), S && /*#__PURE__*/React.createElement("div", {
+    className: "pr-stats"
   }, [[pFmt(S.P.length), "articles depuis 1997"], [pFmt(S.nSources), "titres de presse et sites"], ["≈ " + S.avg, "articles par an, de 2020 à 2025"], [pFmt(S.intlCount), "articles à l'étranger, dans " + S.countries.length + " pays"], [pFmt(data.av.n), "passages radio, télé et podcast"]].map(([b, s]) => /*#__PURE__*/React.createElement("div", {
     key: s,
-    className: "liquid-glass rounded-2xl p-5"
+    className: "pr-stat"
+  }, /*#__PURE__*/React.createElement("b", null, b), /*#__PURE__*/React.createElement("span", null, s)))))), S && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("section", {
+    className: "pr-sec pr-night"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "font-heading italic text-4xl text-white tabular-nums"
-  }, b), /*#__PURE__*/React.createElement("div", {
-    className: "mt-1 text-white/60 text-sm font-body font-light leading-snug"
-  }, s)))), /*#__PURE__*/React.createElement("section", {
-    className: "mt-24 grid lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] gap-10"
+    className: "ch-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "pr-cols"
   }, /*#__PURE__*/React.createElement("div", {
     className: "min-w-0"
   }, /*#__PURE__*/React.createElement(PressHeading, {
     eyebrow: "Volume"
   }, "Articles par ann\xE9e"), /*#__PURE__*/React.createElement("div", {
-    className: "liquid-glass rounded-3xl p-5 md:p-7"
+    className: "pr-box"
   }, /*#__PURE__*/React.createElement(PressChart, {
     byY: S.byY,
     years: S.years
   }), /*#__PURE__*/React.createElement("div", {
-    className: "mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-white/60 font-body"
+    className: "pr-legend"
   }, PRESS_CATS.map(c => /*#__PURE__*/React.createElement("span", {
-    key: c,
-    className: "inline-flex items-center gap-1.5"
+    key: c
   }, /*#__PURE__*/React.createElement("i", {
-    className: "inline-block h-2.5 w-2.5 rounded-sm",
     style: {
       background: PRESS_COL[c]
     }
   }), c)))), /*#__PURE__*/React.createElement("p", {
-    className: "mt-3 text-xs text-white/45 font-body"
+    className: "pr-note"
   }, "Avant 2005 : ", S.pre2005, " articles (1997-2004). 2026 s'arr\xEAte au 10 octobre.")), /*#__PURE__*/React.createElement("div", {
     className: "min-w-0"
   }, /*#__PURE__*/React.createElement(PressHeading, {
     eyebrow: "Familles de m\xE9dias"
   }, "O\xF9 je suis cit\xE9"), /*#__PURE__*/React.createElement("div", {
-    className: "liquid-glass rounded-3xl p-5 md:p-7"
+    className: "pr-box"
   }, PRESS_CATS.map(k => /*#__PURE__*/React.createElement(PressBar, {
     key: k,
     label: k,
@@ -2143,165 +2232,157 @@ function PressReview() {
     max: Math.max(...Object.values(S.cats)),
     color: PRESS_COL[k]
   })), /*#__PURE__*/React.createElement("p", {
-    className: "mt-3 text-xs text-white/50 font-body"
-  }, Math.round(((S.cats["Presse nationale"] || 0) + (S.cats["Magazines"] || 0)) / S.P.length * 100), " % des articles paraissent dans la presse nationale ou les magazines.")))), /*#__PURE__*/React.createElement("section", {
-    className: "mt-24 grid lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] gap-10"
+    className: "pr-note"
+  }, Math.round(((S.cats["Presse nationale"] || 0) + (S.cats["Magazines"] || 0)) / S.P.length * 100), " % des articles paraissent dans la presse nationale ou les magazines.")))))), /*#__PURE__*/React.createElement("section", {
+    className: "pr-sec pr-ivory"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "pr-cols"
   }, /*#__PURE__*/React.createElement("div", {
     className: "min-w-0"
   }, /*#__PURE__*/React.createElement(PressHeading, {
     eyebrow: "Les titres"
   }, "Les m\xE9dias qui me citent le plus"), /*#__PURE__*/React.createElement("ul", {
-    className: "liquid-glass rounded-3xl p-5 md:p-7 md:columns-2 gap-8 text-sm font-body"
+    className: "pr-box pr-tops"
   }, S.tops.map(([s, n]) => /*#__PURE__*/React.createElement("li", {
-    key: s,
-    className: "break-inside-avoid flex items-center justify-between gap-3 py-2 border-b border-dashed border-white/10 text-white/85"
+    key: s
   }, src({
     s,
     c: S.srcCat[s]
   }), /*#__PURE__*/React.createElement("span", {
-    className: "font-mono text-white/50 tabular-nums"
+    className: "pr-num"
   }, n))))), /*#__PURE__*/React.createElement("div", {
     className: "min-w-0"
   }, /*#__PURE__*/React.createElement(PressHeading, {
     eyebrow: "\xC0 quel titre"
   }, "Comment la presse me pr\xE9sente"), /*#__PURE__*/React.createElement("div", {
-    className: "liquid-glass rounded-3xl p-5 md:p-7"
+    className: "pr-box"
   }, S.quals.map(([k, n]) => /*#__PURE__*/React.createElement(PressBar, {
     key: k,
     label: k,
     n: n,
-    max: S.quals[0][1],
-    color: "#ffffff"
+    max: S.quals[0][1]
   })), /*#__PURE__*/React.createElement("p", {
-    className: "mt-3 text-xs text-white/50 font-body"
-  }, "Un m\xEAme article peut me pr\xE9senter de plusieurs fa\xE7ons.")))), /*#__PURE__*/React.createElement("section", {
-    className: "mt-24"
+    className: "pr-note"
+  }, "Un m\xEAme article peut me pr\xE9senter de plusieurs fa\xE7ons.")))))), /*#__PURE__*/React.createElement("section", {
+    className: "pr-sec pr-cobalt"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-in"
   }, /*#__PURE__*/React.createElement(PressHeading, {
     eyebrow: "Hors de France"
   }, "\xC0 l'international"), /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-wrap gap-2"
+    className: "pr-pills"
   }, S.countries.map(([k, n]) => /*#__PURE__*/React.createElement("span", {
-    key: k,
-    className: "liquid-glass rounded-full px-4 py-2 text-sm text-white font-body"
-  }, k, " ", /*#__PURE__*/React.createElement("span", {
-    className: "ml-1 font-mono text-white/50"
-  }, n)))), /*#__PURE__*/React.createElement("div", {
-    className: "mt-6 grid md:grid-cols-2 gap-6"
+    key: k
+  }, k, " ", /*#__PURE__*/React.createElement("b", null, n)))), /*#__PURE__*/React.createElement("div", {
+    className: "pr-cols pr-cols-eq"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "liquid-glass rounded-3xl p-5 md:p-7"
+    className: "pr-box"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/50 mb-3"
+    className: "ch-mono pr-boxlabel"
   }, "Dans la presse \xE9trang\xE8re"), S.intlPicks.map((p, i) => /*#__PURE__*/React.createElement("div", {
     key: i,
-    className: "py-3 border-b border-white/10 last:border-0"
+    className: "pr-item"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center justify-between gap-3 text-sm text-white/85"
+    className: "pr-item-top"
   }, src(p), /*#__PURE__*/React.createElement("span", {
-    className: "font-mono text-xs text-white/45 shrink-0"
+    className: "pr-num"
   }, pDate(p.d))), /*#__PURE__*/React.createElement("div", {
-    className: "mt-1 text-white/65 text-sm font-body font-light leading-snug"
+    className: "pr-item-t"
   }, p.t)))), /*#__PURE__*/React.createElement("div", {
-    className: "liquid-glass rounded-3xl p-5 md:p-7"
+    className: "pr-box"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "font-mono text-[11px] uppercase tracking-[0.2em] text-white/50 mb-3"
+    className: "ch-mono pr-boxlabel"
   }, "\xC0 l'antenne, hors de France"), S.avIntl.map((a, i) => /*#__PURE__*/React.createElement("div", {
     key: i,
-    className: "py-3 border-b border-white/10 last:border-0"
+    className: "pr-item"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "font-mono text-[11px] uppercase tracking-[0.12em] text-white/45"
+    className: "ch-mono pr-k"
   }, a.k), /*#__PURE__*/React.createElement("div", {
-    className: "mt-1 text-white font-heading italic text-xl"
+    className: "pr-item-m"
   }, a.m), /*#__PURE__*/React.createElement("div", {
-    className: "text-white/65 text-sm font-body font-light"
-  }, a.e), a.u && /*#__PURE__*/React.createElement("a", {
-    href: a.u,
-    target: "_blank",
-    rel: "noopener",
-    className: "mt-1 inline-flex items-center gap-1 text-xs text-white/60 hover:text-white"
-  }, "\xC9couter / voir ", /*#__PURE__*/React.createElement(ArrowUpRight, {
-    size: 12,
-    strokeWidth: 2
-  }))))))), /*#__PURE__*/React.createElement("section", {
-    className: "mt-24"
+    className: "pr-item-t"
+  }, a.e), lien(a.u, "Écouter / voir"))))))), /*#__PURE__*/React.createElement("section", {
+    className: "pr-sec pr-sun"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-in"
   }, /*#__PURE__*/React.createElement(PressHeading, {
     eyebrow: "Radio, t\xE9l\xE9vision, podcast"
   }, "Les rendez-vous audiovisuels"), /*#__PURE__*/React.createElement("p", {
-    className: "-mt-2 mb-6 text-white/70 font-body font-light text-base md:text-lg leading-relaxed max-w-3xl"
+    className: "pr-lede pr-lede-s"
   }, data.av.lede), /*#__PURE__*/React.createElement("div", {
-    className: "grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+    className: "pr-av"
   }, data.av.items.map((a, i) => {
     const h = pHost(a.u);
     return /*#__PURE__*/React.createElement("div", {
       key: i,
-      className: "liquid-glass rounded-2xl p-5 flex flex-col gap-1.5"
+      className: "pr-av-it"
     }, /*#__PURE__*/React.createElement("span", {
-      className: "font-mono text-[11px] uppercase tracking-[0.12em] text-white/45 leading-snug"
+      className: "ch-mono pr-k"
     }, a.k), /*#__PURE__*/React.createElement("span", {
-      className: "flex items-center gap-2 font-heading italic text-xl text-white leading-tight"
+      className: "pr-item-m"
     }, h && /*#__PURE__*/React.createElement(PressBadge, {
       name: a.m,
       cat: "Radio & t\xE9l\xE9 (sites)",
       domain: h
     }), a.m), /*#__PURE__*/React.createElement("span", {
-      className: "text-white/60 text-sm font-body font-light leading-snug"
-    }, a.e), a.u && /*#__PURE__*/React.createElement("a", {
-      href: a.u,
-      target: "_blank",
-      rel: "noopener",
-      className: "mt-auto pt-1 inline-flex items-center gap-1 text-xs text-white/60 hover:text-white"
-    }, "Source ", /*#__PURE__*/React.createElement(ArrowUpRight, {
-      size: 12,
-      strokeWidth: 2
-    })));
-  }))), /*#__PURE__*/React.createElement("section", {
-    className: "mt-24"
+      className: "pr-item-t"
+    }, a.e), lien(a.u, "Source"));
+  })))), /*#__PURE__*/React.createElement("section", {
+    className: "pr-sec pr-night"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-in"
   }, /*#__PURE__*/React.createElement(PressHeading, {
     eyebrow: "Index"
   }, "Toutes les r\xE9f\xE9rences"), /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-wrap gap-3"
+    className: "pr-filters"
   }, /*#__PURE__*/React.createElement("input", {
     type: "search",
+    id: "pr-q",
     value: q,
     onChange: e => setQ(e.target.value),
     placeholder: "Chercher un titre, un m\xE9dia\u2026",
-    "aria-label": "Chercher",
-    className: "flex-1 min-w-[14rem] rounded-full bg-white/5 border border-white/10 px-5 py-2.5 text-sm text-white font-body placeholder:text-white/40 focus:outline-none focus:border-white/30"
+    "aria-label": "Chercher"
   }), /*#__PURE__*/React.createElement("select", {
+    id: "pr-y",
     value: fy,
     onChange: e => setFy(e.target.value),
-    "aria-label": "Ann\xE9e",
-    className: "rounded-full bg-[#0b0d12] border border-white/10 px-4 py-2.5 text-sm text-white font-body focus:outline-none focus:border-white/30"
+    "aria-label": "Ann\xE9e"
   }, /*#__PURE__*/React.createElement("option", {
     value: ""
   }, "Toutes les ann\xE9es"), S.years.slice().reverse().map(y => /*#__PURE__*/React.createElement("option", {
     key: y
   }, y))), /*#__PURE__*/React.createElement("select", {
+    id: "pr-c",
     value: fc,
     onChange: e => setFc(e.target.value),
-    "aria-label": "Famille de m\xE9dias",
-    className: "rounded-full bg-[#0b0d12] border border-white/10 px-4 py-2.5 text-sm text-white font-body focus:outline-none focus:border-white/30"
+    "aria-label": "Famille de m\xE9dias"
   }, /*#__PURE__*/React.createElement("option", {
     value: ""
   }, "Tous les m\xE9dias"), PRESS_CATS.map(c => /*#__PURE__*/React.createElement("option", {
     key: c
   }, c)))), /*#__PURE__*/React.createElement("div", {
-    className: "mt-3 font-mono text-xs text-white/50"
+    className: "pr-note"
   }, pFmt(rows.length), " r\xE9f\xE9rences"), /*#__PURE__*/React.createElement("div", {
-    className: "mt-3 liquid-glass rounded-3xl"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "max-h-[380px] overflow-y-auto"
+    className: "pr-box pr-index"
   }, rows.slice(0, 600).map((p, i) => /*#__PURE__*/React.createElement("div", {
     key: i,
-    className: "grid grid-cols-1 sm:grid-cols-[6rem_minmax(0,13rem)_minmax(0,1fr)] gap-x-4 gap-y-0.5 px-5 py-3 border-b border-white/5 text-sm font-body"
+    className: "pr-row"
   }, /*#__PURE__*/React.createElement("span", {
-    className: "font-mono text-xs text-white/45 tabular-nums sm:pt-0.5"
+    className: "pr-num"
   }, pDate(p.d)), /*#__PURE__*/React.createElement("span", {
-    className: "text-white/90 font-medium min-w-0"
+    className: "pr-row-s"
   }, src(p)), /*#__PURE__*/React.createElement("span", {
-    className: "text-white/65 font-light leading-snug"
+    className: "pr-item-t"
   }, p.t))), rows.length > 600 && /*#__PURE__*/React.createElement("div", {
-    className: "px-5 py-3 font-mono text-xs text-white/45"
-  }, "\u2026 affinez la recherche pour voir les ", pFmt(rows.length - 600), " autres."))))));
+    className: "pr-note"
+  }, "\u2026 affinez la recherche pour voir les ", pFmt(rows.length - 600), " autres."))))), /*#__PURE__*/React.createElement("section", {
+    id: "contact",
+    className: "pr-sec pr-black"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-in"
+  }, /*#__PURE__*/React.createElement(ContactContenu, null))));
 }
 
 // ---------- Article : Perplexity et le réseau Pravda (vue /ia/pravda-perplexity/) ----------
@@ -3913,7 +3994,9 @@ function HomeChapitres() {
     className: "ch-meta"
   }, /*#__PURE__*/React.createElement("span", null, "Chapitre 5 sur 5"), /*#__PURE__*/React.createElement("span", null, "tmflab.tech")), /*#__PURE__*/React.createElement("h2", {
     className: "ch-verb"
-  }, "Exp\xE9rimenter"), /*#__PURE__*/React.createElement("p", {
+  }, "Exp\xE9rimenter"), /*#__PURE__*/React.createElement("div", {
+    className: "ch-lab"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
     className: "ch-quote"
   }, "Je ne code pas. J'exp\xE9rimente."), /*#__PURE__*/React.createElement("p", {
     className: "ch-lede"
@@ -3928,47 +4011,29 @@ function HomeChapitres() {
   }, "ComploScore ", fleche), /*#__PURE__*/React.createElement("a", {
     className: "ch-btn",
     href: "/productions/super-propagateurs/"
-  }, "Super-propagateurs ", fleche))))), /*#__PURE__*/React.createElement("section", {
+  }, "Super-propagateurs ", fleche))), /*#__PURE__*/React.createElement("a", _extends({
+    className: "ch-shot",
+    href: LAB_URL
+  }, ext, {
+    "aria-label": "Ouvrir TMF Lab"
+  }), /*#__PURE__*/React.createElement("figure", {
+    style: {
+      margin: 0
+    }
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "/tmflab-accueil.jpg",
+    alt: "L'accueil de TMF Lab : un bureau d'ordinateur r\xE9tro, avec la fen\xEAtre \xAB Je ne code pas. J'exp\xE9rimente. \xBB",
+    width: "1200",
+    height: "750",
+    loading: "lazy"
+  }), /*#__PURE__*/React.createElement("figcaption", null, /*#__PURE__*/React.createElement("span", null, "tmflab.tech"), /*#__PURE__*/React.createElement("span", null, "Ouvrir \u2197")))))))), /*#__PURE__*/React.createElement("section", {
     id: "contact",
     className: "ch-ch"
   }, /*#__PURE__*/React.createElement("div", {
     className: "ch-card"
   }, /*#__PURE__*/React.createElement("div", {
     className: "ch-in"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "ch-meta"
-  }, /*#__PURE__*/React.createElement("span", null, "Contact"), /*#__PURE__*/React.createElement("span", null, "2026")), /*#__PURE__*/React.createElement("h2", {
-    className: "ch-verb"
-  }, "Parlons-en."), /*#__PURE__*/React.createElement("p", {
-    className: "ch-lede"
-  }, "Conf\xE9rences, interviews, conseil, collaborations \xE9ditoriales : \xE9crivez-moi. Je r\xE9ponds personnellement \xE0 chaque message."), /*#__PURE__*/React.createElement("div", {
-    className: "ch-act"
-  }, /*#__PURE__*/React.createElement(MailLink, {
-    className: "ch-btn"
-  }, "\xC9crivez-moi ", fleche), /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    className: "ch-btn",
-    onClick: openSolliciter
-  }, "Pr\xE9ciser ma demande ", fleche)), /*#__PURE__*/React.createElement("div", {
-    className: "ch-soc"
-  }, CH_SOCIAL.map(([l, h]) => /*#__PURE__*/React.createElement("a", {
-    key: l,
-    href: h,
-    target: "_blank",
-    rel: "noopener noreferrer"
-  }, l)), /*#__PURE__*/React.createElement("a", _extends({
-    href: SUBSTACK_HOME
-  }, ext), "Newsletter")), /*#__PURE__*/React.createElement("div", {
-    className: "ch-foot"
-  }, /*#__PURE__*/React.createElement("span", null, "\xA9 2026 Tristan Mend\xE8s France \u2014 vib\xE9cod\xE9 avec d\xE9contraction."), /*#__PURE__*/React.createElement("nav", {
-    "aria-label": "Pied de page"
-  }, /*#__PURE__*/React.createElement(NavLink, {
-    href: PRESS_PATH
-  }, "Revue de presse"), /*#__PURE__*/React.createElement("a", _extends({
-    href: SUBSTACK_URL
-  }, ext), "Newsletter"), /*#__PURE__*/React.createElement("a", _extends({
-    href: KOFI_URL
-  }, ext), "Me soutenir"), /*#__PURE__*/React.createElement(MailLink, null, "Contact"))))))), /*#__PURE__*/React.createElement("nav", {
+  }, /*#__PURE__*/React.createElement(ContactContenu, null))))), /*#__PURE__*/React.createElement("nav", {
     className: "ch-dock",
     "aria-label": "Chapitres"
   }, /*#__PURE__*/React.createElement("i", null), CH_DOCK.map(([id, l]) => /*#__PURE__*/React.createElement("button", {
@@ -4021,17 +4086,15 @@ function App() {
   }, []);
   return /*#__PURE__*/React.createElement("div", {
     className: "bg-black min-h-screen relative"
-  }, /*#__PURE__*/React.createElement("div", {
+  }, !(view === "presse" || view === "home" && ACCUEIL_CHAPITRES) && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: "aurora-blob blob-1",
     "aria-hidden": "true"
   }), /*#__PURE__*/React.createElement("div", {
     className: "aurora-blob blob-2",
     "aria-hidden": "true"
-  }), /*#__PURE__*/React.createElement(ScrollProgress, null), /*#__PURE__*/React.createElement(Navbar, {
+  })), /*#__PURE__*/React.createElement(ScrollProgress, null), /*#__PURE__*/React.createElement(Navbar, {
     view: view
-  }), /*#__PURE__*/React.createElement(Solliciter, null), view === "presse" ? /*#__PURE__*/React.createElement("div", {
-    className: "bg-black"
-  }, /*#__PURE__*/React.createElement(PressReview, null), /*#__PURE__*/React.createElement(CtaFooter, null)) : view === "productions" ? /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement(Solliciter, null), view === "presse" ? /*#__PURE__*/React.createElement(PressReview, null) : view === "productions" ? /*#__PURE__*/React.createElement("div", {
     className: "bg-black"
   }, /*#__PURE__*/React.createElement(ProductionsPage, null), /*#__PURE__*/React.createElement(CtaFooter, null)) : view === "pravda" ? /*#__PURE__*/React.createElement("div", {
     className: "bg-black"
