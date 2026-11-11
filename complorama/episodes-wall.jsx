@@ -1006,7 +1006,7 @@ function EpisodesWall() {
         gap: 16,
         flexWrap: 'wrap',
       }}>
-        <div style={{
+        <div className="ep-search" style={{
           flex: '1 1 260px',
           display: 'flex',
           alignItems: 'center',
@@ -1205,7 +1205,7 @@ function EpisodesWall() {
             fontSize: 10,
             letterSpacing: '0.2em',
             textTransform: 'uppercase',
-            color: 'rgba(243,239,230,0.42)',
+            color: 'rgba(243,239,230,0.6)',
           }}>
             complorama · le mur des épisodes
           </div>
@@ -1287,6 +1287,9 @@ function EpisodesWall() {
         .season-chips { scrollbar-width: none; }
         .season-chips::-webkit-scrollbar { display: none; }
         .season-chips button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+        /* Champ de recherche : le champ lui-même n'a pas de contour (outline:
+           none), c'est la pastille qui l'entoure qui montre le focus. */
+        .ep-search:focus-within { outline: 2px solid #fff; outline-offset: 2px; }
 
         /* Scroll-spy bar under the current season's chip. It lives inside the
            strip (so it scrolls with it on phones) in the 6px bottom padding. */
