@@ -341,6 +341,15 @@ const Menu = p => /*#__PURE__*/React.createElement(Icon, p, /*#__PURE__*/React.c
   x2: "20",
   y2: "16"
 }));
+const Mail = p => /*#__PURE__*/React.createElement(Icon, p, /*#__PURE__*/React.createElement("rect", {
+  x: "3",
+  y: "5",
+  width: "18",
+  height: "14",
+  rx: "2"
+}), /*#__PURE__*/React.createElement("polyline", {
+  points: "3 7 12 13 21 7"
+}));
 const X = p => /*#__PURE__*/React.createElement(Icon, p, /*#__PURE__*/React.createElement("line", {
   x1: "18",
   y1: "6",
@@ -662,27 +671,32 @@ function NavLink({
     onClick: go
   }, rest), children);
 }
+const NAV_VERRE = {
+  background: 'rgba(8,10,18,0.55)',
+  backdropFilter: 'blur(18px) saturate(140%)',
+  WebkitBackdropFilter: 'blur(18px) saturate(140%)'
+};
 function Navbar({
   view
 }) {
   const links = [{
-    l: "Accueil",
-    h: "/#top"
-  }, {
-    l: "À propos",
-    h: "/#apropos"
+    l: "Enquêtes",
+    h: "/#enqueter"
   }, {
     l: "Médias",
-    h: "/#projets"
+    h: "/#raconter"
+  }, {
+    l: "Cours & conférences",
+    h: "/#transmettre"
+  }, {
+    l: "Engagements",
+    h: "/#veiller"
+  }, {
+    l: "Labo",
+    h: "/#experimenter"
   }, {
     l: "Revue de presse",
     h: PRESS_PATH
-  }, {
-    l: "Newsletter",
-    h: "/#productions"
-  }, {
-    l: "Conférences",
-    h: "/#conferences"
   }];
   const [active, setActive] = React.useState(view === "home" ? "/#top" : VIEW_NAV[view] || "");
   const [menuOpen, setMenuOpen] = React.useState(false);
@@ -692,18 +706,9 @@ function Navbar({
       return;
     }
     setActive("/#top");
-    const ids = ["top", "projets", "productions", "conferences", "apropos", "contact"];
-    const sections = ids.map(id => document.getElementById(id)).filter(Boolean);
-    if (!sections.length) return;
-    const io = new IntersectionObserver(entries => {
-      const visible = entries.filter(e => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-      if (visible[0]) setActive("/#" + visible[0].target.id);
-    }, {
-      rootMargin: "-40% 0px -50% 0px",
-      threshold: [0, 0.1, 0.25, 0.5]
-    });
-    sections.forEach(s => io.observe(s));
-    return () => io.disconnect();
+    const onCh = e => setActive(e.detail || "/#top");
+    window.addEventListener("tmf:chapitre", onCh);
+    return () => window.removeEventListener("tmf:chapitre", onCh);
   }, [view]);
   return /*#__PURE__*/React.createElement("nav", {
     className: "fixed top-4 left-0 right-0 z-50 px-4 md:px-8 lg:px-16 py-3"
@@ -713,13 +718,15 @@ function Navbar({
     href: "/#top",
     className: "flex items-center gap-2"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "h-10 w-10 rounded-full liquid-glass-strong flex items-center justify-center"
+    className: "h-10 w-10 rounded-full flex items-center justify-center border border-white/10",
+    style: NAV_VERRE
   }, /*#__PURE__*/React.createElement(ArrowUp, {
     size: 18,
     strokeWidth: 2.2,
     className: "text-white"
   })), /*#__PURE__*/React.createElement("span", {
-    className: "hidden sm:inline font-heading italic text-xl text-white tracking-tight whitespace-nowrap"
+    className: "hidden sm:inline font-heading italic text-xl text-white tracking-tight whitespace-nowrap rounded-full px-3 py-1 border border-white/10",
+    style: NAV_VERRE
   }, "tristan.pro")), /*#__PURE__*/React.createElement("div", {
     className: "hidden md:flex items-center rounded-full px-1.5 py-1 border border-white/10",
     style: {
@@ -746,15 +753,23 @@ function Navbar({
         damping: 32
       }
     }));
-  }), /*#__PURE__*/React.createElement(MailLink, {
+  }), EMBED ? /*#__PURE__*/React.createElement(MailLink, {
     className: "ml-1 bg-white text-black rounded-full px-3.5 py-1.5 text-sm font-medium font-body flex items-center gap-1 hover:bg-white/90 transition-colors whitespace-nowrap"
   }, "Me contacter ", /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 14,
+    strokeWidth: 2
+  })) : /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: openSolliciter,
+    className: "ml-1 bg-white text-black rounded-full px-3.5 py-1.5 text-sm font-medium font-body flex items-center gap-1 hover:bg-white/90 transition-colors whitespace-nowrap"
+  }, "Me solliciter ", /*#__PURE__*/React.createElement(ArrowUpRight, {
     size: 14,
     strokeWidth: 2
   }))), /*#__PURE__*/React.createElement("button", {
     onClick: () => setMenuOpen(o => !o),
     "aria-label": menuOpen ? "Fermer le menu" : "Ouvrir le menu",
-    className: "md:hidden h-10 w-10 rounded-full liquid-glass flex items-center justify-center text-white"
+    className: "md:hidden h-10 w-10 rounded-full flex items-center justify-center text-white border border-white/10",
+    style: NAV_VERRE
   }, menuOpen ? /*#__PURE__*/React.createElement(X, {
     size: 18
   }) : /*#__PURE__*/React.createElement(Menu, {
@@ -775,9 +790,16 @@ function Navbar({
     href: h,
     onClick: () => setMenuOpen(false),
     className: "block px-4 py-2.5 rounded-2xl hover:bg-white/10 font-body text-base whitespace-nowrap " + (active === h ? "text-white bg-white/10" : "text-white/90")
-  }, l)), /*#__PURE__*/React.createElement(MailLink, {
+  }, l)), EMBED ? /*#__PURE__*/React.createElement(MailLink, {
     className: "block mt-1 px-4 py-2.5 rounded-2xl bg-white text-black font-medium font-body text-base text-center"
-  }, "Me contacter")));
+  }, "Me contacter") : /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: e => {
+      setMenuOpen(false);
+      openSolliciter(e);
+    },
+    className: "block w-full mt-1 px-4 py-2.5 rounded-2xl bg-white text-black font-medium font-body text-base text-center"
+  }, "Me solliciter")));
 }
 
 // ---------- Hero ----------
@@ -1733,15 +1755,15 @@ function CtaFooter() {
   }, "\xA9 2026 Tristan Mend\xE8s France \u2014 vib\xE9cod\xE9 avec d\xE9contraction."), /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-6"
   }, /*#__PURE__*/React.createElement(NavLink, {
-    href: "/#projets",
+    href: "/#raconter",
     className: "text-white/40 text-xs font-body hover:text-white/70"
-  }, "Projets"), /*#__PURE__*/React.createElement(NavLink, {
+  }, "M\xE9dias"), /*#__PURE__*/React.createElement(NavLink, {
     href: PRESS_PATH,
     className: "text-white/40 text-xs font-body hover:text-white/70"
   }, "Revue de presse"), /*#__PURE__*/React.createElement(NavLink, {
-    href: "/#apropos",
+    href: "/#top",
     className: "text-white/40 text-xs font-body hover:text-white/70"
-  }, "\xC0 propos"), /*#__PURE__*/React.createElement("a", {
+  }, "Accueil"), /*#__PURE__*/React.createElement("a", {
     href: SUBSTACK_URL,
     target: "_blank",
     rel: "noopener",
@@ -3340,6 +3362,609 @@ function ProductionsPage() {
 }
 
 // ---------- App ----------
+// ---------- Accueil « Chapitres » (refonte du 11/11/2026) ----------
+// Cinq verbes, un aplat de couleur par chapitre, qui s'empilent au défilement.
+// Styles : classes .ch-* et .sol-* dans le <style> d'index.html.
+// L'ancien accueil (Hero, StartSection, FeaturesChess…) reste dans ce fichier :
+// passer ACCUEIL_CHAPITRES à false le rétablit.
+const ACCUEIL_CHAPITRES = true;
+
+// « Me solliciter » : quatre demandes, chacune ouvre un mail avec le bon objet.
+const SOLLICITER = [{
+  k: "Conférence",
+  un: "Une conférence",
+  d: "Keynote, table ronde, masterclass",
+  s: "Demande de conférence"
+}, {
+  k: "Formation",
+  un: "Une formation",
+  d: "Entreprises, universités, administrations",
+  s: "Demande de formation"
+}, {
+  k: "Conseil",
+  un: "Du conseil",
+  d: "Un éclairage pour une direction ou une équipe",
+  s: "Demande de conseil"
+}, {
+  k: "Interview",
+  un: "Une interview",
+  d: "Presse, radio, télévision, podcast",
+  s: "Demande d'interview"
+}];
+const openSolliciter = e => {
+  if (e && e.preventDefault) e.preventDefault();
+  window.dispatchEvent(new CustomEvent("tmf:solliciter"));
+};
+
+// Bouton flottant + volet, montés une fois dans App (toutes les vues).
+function Solliciter() {
+  const [open, setOpen] = React.useState(false);
+  const [copie, setCopie] = React.useState(false);
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    const o = () => {
+      setCopie(false);
+      setOpen(true);
+    };
+    const k = e => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("tmf:solliciter", o);
+    window.addEventListener("keydown", k);
+    return () => {
+      window.removeEventListener("tmf:solliciter", o);
+      window.removeEventListener("keydown", k);
+    };
+  }, []);
+  React.useEffect(() => {
+    if (ref.current) ref.current.inert = !open;
+  }, [open]);
+  const copier = () => {
+    try {
+      navigator.clipboard.writeText(decodeMail()).then(() => setCopie(true)).catch(() => {});
+    } catch (e) {}
+  };
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "sol-fab" + (open ? " off" : ""),
+    onClick: openSolliciter
+  }, "Me solliciter"), /*#__PURE__*/React.createElement("div", {
+    ref: ref,
+    className: "sol-sheet" + (open ? " open" : ""),
+    role: "dialog",
+    "aria-modal": "true",
+    "aria-label": "Me solliciter",
+    onClick: e => {
+      if (e.target === e.currentTarget) setOpen(false);
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sol-p"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "sol-x",
+    "aria-label": "Fermer",
+    onClick: () => setOpen(false)
+  }, "\u2715"), /*#__PURE__*/React.createElement("h2", null, "Que puis-je faire pour vous ?"), SOLLICITER.map(x => /*#__PURE__*/React.createElement(MailLink, {
+    key: x.k,
+    subject: x.s
+  }, /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("b", null, x.un), /*#__PURE__*/React.createElement("small", null, x.d)), /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 18,
+    strokeWidth: 2
+  }))), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "sol-copy",
+    onClick: copier
+  }, copie ? "Adresse copiée" : "Ou copier mon adresse e-mail"))));
+}
+
+// Phrase affichée dans la capsule d'une lettre : le sujet plutôt que le titre.
+// Clé = fin de l'adresse Substack. Sans entrée ici, la capsule montre le
+// sous-titre de la lettre (champ « resume » de newsletter/dernieres.json).
+const LETTRES_SUJETS = {
+  "podcasts-la-porte-derobee-episode": {
+    theme: "Propagande russe",
+    sujet: "Plus de 75 émissions de médias d'État russes bannis de l'Union européenne restent en libre accès sur Apple Podcasts et Spotify France."
+  },
+  "europe-we-have-a-problem": {
+    theme: "IA chinoises",
+    sujet: "Des acteurs européens de l'IA, présentés comme une alternative souveraine, distribuent des modèles chinois. J'ai testé plus de 4 400 réponses sur les sujets sensibles pour Pékin."
+  },
+  "linternationale-musk": {
+    theme: "Extrême droite",
+    sujet: "Comment Elon Musk a fait de X l'accélérateur d'une bonne partie des extrêmes droites de la planète."
+  }
+};
+const LETTRES_DEFAUT = [{
+  url: "https://newsletter.tristan.pro/p/podcasts-la-porte-derobee-episode",
+  date: "2026-11-10",
+  img: "/newsletter/img/podcasts-la-porte-derobee-episode.jpg"
+}, {
+  url: "https://newsletter.tristan.pro/p/europe-we-have-a-problem",
+  date: "2026-11-07",
+  img: "/newsletter/img/europe-we-have-a-problem.jpg"
+}, {
+  url: "https://newsletter.tristan.pro/p/linternationale-musk",
+  date: "2026-11-06",
+  img: "/newsletter/img/linternationale-musk.jpg"
+}];
+const frDateCourte = d => {
+  try {
+    return new Date(d + "T12:00:00").toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    });
+  } catch (e) {
+    return d;
+  }
+};
+
+// Anciennes ancres de l'accueil (liens déjà diffusés) → nouveaux chapitres.
+const ANCRES_ANCIENNES = {
+  projets: "raconter",
+  productions: "enqueter",
+  conferences: "transmettre",
+  institutionnel: "veiller",
+  apropos: "top"
+};
+// Les chapitres sont « sticky » : leur position à l'écran ne dit pas où ils
+// commencent. On recalcule donc leur vraie place avant d'y défiler.
+function scrollToChapitre(id) {
+  const el = id && document.getElementById(id);
+  if (!el || !el.classList.contains("ch-ch")) return false;
+  const stack = el.parentElement;
+  let top = docTop(stack);
+  for (const c of stack.children) {
+    if (c === el) break;
+    top += c.offsetHeight;
+  }
+  window.scrollTo({
+    top: top + 1,
+    behavior: PREFERS_REDUCED_MOTION ? "auto" : "smooth"
+  });
+  return true;
+}
+const CH_DOCK = [["enqueter", "Enquêter"], ["raconter", "Raconter"], ["transmettre", "Transmettre"], ["veiller", "Veiller"], ["experimenter", "Labo"]];
+const CH_SOCIAL = [["LinkedIn", "http://www.linkedin.com/in/tristanmf"], ["X", "https://x.com/tristanmf"], ["Bluesky", "https://bsky.app/profile/tmf.bsky.social"], ["Instagram", "https://www.instagram.com/tristanmf/"], ["Threads", "https://www.threads.com/@tristanmf"], ["Facebook", "https://www.facebook.com/tristan.mendes.france"]];
+const CH_SAY = "Je travaille sur la façon dont le numérique transforme la société, la démocratie et les formes contemporaines de radicalité.";
+const CH_DOMAINES = ["Désinformation", "Complotisme", "IA génératives", "Extrémismes", "Géopolitique de l'information", "Cultures numériques"];
+function HomeChapitres() {
+  const ref = React.useRef(null);
+  const [lettres, setLettres] = React.useState(LETTRES_DEFAUT);
+  const [ep, setEp] = React.useState(null);
+  React.useEffect(() => {
+    fetch("/newsletter/dernieres.json").then(r => r.ok ? r.json() : null).then(d => d && d.lettres && d.lettres.length && setLettres(d.lettres.slice(0, 3))).catch(() => {});
+    fetch("/complorama/dernier.json").then(r => r.ok ? r.json() : null).then(d => d && setEp(d)).catch(() => {});
+  }, []);
+  React.useEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+    const stack = root.querySelector(".ch-stack");
+    const chs = [...stack.children];
+    const cards = chs.map(c => c.firstElementChild);
+    const verbs = [...root.querySelectorAll(".ch-verb")];
+    const words = [...root.querySelectorAll(".ch-say span")];
+    const dock = root.querySelector(".ch-dock");
+    const dbtns = [...dock.querySelectorAll("button[data-ch]")];
+    const ind = dock.querySelector("i");
+    const html = document.documentElement;
+    let tops = [],
+      vh = 0,
+      raf = null,
+      cur = -2;
+    html.classList.add("ch-home");
+    const fit = v => {
+      v.style.fontSize = "";
+      const w = v.clientWidth,
+        n = v.scrollWidth;
+      if (n > w + 1) v.style.fontSize = parseFloat(getComputedStyle(v).fontSize) * w / n * 0.985 + "px";
+    };
+    const measure = () => {
+      vh = window.innerHeight || 1;
+      verbs.forEach(fit);
+      let acc = docTop(stack);
+      chs.forEach((c, i) => {
+        const h = c.offsetHeight;
+        tops[i] = acc;
+        acc += h;
+        // Un chapitre plus haut que l'écran défile en entier avant de se figer.
+        c.style.top = Math.min(0, vh - h) + "px";
+      });
+    };
+    const frame = () => {
+      raf = null;
+      const y = window.scrollY || 0;
+      const docked = y > vh * 0.35 && y < tops[tops.length - 1] - vh * 0.4;
+      dock.classList.toggle("on", docked);
+      html.classList.toggle("ch-docked", docked);
+      const k = Math.min(1, 0.25 + y / (vh * 0.45)),
+        n = Math.ceil(words.length * k);
+      words.forEach((w, i) => w.classList.toggle("lit", PREFERS_REDUCED_MOTION || i < n));
+      let active = -1;
+      chs.forEach((c, i) => {
+        if (y >= tops[i] - vh * 0.5) active = i;
+        if (PREFERS_REDUCED_MOTION) return;
+        const nx = tops[i + 1];
+        const cov = nx === undefined ? 0 : Math.max(0, Math.min(1, (y + vh - nx) / vh));
+        cards[i].style.transform = cov ? "scale(" + (1 - cov * 0.06).toFixed(4) + ")" : "";
+        cards[i].style.setProperty("--cov", (cov * 0.4).toFixed(3));
+      });
+      if (active !== cur) {
+        cur = active;
+        dbtns.forEach((b, i) => b.classList.toggle("cur", i === active));
+        const b = dbtns[active];
+        if (b) {
+          ind.style.width = b.offsetWidth + "px";
+          ind.style.transform = "translateX(" + b.offsetLeft + "px)";
+        } else ind.style.width = "0px";
+        window.dispatchEvent(new CustomEvent("tmf:chapitre", {
+          detail: active < 0 ? "/#top" : "/#" + chs[active].id
+        }));
+      }
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(frame);
+    };
+    const redo = () => {
+      measure();
+      cur = -2;
+      frame();
+    };
+
+    // Apparitions : seulement pour ce qui est sous l'écran au chargement.
+    let io = null;
+    if (!PREFERS_REDUCED_MOTION && "IntersectionObserver" in window) {
+      io = new IntersectionObserver(es => es.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.remove("wait");
+          io.unobserve(e.target);
+        }
+      }), {
+        rootMargin: "0px 0px -8% 0px"
+      });
+      root.querySelectorAll(".ch-rv").forEach(el => {
+        if (el.getBoundingClientRect().top > window.innerHeight * 0.92) {
+          el.classList.add("wait");
+          io.observe(el);
+        }
+      });
+    }
+    redo();
+    const ro = "ResizeObserver" in window ? new ResizeObserver(redo) : null;
+    if (ro) ro.observe(root);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(redo);
+    window.addEventListener("scroll", onScroll, {
+      passive: true
+    });
+    window.addEventListener("resize", redo, {
+      passive: true
+    });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", redo);
+      if (ro) ro.disconnect();
+      if (io) io.disconnect();
+      if (raf) cancelAnimationFrame(raf);
+      html.classList.remove("ch-docked", "ch-home");
+    };
+  }, []);
+  const ext = {
+    target: "_blank",
+    rel: "noopener"
+  };
+  const fleche = /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 14,
+    strokeWidth: 2
+  });
+  const marq = CH_DOMAINES.concat(CH_DOMAINES);
+  return /*#__PURE__*/React.createElement("main", {
+    ref: ref,
+    className: "ch"
+  }, /*#__PURE__*/React.createElement("section", {
+    id: "top",
+    className: "ch-hero"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-top"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "/profile.jpg",
+    alt: "Tristan Mend\xE8s France",
+    width: "44",
+    height: "44"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "ch-mono"
+  }, "Journalisme \xB7 cultures num\xE9riques", /*#__PURE__*/React.createElement("br", null), "Complotisme & radicalit\xE9s en ligne")), /*#__PURE__*/React.createElement("h1", {
+    className: "ch-h1",
+    "aria-label": "Tristan Mend\xE8s France"
+  }, /*#__PURE__*/React.createElement("span", null, "Tristan"), /*#__PURE__*/React.createElement("span", null, "Mend\xE8s"), /*#__PURE__*/React.createElement("span", null, "France")), /*#__PURE__*/React.createElement("p", {
+    className: "ch-say"
+  }, CH_SAY.split(" ").map((w, i) => /*#__PURE__*/React.createElement(React.Fragment, {
+    key: i
+  }, /*#__PURE__*/React.createElement("span", null, w), " "))), /*#__PURE__*/React.createElement("section", {
+    className: "ch-ask",
+    "aria-label": "Me solliciter"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-ask-h"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "ch-mono"
+  }, "Me solliciter"), /*#__PURE__*/React.createElement("h2", null, "Une conf\xE9rence, une formation, un conseil, une interview\xA0?")), /*#__PURE__*/React.createElement("div", {
+    className: "ch-ask-g"
+  }, SOLLICITER.map(x => /*#__PURE__*/React.createElement(MailLink, {
+    key: x.k,
+    subject: x.s,
+    className: "ch-ask-t"
+  }, /*#__PURE__*/React.createElement("b", null, x.k), /*#__PURE__*/React.createElement("small", null, x.d), /*#__PURE__*/React.createElement(ArrowUpRight, {
+    size: 18,
+    strokeWidth: 2
+  }))))), /*#__PURE__*/React.createElement(NavLink, {
+    href: PRESS_PATH,
+    className: "ch-proof"
+  }, /*#__PURE__*/React.createElement("b", null, "1 700+ articles"), " dans 360 m\xE9dias", /*#__PURE__*/React.createElement("span", null, "Voir la revue de presse ", fleche))), /*#__PURE__*/React.createElement("div", {
+    className: "ch-marq",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("div", null, marq.map((d, i) => /*#__PURE__*/React.createElement(React.Fragment, {
+    key: i
+  }, /*#__PURE__*/React.createElement("span", null, d), /*#__PURE__*/React.createElement("i", null, "\u2733")))))), /*#__PURE__*/React.createElement("div", {
+    className: "ch-stack"
+  }, /*#__PURE__*/React.createElement("section", {
+    id: "enqueter",
+    className: "ch-ch"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-card"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-meta"
+  }, /*#__PURE__*/React.createElement("span", null, "Chapitre 1 sur 5"), /*#__PURE__*/React.createElement("span", null, "Newsletter")), /*#__PURE__*/React.createElement("h2", {
+    className: "ch-verb"
+  }, "Enqu\xEAter"), /*#__PURE__*/React.createElement("p", {
+    className: "ch-lede"
+  }, "\xAB ", NEWSLETTER_NOM, " \xBB\xA0: mes enqu\xEAtes sur les IA, les plateformes et ceux qui les manipulent."), /*#__PURE__*/React.createElement("div", {
+    className: "ch-grid"
+  }, lettres.map(l => {
+    const cle = (l.url || "").split("/p/")[1] || "";
+    const s = LETTRES_SUJETS[cle] || {
+      theme: "Enquête",
+      sujet: l.resume || l.titre
+    };
+    return /*#__PURE__*/React.createElement("a", _extends({
+      key: l.url,
+      href: l.url
+    }, ext, {
+      className: "ch-it ch-rv"
+    }), l.img ? /*#__PURE__*/React.createElement("img", {
+      className: "ch-pic",
+      src: l.img,
+      alt: "",
+      loading: "lazy"
+    }) : /*#__PURE__*/React.createElement("span", null), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+      className: "ch-mono"
+    }, s.theme, " \xB7 ", frDateCourte(l.date)), /*#__PURE__*/React.createElement("h3", {
+      className: "sub"
+    }, s.sujet)));
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "ch-act"
+  }, /*#__PURE__*/React.createElement("a", _extends({
+    className: "ch-btn",
+    href: SUBSTACK_URL
+  }, ext), "S'abonner \xE0 la newsletter ", fleche))))), /*#__PURE__*/React.createElement("section", {
+    id: "raconter",
+    className: "ch-ch"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-card"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-meta"
+  }, /*#__PURE__*/React.createElement("span", null, "Chapitre 2 sur 5"), /*#__PURE__*/React.createElement("span", null, "Radio \xB7 t\xE9l\xE9 \xB7 podcast")), /*#__PURE__*/React.createElement("h2", {
+    className: "ch-verb"
+  }, "Raconter"), /*#__PURE__*/React.createElement("p", {
+    className: "ch-lede"
+  }, "\xC0 l'antenne depuis 2020, pour d\xE9crypter le complotisme et la d\xE9sinformation devant le grand public."), /*#__PURE__*/React.createElement("div", {
+    className: "ch-grid"
+  }, /*#__PURE__*/React.createElement("a", {
+    className: "ch-it ch-rv",
+    href: "/complorama/"
+  }, /*#__PURE__*/React.createElement("img", {
+    className: "ch-pic",
+    src: ep && ep.img || "/complorama.jpg",
+    alt: "",
+    loading: "lazy"
+  }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "ch-mono"
+  }, "France Info \xB7 en cours"), /*#__PURE__*/React.createElement("h3", null, "Complorama"), /*#__PURE__*/React.createElement("p", null, "Le podcast que je coproduis et coanime. ", ep && ep.n ? "Les " + ep.n + " épisodes sont" : "Tous les épisodes sont", " \xE0 \xE9couter et \xE0 interroger sur le mur.", ep && ep.title ? " Dernier en date : « " + ep.title + " »." : ""))), /*#__PURE__*/React.createElement("a", _extends({
+    className: "ch-it ch-rv",
+    href: "https://www.tf1info.fr/emissions/lci/verificateurs-14293/"
+  }, ext), /*#__PURE__*/React.createElement("img", {
+    className: "ch-pic",
+    src: "/lci.jpg",
+    alt: "",
+    loading: "lazy"
+  }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "ch-mono"
+  }, "LCI \xB7 2025-2026"), /*#__PURE__*/React.createElement("h3", null, "Les V\xE9rificateurs"), /*#__PURE__*/React.createElement("p", null, "Consultant hebdomadaire : v\xE9rifier l'info en direct et d\xE9construire la d\xE9sinformation."))), /*#__PURE__*/React.createElement("a", _extends({
+    className: "ch-it ch-rv",
+    href: "https://www.radiofrance.fr/franceinter/podcasts/antidote"
+  }, ext), /*#__PURE__*/React.createElement("img", {
+    className: "ch-pic",
+    src: "/antidote.jpg",
+    alt: "",
+    loading: "lazy"
+  }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "ch-mono"
+  }, "France Inter \xB7 2020-2022"), /*#__PURE__*/React.createElement("h3", null, "Antidote"), /*#__PURE__*/React.createElement("p", null, "Chroniqueur de la matinale : chaque semaine, les soubresauts de la complosph\xE8re."))))))), /*#__PURE__*/React.createElement("section", {
+    id: "transmettre",
+    className: "ch-ch"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-card"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-meta"
+  }, /*#__PURE__*/React.createElement("span", null, "Chapitre 3 sur 5"), /*#__PURE__*/React.createElement("span", null, "Cours \xB7 livres \xB7 conf\xE9rences")), /*#__PURE__*/React.createElement("h2", {
+    className: "ch-verb"
+  }, "Transmettre"), /*#__PURE__*/React.createElement("p", {
+    className: "ch-lede"
+  }, "J'enseigne les cultures num\xE9riques en master, j'\xE9cris et j'interviens en conf\xE9rence."), /*#__PURE__*/React.createElement("div", {
+    className: "ch-grid"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-it np ch-rv"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "ch-mono"
+  }, "Universit\xE9 Paris Cit\xE9"), /*#__PURE__*/React.createElement("h3", null, "Ma\xEEtre de conf\xE9rences associ\xE9"), /*#__PURE__*/React.createElement("p", null, "Cultures num\xE9riques, d\xE9sinformation, complotisme, IA."))), /*#__PURE__*/React.createElement("div", {
+    className: "ch-it np ch-rv"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "ch-mono"
+  }, "CELSA"), /*#__PURE__*/React.createElement("h3", null, "Enseignant"), /*#__PURE__*/React.createElement("p", null, "Master, cultures num\xE9riques."))), /*#__PURE__*/React.createElement("a", _extends({
+    className: "ch-it rowy ch-rv",
+    href: "https://rdv-histoire.com/programme/les-faussaires-de-la-nation-comment-lextreme-droite-defigure-lhistoire"
+  }, ext), /*#__PURE__*/React.createElement("img", {
+    className: "ch-pic",
+    src: "/faussaires.jpg",
+    alt: "",
+    loading: "lazy"
+  }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "ch-mono"
+  }, "Livre collectif \xB7 Philippe Rey \xB7 2026"), /*#__PURE__*/React.createElement("h3", null, "Les Faussaires de la nation"))), /*#__PURE__*/React.createElement("a", _extends({
+    className: "ch-it rowy ch-rv",
+    href: "https://www.cnrseditions.fr/catalogue/societe/internet/"
+  }, ext), /*#__PURE__*/React.createElement("img", {
+    className: "ch-pic",
+    src: "/infographie.jpg",
+    alt: "",
+    loading: "lazy"
+  }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "ch-mono"
+  }, "Livre \xB7 CNRS \xC9ditions"), /*#__PURE__*/React.createElement("h3", null, "Internet, une infographie"))), /*#__PURE__*/React.createElement(MailLink, {
+    subject: "Demande de conf\xE9rence",
+    className: "ch-it np wide2 ch-rv"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "ch-mono"
+  }, "Conf\xE9rences"), /*#__PURE__*/React.createElement("h3", null, "Keynotes, masterclass, formations"), /*#__PURE__*/React.createElement("p", null, "Radicalit\xE9s en ligne, d\xE9sinformation, IA g\xE9n\xE9ratives, cultures num\xE9riques.")))), /*#__PURE__*/React.createElement("div", {
+    className: "ch-act"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "ch-btn",
+    onClick: openSolliciter
+  }, "R\xE9server une intervention ", fleche))))), /*#__PURE__*/React.createElement("section", {
+    id: "veiller",
+    className: "ch-ch"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-card"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-meta"
+  }, /*#__PURE__*/React.createElement("span", null, "Chapitre 4 sur 5"), /*#__PURE__*/React.createElement("span", null, "Engagements")), /*#__PURE__*/React.createElement("h2", {
+    className: "ch-verb"
+  }, "Veiller"), /*#__PURE__*/React.createElement("p", {
+    className: "ch-lede"
+  }, "Deux engagements au long cours, pour documenter le complotisme et garantir l'ind\xE9pendance de l'information."), /*#__PURE__*/React.createElement("div", {
+    className: "ch-grid two"
+  }, /*#__PURE__*/React.createElement("a", _extends({
+    className: "ch-it ch-rv",
+    href: "https://www.conspiracywatch.info"
+  }, ext), /*#__PURE__*/React.createElement("img", {
+    className: "ch-pic",
+    src: "/conspiracywatch.jpg",
+    alt: "",
+    loading: "lazy"
+  }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "ch-mono"
+  }, "Observatoire du conspirationnisme"), /*#__PURE__*/React.createElement("h3", null, "Conspiracy Watch"), /*#__PURE__*/React.createElement("p", null, "Collaborateur et expert."))), /*#__PURE__*/React.createElement("a", _extends({
+    className: "ch-it ch-rv",
+    href: "https://www.francemediasmonde.com/fr/nos-engagements/deontologie/"
+  }, ext), /*#__PURE__*/React.createElement("img", {
+    className: "ch-pic",
+    src: "/france-medias-monde.jpg",
+    alt: "",
+    loading: "lazy"
+  }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "ch-mono"
+  }, "France M\xE9dias Monde"), /*#__PURE__*/React.createElement("h3", null, "CHIPIP"), /*#__PURE__*/React.createElement("p", null, "Membre du comit\xE9 d'ind\xE9pendance et d'int\xE9grit\xE9."))))))), /*#__PURE__*/React.createElement("section", {
+    id: "experimenter",
+    className: "ch-ch"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-card"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-meta"
+  }, /*#__PURE__*/React.createElement("span", null, "Chapitre 5 sur 5"), /*#__PURE__*/React.createElement("span", null, "tmflab.tech")), /*#__PURE__*/React.createElement("h2", {
+    className: "ch-verb"
+  }, "Exp\xE9rimenter"), /*#__PURE__*/React.createElement("p", {
+    className: "ch-quote"
+  }, "Je ne code pas. J'exp\xE9rimente."), /*#__PURE__*/React.createElement("p", {
+    className: "ch-lede"
+  }, "TMF Lab : ce que je fabrique avec les IA. Une carte mondiale du complotisme, une simulation 3D des super-propagateurs, des outils vid\xE9o."), /*#__PURE__*/React.createElement("div", {
+    className: "ch-act"
+  }, /*#__PURE__*/React.createElement("a", _extends({
+    className: "ch-btn",
+    href: LAB_URL
+  }, ext), "Entrer dans le labo ", fleche), /*#__PURE__*/React.createElement("a", {
+    className: "ch-btn",
+    href: "/carte-complotisme/"
+  }, "ComploScore ", fleche), /*#__PURE__*/React.createElement("a", {
+    className: "ch-btn",
+    href: "/productions/super-propagateurs/"
+  }, "Super-propagateurs ", fleche))))), /*#__PURE__*/React.createElement("section", {
+    id: "contact",
+    className: "ch-ch"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-card"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-in"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-meta"
+  }, /*#__PURE__*/React.createElement("span", null, "Contact"), /*#__PURE__*/React.createElement("span", null, "2026")), /*#__PURE__*/React.createElement("h2", {
+    className: "ch-verb"
+  }, "Parlons-en."), /*#__PURE__*/React.createElement("p", {
+    className: "ch-lede"
+  }, "Conf\xE9rences, interviews, conseil, collaborations \xE9ditoriales : \xE9crivez-moi. Je r\xE9ponds personnellement \xE0 chaque message."), /*#__PURE__*/React.createElement("div", {
+    className: "ch-act"
+  }, /*#__PURE__*/React.createElement(MailLink, {
+    className: "ch-btn"
+  }, "\xC9crivez-moi ", fleche), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "ch-btn",
+    onClick: openSolliciter
+  }, "Pr\xE9ciser ma demande ", fleche)), /*#__PURE__*/React.createElement("div", {
+    className: "ch-soc"
+  }, CH_SOCIAL.map(([l, h]) => /*#__PURE__*/React.createElement("a", {
+    key: l,
+    href: h,
+    target: "_blank",
+    rel: "noopener noreferrer"
+  }, l)), /*#__PURE__*/React.createElement("a", _extends({
+    href: SUBSTACK_HOME
+  }, ext), "Newsletter")), /*#__PURE__*/React.createElement("div", {
+    className: "ch-foot"
+  }, /*#__PURE__*/React.createElement("span", null, "\xA9 2026 Tristan Mend\xE8s France \u2014 vib\xE9cod\xE9 avec d\xE9contraction."), /*#__PURE__*/React.createElement("nav", {
+    "aria-label": "Pied de page"
+  }, /*#__PURE__*/React.createElement(NavLink, {
+    href: PRESS_PATH
+  }, "Revue de presse"), /*#__PURE__*/React.createElement("a", _extends({
+    href: SUBSTACK_URL
+  }, ext), "Newsletter"), /*#__PURE__*/React.createElement("a", _extends({
+    href: KOFI_URL
+  }, ext), "Me soutenir"), /*#__PURE__*/React.createElement(MailLink, null, "Contact"))))))), /*#__PURE__*/React.createElement("nav", {
+    className: "ch-dock",
+    "aria-label": "Chapitres"
+  }, /*#__PURE__*/React.createElement("i", null), CH_DOCK.map(([id, l]) => /*#__PURE__*/React.createElement("button", {
+    key: id,
+    type: "button",
+    "data-ch": id,
+    onClick: () => scrollToChapitre(id)
+  }, l)), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "ch-dock-sol",
+    "aria-label": "Me solliciter",
+    onClick: openSolliciter
+  }, /*#__PURE__*/React.createElement(Mail, {
+    size: 16
+  }))));
+}
 function App() {
   const [view, setView] = React.useState(viewFromPath);
   React.useEffect(() => {
@@ -3350,7 +3975,10 @@ function App() {
       setView(v);
       document.title = VIEW_TITLES[v] || HOME_TITLE;
       requestAnimationFrame(() => requestAnimationFrame(() => {
-        const el = hash && document.getElementById(hash.slice(1));
+        let id = hash ? hash.slice(1) : "";
+        if (v === "home" && ACCUEIL_CHAPITRES && ANCRES_ANCIENNES[id]) id = ANCRES_ANCIENNES[id];
+        if (v === "home" && scrollToChapitre(id)) return;
+        const el = id && document.getElementById(id);
         if (el) el.scrollIntoView({
           behavior: "smooth",
           block: "start"
@@ -3363,6 +3991,9 @@ function App() {
     const onPop = () => apply(location.hash);
     window.addEventListener("tmf:navigate", onNav);
     window.addEventListener("popstate", onPop);
+    // Arrivée directe sur tristan.pro/#contact, #transmettre… : la page n'existe
+    // pas encore quand le navigateur cherche l'ancre, on y défile une fois montée.
+    if (location.hash.length > 1) setTimeout(() => apply(location.hash), 350);
     return () => {
       window.removeEventListener("tmf:navigate", onNav);
       window.removeEventListener("popstate", onPop);
@@ -3378,7 +4009,7 @@ function App() {
     "aria-hidden": "true"
   }), /*#__PURE__*/React.createElement(ScrollProgress, null), /*#__PURE__*/React.createElement(Navbar, {
     view: view
-  }), view === "presse" ? /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement(Solliciter, null), view === "presse" ? /*#__PURE__*/React.createElement("div", {
     className: "bg-black"
   }, /*#__PURE__*/React.createElement(PressReview, null), /*#__PURE__*/React.createElement(CtaFooter, null)) : view === "productions" ? /*#__PURE__*/React.createElement("div", {
     className: "bg-black"
@@ -3386,7 +4017,7 @@ function App() {
     className: "bg-black"
   }, /*#__PURE__*/React.createElement(PravdaArticle, null), /*#__PURE__*/React.createElement(CtaFooter, null)) : view === "sante" ? /*#__PURE__*/React.createElement("div", {
     className: "bg-black"
-  }, /*#__PURE__*/React.createElement(SanteArticle, null), /*#__PURE__*/React.createElement(CtaFooter, null)) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Hero, null), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement(SanteArticle, null), /*#__PURE__*/React.createElement(CtaFooter, null)) : ACCUEIL_CHAPITRES ? /*#__PURE__*/React.createElement(HomeChapitres, null) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Hero, null), /*#__PURE__*/React.createElement("div", {
     className: "bg-black"
   }, /*#__PURE__*/React.createElement(StartSection, null), /*#__PURE__*/React.createElement(FeaturesChess, null), /*#__PURE__*/React.createElement(FeaturesGrid, null), /*#__PURE__*/React.createElement(Testimonials, null), /*#__PURE__*/React.createElement(Conferencier, null), /*#__PURE__*/React.createElement("section", {
     className: "relative z-10 px-6 md:px-12 lg:px-24 pt-16",
