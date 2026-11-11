@@ -3562,6 +3562,7 @@ function HomeChapitres() {
     const cards = chs.map(c => c.firstElementChild);
     const verbs = [...root.querySelectorAll(".ch-verb")];
     const words = [...root.querySelectorAll(".ch-say span")];
+    const marqT = root.querySelector(".ch-marq-t");
     const dock = root.querySelector(".ch-dock");
     const dbtns = [...dock.querySelectorAll("button[data-ch]")];
     const ind = dock.querySelector("i");
@@ -3592,6 +3593,7 @@ function HomeChapitres() {
     const frame = () => {
       raf = null;
       const y = window.scrollY || 0;
+      if (marqT) marqT.style.transform = "translate3d(" + (-Math.min(400, y * 0.3)).toFixed(1) + "px,0,0)";
       const docked = y > vh * 0.35 && y < tops[tops.length - 1] - vh * 0.4;
       dock.classList.toggle("on", docked);
       html.classList.toggle("ch-docked", docked);
@@ -3674,7 +3676,7 @@ function HomeChapitres() {
     size: 14,
     strokeWidth: 2
   });
-  const marq = CH_DOMAINES.concat(CH_DOMAINES);
+  const marq = CH_DOMAINES.concat(CH_DOMAINES, CH_DOMAINES, CH_DOMAINES);
   return /*#__PURE__*/React.createElement("main", {
     ref: ref,
     className: "ch"
@@ -3721,9 +3723,11 @@ function HomeChapitres() {
   }, /*#__PURE__*/React.createElement("b", null, "1 700+ articles"), " dans 360 m\xE9dias", /*#__PURE__*/React.createElement("span", null, "Voir la revue de presse ", fleche))), /*#__PURE__*/React.createElement("div", {
     className: "ch-marq",
     "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ch-marq-t"
   }, /*#__PURE__*/React.createElement("div", null, marq.map((d, i) => /*#__PURE__*/React.createElement(React.Fragment, {
     key: i
-  }, /*#__PURE__*/React.createElement("span", null, d), /*#__PURE__*/React.createElement("i", null, "\u2733")))))), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("span", null, d), /*#__PURE__*/React.createElement("i", null))))))), /*#__PURE__*/React.createElement("div", {
     className: "ch-stack"
   }, /*#__PURE__*/React.createElement("section", {
     id: "enqueter",
