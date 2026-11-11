@@ -607,13 +607,13 @@ sympa, raccord et propre », y compris pour les projets hébergés ailleurs.
 - **Nouvel article** = une entrée dans `apercus.json` (modèle `article`), le rendu, et
   `image` dans `PAGES`. À faire **avant** le premier partage : les réseaux gardent en cache le
   premier aperçu vu.
-- **Icône d'onglet = le logo « t. »** (11 novembre 2026, choix de Tristan) : « t » blanc, point bleu
-  `#5b8cff`, fond `#07080a`. `favicon.svg` (dessin vectoriel, sans police), `favicon.png` (96 px) et
-  `apple-touch-icon.png` (180 px). C'est le logo du site ; TMF Lab garde le même « t. » avec un point
-  orange. **Le portrait reste** sur la page et dans les aperçus de partage. Dans la barre de
-  navigation, le « t. » remplace la flèche du rond de gauche (composant `LogoT` dans `app.jsx`,
-  11 novembre 2026), suivi de « tristan.pro ».
-  Anciennes icônes au portrait : dans l'historique Git. `og-image.jpg` n'est plus utilisée.
+- **Logo du site = le « t. » de TMF Lab** (11 novembre 2026, choix de Tristan) : exactement le même
+  « t. » que le labo (Space Grotesk gras, contour extrait de la police et dessiné en vectoriel, donc
+  sans charger la police), **point bleu `#5b8cff`** ici, point orange au labo. Jamais d'italique ni
+  de graisse fine pour ce logo. Fichiers : `favicon.svg`, `favicon.png` (96 px),
+  `apple-touch-icon.png` (180 px), fond `#07080a`. Dans la barre de navigation : composant `LogoT`
+  (`app.jsx`) dans le rond de gauche, suivi de « tristan.pro » en caractères droits. **Le portrait
+  reste** sur la page et dans les aperçus de partage. Anciennes icônes : historique Git.
 
 ## Productions, bouton « Nouveau », dernier Complorama (17 octobre 2026)
 
