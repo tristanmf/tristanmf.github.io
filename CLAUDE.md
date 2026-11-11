@@ -519,6 +519,14 @@ Vérifié en ligne le jour même : six chapitres, police chargée, aucun domaine
   serveur d'aperçu de l'app Claude ne lit pas `~/Documents` : servir une copie du dépôt depuis le
   dossier temporaire. Ne pas commiter l'`app.js` compilé à la main, le workflow s'en charge.
 
+- **Revue de presse dans le même langage** (11/11/2026, demande de Tristan) : `PressReview` en
+  aplats successifs (nuit, ivoire, cobalt, jaune, nuit), titres Unbounded, cartes à contour,
+  classes `.pr-*`. Pied commun `ContactContenu` (accueil et presse). Plus d'aurora sur ces deux vues.
+  **Piège** : `presse/index.html` est une copie générée d'`index.html` ; pour un aperçu local, la
+  recopier à la main, sinon la page s'affiche sans ses styles.
+- **Capture de TMF Lab** dans « Expérimenter » : `tmflab-accueil.jpg` (1200 × 750, accueil de
+  tmflab.tech pris au navigateur sans interface). À refaire si l'accueil du labo change beaucoup.
+
 ## Structure de la page (ordre réel dans `App`)
 
 1. **Hero** `#top` — vidéo `hero.mp4`, titre, boutons, réseaux, indicateur « Défiler ».
