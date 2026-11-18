@@ -1,6 +1,13 @@
 {
   "lettres": [
     {
+      "titre": "Podcasts : la porte dérobée, épisode 2",
+      "resume": "La radicalité a trouvé son support : le podcast",
+      "date": "2026-11-17",
+      "url": "https://newsletter.tristan.pro/p/podcasts-la-porte-derobee-episode-02f",
+      "img": "/newsletter/img/podcasts-la-porte-derobee-episode-02f.jpg"
+    },
+    {
       "titre": "Podcasts : la porte dérobée, épisode 1. La Russie sous sanctions émet toujours en clair",
       "resume": "Plus de 75 émissions de médias d’État russes bannis sont en libre accès sur Apple Podcasts et Spotify France. Et huit podcasts de Sputnik y avancent masqués.",
       "date": "2026-11-10",
@@ -13,13 +20,6 @@
       "date": "2026-11-07",
       "url": "https://newsletter.tristan.pro/p/europe-we-have-a-problem",
       "img": "/newsletter/img/europe-we-have-a-problem.jpg"
-    },
-    {
-      "titre": "L’internationale Musk",
-      "resume": "J’ai voulu regrouper en un seul panorama toute cette internationale d’extrême droite qu’Elon Musk fait monter sur X. Depuis 2022, sa virulence à l’international saute aux yeux.",
-      "date": "2026-11-06",
-      "url": "https://newsletter.tristan.pro/p/linternationale-musk",
-      "img": "/newsletter/img/linternationale-musk.jpg"
     }
   ]
 }
