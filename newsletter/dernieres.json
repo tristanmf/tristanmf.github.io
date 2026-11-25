@@ -1,6 +1,13 @@
 {
   "lettres": [
     {
+      "titre": "Podcasts : la porte dérobée, épisode 3",
+      "resume": "Charlatans et antivax ont leur rayon sur Apple Podcasts et Spotify",
+      "date": "2026-11-24",
+      "url": "https://newsletter.tristan.pro/p/podcasts-la-porte-derobee-episode-0da",
+      "img": "/newsletter/img/podcasts-la-porte-derobee-episode-0da.jpg"
+    },
+    {
       "titre": "Podcasts : la porte dérobée, épisode 2",
       "resume": "La radicalité a trouvé son support : le podcast",
       "date": "2026-11-17",
@@ -13,13 +20,6 @@
       "date": "2026-11-10",
       "url": "https://newsletter.tristan.pro/p/podcasts-la-porte-derobee-episode",
       "img": "/newsletter/img/podcasts-la-porte-derobee-episode.jpg"
-    },
-    {
-      "titre": "Europe, we have a problem",
-      "resume": "Le « prompt power » chinois, épisode 3",
-      "date": "2026-11-07",
-      "url": "https://newsletter.tristan.pro/p/europe-we-have-a-problem",
-      "img": "/newsletter/img/europe-we-have-a-problem.jpg"
     }
   ]
 }
